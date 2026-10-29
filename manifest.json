@@ -1,4 +1,57 @@
 {
-  "generatedAt": null,
-  "packages": []
+  "generatedAt": "2026-10-29T04:25:00Z",
+  "packages": [
+    {
+      "id": "com.discord.main",
+      "version": "0.1.0",
+      "displayName": "Discord",
+      "description": "Read messages, guilds, channels and user profiles, search messages, send messages and manage your reactions on discord.com in your current tab. Uses your own logged-in Discord session.",
+      "hosts": [
+        "discord.com"
+      ],
+      "toolCount": 8,
+      "files": [
+        {
+          "path": "packages/com.discord.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.discord.main/manifest.json",
+          "sha256": "1be845a6a696a0f46589214016ef3a138e2b3304c0b90d03b793ceaac57220c8"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/send_message.js",
+          "sha256": "840f661686f5abbe5d12e26cd7a77b8b732b0267627b13be5241a1e03137a1c7"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/get_user_profile.js",
+          "sha256": "e9e56fadcd1ae228c37d22557cc62b4121a95e1b4eab18c65859a2548087f40d"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/list_guilds.js",
+          "sha256": "56a4da0a05b9cd4930cdf0eccd18379b7bb843e9b443d876339cfbef1ce58a8c"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/add_reaction.js",
+          "sha256": "c1b983e03f845006685097e8c72f6e446ce7b82251d62df6d81b30b472ece2b2"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/read_messages.js",
+          "sha256": "a80f36740d0f1cc42db7217f983b2d9cc931f9a45aa38e5e205c7365e459c343"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/search_messages.js",
+          "sha256": "ec2df11ac80881e2bb056d13845c7242c526a5fc043eafae98e2a709ca62d0f9"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/remove_reaction.js",
+          "sha256": "ebccefb873298886b9aacdf8d36fc253639fdf479a34b7d2fa4074a190dd1650"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/list_channels.js",
+          "sha256": "196013ee91357f6eb1d68bafe0b395dbc918dff21714cf15b423a6a0b4e6e0b4"
+        }
+      ]
+    }
+  ]
 }
