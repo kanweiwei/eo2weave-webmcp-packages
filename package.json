@@ -1,0 +1,8 @@
+{
+  "name": "eo2weave-webmcp-packages",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate-manifest": "node scripts/generate-manifest.mjs"
+  }
+}

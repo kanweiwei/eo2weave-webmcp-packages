@@ -33,6 +33,12 @@ scripts/
 manifest.json        # registry manifest: name / version / urlRegex / sha256 (generated)
 ```
 
+## Adding / updating a package
+
+1. Create or edit `packages/<id>/` (manifest.json + config.json + workflows/)
+2. Regenerate the registry manifest: `npm run generate-manifest` (fills root `manifest.json` with file lists + sha256)
+3. Commit and push — the registry is served from raw.githubusercontent.com automatically
+
 ## Migration notes
 
 `com.discord.main` is the pilot port (from OpenTabs, MIT). Further OpenTabs migrations are done
