@@ -1,4 +1,4 @@
-# eo2weave-mcp-packages
+# eo2weave-webmcp-packages
 
 External-site WebMCP packages for [CreatorWeave / EO2Weave](https://github.com/nutstore/eo2weave) —
 site adapters (Discord, Reddit, ...) that users can install without waiting for an extension release.
