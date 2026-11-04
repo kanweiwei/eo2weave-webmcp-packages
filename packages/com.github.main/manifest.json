@@ -1,0 +1,217 @@
+{
+  "id": "com.github.main",
+  "version": "0.1.0",
+  "description": "Read and write repositories, issues, pull requests, comments, labels, releases, workflow runs and notifications on github.com in your current tab. Uses your own logged-in GitHub web session.",
+  "tools": [
+    {
+      "name": "list_repos",
+      "description": "List repositories for the authenticated user or a specified user/organization. Returns repos sorted by last updated.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_repos.js"
+    },
+    {
+      "name": "get_repo",
+      "description": "Get detailed information about a specific repository.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_repo.js"
+    },
+    {
+      "name": "create_repo",
+      "description": "Create a new repository for the authenticated user.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_repo.js"
+    },
+    {
+      "name": "list_commits",
+      "description": "List commits for a repository. Optionally filter by branch or tag. Returns commits sorted by date descending.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_commits.js"
+    },
+    {
+      "name": "compare_commits",
+      "description": "Compare two commits, branches, or tags. Returns the diff status, commit count, and changed files between the base and head.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/compare_commits.js"
+    },
+    {
+      "name": "list_releases",
+      "description": "List releases for a repository. Returns published and draft releases sorted by creation date.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_releases.js"
+    },
+    {
+      "name": "create_release",
+      "description": "Create a new release for a repository. Optionally create as a draft or prerelease.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_release.js"
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues for a repository. By default returns open issues sorted by creation date. Can filter by state, labels, assignee, and more.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issues.js"
+    },
+    {
+      "name": "get_issue",
+      "description": "Get detailed information about a specific issue, including its full body.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_issue.js"
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a repository.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_issue.js"
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an existing issue — change title, body, state, labels, or assignees.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_issue.js"
+    },
+    {
+      "name": "search_issues",
+      "description": "Search issues and pull requests across GitHub. Uses GitHub search syntax — e.g., \"repo:owner/name is:open label:bug\".",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_issues.js"
+    },
+    {
+      "name": "list_labels",
+      "description": "List all labels for a repository. Returns label names, colors, and descriptions.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_labels.js"
+    },
+    {
+      "name": "create_label",
+      "description": "Create a new label in a repository.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_label.js"
+    },
+    {
+      "name": "list_pull_requests",
+      "description": "List pull requests for a repository with optional state and sort filters.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pull_requests.js"
+    },
+    {
+      "name": "get_pull_request",
+      "description": "Get detailed information about a specific pull request, including merge status and diff stats.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_pull_request.js"
+    },
+    {
+      "name": "create_pull_request",
+      "description": "Create a new pull request.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_pull_request.js"
+    },
+    {
+      "name": "update_pull_request",
+      "description": "Update an existing pull request title or body, or close/reopen it.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_pull_request.js"
+    },
+    {
+      "name": "merge_pull_request",
+      "description": "Merge a pull request. Supports merge commit, squash, and rebase strategies.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/merge_pull_request.js"
+    },
+    {
+      "name": "get_pull_request_diff",
+      "description": "Get the raw diff of a pull request. Returns the unified diff text for all changed files.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_pull_request_diff.js"
+    },
+    {
+      "name": "list_pull_request_files",
+      "description": "List files changed in a pull request. Returns filenames, change status, and line-level diff statistics.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pull_request_files.js"
+    },
+    {
+      "name": "request_pull_request_review",
+      "description": "Request reviewers for a pull request. Specify individual users and/or team slugs to request reviews from.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/request_pull_request_review.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments on an issue or pull request.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a comment to an issue or pull request.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a GitHub user's profile. Defaults to the authenticated user if no username is provided.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "list_org_members",
+      "description": "List members of a GitHub organization.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_org_members.js"
+    },
+    {
+      "name": "list_branches",
+      "description": "List branches for a repository.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_branches.js"
+    },
+    {
+      "name": "get_file_content",
+      "description": "Read a file from a repository. Returns the raw content as text. Use the ref parameter to read from a specific branch or commit.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file_content.js"
+    },
+    {
+      "name": "create_or_update_file",
+      "description": "Create or update a file in a repository. Commits directly to the specified branch.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_or_update_file.js"
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete a file from a repository. Commits directly to the specified branch.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_file.js"
+    },
+    {
+      "name": "list_workflow_runs",
+      "description": "List workflow runs for a repository. Returns recent workflow runs from the Actions page.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workflow_runs.js"
+    },
+    {
+      "name": "get_workflow_run",
+      "description": "Get information about a specific GitHub Actions workflow run by its run ID.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workflow_run.js"
+    },
+    {
+      "name": "search_repos",
+      "description": "Search for repositories across GitHub. Supports GitHub search syntax (e.g., \"repo:owner/name\", \"language:typescript\", \"stars:>1000\").",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_repos.js"
+    },
+    {
+      "name": "add_reaction",
+      "description": "Add a reaction to an issue, pull request, or comment. Requires the node ID of the subject (e.g., from get_issue or get_pull_request).",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_reaction.js"
+    },
+    {
+      "name": "list_notifications",
+      "description": "List notifications for the authenticated user. Includes issue, PR, and release notifications.",
+      "urlRegex": "^https://github\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_notifications.js"
+    }
+  ]
+}

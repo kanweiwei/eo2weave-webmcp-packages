@@ -18,3 +18,7 @@ jobs:
             echo "::endgroup::"
           done
           exit $fail
+      - name: Cache the upstream OpenTabs plugin manifests
+        run: node scripts/fetch-opentabs.mjs
+      - name: Run the package tests
+        run: node scripts/test-packages.mjs
