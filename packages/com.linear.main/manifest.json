@@ -1,0 +1,361 @@
+{
+  "id": "com.linear.main",
+  "version": "0.1.0",
+  "description": "Search, create and update Linear issues, projects, initiatives, documents, milestones, labels, cycles and teams through your logged-in linear.app session in your current tab.",
+  "tools": [
+    {
+      "name": "search_issues",
+      "description": "Search and filter Linear issues. Supports text search, filtering by team, assignee, state, label, project, and more. Returns paginated results.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_issues.js"
+    },
+    {
+      "name": "get_issue",
+      "description": "Get detailed information about a single Linear issue by its UUID or human-readable identifier (e.g. ENG-123).",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_issue.js"
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in Linear. Requires a team ID and title at minimum.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_issue.js"
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an existing Linear issue. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_issue.js"
+    },
+    {
+      "name": "delete_issue",
+      "description": "Move a Linear issue to the trash. Trashed issues can be restored within 30 days.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_issue.js"
+    },
+    {
+      "name": "archive_issue",
+      "description": "Archive a Linear issue. Archived issues are hidden from default views but can be restored.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/archive_issue.js"
+    },
+    {
+      "name": "batch_update_issues",
+      "description": "Apply the same update to multiple issues at once. All specified fields are applied to every issue in the batch. Maximum 25 issues per call.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/batch_update_issues.js"
+    },
+    {
+      "name": "list_sub_issues",
+      "description": "List child/sub-issues of a parent Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sub_issues.js"
+    },
+    {
+      "name": "list_issue_history",
+      "description": "List the change history (state changes, assignee changes, priority changes) for a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issue_history.js"
+    },
+    {
+      "name": "list_issue_relations",
+      "description": "List relations (blocks, is blocked by, relates to, duplicate of) for a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issue_relations.js"
+    },
+    {
+      "name": "create_issue_relation",
+      "description": "Create a relation between two Linear issues (blocks, is blocked by, relates to, or duplicate of).",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_issue_relation.js"
+    },
+    {
+      "name": "delete_issue_relation",
+      "description": "Delete a relation between two Linear issues. Use list_issue_relations to find relation IDs.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_issue_relation.js"
+    },
+    {
+      "name": "add_issue_label",
+      "description": "Add a label to an issue without removing existing labels. Unlike update_issue which replaces all labels, this appends.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_issue_label.js"
+    },
+    {
+      "name": "remove_issue_label",
+      "description": "Remove a label from an issue without affecting other labels. Unlike update_issue which replaces all labels, this removes only the specified one.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_issue_label.js"
+    },
+    {
+      "name": "add_issue_subscriber",
+      "description": "Subscribe a user to receive notifications for a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_issue_subscriber.js"
+    },
+    {
+      "name": "remove_issue_subscriber",
+      "description": "Unsubscribe a user from notifications for a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_issue_subscriber.js"
+    },
+    {
+      "name": "set_issue_cycle",
+      "description": "Assign an issue to a cycle (sprint). Use list_cycles to find cycle IDs. Pass an empty string to remove from the current cycle.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_issue_cycle.js"
+    },
+    {
+      "name": "move_issue_to_project",
+      "description": "Move an issue to a different project. Use list_projects to find project IDs. Pass an empty string to remove from the current project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/move_issue_to_project.js"
+    },
+    {
+      "name": "list_attachments",
+      "description": "List attachments (linked PRs, documents, URLs) on a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_attachments.js"
+    },
+    {
+      "name": "get_attachment",
+      "description": "Get detailed information about a single attachment by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_attachment.js"
+    },
+    {
+      "name": "create_attachment",
+      "description": "Link a URL (PR, document, design file, etc.) to a Linear issue as an attachment.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_attachment.js"
+    },
+    {
+      "name": "delete_attachment",
+      "description": "Delete an attachment from a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_attachment.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a comment to an existing Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "update_comment",
+      "description": "Update an existing comment on a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_comment.js"
+    },
+    {
+      "name": "delete_comment",
+      "description": "Delete a comment from a Linear issue.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_comment.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments on a Linear issue, ordered by creation date.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List all projects in the Linear workspace. Supports pagination.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a single Linear project by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project in Linear.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project.js"
+    },
+    {
+      "name": "update_project",
+      "description": "Update an existing Linear project. Only specified fields are changed.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_project.js"
+    },
+    {
+      "name": "list_project_labels",
+      "description": "List labels applied to a specific Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_project_labels.js"
+    },
+    {
+      "name": "list_project_updates",
+      "description": "List status updates (health reports) for a Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_project_updates.js"
+    },
+    {
+      "name": "create_project_update",
+      "description": "Post a status update (health report) on a Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project_update.js"
+    },
+    {
+      "name": "delete_project_update",
+      "description": "Delete a status update from a Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_project_update.js"
+    },
+    {
+      "name": "list_milestones",
+      "description": "List milestones for a Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_milestones.js"
+    },
+    {
+      "name": "get_milestone",
+      "description": "Get detailed information about a single project milestone by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_milestone.js"
+    },
+    {
+      "name": "create_milestone",
+      "description": "Create a new milestone in a Linear project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_milestone.js"
+    },
+    {
+      "name": "update_milestone",
+      "description": "Update an existing milestone in a Linear project. Only specified fields are changed.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_milestone.js"
+    },
+    {
+      "name": "list_initiatives",
+      "description": "List initiatives in the Linear workspace, optionally filtered by status.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_initiatives.js"
+    },
+    {
+      "name": "get_initiative",
+      "description": "Get detailed information about a single Linear initiative by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_initiative.js"
+    },
+    {
+      "name": "create_initiative",
+      "description": "Create a new initiative in Linear.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_initiative.js"
+    },
+    {
+      "name": "update_initiative",
+      "description": "Update an existing Linear initiative. Only specified fields are changed.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_initiative.js"
+    },
+    {
+      "name": "list_documents",
+      "description": "List documents in the Linear workspace, optionally filtered by project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_documents.js"
+    },
+    {
+      "name": "get_document",
+      "description": "Get detailed information about a single Linear document by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_document.js"
+    },
+    {
+      "name": "create_document",
+      "description": "Create a new document in Linear, optionally associated with a project.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_document.js"
+    },
+    {
+      "name": "update_document",
+      "description": "Update an existing Linear document. Only specified fields are changed.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_document.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all teams in the Linear workspace that the current user can access.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "get_team",
+      "description": "Get detailed information about a single Linear team by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_team.js"
+    },
+    {
+      "name": "list_team_members",
+      "description": "List members of a specific Linear team.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_team_members.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List all users in the Linear organization. Use this to find user IDs for assigning issues.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get detailed information about a single Linear user by their UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "get_viewer",
+      "description": "Get the authenticated user's profile information.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_viewer.js"
+    },
+    {
+      "name": "list_workflow_states",
+      "description": "List all workflow states for a team. Use this to find state IDs for filtering issues or updating issue state.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workflow_states.js"
+    },
+    {
+      "name": "list_labels",
+      "description": "List all issue labels in the Linear workspace. Use this to find label IDs for creating or filtering issues.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_labels.js"
+    },
+    {
+      "name": "create_label",
+      "description": "Create a new issue label in Linear.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_label.js"
+    },
+    {
+      "name": "update_label",
+      "description": "Update an existing Linear issue label. Only specified fields are changed.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_label.js"
+    },
+    {
+      "name": "delete_label",
+      "description": "Delete a Linear issue label. Labels will be removed from all issues that use them.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_label.js"
+    },
+    {
+      "name": "list_cycles",
+      "description": "List cycles (sprints) for a team. Use this to find cycle IDs for creating or filtering issues.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_cycles.js"
+    },
+    {
+      "name": "get_cycle",
+      "description": "Get detailed information about a single cycle (sprint) by its UUID.",
+      "urlRegex": "^https://linear\\.app/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cycle.js"
+    }
+  ]
+}

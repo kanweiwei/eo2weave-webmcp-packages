@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T04:52:59.174Z",
+  "generatedAt": "2026-11-04T09:56:30.357Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -46,6 +46,502 @@
         {
           "path": "packages/com.discord.main/workflows/send_message.js",
           "sha256": "840f661686f5abbe5d12e26cd7a77b8b732b0267627b13be5241a1e03137a1c7"
+        }
+      ]
+    },
+    {
+      "id": "com.github.main",
+      "version": "0.1.0",
+      "description": "Read and write repositories, issues, pull requests, comments, labels, releases, workflow runs and notifications on github.com in your current tab. Uses your own logged-in GitHub web session.",
+      "toolCount": 35,
+      "files": [
+        {
+          "path": "packages/com.github.main/config.json",
+          "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": "packages/com.github.main/manifest.json",
+          "sha256": "7f56b62fe0b05ee34ea362cc8043f099525d81c453f07d439e8f1328c45a2074"
+        },
+        {
+          "path": "packages/com.github.main/workflows/add_reaction.js",
+          "sha256": "ba1cdbb21328508d5f67448d3ab5fa79e79c8abb376027ceb11fdc99de132915"
+        },
+        {
+          "path": "packages/com.github.main/workflows/compare_commits.js",
+          "sha256": "fbb0a6f319b0dcb0866fa3267a934e1e3e7ae93c4dd2a28b3d128ed19189220a"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_comment.js",
+          "sha256": "bb073ddc009392172ab241b2b950627c37aa226ba12c9d36f662b83aba9d01e2"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_issue.js",
+          "sha256": "0b5678f7a1d98cca30d17a688f0ee28940b19d73de8d6c43e1e517af91d0d7f5"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_label.js",
+          "sha256": "c2ba775f7aa801c956074f96e2a8e4ba45ba53de1ea63d5503a92ce91437d510"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_or_update_file.js",
+          "sha256": "b02d22239bcb309c6a2d48ea523f17c8982ed88a85f98f7bf8fc3d95f0be0595"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_pull_request.js",
+          "sha256": "a65254dd423d03a0266447ebf08f9e4dedf98e7215308f82605b5d9cafc371d0"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_release.js",
+          "sha256": "28a42ec03ab4f4ec2da29a0ba0e65d08b5b5322127075c88ee5ef2788f329d30"
+        },
+        {
+          "path": "packages/com.github.main/workflows/create_repo.js",
+          "sha256": "166d2cacb4e41444b9a8853111ab773774e1632623277f184bc3855cbd611c45"
+        },
+        {
+          "path": "packages/com.github.main/workflows/delete_file.js",
+          "sha256": "fa3ea01d8c1738dc8b52569927513e7cea3b13a0f6481adc788c0f312b4b7fde"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_file_content.js",
+          "sha256": "8d6d40be945cf0868e7cdd3541d132451f8143a16318aae64a6c4515db096756"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_issue.js",
+          "sha256": "c37033d69f32df4e78c2d54d55ce3e444122ced3b223c438f8e07a7b7db889f4"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_pull_request_diff.js",
+          "sha256": "f0910ca9deb3311962f987fd352c73333aff5dd8b2ecd148e4b929bdb46d734e"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_pull_request.js",
+          "sha256": "87a37408e064b8669c0ee0a9c853162ac774bc2ba710acd588fd5243dd94d26c"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_repo.js",
+          "sha256": "2777de5f507c077ab0d67efd1c58c80657215a4f9c52496573b15e9724c2fa9b"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_user_profile.js",
+          "sha256": "27c61ec2fcf0848fcfb5c419c997433db62ed6b9d86cfcfa1d3467b8e72192cf"
+        },
+        {
+          "path": "packages/com.github.main/workflows/get_workflow_run.js",
+          "sha256": "22f298ffd7377acb17acae40c271467366c080a14717d0a93f605623f298dcda"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_branches.js",
+          "sha256": "994426c74e7ee6fcb61f409165cf15b3935e915053e27c55e29b00e49a68bfde"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_comments.js",
+          "sha256": "afe7fcc5350af7c146777e3dbbab411f3a6fb1272b4bd750cf389553f9f7235c"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_commits.js",
+          "sha256": "688c4f4a4ff9e10f35d24821acf2c01560f46f9dd760dc5a7a9b2af7338bacbd"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_issues.js",
+          "sha256": "8ba7f2680b23e5117236de114748392cda88bff1e9cdd1fda10ba62f36745821"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_labels.js",
+          "sha256": "4aa83173c7ba7eaeae5c8423b846030476d0257a691b8ebcc57da619834ef99d"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_notifications.js",
+          "sha256": "41f4c498a57f2d5ea14579012fe51db201c843e68d5b0ab3a1eae9f8687f3a58"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_org_members.js",
+          "sha256": "5d5ad4df21a911eab95e74c9fae56fc6fce36236eff80ec9830b326ee1013a90"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_pull_request_files.js",
+          "sha256": "2b71b425da16d007389172c243779c5a2ef7c1e4608bfb98e175964b9e5f57d2"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_pull_requests.js",
+          "sha256": "86239af19374949ed1959e5d98e916108365a51428758b15d05a0a7232ac1623"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_releases.js",
+          "sha256": "0dca3c1f2c5e72d45eebffe155f396fe532483d808dd5cf3e547c8b0078e9745"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_repos.js",
+          "sha256": "c8774ec74feafd9e9278ed1313de6b1fe55ee437265051ca244c162d1e133cdc"
+        },
+        {
+          "path": "packages/com.github.main/workflows/list_workflow_runs.js",
+          "sha256": "3c0ed0cbbacfd9acf580daf725af1f261139235a0516c102f0819758f30fdb73"
+        },
+        {
+          "path": "packages/com.github.main/workflows/merge_pull_request.js",
+          "sha256": "dca38b281ab6a1eddff5a5fca437c909741728ff5d760d40a8c990bb18999b8a"
+        },
+        {
+          "path": "packages/com.github.main/workflows/request_pull_request_review.js",
+          "sha256": "257aef2829e7ed2de9c8c5507b6767df55a559fafe9ed43fa6be111ef8ef7df8"
+        },
+        {
+          "path": "packages/com.github.main/workflows/search_issues.js",
+          "sha256": "6962a4835873e901e9291f130be07136eabb31da98d318a2f3cb8d7898c83ff1"
+        },
+        {
+          "path": "packages/com.github.main/workflows/search_repos.js",
+          "sha256": "ce69e3845362fc617b8388b10cfb3dc861b2d31c75ab715c784d6b7b4a42120c"
+        },
+        {
+          "path": "packages/com.github.main/workflows/update_issue.js",
+          "sha256": "03004919a21d4eca59e600f061bfd3aeeac428e961f3c2bfc2bfe78d8d3810ba"
+        },
+        {
+          "path": "packages/com.github.main/workflows/update_pull_request.js",
+          "sha256": "e7d231b6bfd713f083a8a2e5d05106535ae9eeea47a9114472ed3e3427fef4b1"
+        }
+      ]
+    },
+    {
+      "id": "com.linear.main",
+      "version": "0.1.0",
+      "description": "Search, create and update Linear issues, projects, initiatives, documents, milestones, labels, cycles and teams through your logged-in linear.app session in your current tab.",
+      "toolCount": 59,
+      "files": [
+        {
+          "path": "packages/com.linear.main/config.json",
+          "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": "packages/com.linear.main/manifest.json",
+          "sha256": "b6dd55ade1f1ed63e2eefdf9b2abc476406d9b99494414e7d8a9815ca2a3ea97"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/add_issue_label.js",
+          "sha256": "1cf9ab6f4063b7f1270ff98f69f9e29c6f1b03ddd212d088dec28ae1e559e8d0"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/add_issue_subscriber.js",
+          "sha256": "7d9daf9724c8e37cb8c3d78a50871257fd4c263d50407135c301310dee22b6e2"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/archive_issue.js",
+          "sha256": "8fbbdd0449190e9bf18a2e50f4cd039282d3a2dec0ae3a8aebacf9d82c632167"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/batch_update_issues.js",
+          "sha256": "310ee6fff8bd9c7760b4fd88247d5672905861453dda63a144afec2286159471"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_attachment.js",
+          "sha256": "406b790df72b2f4b6e4ed85f608471330038892bfa1f4fe204a1d804bc34db6e"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_comment.js",
+          "sha256": "9cb419f0cf54a9440fcdbbea2016fac915c9ad4fd1dd0322980f3abd843f6c64"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_document.js",
+          "sha256": "2c2b28041f734e170de4947bebcb648adf53be6275cbaedec38b3eb744094150"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_initiative.js",
+          "sha256": "ef4a837ede7d5f61d80e12a79fefff0054d741e11d986a90fc84c484e6506c7b"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_issue_relation.js",
+          "sha256": "fd74627318d81055c8611871633b474e0dddc917e716685fd6ffddbf59b8caed"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_issue.js",
+          "sha256": "daca4b94ed0924a0838dddb5eba00407e72fb6eee48ec5b6b5a09512f565586e"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_label.js",
+          "sha256": "c7334c53622dee68b27c2d4bf6a5e19b9eb837883f2cd4beba76ad77756486ed"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_milestone.js",
+          "sha256": "1d6afe2913b2e4a466575228cb35a9a9f941107135cdfbe711954773524e8423"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_project_update.js",
+          "sha256": "4b6f96dcfabaf2f9912c05df9dcb56f07440d0208fd33810fae6ddf3707e3cfd"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/create_project.js",
+          "sha256": "f950d460a8b6f4420741a4842df955b40ea7006c3ecb06237bcc32416170c1b8"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_attachment.js",
+          "sha256": "739ca97cdd608c9376f619d7090ffee31a0a69ea3ff7a97e7da64e2874c0a5ff"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_comment.js",
+          "sha256": "86c919ea5fb4173747959d5ce5a9f2eb2921e31a2d73687ad6ba3e04e8eb36d2"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_issue_relation.js",
+          "sha256": "962851239b7889c219ed569f2a947d323ce066d4a11ea8077006ef37b2479535"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_issue.js",
+          "sha256": "4e92e33b43ac59b9e4c5b9f13c095108ffcd194398aac019dcf9cf5711bc7321"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_label.js",
+          "sha256": "e5da5ce426f107b2fb78697d2bf5fda7c1388951650e1c262a0edc5a2504f277"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/delete_project_update.js",
+          "sha256": "eac234b3d437e3f7f37e3a3a6f73772f586b17f3a5cd35a0fdef6b9515a6c938"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_attachment.js",
+          "sha256": "aa70acdcb21b3039a6b7476825f414714308149021ef04bb840e88e5c91b9e72"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_cycle.js",
+          "sha256": "ed2edc457e1085301e8fbf7f7cb857ddca226cf5bc9e79f05a817779b30e767b"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_document.js",
+          "sha256": "64ed583080d5f0eac9d5844496c0a35d0a82ed06d3f40f73edfe257e044f0c6f"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_initiative.js",
+          "sha256": "d2f2df34d1cbd9730a3774c839d326118acb2660695dd975115c92f78046b167"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_issue.js",
+          "sha256": "837eb77d24cae15d69f95c68a4131b85dd769fce0b8d0983f67ac5cd58ef515f"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_milestone.js",
+          "sha256": "e8a14f5fe6af70bb6fe7d34ecb4885a727fb944f7568be613d440492dc9c2be8"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_project.js",
+          "sha256": "eb98e21050f3884132c49b5b071e198409d4c027fc624275d67b3e3c57c79309"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_team.js",
+          "sha256": "ca6b53738467042b81edb5f244d640808dd4e9f8efb9dcc780e12fdb8941928d"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_user.js",
+          "sha256": "49de13d33a177926280034a0723cca4ef2d99766f505b389e166b7281002bb47"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/get_viewer.js",
+          "sha256": "6ee0eee4287fdb90825dacc335367ade5558e4d0f345ab6d9886d6393f446087"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_attachments.js",
+          "sha256": "be24f3155ec3f5a379afc4836279c5ad636d6809dfbb86df482b594a5a850a26"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_comments.js",
+          "sha256": "4f4e3e671a8a5083e3d6686fd166be2fa75097f0c86687cc8e2ea91c434c4a64"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_cycles.js",
+          "sha256": "a7a80ffca20db408570222022136f6fc960691d23f9b28fd83b26569ebeab528"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_documents.js",
+          "sha256": "93e5b28b41e30e414403fedf63c8bfab11f67ba3df73e457836c6c2add4529af"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_initiatives.js",
+          "sha256": "b64a7b6303516b8e7996006866e8fb2c15a72d3a1bbf18466e23fe37714cc405"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_issue_history.js",
+          "sha256": "c103f22fc8aca313223cfb12eb31862b08e232e2c6a730e8d21716e96ad0ebf6"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_issue_relations.js",
+          "sha256": "55ec615d7b568c156dce6fa847be42de19bef3a8d5f211dd4d0f82378b56aec1"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_labels.js",
+          "sha256": "d01c8785a1dbcec65bbc5bc39c00ab99b60255a61c4d99bf8be1bcda5284e4fc"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_milestones.js",
+          "sha256": "475ebc84a5be95dd61d14da37d45f34d90ee9afad35b4af7a3c394099eb6e1ac"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_project_labels.js",
+          "sha256": "cb958e661431b33e940895e423015cb8cf3da3fe945f6c0167d50ca00df490b0"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_project_updates.js",
+          "sha256": "59d87415f216114a362a69199c4325e30e73efe00adfaa603abf0700ecd3d31c"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_projects.js",
+          "sha256": "dbbb931dda8bf34c52314d93401774248ee8bd7e5afe1997f4c1c393ca031387"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_sub_issues.js",
+          "sha256": "a54b876643225cb6eb6899de7202054e9d075c6de488f61552bdf3d515d3d52e"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_team_members.js",
+          "sha256": "9406a6bf13700db83c6a4b102dee2f652f05c5b5342ae70f0777be6292e13823"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_teams.js",
+          "sha256": "a726f8224e0cf73cf1e1a580024331daa619d05908eee3e3e209a69a23c71189"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_users.js",
+          "sha256": "2d7bf53bf38afcc4ead10031543c7867342041bf8b767051a5697fc36716cf06"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/list_workflow_states.js",
+          "sha256": "93c2c35e1adab87bbf5b53ece7796697f23e7a2cb0e605c91c50908ab71d0c29"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/move_issue_to_project.js",
+          "sha256": "17515cfd396cd296725b7a09d6a7c0b74c6ede7d73f39bd4662cdc0810bba789"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/remove_issue_label.js",
+          "sha256": "5becb6389a17f0620d060ead1bfeeac6ae0c77974595d2519415d8c00254a029"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/remove_issue_subscriber.js",
+          "sha256": "2b793fb80ff5e6e0b28e1fcc0e28049724d4f707577d1130217b2680a3ffa3af"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/search_issues.js",
+          "sha256": "21de7cabf4c7ccf66d2bcf63123af16e68c472bb1c59b0067736479618a63620"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/set_issue_cycle.js",
+          "sha256": "f97b8b99df359390c821086ed067e361cefc1a9d6209225a0fda1083aebad5f9"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_comment.js",
+          "sha256": "2f478459871b0ae2c80de5184861e0bd9cdf9182fa5e719db2f7d1de12e001c9"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_document.js",
+          "sha256": "f58adbd0717a9f5ceba7f51633dfd21028d318a3f28b65e2fff3887aa92ce9de"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_initiative.js",
+          "sha256": "4a8788e2cccd4dcd916611e6bd2b415be3a6c6b93485783e38af72ebf22e7801"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_issue.js",
+          "sha256": "17576893657f1c7b9ede7385537e41dcf97d858010d38785e5f081412e3d2eb5"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_label.js",
+          "sha256": "4ff33537f6980753c3108eb369f5413d162b33c0b14bbe2d56320871b441bc20"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_milestone.js",
+          "sha256": "c949f390413e81a8995af5da3d3ff061052bedaad003da466d569f942770cc45"
+        },
+        {
+          "path": "packages/com.linear.main/workflows/update_project.js",
+          "sha256": "d50d7d33c74582725b3be9ce598d5119065212a742491df8293fbfc8c7f3879d"
+        }
+      ]
+    },
+    {
+      "id": "com.notion.main",
+      "version": "0.1.0",
+      "description": "Search and read Notion pages, blocks and databases, and create or update pages, blocks, database rows and schemas in your current tab. Uses your own logged-in Notion session.",
+      "toolCount": 18,
+      "files": [
+        {
+          "path": "packages/com.notion.main/config.json",
+          "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": "packages/com.notion.main/manifest.json",
+          "sha256": "6719919c1aefe373db8a65c040e853f3db4ae1c4076168eb5d9a64e814065778"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/append_block.js",
+          "sha256": "f7359cd1f493add6e298f4e561586a86c1f6a23d091d6c426f915c6e77d90fb6"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/create_database_item.js",
+          "sha256": "6d9ad7c14177c7eaa43266755ada7bde95a6c448ec8672fd58ba898ba24f7e58"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/create_database.js",
+          "sha256": "d529478d6cc4ba3bccbb0de6c644254bda2fc714b230aa07877baaa8acc9d62c"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/create_page.js",
+          "sha256": "00f065c758d98a10cf7d7310ed3ed666b0d7afcb88f358087692f4ceaad8f4d5"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/delete_block.js",
+          "sha256": "3b7fcd00296f961224ad7bfa68f5be3cb8974d6c0276f7f187075e9331276f36"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/delete_page.js",
+          "sha256": "302275dfa635c11f5c4c66073f5c8014d36d9204b7497077662f131de142bf4e"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/get_block_children.js",
+          "sha256": "17619ce5778b8bcfed997a7103ba3ad33d92137484d87024df4b5a622ddfa28b"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/get_database.js",
+          "sha256": "b18125d5772456798c95af80ca8935219600b91cd25dbce2b96d30e48c5836eb"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/get_page.js",
+          "sha256": "77c1dcecc2b5fc1a1f740d12edc74a72de91637da5be0cacca0a09be42716de5"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/get_user.js",
+          "sha256": "e8cbcc1d7ac3a19ef7b5030f5b5df2dd589df8d35ab0e3525201db7f4e939676"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/list_databases.js",
+          "sha256": "ad8cd399a4a25c6d44c19655e021e7d698142788463f95fa8c719d775e632734"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/list_pages.js",
+          "sha256": "11bb4003a86eb45bec83c44ee71d184e209f8db230b6cdd4e7dc628be0799612"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/list_users.js",
+          "sha256": "e3283a9b98d2eff1cc01d3e1242f699e4d2f118e9670e748b48a8734742e1e08"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/query_database.js",
+          "sha256": "a0c7ed30bdda2c8a5a104af90111e0fa4df67780f37c1a50b0da514535872f55"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/search.js",
+          "sha256": "8951ba858505d47cce259e61c575ef5ceefd79bfb1bb1de85bc26f18accd95df"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/update_block.js",
+          "sha256": "0a4c9d86474a025006e9fa7b8590ffe710f3f8ff2db37c266b373dcafce54502"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/update_database_item.js",
+          "sha256": "cd565db0057c52dfca5d88d1954f89ec76100e93ecdeb3cce4d4838b6ebcd927"
+        },
+        {
+          "path": "packages/com.notion.main/workflows/update_page.js",
+          "sha256": "5cff80bb2273cab182012d7c4ee0fc5d7a64eb88072c602da20d9880535f6c43"
         }
       ]
     }

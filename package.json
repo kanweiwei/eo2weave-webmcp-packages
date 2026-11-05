@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate-manifest": "node scripts/generate-manifest.mjs"
+    "generate-manifest": "node scripts/generate-manifest.mjs",
+    "fetch-opentabs": "node scripts/fetch-opentabs.mjs",
+    "test": "node scripts/test-packages.mjs"
   }
 }
