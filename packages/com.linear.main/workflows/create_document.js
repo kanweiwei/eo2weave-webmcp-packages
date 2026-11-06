@@ -18,7 +18,7 @@ export default {
           },
           "icon": {
               "type": "string",
-              "description": "Icon emoji for the document"
+              "description": "Icon name from Linear's own icon set (emoji are rejected). Valid names include Agent, Robot, Brain, Heart, Tree, Coffee, Compass, Mountain, Home, Face, Skull, Hack, MagicWand, World, Bank, Judge, Dice. Case-sensitive."
           }
       },
       "required": [

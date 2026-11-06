@@ -1,6 +1,6 @@
 {
   "id": "com.linear.main",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Search, create and update Linear issues, projects, initiatives, documents, milestones, labels, cycles and teams through your logged-in linear.app session in your current tab.",
   "tools": [
     {

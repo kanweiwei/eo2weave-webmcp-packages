@@ -492,9 +492,9 @@ export default {
             const node = data.searchIssues?.nodes?.[0];
             if (!node)
                 return returnError('NOT_FOUND', `Issue not found: ${args.issue_id}`);
-            return {
+            return ok({
                 relations: (node.relations?.nodes ?? []).map(mapRelation),
-            };
+            });
         }
         const data = await gql(`query ListIssueRelations($id: String!) {
         issue(id: $id) {

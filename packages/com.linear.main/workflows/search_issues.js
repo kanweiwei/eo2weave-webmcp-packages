@@ -29,12 +29,12 @@ export default {
               "description": "Filter by project name"
           },
           "priority": {
-              "type": "number",
-              "description": "Filter by priority level (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
+              "type": "string",
+              "description": "Filter by priority level as a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
           },
           "limit": {
-              "type": "number",
-              "description": "Maximum number of issues to return (default 25, max 50)"
+              "type": "string",
+              "description": "Maximum number of issues to return as a number (default 25, max 50)"
           },
           "after": {
               "type": "string",
@@ -486,6 +486,13 @@ export default {
             }
             return response.data
           }
+          // The host's argument validator only accepts string-typed inputs, so
+          // numeric parameters arrive as numeric strings.
+          function parseIntOrNull(value) {
+            if (value === undefined || value === null || value === '') return null
+            var n = parseInt(String(value), 10)
+            return isNaN(n) ? null : n
+          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -510,41 +517,85 @@ export default {
           var toolImplementations = {
             async search_issues(args) {
 
-        const limit = Math.min(args.limit ?? 25, 50);
+        var limit = 25;
+        if (args.limit !== undefined && args.limit !== '') {
+            var parsedLimit = parseIntOrNull(args.limit);
+            if (parsedLimit === null)
+                return returnError('VALIDATION', 'limit must be a number');
+            limit = Math.min(Math.max(parsedLimit, 1), 50);
+        }
         const filter = {};
         if (args.team_key)
             filter.team = { key: { eq: args.team_key } };
         if (args.state_name)
-            filter.state = { name: { eqCaseInsensitive: args.state_name } };
+            filter.state = { name: { containsIgnoreCase: args.state_name } };
         if (args.label_name)
-            filter.labels = { name: { eqCaseInsensitive: args.label_name } };
-        if (args.priority !== undefined)
-            filter.priority = { eq: args.priority };
+            filter.labels = { name: { containsIgnoreCase: args.label_name } };
+        if (args.priority !== undefined && args.priority !== '') {
+            var parsedPriority = parseIntOrNull(args.priority);
+            if (parsedPriority === null)
+                return returnError('VALIDATION', 'priority must be a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)');
+            filter.priority = { eq: parsedPriority };
+        }
         if (args.assignee_name)
             filter.assignee = { displayName: { containsIgnoreCase: args.assignee_name } };
         if (args.project_name)
             filter.project = { name: { containsIgnoreCase: args.project_name } };
         const filterArg = Object.keys(filter).length > 0 ? filter : undefined;
-        // Text search uses searchIssues (ranked). It supports totalCount.
+        // Text search. Prefer the ranked searchIssues() connection; fall back to
+        // a filtered issues() query when it is unavailable on this API build.
         if (args.query) {
-            const data = await gql(`query SearchIssues($query: String!, $first: Int, $after: String, $filter: IssueFilter) {
+            const term = String(args.query).trim();
+            const searchQuery = `query SearchIssues($query: String!, $first: Int, $after: String, $filter: IssueFilter) {
           searchIssues(term: $query, first: $first, after: $after, filter: $filter) {
             nodes { ${ISSUE_FIELDS} }
             pageInfo { hasNextPage endCursor }
             totalCount
           }
-        }`, { query: args.query, first: limit, after: args.after, filter: filterArg });
-            if (!data.searchIssues)
+        }`;
+            const fallbackQuery = `query SearchIssuesFallback($first: Int, $after: String, $filter: IssueFilter) {
+        issues(first: $first, after: $after, filter: $filter, orderBy: updatedAt) {
+          nodes { ${ISSUE_FIELDS} }
+          pageInfo { hasNextPage endCursor }
+        }
+      }`;
+            let data = null;
+            try {
+                data = await gql(searchQuery, { query: term, first: limit, after: args.after, filter: filterArg });
+            } catch (e) {
+                const baseFilter = Object.assign({}, filter);
+                const textFilter = {
+                    or: [
+                        { title: { containsIgnoreCase: term } },
+                        { description: { containsIgnoreCase: term } },
+                    ],
+                };
+                const mergedFilter = Object.keys(baseFilter).length > 0
+                    ? { and: [baseFilter, textFilter] }
+                    : textFilter;
+                try {
+                    data = await gql(fallbackQuery, { first: limit, after: args.after, filter: mergedFilter });
+                } catch (e2) {
+                    // Degrade to a title-only match when the or/and filter
+                    // combinators are rejected.
+                    data = await gql(fallbackQuery, {
+                        first: limit,
+                        after: args.after,
+                        filter: Object.assign({}, baseFilter, { title: { containsIgnoreCase: term } }),
+                    });
+                }
+            }
+            const result = data.searchIssues || data.issues;
+            if (!result)
                 return returnError('API', 'Search returned no results object');
-            const result = data.searchIssues;
-            return {
+            return ok({
                 issues: result.nodes.map(n => mapIssue(n)),
                 pagination: {
                     has_next_page: result.pageInfo?.hasNextPage ?? false,
                     end_cursor: result.pageInfo?.endCursor ?? '',
                 },
-                total_count: result.totalCount ?? 0,
-            };
+                total_count: result.totalCount ?? result.nodes.length,
+            });
         }
         // No text query — use issues() with filters. IssueConnection has no totalCount.
         const data = await gql(`query ListIssues($first: Int, $after: String, $filter: IssueFilter) {

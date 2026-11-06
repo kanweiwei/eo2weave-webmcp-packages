@@ -497,7 +497,7 @@ export default {
         if (existingIds.includes(args.label_id)) {
             // Label already present — just return the issue
             const data = await gql(`query GetIssue($id: String!) { issue(id: $id) { ${ISSUE_FIELDS} } }`, { id: args.issue_id });
-            return { issue: mapIssue(data.issue) };
+            return ok({ issue: mapIssue(data.issue) });
         }
         const labelIds = [...existingIds, args.label_id];
         const data = await gql(`mutation AddIssueLabel($id: String!, $input: IssueUpdateInput!) {

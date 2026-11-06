@@ -502,7 +502,7 @@ export default {
             if (!node) {
                 return returnError('NOT_FOUND', `Issue not found: ${args.issue_id}`);
             }
-            return { issue: mapIssue(node) };
+            return ok({ issue: mapIssue(node) });
         }
         // UUID lookup
         const data = await gql(`query GetIssue($id: String!) {
