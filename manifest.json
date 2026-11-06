@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T09:56:30.357Z",
+  "generatedAt": "2026-11-06T09:04:54.156Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -459,7 +459,7 @@
     },
     {
       "id": "com.notion.main",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Search and read Notion pages, blocks and databases, and create or update pages, blocks, database rows and schemas in your current tab. Uses your own logged-in Notion session.",
       "toolCount": 18,
       "files": [
@@ -469,79 +469,79 @@
         },
         {
           "path": "packages/com.notion.main/manifest.json",
-          "sha256": "6719919c1aefe373db8a65c040e853f3db4ae1c4076168eb5d9a64e814065778"
+          "sha256": "68ba395996fdc3e6c36469f43ef9840a725d74fac8ef7ce9f3848f0680dcf6bc"
         },
         {
           "path": "packages/com.notion.main/workflows/append_block.js",
-          "sha256": "f7359cd1f493add6e298f4e561586a86c1f6a23d091d6c426f915c6e77d90fb6"
+          "sha256": "b3c4b6d976b0030f6e45ae21e4cabdccd5aee0d3334a03eda72745a9873dbed6"
         },
         {
           "path": "packages/com.notion.main/workflows/create_database_item.js",
-          "sha256": "6d9ad7c14177c7eaa43266755ada7bde95a6c448ec8672fd58ba898ba24f7e58"
+          "sha256": "df16482a1a1e1888a1f5a0f3352264c461d0ebc22cf63c053f08704b09180a4d"
         },
         {
           "path": "packages/com.notion.main/workflows/create_database.js",
-          "sha256": "d529478d6cc4ba3bccbb0de6c644254bda2fc714b230aa07877baaa8acc9d62c"
+          "sha256": "ef0d37e8308cacdad4cdec9872cba28d71a829cca2bfdeddf477354eecea90be"
         },
         {
           "path": "packages/com.notion.main/workflows/create_page.js",
-          "sha256": "00f065c758d98a10cf7d7310ed3ed666b0d7afcb88f358087692f4ceaad8f4d5"
+          "sha256": "f855cfe63c0d7e9007a9cbb8028f484ea52fbc720de95ba7fbf9e917f710e215"
         },
         {
           "path": "packages/com.notion.main/workflows/delete_block.js",
-          "sha256": "3b7fcd00296f961224ad7bfa68f5be3cb8974d6c0276f7f187075e9331276f36"
+          "sha256": "7affa1ca9b50abb662b70b9fbf17b13ae8e3e6c069ea00afd37e561c1d37c27a"
         },
         {
           "path": "packages/com.notion.main/workflows/delete_page.js",
-          "sha256": "302275dfa635c11f5c4c66073f5c8014d36d9204b7497077662f131de142bf4e"
+          "sha256": "5f1db79f133ed320458b901a6c1fd09a5783214ba7bbe81865cb0d3ca17beabc"
         },
         {
           "path": "packages/com.notion.main/workflows/get_block_children.js",
-          "sha256": "17619ce5778b8bcfed997a7103ba3ad33d92137484d87024df4b5a622ddfa28b"
+          "sha256": "42fec7ce97199143ba1b48ea4f99c71c97a47b807e5a0ea4e596a0ae8f34810c"
         },
         {
           "path": "packages/com.notion.main/workflows/get_database.js",
-          "sha256": "b18125d5772456798c95af80ca8935219600b91cd25dbce2b96d30e48c5836eb"
+          "sha256": "8a91d41f1642373c888f1feac0591f3ac8102d5bb84296ec21ea601b11a0593d"
         },
         {
           "path": "packages/com.notion.main/workflows/get_page.js",
-          "sha256": "77c1dcecc2b5fc1a1f740d12edc74a72de91637da5be0cacca0a09be42716de5"
+          "sha256": "77bbeaa7c77f6dfaf9aa8cb95d65cc976fbd1aa8552588d50e48dbac0be21853"
         },
         {
           "path": "packages/com.notion.main/workflows/get_user.js",
-          "sha256": "e8cbcc1d7ac3a19ef7b5030f5b5df2dd589df8d35ab0e3525201db7f4e939676"
+          "sha256": "4d40f9a780109dddcf84815a1a629805a3072ef5554f0dfb5a63d58211af5009"
         },
         {
           "path": "packages/com.notion.main/workflows/list_databases.js",
-          "sha256": "ad8cd399a4a25c6d44c19655e021e7d698142788463f95fa8c719d775e632734"
+          "sha256": "276dbb255c09600b5fead8c57bd1f36816b0862a2f06e3efb665309c195d1349"
         },
         {
           "path": "packages/com.notion.main/workflows/list_pages.js",
-          "sha256": "11bb4003a86eb45bec83c44ee71d184e209f8db230b6cdd4e7dc628be0799612"
+          "sha256": "e85ac42356124d4f9ba29c1f0afe94ea670942e8a20a20947e1da8bd71322377"
         },
         {
           "path": "packages/com.notion.main/workflows/list_users.js",
-          "sha256": "e3283a9b98d2eff1cc01d3e1242f699e4d2f118e9670e748b48a8734742e1e08"
+          "sha256": "8851c74cd730a9e12d1d77716ee1de19b034b61476aca55e13d648d87b9bdcd8"
         },
         {
           "path": "packages/com.notion.main/workflows/query_database.js",
-          "sha256": "a0c7ed30bdda2c8a5a104af90111e0fa4df67780f37c1a50b0da514535872f55"
+          "sha256": "046cceb63ca6142ba1253898acf9e109607b52d77c57f1da070105fba4217231"
         },
         {
           "path": "packages/com.notion.main/workflows/search.js",
-          "sha256": "8951ba858505d47cce259e61c575ef5ceefd79bfb1bb1de85bc26f18accd95df"
+          "sha256": "f390d94cbd6712540e8dd3d571338f2aec25ebbc32cbab879846f99e3d13859f"
         },
         {
           "path": "packages/com.notion.main/workflows/update_block.js",
-          "sha256": "0a4c9d86474a025006e9fa7b8590ffe710f3f8ff2db37c266b373dcafce54502"
+          "sha256": "b43a82f3a4cd06a822606d27164eec022700c022adee44d99b243f1f74d1b70d"
         },
         {
           "path": "packages/com.notion.main/workflows/update_database_item.js",
-          "sha256": "cd565db0057c52dfca5d88d1954f89ec76100e93ecdeb3cce4d4838b6ebcd927"
+          "sha256": "fb006965946997064f2e21fe6f880ef16a5d19f902f698b6c9dab0ac6095b8c6"
         },
         {
           "path": "packages/com.notion.main/workflows/update_page.js",
-          "sha256": "5cff80bb2273cab182012d7c4ee0fc5d7a64eb88072c602da20d9880535f6c43"
+          "sha256": "18f692d79ef94fbd0415b7ca34b09a8c69d0bf48cea9adee8db5ca32ea8116e1"
         }
       ]
     }
