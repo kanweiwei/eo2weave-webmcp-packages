@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T09:04:54.156Z",
+  "generatedAt": "2026-11-06T10:35:22.210Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -207,7 +207,7 @@
     },
     {
       "id": "com.linear.main",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Search, create and update Linear issues, projects, initiatives, documents, milestones, labels, cycles and teams through your logged-in linear.app session in your current tab.",
       "toolCount": 59,
       "files": [
@@ -217,11 +217,11 @@
         },
         {
           "path": "packages/com.linear.main/manifest.json",
-          "sha256": "b6dd55ade1f1ed63e2eefdf9b2abc476406d9b99494414e7d8a9815ca2a3ea97"
+          "sha256": "cbda91910d3d177d22a6207f0dfda34df4852091325de198df1d02b7b28b39b5"
         },
         {
           "path": "packages/com.linear.main/workflows/add_issue_label.js",
-          "sha256": "1cf9ab6f4063b7f1270ff98f69f9e29c6f1b03ddd212d088dec28ae1e559e8d0"
+          "sha256": "f6373f958b91843568c80fbe0f9bd817a5c3cbc95aa0064ba02fc86cfae17bcf"
         },
         {
           "path": "packages/com.linear.main/workflows/add_issue_subscriber.js",
@@ -233,7 +233,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/batch_update_issues.js",
-          "sha256": "310ee6fff8bd9c7760b4fd88247d5672905861453dda63a144afec2286159471"
+          "sha256": "85a5f93de17ec011237fcdb1852c86e1f6edf028b8c572c10b3bcd8d50a33170"
         },
         {
           "path": "packages/com.linear.main/workflows/create_attachment.js",
@@ -245,7 +245,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/create_document.js",
-          "sha256": "2c2b28041f734e170de4947bebcb648adf53be6275cbaedec38b3eb744094150"
+          "sha256": "c4d5c66dc9b856c6735ff94d9cafbdb885ed7766ce64a72cf26c336b78be22d0"
         },
         {
           "path": "packages/com.linear.main/workflows/create_initiative.js",
@@ -257,7 +257,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/create_issue.js",
-          "sha256": "daca4b94ed0924a0838dddb5eba00407e72fb6eee48ec5b6b5a09512f565586e"
+          "sha256": "98cc313f5713ba9ee41e8521ae0ecdee9ff698d5a0d41c6d09b9264ef06bf1ab"
         },
         {
           "path": "packages/com.linear.main/workflows/create_label.js",
@@ -273,7 +273,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/create_project.js",
-          "sha256": "f950d460a8b6f4420741a4842df955b40ea7006c3ecb06237bcc32416170c1b8"
+          "sha256": "eeaf8fd5c89e5c4266a1e3874a6588396099c68c94c1c7af58ba82a51158b15a"
         },
         {
           "path": "packages/com.linear.main/workflows/delete_attachment.js",
@@ -317,7 +317,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/get_issue.js",
-          "sha256": "837eb77d24cae15d69f95c68a4131b85dd769fce0b8d0983f67ac5cd58ef515f"
+          "sha256": "7e94e50dcc3eae3e8a4373b5155e62058cb51ccbe89f7861c6c405a5429b8bb9"
         },
         {
           "path": "packages/com.linear.main/workflows/get_milestone.js",
@@ -365,7 +365,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/list_issue_relations.js",
-          "sha256": "55ec615d7b568c156dce6fa847be42de19bef3a8d5f211dd4d0f82378b56aec1"
+          "sha256": "3f088b15a45b4d632d3ce2b2cfaf4c395db8ac7a333956913241d68d2eca99e0"
         },
         {
           "path": "packages/com.linear.main/workflows/list_labels.js",
@@ -413,7 +413,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/remove_issue_label.js",
-          "sha256": "5becb6389a17f0620d060ead1bfeeac6ae0c77974595d2519415d8c00254a029"
+          "sha256": "0296f24433c442f73e1cdfe14ac9f67e357f067cb6185881b920535f5e1f5a6f"
         },
         {
           "path": "packages/com.linear.main/workflows/remove_issue_subscriber.js",
@@ -421,7 +421,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/search_issues.js",
-          "sha256": "21de7cabf4c7ccf66d2bcf63123af16e68c472bb1c59b0067736479618a63620"
+          "sha256": "ecd018fdd9ffbacef1d3e752a7c30e1078cdc854283764526c0278b5d6c0db15"
         },
         {
           "path": "packages/com.linear.main/workflows/set_issue_cycle.js",
@@ -433,7 +433,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/update_document.js",
-          "sha256": "f58adbd0717a9f5ceba7f51633dfd21028d318a3f28b65e2fff3887aa92ce9de"
+          "sha256": "1f1e292f6430903eaf1b762d4eb6c10433bd49ed481d932d06a15a51eab5c66c"
         },
         {
           "path": "packages/com.linear.main/workflows/update_initiative.js",
@@ -441,7 +441,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/update_issue.js",
-          "sha256": "17576893657f1c7b9ede7385537e41dcf97d858010d38785e5f081412e3d2eb5"
+          "sha256": "cb58a0c51217fb0c841a1a30ec3f48a71d4b2eae4ba5de9f770b6f51eba6d984"
         },
         {
           "path": "packages/com.linear.main/workflows/update_label.js",

@@ -13,11 +13,8 @@ export default {
               "description": "Project description"
           },
           "team_ids": {
-              "type": "array",
-              "description": "Array of team UUIDs to associate with the project",
-              "items": {
-                  "type": "string"
-              }
+              "type": "string",
+              "description": "Teams to associate with the project, comma-separated (UUIDs or team keys, e.g. \"uuid1,NOT\"). Defaults to every team the viewer can access."
           },
           "state": {
               "type": "string",
@@ -475,6 +472,27 @@ export default {
             }
             return response.data
           }
+          // The host's argument validator only accepts string-typed inputs, so
+          // list-shaped parameters arrive as comma-separated text. A JSON array
+          // literal is accepted too, so callers can pass either shape.
+          function parseCsvList(value) {
+            if (value === undefined || value === null) return []
+            if (Array.isArray(value)) return value.map(function (v) { return String(v).trim() }).filter(Boolean)
+            var raw = String(value).trim()
+            if (!raw) return []
+            if (raw.charAt(0) === '[') {
+              try {
+                var parsed = JSON.parse(raw)
+                if (Array.isArray(parsed)) return parsed.map(function (v) { return String(v).trim() }).filter(Boolean)
+              } catch (e) {}
+            }
+            return raw.split(',').map(function (v) { return v.trim().replace(/^["']|["']$/g, '') }).filter(Boolean)
+          }
+          function parseIntOrNull(value) {
+            if (value === undefined || value === null || value === '') return null
+            var n = parseInt(String(value), 10)
+            return isNaN(n) ? null : n
+          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -504,10 +522,56 @@ export default {
         };
         if (args.description !== undefined)
             input.description = args.description;
-        if (args.team_ids)
-            input.teamIds = args.team_ids;
-        if (args.state)
-            input.state = args.state;
+        // projectCreate requires teamIds. Accept UUIDs or team keys; fall back to
+        // every team the viewer can access (Linear's workspace-level default).
+        var teamTokens = parseCsvList(args.team_ids);
+        var teamsNodes = [];
+        var loadTeams = async () => {
+            if (teamsNodes.length > 0) return teamsNodes;
+            const teamsData = await gql(`query ViewerTeams {
+        teams {
+          nodes {
+            id key name
+          }
+        }
+      }`);
+            teamsNodes = (teamsData.teams && teamsData.teams.nodes) ? teamsData.teams.nodes : [];
+            return teamsNodes;
+        };
+        var teamIds = [];
+        for (var ti = 0; ti < teamTokens.length; ti++) {
+            var token = teamTokens[ti];
+            if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(token)) {
+                teamIds.push(token);
+                continue;
+            }
+            var allTeams = await loadTeams();
+            for (var tm = 0; tm < allTeams.length; tm++) {
+                if (String(allTeams[tm].key).toLowerCase() === token.toLowerCase()) {
+                    teamIds.push(allTeams[tm].id);
+                    break;
+                }
+            }
+        }
+        if (teamTokens.length > 0 && teamIds.length === 0)
+            return returnError('VALIDATION', 'No accessible team matches: ' + teamTokens.join(', '));
+        if (teamIds.length === 0) {
+            var fallbackTeams = await loadTeams();
+            teamIds = fallbackTeams.map(function (t) { return t.id; });
+        }
+        if (teamIds.length === 0)
+            return returnError('VALIDATION', 'No accessible teams — pass team_ids explicitly (UUID or team key)');
+        input.teamIds = teamIds;
+        if (args.state) {
+            var stateKey = String(args.state).trim().toLowerCase().replace(/[\s-]+/g, '_');
+            var STATE_ALIASES = {
+                backlog: 'backlog', todo: 'planned', not_started: 'planned', planned: 'planned',
+                started: 'started', in_progress: 'started', active: 'started',
+                paused: 'paused', completed: 'completed', done: 'completed',
+                canceled: 'canceled', cancelled: 'canceled'
+            };
+            input.state = STATE_ALIASES[stateKey] || stateKey;
+        }
         if (args.target_date)
             input.targetDate = args.target_date;
         const data = await gql(`mutation CreateProject($input: ProjectCreateInput!) {

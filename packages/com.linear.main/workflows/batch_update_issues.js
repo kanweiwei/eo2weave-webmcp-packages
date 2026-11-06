@@ -5,11 +5,8 @@ export default {
       "type": "object",
       "properties": {
           "issue_ids": {
-              "type": "array",
-              "description": "Array of issue UUIDs to update (1–25)",
-              "items": {
-                  "type": "string"
-              }
+              "type": "string",
+              "description": "Issue UUIDs to update (1-25), comma-separated (e.g. \"uuid1,uuid2\") or a JSON array literal."
           },
           "state_id": {
               "type": "string",
@@ -20,8 +17,8 @@ export default {
               "description": "New assignee UUID"
           },
           "priority": {
-              "type": "number",
-              "description": "New priority (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
+              "type": "string",
+              "description": "New priority as a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
           },
           "project_id": {
               "type": "string",
@@ -32,11 +29,8 @@ export default {
               "description": "Assign to this cycle UUID"
           },
           "label_ids": {
-              "type": "array",
-              "description": "Replace labels with these label UUIDs",
-              "items": {
-                  "type": "string"
-              }
+              "type": "string",
+              "description": "Label UUIDs to apply, comma-separated (replaces all existing labels)."
           },
           "due_date": {
               "type": "string",
@@ -490,6 +484,27 @@ export default {
             }
             return response.data
           }
+          // The host's argument validator only accepts string-typed inputs, so
+          // list-shaped parameters arrive as comma-separated text. A JSON array
+          // literal is accepted too, so callers can pass either shape.
+          function parseCsvList(value) {
+            if (value === undefined || value === null) return []
+            if (Array.isArray(value)) return value.map(function (v) { return String(v).trim() }).filter(Boolean)
+            var raw = String(value).trim()
+            if (!raw) return []
+            if (raw.charAt(0) === '[') {
+              try {
+                var parsed = JSON.parse(raw)
+                if (Array.isArray(parsed)) return parsed.map(function (v) { return String(v).trim() }).filter(Boolean)
+              } catch (e) {}
+            }
+            return raw.split(',').map(function (v) { return v.trim().replace(/^["']|["']$/g, '') }).filter(Boolean)
+          }
+          function parseIntOrNull(value) {
+            if (value === undefined || value === null || value === '') return null
+            var n = parseInt(String(value), 10)
+            return isNaN(n) ? null : n
+          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -514,19 +529,28 @@ export default {
           var toolImplementations = {
             async batch_update_issues(args) {
 
+        var issueIds = parseCsvList(args.issue_ids);
+        if (issueIds.length === 0)
+            return returnError('VALIDATION', 'issue_ids is required — pass one or more issue UUIDs, comma-separated');
+        if (issueIds.length > 25)
+            return returnError('VALIDATION', 'Too many issues — at most 25 per call, got ' + issueIds.length);
         const input = {};
         if (args.state_id !== undefined)
             input.stateId = args.state_id;
         if (args.assignee_id !== undefined)
             input.assigneeId = args.assignee_id;
-        if (args.priority !== undefined)
-            input.priority = args.priority;
+        if (args.priority !== undefined && args.priority !== '') {
+            var parsedPriority = parseIntOrNull(args.priority);
+            if (parsedPriority === null)
+                return returnError('VALIDATION', 'priority must be a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)');
+            input.priority = parsedPriority;
+        }
         if (args.project_id !== undefined)
             input.projectId = args.project_id;
         if (args.cycle_id !== undefined)
             input.cycleId = args.cycle_id;
         if (args.label_ids !== undefined)
-            input.labelIds = args.label_ids;
+            input.labelIds = parseCsvList(args.label_ids);
         if (args.due_date !== undefined)
             input.dueDate = args.due_date;
         if (Object.keys(input).length === 0) {
@@ -534,8 +558,8 @@ export default {
         }
         // Build aliased mutations for batch execution in a single GraphQL request.
         // Issue IDs are passed as GraphQL variables to prevent injection.
-        const varDefs = args.issue_ids.map((_, i) => `$id${i}: String!`).join(', ');
-        const aliases = args.issue_ids.map((_, i) => `issue${i}: issueUpdate(id: $id${i}, input: $input) {
+        const varDefs = issueIds.map((_, i) => `$id${i}: String!`).join(', ');
+        const aliases = issueIds.map((_, i) => `issue${i}: issueUpdate(id: $id${i}, input: $input) {
         success
         issue { ${ISSUE_FIELDS} }
       }`);
@@ -543,19 +567,19 @@ export default {
       ${aliases.join('\n')}
     }`;
         const vars = { input };
-        for (let i = 0; i < args.issue_ids.length; i++) {
-            vars[`id${i}`] = args.issue_ids[i];
+        for (let i = 0; i < issueIds.length; i++) {
+            vars[`id${i}`] = issueIds[i];
         }
         const data = await gql(query, vars);
         const issues = [];
         const failed = [];
-        for (let i = 0; i < args.issue_ids.length; i++) {
+        for (let i = 0; i < issueIds.length; i++) {
             const result = data[`issue${i}`];
             if (result?.success && result.issue) {
                 issues.push(mapIssue(result.issue));
             }
             else {
-                const issueId = args.issue_ids[i];
+                const issueId = issueIds[i];
                 if (issueId)
                     failed.push(issueId);
             }
