@@ -236,7 +236,7 @@ export default {
             var auth = getAuth()
             if (!auth)
               return { ok: false, error_code: 'AUTH', message: 'Not authenticated — please log in to Notion.' }
-            var url = 'https://www.notion.so/api/v3/' + endpoint
+            var url = location.origin + '/api/v3/' + endpoint
             var headers = { 'Content-Type': 'application/json' }
             if (auth.userId) headers['x-notion-active-user-header'] = auth.userId
             if (auth.spaceId) headers['x-notion-space-id'] = auth.spaceId
@@ -319,7 +319,7 @@ export default {
               last_edited_time: formatTimestamp(b.last_edited_time),
               created_by: b.created_by_id || '',
               last_edited_by: b.last_edited_by_id || '',
-              url: id ? 'https://www.notion.so/' + id.replace(/-/g, '') : '',
+              url: id ? location.origin + '/' + id.replace(/-/g, '') : '',
             }
           }
           function mapUser(u) {
@@ -373,7 +373,7 @@ export default {
               id: id,
               title: richTextToPlain(props && props.title),
               properties: propertyValues,
-              url: id ? 'https://www.notion.so/' + id.replace(/-/g, '') : '',
+              url: id ? location.origin + '/' + id.replace(/-/g, '') : '',
               created_time: formatTimestamp(b.created_time),
               last_edited_time: formatTimestamp(b.last_edited_time),
             }
@@ -410,8 +410,8 @@ export default {
 
 
             async create_database(args) {
-              if (location.hostname !== 'www.notion.so' && location.hostname !== 'notion.so')
-                return error('UNSUPPORTED_PAGE', 'Not on a notion.so page.')
+              if (location.hostname !== 'app.notion.com')
+                return error('UNSUPPORTED_PAGE', 'Not on an app.notion.com page.')
               var spaceId = await getSpaceId()
               if (!spaceId)
                 return error('AUTH', 'Could not determine workspace — please reload the page.')

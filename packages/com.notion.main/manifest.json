@@ -1,114 +1,114 @@
 {
   "id": "com.notion.main",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Search and read Notion pages, blocks and databases, and create or update pages, blocks, database rows and schemas in your current tab. Uses your own logged-in Notion session.",
   "tools": [
     {
       "name": "search",
       "description": "Search for pages and blocks in the Notion workspace by text query",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/search.js"
     },
     {
       "name": "list_pages",
       "description": "List all pages in the Notion workspace, sorted by last edited time. Use this to get an overview of workspace content.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/list_pages.js"
     },
     {
       "name": "get_page",
       "description": "Get a Notion page by ID, including its title, metadata, and content blocks. Returns the page info and its direct child blocks.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/get_page.js"
     },
     {
       "name": "get_block_children",
       "description": "Get the child blocks of a specific block or page. Useful for reading nested content.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/get_block_children.js"
     },
     {
       "name": "create_page",
       "description": "Create a new page in the Notion workspace. The page is created at the top level of the workspace by default, or as a child of an existing page.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/create_page.js"
     },
     {
       "name": "update_page",
       "description": "Update a page title, icon, or cover image in Notion",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/update_page.js"
     },
     {
       "name": "delete_page",
       "description": "Archive (soft-delete) a page in Notion. The page can be restored from trash.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/delete_page.js"
     },
     {
       "name": "append_block",
       "description": "Append a content block (text, heading, list item, quote, code, etc.) to a page or block. Use this to add content to existing pages.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/append_block.js"
     },
     {
       "name": "update_block",
       "description": "Update the text content of a block in a Notion page. Replaces the block text with the new content.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/update_block.js"
     },
     {
       "name": "delete_block",
       "description": "Delete a content block from a Notion page. The block and its children are removed.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/delete_block.js"
     },
     {
       "name": "get_user",
       "description": "Get profile information for the current authenticated Notion user or a specific user by ID",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/get_user.js"
     },
     {
       "name": "list_users",
       "description": "List all users (members) in the current Notion workspace",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/list_users.js"
     },
     {
       "name": "get_database",
       "description": "Get a Notion database (collection) schema including its properties/columns and their types. Use this to understand the structure before querying.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/get_database.js"
     },
     {
       "name": "query_database",
       "description": "Query rows from a Notion database with optional search. Returns items with their property values.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/query_database.js"
     },
     {
       "name": "create_database_item",
       "description": "Add a new row/item to a Notion database. Use get_database first to understand the property schema.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/create_database_item.js"
     },
     {
       "name": "update_database_item",
       "description": "Update a row/item in a Notion database. Use get_database first to understand the property schema.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/update_database_item.js"
     },
     {
       "name": "list_databases",
       "description": "List all databases in the Notion workspace. Returns databases sorted by last edited time.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/list_databases.js"
     },
     {
       "name": "create_database",
       "description": "Create a new database in a Notion page. Creates a basic database with a title column.",
-      "urlRegex": "^https://(?:www\\.)?notion\\.so/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "urlRegex": "^https://app\\.notion\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/create_database.js"
     }
   ]
