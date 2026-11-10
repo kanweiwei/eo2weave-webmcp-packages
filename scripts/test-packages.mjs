@@ -514,6 +514,44 @@ section('execution: ported tools run against a stubbed page')
 }
 
 {
+  // Linear: native-typed parameters reach the mutation unchanged. The schema
+  // declares priority/estimate as numbers and label_ids/team_ids/issue_ids as
+  // arrays, so the workflow must not parse CSV or stringified numbers.
+  const requests = []
+  const result = await runTool('com.linear.main', 'create_issue', {
+    input: { team_id: 'team-1', title: 'Typed', priority: 2, label_ids: ['label-a', 'label-b'] },
+    page: {
+      hostname: 'linear.app',
+      cookie: 'loggedIn=1',
+      localStorage: {
+        ApplicationStore: JSON.stringify({
+          currentUserAccountId: 'account-1',
+          currentUserId: 'user-1',
+          userAccounts: { 'account-1': { users: [{ organization: { id: 'org-1' } }] } },
+        }),
+        clientId: 'client-1',
+      },
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          data: {
+            issueCreate: {
+              success: true,
+              issue: { id: 'issue-2', identifier: 'ENG-2', title: 'Typed', team: { key: 'ENG', name: 'Engineering' }, state: { name: 'Todo', type: 'unstarted' } },
+            },
+          },
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'linear create_issue typed: status')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.variables.input.priority, 2, 'linear create_issue typed: priority stays a number')
+  ok(Array.isArray(body.variables.input.labelIds), 'linear create_issue typed: label ids stay an array')
+  equal(body.variables.input.labelIds.join(','), 'label-a,label-b', 'linear create_issue typed: label ids preserved')
+}
+
+{
   // Linear: a GraphQL auth error is classified, not thrown.
   const result = await runTool('com.linear.main', 'get_issue', {
     input: { issue_id: 'ENG-1' },
