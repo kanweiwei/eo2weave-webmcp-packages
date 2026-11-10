@@ -29,12 +29,12 @@ export default {
               "description": "Filter by project name"
           },
           "priority": {
-              "type": "string",
-              "description": "Filter by priority level as a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
+              "type": "number",
+              "description": "Filter by priority level (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
           },
           "limit": {
-              "type": "string",
-              "description": "Maximum number of issues to return as a number (default 25, max 50)"
+              "type": "number",
+              "description": "Maximum number of issues to return (default 25, max 50)"
           },
           "after": {
               "type": "string",
@@ -488,11 +488,6 @@ export default {
           }
           // The host's argument validator only accepts string-typed inputs, so
           // numeric parameters arrive as numeric strings.
-          function parseIntOrNull(value) {
-            if (value === undefined || value === null || value === '') return null
-            var n = parseInt(String(value), 10)
-            return isNaN(n) ? null : n
-          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -518,12 +513,7 @@ export default {
             async search_issues(args) {
 
         var limit = 25;
-        if (args.limit !== undefined && args.limit !== '') {
-            var parsedLimit = parseIntOrNull(args.limit);
-            if (parsedLimit === null)
-                return returnError('VALIDATION', 'limit must be a number');
-            limit = Math.min(Math.max(parsedLimit, 1), 50);
-        }
+        if (args.limit !== undefined) limit = Math.min(Math.max(args.limit, 1), 50);
         const filter = {};
         if (args.team_key)
             filter.team = { key: { eq: args.team_key } };
@@ -531,12 +521,7 @@ export default {
             filter.state = { name: { containsIgnoreCase: args.state_name } };
         if (args.label_name)
             filter.labels = { name: { containsIgnoreCase: args.label_name } };
-        if (args.priority !== undefined && args.priority !== '') {
-            var parsedPriority = parseIntOrNull(args.priority);
-            if (parsedPriority === null)
-                return returnError('VALIDATION', 'priority must be a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)');
-            filter.priority = { eq: parsedPriority };
-        }
+        if (args.priority !== undefined) filter.priority = { eq: args.priority };
         if (args.assignee_name)
             filter.assignee = { displayName: { containsIgnoreCase: args.assignee_name } };
         if (args.project_name)

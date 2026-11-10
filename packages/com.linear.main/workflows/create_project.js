@@ -13,8 +13,9 @@ export default {
               "description": "Project description"
           },
           "team_ids": {
-              "type": "string",
-              "description": "Teams to associate with the project, comma-separated (UUIDs or team keys, e.g. \"uuid1,NOT\"). Defaults to every team the viewer can access."
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Teams to associate with the project (UUIDs or team keys, e.g. \"uuid1,NOT\"). Defaults to every team the viewer can access."
           },
           "state": {
               "type": "string",
@@ -473,26 +474,6 @@ export default {
             return response.data
           }
           // The host's argument validator only accepts string-typed inputs, so
-          // list-shaped parameters arrive as comma-separated text. A JSON array
-          // literal is accepted too, so callers can pass either shape.
-          function parseCsvList(value) {
-            if (value === undefined || value === null) return []
-            if (Array.isArray(value)) return value.map(function (v) { return String(v).trim() }).filter(Boolean)
-            var raw = String(value).trim()
-            if (!raw) return []
-            if (raw.charAt(0) === '[') {
-              try {
-                var parsed = JSON.parse(raw)
-                if (Array.isArray(parsed)) return parsed.map(function (v) { return String(v).trim() }).filter(Boolean)
-              } catch (e) {}
-            }
-            return raw.split(',').map(function (v) { return v.trim().replace(/^["']|["']$/g, '') }).filter(Boolean)
-          }
-          function parseIntOrNull(value) {
-            if (value === undefined || value === null || value === '') return null
-            var n = parseInt(String(value), 10)
-            return isNaN(n) ? null : n
-          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -524,7 +505,7 @@ export default {
             input.description = args.description;
         // projectCreate requires teamIds. Accept UUIDs or team keys; fall back to
         // every team the viewer can access (Linear's workspace-level default).
-        var teamTokens = parseCsvList(args.team_ids);
+        var teamTokens = (args.team_ids || []);
         var teamsNodes = [];
         var loadTeams = async () => {
             if (teamsNodes.length > 0) return teamsNodes;

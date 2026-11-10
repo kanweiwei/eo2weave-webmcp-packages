@@ -17,8 +17,8 @@ export default {
               "description": "New issue description in markdown"
           },
           "priority": {
-              "type": "string",
-              "description": "New priority level as a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
+              "type": "number",
+              "description": "New priority level (0=none, 1=urgent, 2=high, 3=medium, 4=low)"
           },
           "assignee_id": {
               "type": "string",
@@ -29,8 +29,9 @@ export default {
               "description": "New workflow state UUID (use list_workflow_states to find state IDs)"
           },
           "label_ids": {
-              "type": "string",
-              "description": "Label UUIDs to apply, comma-separated (replaces all existing labels)."
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Label UUIDs to apply (replaces all existing labels)."
           },
           "project_id": {
               "type": "string",
@@ -45,8 +46,8 @@ export default {
               "description": "New due date in YYYY-MM-DD format"
           },
           "estimate": {
-              "type": "string",
-              "description": "New estimate points as a number"
+              "type": "number",
+              "description": "New estimate points"
           },
           "team_id": {
               "type": "string",
@@ -505,26 +506,6 @@ export default {
             return response.data
           }
           // The host's argument validator only accepts string-typed inputs, so
-          // list-shaped parameters arrive as comma-separated text. A JSON array
-          // literal is accepted too, so callers can pass either shape.
-          function parseCsvList(value) {
-            if (value === undefined || value === null) return []
-            if (Array.isArray(value)) return value.map(function (v) { return String(v).trim() }).filter(Boolean)
-            var raw = String(value).trim()
-            if (!raw) return []
-            if (raw.charAt(0) === '[') {
-              try {
-                var parsed = JSON.parse(raw)
-                if (Array.isArray(parsed)) return parsed.map(function (v) { return String(v).trim() }).filter(Boolean)
-              } catch (e) {}
-            }
-            return raw.split(',').map(function (v) { return v.trim().replace(/^["']|["']$/g, '') }).filter(Boolean)
-          }
-          function parseIntOrNull(value) {
-            if (value === undefined || value === null || value === '') return null
-            var n = parseInt(String(value), 10)
-            return isNaN(n) ? null : n
-          }
           function returnError(code, message) {
             return { eo2Return: { code: code, message: message } }
           }
@@ -554,30 +535,20 @@ export default {
             input.title = args.title;
         if (args.description !== undefined)
             input.description = args.description;
-        if (args.priority !== undefined && args.priority !== '') {
-            var parsedPriority = parseIntOrNull(args.priority);
-            if (parsedPriority === null)
-                return returnError('VALIDATION', 'priority must be a number (0=none, 1=urgent, 2=high, 3=medium, 4=low)');
-            input.priority = parsedPriority;
-        }
+        if (args.priority !== undefined) input.priority = args.priority;
         if (args.assignee_id !== undefined)
             input.assigneeId = args.assignee_id;
         if (args.state_id !== undefined)
             input.stateId = args.state_id;
         if (args.label_ids !== undefined)
-            input.labelIds = parseCsvList(args.label_ids);
+            input.labelIds = (args.label_ids || []);
         if (args.project_id !== undefined)
             input.projectId = args.project_id;
         if (args.cycle_id !== undefined)
             input.cycleId = args.cycle_id;
         if (args.due_date !== undefined)
             input.dueDate = args.due_date;
-        if (args.estimate !== undefined && args.estimate !== '') {
-            var parsedEstimate = parseIntOrNull(args.estimate);
-            if (parsedEstimate === null)
-                return returnError('VALIDATION', 'estimate must be a number of points');
-            input.estimate = parsedEstimate;
-        }
+        if (args.estimate !== undefined) input.estimate = args.estimate;
         if (args.team_id !== undefined)
             input.teamId = args.team_id;
         if (args.parent_id !== undefined)
