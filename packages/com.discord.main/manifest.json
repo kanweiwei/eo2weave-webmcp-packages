@@ -1,7 +1,7 @@
 {
   "id": "com.discord.main",
-  "version": "0.1.0",
-  "description": "Read messages, guilds, channels and user profiles, search messages, send messages and manage your reactions on discord.com in your current tab. Uses your own logged-in Discord session.",
+  "version": "0.2.0",
+  "description": "Read and search messages, manage channels, threads, pinning and reactions, list guilds, members, roles and DMs, upload files and manage your profile on discord.com in your current tab. Uses your own logged-in Discord session.",
   "tools": [
     {
       "name": "read_messages",
@@ -50,6 +50,114 @@
       "description": "Search messages in a Discord guild by content with optional author, channel and attachment filters. Results come grouped by context.",
       "urlRegex": "^https://discord\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
       "path": "workflows/search_messages.js"
+    },
+    {
+      "name": "get_message",
+      "description": "Get a specific message by its ID from a Discord channel.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a message from a channel.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "edit_message",
+      "description": "Edit an existing message. Only messages sent by the authenticated user can be edited.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_message.js"
+    },
+    {
+      "name": "pin_message",
+      "description": "Pin a message in a channel. Requires Manage Messages permission.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pin_message.js"
+    },
+    {
+      "name": "unpin_message",
+      "description": "Unpin a message from a channel. Requires Manage Messages permission.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unpin_message.js"
+    },
+    {
+      "name": "read_thread",
+      "description": "Read messages from a thread. Threads are channels, so this works like read_messages but is specific to threads.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_thread.js"
+    },
+    {
+      "name": "create_channel",
+      "description": "Create a new channel in a Discord guild (server). Requires Manage Channels permission.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_channel.js"
+    },
+    {
+      "name": "edit_channel",
+      "description": "Edit a Discord channel: name, topic, NSFW flag, or parent category.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_channel.js"
+    },
+    {
+      "name": "delete_channel",
+      "description": "Delete a Discord channel. This action is permanent and cannot be undone.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_channel.js"
+    },
+    {
+      "name": "create_thread",
+      "description": "Create a thread from a message, or a standalone thread in a channel.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_thread.js"
+    },
+    {
+      "name": "get_channel_info",
+      "description": "Get detailed information about a specific Discord channel.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_channel_info.js"
+    },
+    {
+      "name": "get_guild_info",
+      "description": "Get detailed information about a Discord guild: description, member count, features, boost status.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_guild_info.js"
+    },
+    {
+      "name": "list_roles",
+      "description": "List all roles in a Discord guild (server), sorted by position.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_roles.js"
+    },
+    {
+      "name": "list_members",
+      "description": "List members in a Discord guild (server).",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_members.js"
+    },
+    {
+      "name": "list_dms",
+      "description": "List all open direct message channels for the authenticated user.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dms.js"
+    },
+    {
+      "name": "open_dm",
+      "description": "Open or get an existing direct message channel with a user. Pass multiple IDs for a group DM.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/open_dm.js"
+    },
+    {
+      "name": "list_pinned_messages",
+      "description": "List all pinned messages in a Discord channel, newest first.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pinned_messages.js"
+    },
+    {
+      "name": "upload_file",
+      "description": "Upload a file to a Discord channel. Supports UTF-8 text and base64-encoded binary content.",
+      "urlRegex": "^https://discord\\\\.com/[^?#]*(?:\\\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/upload_file.js"
     }
   ]
 }

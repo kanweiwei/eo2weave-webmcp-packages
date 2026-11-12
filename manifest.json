@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-06T10:35:22.210Z",
+  "generatedAt": "2026-11-12T05:24:05.691Z",
   "packages": [
     {
       "id": "com.discord.main",
-      "version": "0.1.0",
-      "description": "Read messages, guilds, channels and user profiles, search messages, send messages and manage your reactions on discord.com in your current tab. Uses your own logged-in Discord session.",
-      "toolCount": 8,
+      "version": "0.2.0",
+      "description": "Read and search messages, manage channels, threads, pinning and reactions, list guilds, members, roles and DMs, upload files and manage your profile on discord.com in your current tab. Uses your own logged-in Discord session.",
+      "toolCount": 26,
       "files": [
         {
           "path": "packages/com.discord.main/config.json",
@@ -13,11 +13,47 @@
         },
         {
           "path": "packages/com.discord.main/manifest.json",
-          "sha256": "1be845a6a696a0f46589214016ef3a138e2b3304c0b90d03b793ceaac57220c8"
+          "sha256": "caa51ae2cfa15c84346cd6ddf9cc71a4ec9dd86d689995a3276f999ff08ab153"
         },
         {
           "path": "packages/com.discord.main/workflows/add_reaction.js",
           "sha256": "c1b983e03f845006685097e8c72f6e446ce7b82251d62df6d81b30b472ece2b2"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/create_channel.js",
+          "sha256": "c9c1a0c12201c72eeeddd135a5ae2e076d5b0584009485fefe424600d9fe1262"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/create_thread.js",
+          "sha256": "4e1501982d69e75b94eb22a708197fb55ce0a1410f2486e7ac99493f5d628a01"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/delete_channel.js",
+          "sha256": "44e345d74d7a3ab9e85e61e8c48fbd330d0cf811593306528274bab4d5279bce"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/delete_message.js",
+          "sha256": "73733a9b896bdc569865f08852e926ea9cca9af3aa13b2b519b1f86208eb6f00"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/edit_channel.js",
+          "sha256": "bb5c95ab64f87572549f91e440b383c894a42358c613c7bc31cf7b33a05bdf58"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/edit_message.js",
+          "sha256": "202d505db5fca9a8548acbc72aabb11bee584bec1622ad8e16c1784ddcef58c8"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/get_channel_info.js",
+          "sha256": "9fea03c9dea0cb0580be2cdd5cd4bdec6d53050c3de28c133a1d456c66924840"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/get_guild_info.js",
+          "sha256": "ba27fc06b817bbf337375cb6cb417c74c31fabf83c82b684595084877457536b"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/get_message.js",
+          "sha256": "d0ba0b6a83c7c30035b4d54c6e26011c42ff78d0e241f88edd68372e20fb7ad7"
         },
         {
           "path": "packages/com.discord.main/workflows/get_user_profile.js",
@@ -28,12 +64,40 @@
           "sha256": "196013ee91357f6eb1d68bafe0b395dbc918dff21714cf15b423a6a0b4e6e0b4"
         },
         {
+          "path": "packages/com.discord.main/workflows/list_dms.js",
+          "sha256": "e5448fc8dad57fd923e64fd69e8fb54e34833a6e8f6e1d90f7d7180bedb602ce"
+        },
+        {
           "path": "packages/com.discord.main/workflows/list_guilds.js",
           "sha256": "56a4da0a05b9cd4930cdf0eccd18379b7bb843e9b443d876339cfbef1ce58a8c"
         },
         {
+          "path": "packages/com.discord.main/workflows/list_members.js",
+          "sha256": "f1ed73e6ab6bfaa6d854e526da62ba90ca2d9271a24a4d48d3d97d3e95b28e0c"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/list_pinned_messages.js",
+          "sha256": "95299acd9cf8487c3b339b6d9acdc554b796ab40ab683454e5547c4f98a927da"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/list_roles.js",
+          "sha256": "1bdc165ee7cc1b8758b2e9e7ed8f8946021320349ac4ec14fc3ae4c2493ab017"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/open_dm.js",
+          "sha256": "9affedcbfb3a5a9695f3a1e9590afa3f7698a1a0166be892b5a9e42dd1b6e4a9"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/pin_message.js",
+          "sha256": "1297517fe33283551a51af280d2b01e1c4309a5413dc688b7a64bd8aade3315a"
+        },
+        {
           "path": "packages/com.discord.main/workflows/read_messages.js",
           "sha256": "a80f36740d0f1cc42db7217f983b2d9cc931f9a45aa38e5e205c7365e459c343"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/read_thread.js",
+          "sha256": "124ea90c9aee5bd3b61d58bb1340909992c42a428fdf8820ea399dbe5dffe9c4"
         },
         {
           "path": "packages/com.discord.main/workflows/remove_reaction.js",
@@ -46,6 +110,14 @@
         {
           "path": "packages/com.discord.main/workflows/send_message.js",
           "sha256": "840f661686f5abbe5d12e26cd7a77b8b732b0267627b13be5241a1e03137a1c7"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/unpin_message.js",
+          "sha256": "74bd9b0437e685b74c7f80be7669107510e1c9435fdadaa039361dff1c176cd2"
+        },
+        {
+          "path": "packages/com.discord.main/workflows/upload_file.js",
+          "sha256": "314f7475a141a42dd1e74d85e9180d443e078d37c65a1cf495d0fd6e4ef2284e"
         }
       ]
     },
@@ -207,7 +279,7 @@
     },
     {
       "id": "com.linear.main",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Search, create and update Linear issues, projects, initiatives, documents, milestones, labels, cycles and teams through your logged-in linear.app session in your current tab.",
       "toolCount": 59,
       "files": [
@@ -217,7 +289,7 @@
         },
         {
           "path": "packages/com.linear.main/manifest.json",
-          "sha256": "cbda91910d3d177d22a6207f0dfda34df4852091325de198df1d02b7b28b39b5"
+          "sha256": "eb1c891405c740c5201649a66986854bafbd2b994412fe2996a482a3f9ff0380"
         },
         {
           "path": "packages/com.linear.main/workflows/add_issue_label.js",
@@ -233,7 +305,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/batch_update_issues.js",
-          "sha256": "85a5f93de17ec011237fcdb1852c86e1f6edf028b8c572c10b3bcd8d50a33170"
+          "sha256": "93034e5b0ed510d9f6aab37937ee8f7fc6677b5f7236471496a2982a08629d84"
         },
         {
           "path": "packages/com.linear.main/workflows/create_attachment.js",
@@ -257,7 +329,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/create_issue.js",
-          "sha256": "98cc313f5713ba9ee41e8521ae0ecdee9ff698d5a0d41c6d09b9264ef06bf1ab"
+          "sha256": "184e4188fce45b0f48c7d3023a98ed80af11280020f0228949aa55fb61aa4f54"
         },
         {
           "path": "packages/com.linear.main/workflows/create_label.js",
@@ -273,7 +345,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/create_project.js",
-          "sha256": "eeaf8fd5c89e5c4266a1e3874a6588396099c68c94c1c7af58ba82a51158b15a"
+          "sha256": "fa439efef9e67097635b0392f1fcf2a182a1aafb0cc84b7b79bf40c6f20bcc3c"
         },
         {
           "path": "packages/com.linear.main/workflows/delete_attachment.js",
@@ -421,7 +493,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/search_issues.js",
-          "sha256": "ecd018fdd9ffbacef1d3e752a7c30e1078cdc854283764526c0278b5d6c0db15"
+          "sha256": "53c208b5429fbcebdfd96feebb67a7b469b013b4d5857677cb32f168d360a4a4"
         },
         {
           "path": "packages/com.linear.main/workflows/set_issue_cycle.js",
@@ -441,7 +513,7 @@
         },
         {
           "path": "packages/com.linear.main/workflows/update_issue.js",
-          "sha256": "cb58a0c51217fb0c841a1a30ec3f48a71d4b2eae4ba5de9f770b6f51eba6d984"
+          "sha256": "d54c5d8f984f2e27d8e486694255886e8dbb769c2f970ae576137d15b9af428b"
         },
         {
           "path": "packages/com.linear.main/workflows/update_label.js",

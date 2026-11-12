@@ -55,6 +55,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.github.main': 35,
   'com.notion.main': 18,
   'com.linear.main': 59,
+  'com.discord.main': 26,
 }
 
 /**
@@ -106,7 +107,11 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
   const workflowPath = path.join(packagesDir, packageId, 'workflows', `${toolName}.js`)
   const module = await import(pathToFileURL(workflowPath).href)
   const sandbox = {
-    location: { hostname: page.hostname, href: page.href ?? `https://${page.hostname}/` },
+    location: {
+      hostname: page.hostname,
+      href: page.href ?? `https://${page.hostname}/`,
+      origin: page.origin ?? `https://${page.hostname}`,
+    },
     document: makeDocument(page),
     fetch: page.fetch,
     console,
@@ -115,11 +120,26 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
     crypto: globalThis.crypto,
     localStorage: makeStorage(page.localStorage),
     sessionStorage: makeStorage(),
+    FormData: globalThis.FormData,
+    Blob: globalThis.Blob,
+    atob: (value) => Buffer.from(String(value), 'base64').toString('binary'),
     AbortController,
     DOMParser: page.DOMParser,
     setTimeout,
     clearTimeout,
     Date,
+  }
+  if (page.webpackToken) {
+    sandbox.webpackChunkdiscord_app = {
+      push(entry) {
+        const require = Object.assign(() => {}, {
+          c: { 1: { exports: { default: { getToken: () => page.webpackToken } } } },
+        })
+        entry[2](require)
+      },
+      indexOf: () => -1,
+      splice: () => {},
+    }
   }
   sandbox.window = sandbox
   sandbox.globalThis = sandbox
@@ -149,6 +169,9 @@ function jsonResponse(payload, status = 200) {
     headers: { get: () => 'application/json' },
     async text() {
       return typeof payload === 'string' ? payload : JSON.stringify(payload)
+    },
+    async json() {
+      return typeof payload === 'string' ? JSON.parse(payload) : payload
     },
   }
 }
@@ -399,7 +422,7 @@ section('execution: ported tools run against a stubbed page')
   const result = await runTool('com.notion.main', 'search', {
     input: { query: 'roadmap' },
     page: {
-      hostname: 'www.notion.so',
+      hostname: 'app.notion.com',
       cookie: 'notion_user_id=user-1',
       localStorage: { 'LRU:KeyValueStore2:lastVisitedRouteSpaceId': JSON.stringify({ value: 'space-1' }) },
       fetch: async (url, init) => {
@@ -414,7 +437,7 @@ section('execution: ported tools run against a stubbed page')
   })
   equal(result.status, 'ok', 'notion search: status')
   equal(result.data.pages[0].title, 'Roadmap', 'notion search: page title')
-  equal(requests[0].url, 'https://www.notion.so/api/v3/search', 'notion search: uses the internal api/v3 endpoint')
+  equal(requests[0].url, 'https://app.notion.com/api/v3/search', 'notion search: uses the internal api/v3 endpoint')
   equal(requests[0].init.headers['x-notion-active-user-header'], 'user-1', 'notion search: sends the active-user header')
   equal(requests[0].init.headers['x-notion-space-id'], 'space-1', 'notion search: sends the space header')
 }
@@ -425,7 +448,7 @@ section('execution: ported tools run against a stubbed page')
   const result = await runTool('com.notion.main', 'append_block', {
     input: { parent_id: 'page-1', content: 'hello' },
     page: {
-      hostname: 'www.notion.so',
+      hostname: 'app.notion.com',
       cookie: 'notion_user_id=user-1',
       localStorage: { 'LRU:KeyValueStore2:lastVisitedRouteSpaceId': JSON.stringify({ value: 'space-1' }) },
       fetch: async (url, init) => {
@@ -570,6 +593,93 @@ section('execution: ported tools run against a stubbed page')
   })
   equal(result.status, 'error', 'linear get_issue: auth failure is an error result')
   equal(result.error_code, 'AUTH', 'linear get_issue: auth failure is classified as AUTH')
+}
+
+{
+  // Discord: pinned messages go through the channel pins endpoint and are
+  // mapped into the shared message shape.
+  const requests = []
+  const result = await runTool('com.discord.main', 'list_pinned_messages', {
+    input: { channel: 'chan-1' },
+    page: {
+      hostname: 'discord.com',
+      webpackToken: 'discord-token',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse([
+          { id: 'msg-1', channel_id: 'chan-1', content: 'pinned', author: { id: 'u1', username: 'ada' }, pinned: true },
+        ])
+      },
+    },
+  })
+  equal(result.status, 'ok', 'discord list_pinned_messages: status')
+  equal(result.data.messages[0].content, 'pinned', 'discord list_pinned_messages: message content')
+  equal(result.data.messages[0].author.username, 'ada', 'discord list_pinned_messages: author mapping')
+  ok(String(requests[0].url).endsWith('/api/v9/channels/chan-1/pins'), 'discord list_pinned_messages: uses the pins endpoint')
+  equal(requests[0].init.headers.Authorization, 'discord-token', 'discord list_pinned_messages: sends the page token')
+  equal(requests[0].init.credentials, 'include', 'discord list_pinned_messages: sends credentials')
+}
+
+{
+  // Discord: edit_message PATCHes only the content and maps the response.
+  const requests = []
+  const result = await runTool('com.discord.main', 'edit_message', {
+    input: { channel: 'chan-1', message_id: 'msg-1', content: 'edited' },
+    page: {
+      hostname: 'discord.com',
+      webpackToken: 'discord-token',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ id: 'msg-1', channel_id: 'chan-1', content: 'edited', author: { id: 'u1', username: 'ada' } })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'discord edit_message: status')
+  equal(result.data.message.content, 'edited', 'discord edit_message: edited content')
+  equal(requests[0].init.method, 'PATCH', 'discord edit_message: uses PATCH')
+  equal(JSON.parse(requests[0].init.body).content, 'edited', 'discord edit_message: sends the new content')
+}
+
+{
+  // Discord: create_channel posts the optional fields only when supplied.
+  const requests = []
+  const result = await runTool('com.discord.main', 'create_channel', {
+    input: { guild_id: 'guild-1', name: 'general', topic: 'hello' },
+    page: {
+      hostname: 'discord.com',
+      webpackToken: 'discord-token',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ id: 'chan-9', type: 0, guild_id: 'guild-1', name: 'general', topic: 'hello', position: 0 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'discord create_channel: status')
+  equal(result.data.channel.id, 'chan-9', 'discord create_channel: channel id')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.name, 'general', 'discord create_channel: name')
+  equal(body.topic, 'hello', 'discord create_channel: topic')
+  ok(!('type' in body), 'discord create_channel: omits an unspecified type')
+}
+
+{
+  // Discord: upload_file posts multipart form data, never a JSON body.
+  const requests = []
+  const result = await runTool('com.discord.main', 'upload_file', {
+    input: { channel: 'chan-1', filename: 'note.txt', content: 'hello', initial_comment: 'see attached' },
+    page: {
+      hostname: 'discord.com',
+      webpackToken: 'discord-token',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ id: 'msg-2', channel_id: 'chan-1', content: 'see attached', author: { id: 'u1', username: 'ada' } })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'discord upload_file: status')
+  ok(requests[0].init.body instanceof FormData, 'discord upload_file: body is FormData')
+  equal(requests[0].init.headers['Content-Type'], undefined, 'discord upload_file: lets the browser set the boundary')
+  equal(JSON.parse(requests[0].init.body.get('payload_json')).content, 'see attached', 'discord upload_file: sends the comment')
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
