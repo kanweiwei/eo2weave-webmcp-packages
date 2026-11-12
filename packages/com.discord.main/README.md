@@ -1,6 +1,6 @@
-# Discord WebMCP package pilot (com.discord.main 0.1.0)
+# Discord WebMCP package (com.discord.main 0.2.0)
 
-Pilot port of a representative 8-tool subset of the OpenTabs Discord plugin
+Full port of the OpenTabs Discord plugin
 (MIT, https://github.com/opentabs-dev/opentabs/tree/main/plugins/discord) into
 the builtin WebMCP package format. Tracked by nutstore/eo2weave#91.
 
@@ -22,6 +22,24 @@ The token never leaves the page context.
 | `list_channels` | nested resource | `GET /guilds/:id/channels` |
 | `get_user_profile` | user-shaped output | `GET /users/:id/profile` (`@me` uses `GET /users/@me`) |
 | `search_messages` | grouped search results | `GET /guilds/:id/messages/search` |
+| `get_message` | GET around + pick | `GET /channels/:id/messages?around=:mid` |
+| `delete_message` | DELETE | `DELETE /channels/:id/messages/:mid` |
+| `edit_message` | PATCH + body mapping | `PATCH /channels/:id/messages/:mid` |
+| `pin_message` | PUT nested resource | `PUT /channels/:id/pins/:mid` |
+| `unpin_message` | DELETE nested resource | `DELETE /channels/:id/pins/:mid` |
+| `read_thread` | GET + pagination | `GET /channels/:id/messages` (thread id) |
+| `create_channel` | POST + body mapping | `POST /guilds/:id/channels` |
+| `edit_channel` | PATCH + partial body | `PATCH /channels/:id` |
+| `delete_channel` | DELETE returning channel | `DELETE /channels/:id` |
+| `create_thread` | POST, two endpoints | `POST /channels/:id/threads`（或 `/messages/:mid/threads`） |
+| `get_channel_info` | GET single resource | `GET /channels/:id` |
+| `get_guild_info` | GET + with_counts | `GET /guilds/:id?with_counts=true` |
+| `list_roles` | collection mapping | `GET /guilds/:id/roles` |
+| `list_members` | GET + after pagination | `GET /guilds/:id/members` |
+| `list_dms` | collection mapping | `GET /users/@me/channels` |
+| `open_dm` | POST creating channel | `POST /users/@me/channels` |
+| `list_pinned_messages` | collection mapping | `GET /channels/:id/pins` |
+| `upload_file` | multipart FormData in page context | `POST /channels/:id/messages`（multipart） |
 
 Every workflow returns `{ status: 'ok'|'error', data, message }`. Error
 results carry a stable `error_code`: `UNSUPPORTED_PAGE`, `UNAUTHENTICATED`,
@@ -111,6 +129,24 @@ translations below are the authoritative wording for localized surfaces.
 - `list_channels`: 列出 Discord 服务器的频道（id、类型、名称、主题、排序、父分类、NSFW）。
 - `get_user_profile`: 按 ID 读取 Discord 用户资料，传 '@me' 查询当前登录账号。
 - `search_messages`: 在 Discord 服务器内按内容搜索消息，支持作者、频道与附件过滤。
+- `get_message`: 按 ID 获取 Discord 频道中的单条消息。
+- `delete_message`: 删除频道中的一条消息。
+- `edit_message`: 编辑已发送的消息（仅限自己发送的消息）。
+- `pin_message`: 在频道中置顶一条消息（需要管理消息权限）。
+- `unpin_message`: 取消频道中某条消息的置顶。
+- `read_thread`: 读取子区（thread）中的消息，支持按 before/after 分页。
+- `create_channel`: 在 Discord 服务器中新建频道（需要管理频道权限）。
+- `edit_channel`: 修改频道名称、主题、NSFW 标记或所属分类。
+- `delete_channel`: 删除频道。此操作不可撤销。
+- `create_thread`: 从某条消息创建子区，或在频道中创建独立子区。
+- `get_channel_info`: 获取指定频道的详细信息。
+- `get_guild_info`: 获取服务器详情：简介、成员数、功能开关、加成状态。
+- `list_roles`: 列出服务器的所有身份组（按位置排序）。
+- `list_members`: 列出服务器成员，支持 after 分页。
+- `list_dms`: 列出当前账号所有已开启的私信频道。
+- `open_dm`: 打开（或获取已存在的）与某用户的私信；传多个 ID 即群组私信。
+- `list_pinned_messages`: 列出频道中所有置顶消息（最新在前）。
+- `upload_file`: 向频道上传文件，支持 UTF-8 文本或 base64 编码的二进制内容。
 
 ### en-US
 
@@ -122,6 +158,24 @@ translations below are the authoritative wording for localized surfaces.
 - `list_channels`: List the channels of a Discord guild with type, topic, position, parent and NSFW metadata.
 - `get_user_profile`: Read a Discord user profile by user ID, or pass '@me' for the logged-in account.
 - `search_messages`: Search messages in a Discord guild by content with optional author, channel and attachment filters.
+- `get_message`: Get a specific message by its ID from a Discord channel.
+- `delete_message`: Delete a message from a channel.
+- `edit_message`: Edit an existing message. Only messages sent by the authenticated user can be edited.
+- `pin_message`: Pin a message in a channel. Requires Manage Messages permission.
+- `unpin_message`: Unpin a message from a channel. Requires Manage Messages permission.
+- `read_thread`: Read messages from a thread. Threads are channels, so this works like read_messages but is specific to threads.
+- `create_channel`: Create a new channel in a Discord guild (server). Requires Manage Channels permission.
+- `edit_channel`: Edit a Discord channel: name, topic, NSFW flag, or parent category.
+- `delete_channel`: Delete a Discord channel. This action is permanent and cannot be undone.
+- `create_thread`: Create a thread from a message, or a standalone thread in a channel.
+- `get_channel_info`: Get detailed information about a specific Discord channel.
+- `get_guild_info`: Get detailed information about a Discord guild: description, member count, features, boost status.
+- `list_roles`: List all roles in a Discord guild (server), sorted by position.
+- `list_members`: List members in a Discord guild (server).
+- `list_dms`: List all open direct message channels for the authenticated user.
+- `open_dm`: Open or get an existing direct message channel with a user. Pass multiple IDs for a group DM.
+- `list_pinned_messages`: List all pinned messages in a Discord channel, newest first.
+- `upload_file`: Upload a file to a Discord channel. Supports UTF-8 text and base64-encoded binary content.
 
 ### ja-JP
 
@@ -133,6 +187,24 @@ translations below are the authoritative wording for localized surfaces.
 - `list_channels`: Discord サーバーのチャンネル（id・種類・名前・トピック・並び順・親カテゴリ・NSFW）を一覧表示します。
 - `get_user_profile`: ユーザー ID で Discord のプロフィールを取得します。'@me' でログイン中アカウントを指定できます。
 - `search_messages`: Discord サーバー内のメッセージを内容で検索し、作者・チャンネル・添付ファイルでフィルターできます。
+- `get_message`: Discord チャンネルのメッセージを ID で取得します。
+- `delete_message`: チャンネルのメッセージを削除します。
+- `edit_message`: 既存メッセージを編集します（自分の送信分のみ）。
+- `pin_message`: チャンネルでメッセージをピン留めします（メッセージ管理権限が必要）。
+- `unpin_message`: チャンネルのメッセージのピン留めを解除します。
+- `read_thread`: スレッドのメッセージを読み取ります（before/after ページネーション対応）。
+- `create_channel`: Discord サーバーに新しいチャンネルを作成します。
+- `edit_channel`: チャンネル名・トピック・NSFW・親カテゴリを変更します。
+- `delete_channel`: チャンネルを削除します。元に戻せません。
+- `create_thread`: メッセージからスレッドを作成、または単独スレッドを作成します。
+- `get_channel_info`: 指定チャンネルの詳細情報を取得します。
+- `get_guild_info`: サーバーの詳細（説明・メンバー数・機能・ブースト状況）を取得します。
+- `list_roles`: サーバーの全ロールを位置順に一覧表示します。
+- `list_members`: サーバーのメンバーを一覧表示します（after ページネーション対応）。
+- `list_dms`: ログイン中アカウントの DM チャンネルを一覧表示します。
+- `open_dm`: ユーザーとの DM を開きます（複数 ID でグループ DM）。
+- `list_pinned_messages`: チャンネルのピン留めメッセージを一覧表示します。
+- `upload_file`: チャンネルにファイルをアップロードします（UTF-8 テキストまたは base64）。
 
 ### ko-KR
 
@@ -148,5 +220,24 @@ translations below are the authoritative wording for localized surfaces.
 ## Scope and ToS posture
 
 Same posture as the upstream OpenTabs plugin: the tools operate on the
-user's own logged-in session and quota. The remaining ~18 OpenTabs tools are
-out of scope for this pilot (mechanical ports once the pattern lands).
+user's own logged-in session and quota. This package covers all 26 tools of the
+upstream plugin (the pilot covered 8; the remaining 18 were ported on the same
+runtime contract).
+- `get_message`: Discord 채널에서 메시지 ID로 단일 메시지를 가져옵니다.
+- `delete_message`: 채널의 메시지를 삭제합니다.
+- `edit_message`: 기존 메시지를 수정합니다(본인 전송분만).
+- `pin_message`: 채널에서 메시지를 고정합니다(메시지 관리 권한 필요).
+- `unpin_message`: 채널 메시지의 고정을 해제합니다.
+- `read_thread`: 스레드의 메시지를 읽습니다(before/after 페이지네이션 지원).
+- `create_channel`: Discord 서버에 새 채널을 만듭니다.
+- `edit_channel`: 채널 이름·주제·NSFW·상위 카테고리를 수정합니다.
+- `delete_channel`: 채널을 삭제합니다. 되돌릴 수 없습니다.
+- `create_thread`: 메시지에서 스레드를 만들거나 독립 스레드를 만듭니다.
+- `get_channel_info`: 지정한 채널의 상세 정보를 가져옵니다.
+- `get_guild_info`: 서버 상세 정보(설명·멤버 수·기능·부스트 상태)를 가져옵니다.
+- `list_roles`: 서버의 모든 역할을 위치순으로 나열합니다.
+- `list_members`: 서버 멤버를 나열합니다(after 페이지네이션 지원).
+- `list_dms`: 로그인한 계정의 DM 채널을 나열합니다.
+- `open_dm`: 사용자와의 DM을 엽니다(여러 ID는 그룹 DM).
+- `list_pinned_messages`: 채널의 고정 메시지를 나열합니다.
+- `upload_file`: 채널에 파일을 업로드합니다(UTF-8 텍스트 또는 base64).
