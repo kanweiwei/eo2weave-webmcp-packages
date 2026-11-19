@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T06:27:23.747Z",
+  "generatedAt": "2026-11-19T06:47:01.685Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -286,6 +286,174 @@
       ]
     },
     {
+      "id": "com.bluesky.main",
+      "version": "0.1.0",
+      "description": "Read and write Bluesky: home, custom, list and author feeds, post threads, search, profiles and follower graphs, notifications and direct messages, and create/delete posts, like, repost, follow, block-list, mute and chat actions on bsky.app in your current tab. Uses your own logged-in Bluesky session.",
+      "toolCount": 38,
+      "files": [
+        {
+          "path": "packages/com.bluesky.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.bluesky.main/manifest.json",
+          "sha256": "de496a1c5b693ee009d3cb6cc233f38ec043773f9cffdcacf8f18d22fb9f12b2"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/create_post.js",
+          "sha256": "30678fd0c74639361c738c099aebf71e83d32f062a1ecd615c6d68aeaa8783f1"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/delete_message.js",
+          "sha256": "4eb2e898bfb3056496d0efd195c7371b4d92a17a2eff5363d7798b57d0fa1201"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/delete_post.js",
+          "sha256": "9d7b68543b9cb7cf53d3a176d42fa7ee03dbc154cd8042d478caddde53a624d6"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/follow_user.js",
+          "sha256": "6542e2bf70e1c062d332d69497d3ea3177547ec0d97c8d2d09ce06a077f9dc04"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_author_feed.js",
+          "sha256": "ab6a3c54375d6fee5d533f30bf488fb5b57071c379650b19290ad163bd45c6da"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_blocks.js",
+          "sha256": "a51799bf0c9aab842f4e0175a51f85ffab25b325dd6090f01bf54c5e68bb9c32"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_conversation.js",
+          "sha256": "63af249e36659f28d2bb3cd6db3498dc3f416ab0708fae511324854495abb2ad"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_current_user.js",
+          "sha256": "aaa6e7aa4139df5ba513589adc851740836502703083a2841fc4fa4563e2e2c0"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_feed.js",
+          "sha256": "7395ce3994b93021926e237d8c171c00f9402334b70a734be4edea729d96235e"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_followers.js",
+          "sha256": "7ab013cf690ff5e72a46f750230e82f0bf7b559aedb4715523870d2994781eb6"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_follows.js",
+          "sha256": "9209378042a2b7bb50b92217dc79a50253b5235574a795f6c1d7a934b00e9a58"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_list_feed.js",
+          "sha256": "7810b51fc2cb70ede63ad38116c09afd2a6e5e69c7e42d73d231335375200056"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_messages.js",
+          "sha256": "33bd868915e445df0f9439a4b0836ef3a8eb14439937a581ed0cf94f4a7fd131"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_post_thread.js",
+          "sha256": "0b61182ace41db45f2830495f53a1504817571a7f81df32431c2b50a713e5b45"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_posts.js",
+          "sha256": "dc3c1979b134b919ddf80cea828800fde35323c69f034257afc52d993603beca"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_timeline.js",
+          "sha256": "ee34ae85b049571c793f6a6e496cbfbc3725a66f653ea47cbf64e377bfb9648b"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_unread_count.js",
+          "sha256": "91e12646060c36dff2832bf6a433e37ba8db4aa150b5c941a6d6a182af04b3ac"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_user_profile.js",
+          "sha256": "eb9fb18b072b135a9c9c91b954404302b3bc962774742f55ac8e54caad07dd76"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/get_user_profiles.js",
+          "sha256": "aa7fda3879d57501f856ce366095904f5a25622a93c5346aae89a2d134861778"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/like_post.js",
+          "sha256": "2853e6e55bb1cee669d503441921652f5ed97e3fc8948368a012de834b5e0eb2"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/list_conversations.js",
+          "sha256": "04193b14684f87d664422f9c9f2f4853893eded763460f1276828a1dd50952c3"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/list_notifications.js",
+          "sha256": "cef8ca4d2afd16b29d08eb7bc042162d9c7a53b68cebc9ce6911e4cec49ee6dc"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/mark_conversation_read.js",
+          "sha256": "3d6475447ecd7e0b5a7f7320d006d74ad0ac13100a980c21f0383b550ceac20b"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/mark_notifications_seen.js",
+          "sha256": "92c2ff699b68c31c2ae806820990f2271cf5c0b47b0abfbf2d52c2c4f4f0810d"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/mute_actor.js",
+          "sha256": "ad52a0dafd0a81561b7ca39ccb548980aa84833c5460713e6b7337981a41735b"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/mute_conversation.js",
+          "sha256": "5e12b34914bfe13371f51f4c375dbbc541cbf892f7a9945a9dd4371101a95b72"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/mute_thread.js",
+          "sha256": "2cccd9461446066684ef9d489cf367b1d545b084df59563315cb589094f9e545"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/repost.js",
+          "sha256": "424aede02a60314408bb2ca8a09b9cd30e810a8e3d495018010692dab28710dc"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/search_posts.js",
+          "sha256": "3b4fe1a1e7273376239a8b20e18b0c2b603bce04497f937006077dc77167fa25"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/search_users_typeahead.js",
+          "sha256": "c133c5ed8041f1b9169bf68ee93ece4c0e34b349b8e92ab9e05604637a882e89"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/search_users.js",
+          "sha256": "d7880693e9ca987ecd312fd119e7d30cb3d5a1f280f9c5a761b911fb853501fd"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/send_message.js",
+          "sha256": "3f3b4b21990087c50dd452a0af13a07e502b822b4d6aa45c187a9b2ec81cb9b8"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unfollow_user.js",
+          "sha256": "75d64ebb075c661c961158c556b3bff03b4c258338808694bdce1745db70a2ea"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unlike_post.js",
+          "sha256": "7f36098173bcdedad227366e5e6fe9b4b7b1b91aa49e664770a34b73de0ba938"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unmute_actor.js",
+          "sha256": "64958fc3666127f459c660589714f1e629d6c19de329895cd470186c1d7e888f"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unmute_conversation.js",
+          "sha256": "d50473ec32dd67a91e672a15f1a594643b982fc30793c1e6ae83eb171f185daa"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unmute_thread.js",
+          "sha256": "ea26a783ab4233be8c7021bf664fe9e73e71509f89d0f88b38c2786b30aaac30"
+        },
+        {
+          "path": "packages/com.bluesky.main/workflows/unrepost.js",
+          "sha256": "8fed4415ece784a8ad37206c328d5f3b9cc47e66939b33745f206a75cd1472fb"
+        }
+      ]
+    },
+    {
       "id": "com.clickup.main",
       "version": "0.1.0",
       "description": "Read your ClickUp workspace from the current app.clickup.com tab: the signed-in user, workspaces and members, spaces, folders, lists, goals and custom fields. Uses your own logged-in ClickUp session.",
@@ -442,6 +610,322 @@
         {
           "path": "packages/com.confluence.main/workflows/update_page.js",
           "sha256": "cbd4aaa0dd4f969cde7622fb437f2e00a644b6f05a11959594777dac2d2596ff"
+        }
+      ]
+    },
+    {
+      "id": "com.datadog.main",
+      "version": "0.1.0",
+      "description": "Read and change a Datadog organization — 13 monitors, 6 dashboards, 5 slos, 1 logs, 4 apm, 9 metrics, 6 infrastructure, 3 services, 6 notebooks, 5 synthetics, 4 downtimes, 3 users, 2 rum, 2 incidents, 1 teams, 1 security, 4 admin — in your current app.datadoghq.com tab (monitors, dashboards, SLOs, logs, APM, metrics, infrastructure, services, notebooks, synthetics, downtimes, users, RUM, incidents, teams, security signals and admin settings). Uses your own logged-in Datadog session: same-origin /api/... calls with the dd-csrf-token the app keeps in localStorage.",
+      "toolCount": 75,
+      "files": [
+        {
+          "path": "packages/com.datadog.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.datadog.main/manifest.json",
+          "sha256": "56269b000877ad2545a1efaf47f35d4e9c8030dde9ebe80ed5a4e69bef9fb05e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/aggregate_rum_events.js",
+          "sha256": "45e78c65dd1cd447effb89a31992a2cd0a8e4b21bbe74b183bcc947ad16e6fd2"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/aggregate_spans.js",
+          "sha256": "7b9ca2491dd16391773401007b585067002cf075006714dde458d4e136c39958"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/cancel_downtime.js",
+          "sha256": "a1f2708fcd2314dfc8c407a279504ffe2f9ec55c54549276cfe821050e531aad"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/clone_dashboard.js",
+          "sha256": "abc6a8b2ff0e64663c9767a0cf35b861b33b7e926f6d1a706ff36e7b45d1452b"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/clone_monitor.js",
+          "sha256": "ec32e483142f93dc1b8dbc1c04f0de80e44f51b47078000cd3c4af6e4ee2973e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/create_downtime.js",
+          "sha256": "391776396d7edc4b08011741b3726ce64625a160123b18b48a6aa88ba7156486"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/create_metric_tag_configuration.js",
+          "sha256": "d6c35473808588af7a4ca021813c4b5e82783e51a43b7126f32aa558deaff09d"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/create_monitor.js",
+          "sha256": "97c9da1328b95b04ecd64581a84ff4301091b8264978424fd7da9a91320df680"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/create_notebook.js",
+          "sha256": "3353b13e4272544e716ff85180be3b62c174e5ca5479265acfa91be123d08c3a"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/delete_dashboard.js",
+          "sha256": "9137f4f00e82fc937023bfe219720673bdeb08d723df144de751dffa151c1181"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/delete_metric_tag_configuration.js",
+          "sha256": "c9418022acb55757a99d1a9c71e7b5488b177358fa0d1367ab964dcf2a27a5d7"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/delete_monitor.js",
+          "sha256": "6f97f8e91be23fe73a664ac5c142081a1ea40892c0c1caf253b2e73269717de9"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/delete_notebook.js",
+          "sha256": "1dcae3550ac56c47625a434bbfb6dfa538fcd5fd44098d593d34c417f1c25156"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_current_user.js",
+          "sha256": "3ce9fb796ea0e007ad1009fb454a33c8ec594c54ba82d4ae038b8f89700b0caf"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_dashboard.js",
+          "sha256": "57c9c0d41854b2ca749dae9b8f41f38684ef62ea53c5ca3d4f4d36220998bf3f"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_downtime.js",
+          "sha256": "54c12e9c7b6a8df5c06b133c0dd60fb2aac5016d184e6cb3f92b4a50671de78b"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_host_info.js",
+          "sha256": "074873dfdfa918c1a6f9399981bd2db05a7af5e0d1b532a1760e5e754c22f1c1"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_host_totals.js",
+          "sha256": "d47410d4d9b12f63a2d4d1216724ff3ef830f66023cae6a6fcba42698e27ef2a"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_incident.js",
+          "sha256": "6e10b822fa374cdee2d90f40b1b09013a35103c5ecf39ce0386c0e830755a4b9"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_metric_metadata.js",
+          "sha256": "3a89f9451c5c920360addfd7d9ca3349763c0e77ff2b77fbfdae4bcab90fa872"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_metric_tag_configuration.js",
+          "sha256": "bae13becb89962ad2989075dad6c4cfc4d0674eaacee92ef0def03a582adb916"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_monitor_groups.js",
+          "sha256": "389dcceecf9914f4e0a67c5e5f867d0010d9134a52626c39a0f86591015c82b3"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_monitor_state_history.js",
+          "sha256": "905193e16f1bf68bf44fb260867b28608ef5080eb9edae11f9d0f4619e3ec3a6"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_monitor.js",
+          "sha256": "4b1546f6a0d900984b28a520f9285a07790f9ba089c74e5553a241c170c6ff40"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_notebook.js",
+          "sha256": "818d52efd231dd141128857cdc655f8fb8a158a316a4bb40964ad597f3870ca0"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_org_config.js",
+          "sha256": "5d9fae9515bdce1aa9a2207c524ebedabc55ff7f8a872f9ca4b1016621a7e903"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_permissions.js",
+          "sha256": "2ad333c5c350a96248df39f6d7218867b55db70dac5bdb8cb920016d45b97567"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_service_definition.js",
+          "sha256": "cf2e17ddc9e7c115049b9d5babeb2e92afa901aac2cdcdf05759911ca63ee42b"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_service_dependencies.js",
+          "sha256": "aa6116a51b0c2389a45828b07c458e6b0865498a53f3b1e9a25b2eda5af8a23a"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_slo_history.js",
+          "sha256": "16e99fa1232cdece8fef413668a48d8a5cdf3aa433089467231414840cde39f9"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_slo.js",
+          "sha256": "85a83229c069ee3b3641709313939ea1e555f172b0c5e9ab9796ba23213a825e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_synthetics_results.js",
+          "sha256": "5197fa0c3f8f401ac923822fdab097727a49174a6b7d7f586d32c72a92872c64"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_synthetics_test.js",
+          "sha256": "698be56d96f8f50766fdb5f7f62f06b75431536b3b3707ad57fbc786c16bc569"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_trace.js",
+          "sha256": "5069370ca3f5df0d5ecb6e2912c9202f6d01d6b22b46bc1faecd29eb0052ebc2"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_usage_summary.js",
+          "sha256": "8a21d604acc8dfd4980ef0899f83b8990fde9631801ab1d8a3bfe407b47eb62d"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/get_user.js",
+          "sha256": "1497e144c9b8f5f24394a655dfe09e117455bf4c67475ad8416ecaf55ed14753"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_api_keys.js",
+          "sha256": "f195d13f4618524a3c11cf0f57071f72443a0a19652d4457d7e3496eddd5353d"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_dashboards.js",
+          "sha256": "3ddc9d02744ffd1c765c813e1eb50ad3f90f964243d8135c1c3aba204cace19d"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_downtimes.js",
+          "sha256": "318a7c9324461eed1f0c59a5c3b57cfc0197e718d3735f987b720642e9b69534"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_host_tags.js",
+          "sha256": "491e529fecfae5efef80ddea1d2cd84eeb202445d6ca4835620f0bbecd84aed6"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_hosts.js",
+          "sha256": "b6b2eabdc3b80a37612a6905573d6677ab7f8688d2590a4f1541c87b878d547e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_incidents.js",
+          "sha256": "22292b00c845d7de8aad87ef2ed87f9daa2b9b1e9398cca905e42b25828f0677"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_metric_tags.js",
+          "sha256": "027112525eae9f222f25d51ad2509736114206db18b3b43b58b8badd266df21a"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_metrics.js",
+          "sha256": "b3856b2fa3176d0991b5d9d74b92c2f253a404318d1e4c605cefcebf4ac2e702"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_monitor_downtimes.js",
+          "sha256": "b0c623e843a6d1449d63b08f95ee29a9943feda933c05daccfffc4cc921c0266"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_monitor_tags.js",
+          "sha256": "a53591af1c798a12b0b3bb30b99b7aaeb5da715eceb5f09ac3b63f42e5c84901"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_monitors.js",
+          "sha256": "ed48ed767c2aa3a6208767c9de3a7c3dedb6a3c7a505c22a27ba3e4c5e4cae42"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_notebooks.js",
+          "sha256": "f810c9e422214773f634239e1a234df289fc82c75ceb00513615c5759423725f"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_services.js",
+          "sha256": "28f0906a30f0e92924edb2a3808fb1210e416218d5463cb819b21f4b24fbc69a"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_slo_corrections.js",
+          "sha256": "7fed591c5879dc72d86f13cbe0989ff03570bbf5e2feb2c45dda45d4b2f60941"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_slos.js",
+          "sha256": "2197e9ae7f44c286bc6cf73e0df15c9bd3b93254ed014a3ffc6f797d9b47e9cf"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_synthetics_tests.js",
+          "sha256": "24bda9a6186cf1fc7fbd2cf63b5a1fdcdb766d2b839e9e4917940cacdba70d71"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_teams.js",
+          "sha256": "92b2c4cdbeee1900f55c5691be6e2b96a1a83d58da626e26ca5948c37e16f3f4"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/list_users.js",
+          "sha256": "9b01364c93450809a5be288f1f1860567f67f1c2783dbff3fe774c5f847ac5ed"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/mute_host.js",
+          "sha256": "975d6447264c0c543ceecb5794eb7f8e55f8646869f423b6be50a213ab99379b"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/mute_monitor.js",
+          "sha256": "bc80f299898d15e15babfa1edc30c929e628bd2575464295293fe63527d55fb9"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/pause_synthetics_test.js",
+          "sha256": "f468b13b5ca59da7e6a30fd635f1af1617346bc1cf33ac7681669965ac88b00c"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/query_metrics.js",
+          "sha256": "32bd0aa95fac305d4a0090c5e6f50be1649ef0811f1ed1669713fbca419bfe02"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/query_timeseries.js",
+          "sha256": "5be7652d7b39c00bcd92516490a06595514043c6e434c1406c4d6c997f71f04e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_dashboards_advanced.js",
+          "sha256": "e0724a914e5482929f58423923effd968d4536c2dde01ae1be67635cb01701f7"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_dashboards.js",
+          "sha256": "1f50624c0bd1a89ead8a33d7ffacbd711baaf5495d5d62b14b122a41c988b47e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_logs.js",
+          "sha256": "da39d29c48f0b298f8554ca8af9a397700039d0394569bad254b2a212fda3a39"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_monitors.js",
+          "sha256": "f9bd3ff70a0c4e2cf48923977ec6e3f73cd2bb440fee894100fe0f8349a3b16e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_notebooks.js",
+          "sha256": "eae552a0162d769da4f514ea66d57a901a6327d355a27f8a7e758bcc2b817739"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_rum_events.js",
+          "sha256": "8dd68afdd694643a5264c42108fda20448dc934ffac356c8b3470abcc1113764"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_security_signals.js",
+          "sha256": "6f716b0337f72b3307f1991f0aa451a0fb332cc81fc83c996cf5d16572cb1827"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_services.js",
+          "sha256": "8a8f5380a5242c08f8347dcc80dcbeb4b00b472f12b1fc6281660a10a11d6963"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_slos.js",
+          "sha256": "5f2cc8d65c0ff3572c1f603dbd683a6ede372b8385e7c3027cb70b124b23a331"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/search_spans.js",
+          "sha256": "0b9f01058b958716c3cb81451646f8b61b7e4dfe6c91d6a9b594bab198d4e9c6"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/trigger_synthetics_test.js",
+          "sha256": "e7abc368b5a1f42c46f8c76a8d79fce4e7fa5b5222f67a43d1f369dadd9560dc"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/unmute_host.js",
+          "sha256": "37f7e50b8e6ca6a899b82c643739354acf7847a5cb50b9f95999ce926fcd4d5c"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/unmute_monitor.js",
+          "sha256": "69de4f5aeaea088a6822a8fb0ef14dd8dcc3b8846d5012d4b2fcefd044bf7f7e"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/update_metric_tag_configuration.js",
+          "sha256": "274cdbb4db48bf574fb3f3738690947b8bf958f6e6408a4543c40203c7cd7b8d"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/update_monitor.js",
+          "sha256": "f692df62da51c17ff5478ea0bc780603927314a28f2aed1b21460eab5c421d85"
+        },
+        {
+          "path": "packages/com.datadog.main/workflows/update_notebook.js",
+          "sha256": "31aabaa9e034cb06c640b566484a36d050161f13ea32c12aba3189c87aa5160c"
         }
       ]
     },
@@ -1490,6 +1974,182 @@
         {
           "path": "packages/com.linear.main/workflows/update_project.js",
           "sha256": "d50d7d33c74582725b3be9ce598d5119065212a742491df8293fbfc8c7f3879d"
+        }
+      ]
+    },
+    {
+      "id": "com.netlify.main",
+      "version": "0.1.0",
+      "description": "Full port of the OpenTabs Netlify plugin: manage sites, deploys, builds, environment variables, DNS zones and records, notification and build hooks, deploy keys, forms and submissions, team members and audit events on app.netlify.com in your current tab. Uses your own logged-in Netlify session; every call rides the dashboard's same-origin bb-api cookies.",
+      "toolCount": 40,
+      "files": [
+        {
+          "path": "packages/com.netlify.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.netlify.main/manifest.json",
+          "sha256": "bca8d35a07f83a8a6286ad6f731b465bd9469f2e9e392c04a353eb799b54a283"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_build_hook.js",
+          "sha256": "c066d63a3e577cc0db4503af1f2a6c62519ab66fb8816615d26c40c280a2d093"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_build.js",
+          "sha256": "0faae842618427b25a08a74bedc67d20a05a8a3c38801130b6213dff67c2ba6f"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_deploy_key.js",
+          "sha256": "dd2266547044c1b699c6d28174e02e8009c9913f4f6278ead8238ed212de378d"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_dns_record.js",
+          "sha256": "49890bf18238745e6df0c96b1308c34879f83b4f7a1acb49ab5fd552a366e422"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_dns_zone.js",
+          "sha256": "ccdb506ef4f566898968fbe6efd39a451ac7fce08bcc3a3a4bc8ce8def2ca408"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_env_vars.js",
+          "sha256": "e0f7824b3f8473be4c2e74ab7825af49748ad9bf0b6ebd363c5510dd5c8cbbf7"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/create_site.js",
+          "sha256": "3a2cefcab429e052afdcbd88c5a9b914bef111a9221ea5a09bea72759dd7f1aa"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_build_hook.js",
+          "sha256": "6feddf32cad698349fd773e00077ff20619293150d24f6753889814d43cd99d1"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_dns_record.js",
+          "sha256": "b58cd5a31e300ff4ddf149d4ee56ef2c5a2fedd9b11c62468a5cb6c487f05e2c"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_env_var.js",
+          "sha256": "d6e96e745dc818e2fbf774cdf0c96b9860c5b65e19a1b1290a1b04492d230a8f"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_hook.js",
+          "sha256": "95a1426ecef007762833c92ed2dde12203f2b5440eaa648ef2e8484116020c01"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_site.js",
+          "sha256": "899bd33871d2ef7f2298371af2097f2f7bed87fc42d63603fb2fe9cd7bb3e3ac"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/delete_submission.js",
+          "sha256": "99ed4e7542d0ba6a625123f179355a0c8df2769eeeaba6a5cacd8ccb0f3e4a22"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_account.js",
+          "sha256": "48f43a8b5ee7bfa457e7ec981f27f36c4928b0684d2205fb49a8cc4eb56ce32f"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_current_user.js",
+          "sha256": "b073d5aa362c51e4c04372d8f2e40cb67699f6ee3712c3d1c399db9b62b4294c"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_deploy.js",
+          "sha256": "a48340a1248af8c458d65877b3bed1437b61fbe13349d1c7a74e6f2276d254dc"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_dns_zone.js",
+          "sha256": "362be3478b91ef6107760513134f690d1248785ecfe38fa47434f5eb6834ddfb"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_env_var.js",
+          "sha256": "b96c4e6ff1b6be06f2fb96c352acd97b07dd50ce22ba1ffddcd935a87fdc6891"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_member.js",
+          "sha256": "150a0fbb104d33cdd9c1cf5b26bb099a419d4285cffedb0de5ef9eac7ed70f91"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/get_site.js",
+          "sha256": "a382ccba534c81383b468cf12b05558b144295b4580d722f35a22aade8745f0d"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_accounts.js",
+          "sha256": "9cfa475f2808b223e589e32b6939aafbe4db94485ca6488c91e07656a191c312"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_audit_events.js",
+          "sha256": "7a7a658e58c7a23a4146a76d38b9677a24cb8e0be087c3ecca421bbdf92757b0"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_build_hooks.js",
+          "sha256": "fa258d10aadd6c1615fe11557327a657d2c8766e16c245a22b42a1cc3ef6fd2a"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_builds.js",
+          "sha256": "2cf86b906e408ffe8e593249ae2327c5aefbba316e0dd628aa71ee3f7bb3982c"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_deploy_keys.js",
+          "sha256": "74d4dd01f05b9d2bdb08c924ed2aa77a221f7f9f42d75be11a90f604ac773a85"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_deploys.js",
+          "sha256": "2f835ee4ec11fc8358f822f0794230313e40133c2030f2dddc9ccc8c88f9685b"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_dns_records.js",
+          "sha256": "569245f8655c83f98f46a889b09b89e0c8150805b1fc5a845025d17036fb3adb"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_dns_zones.js",
+          "sha256": "e8309109916d65ee991ddd55ab70b50f1ce2ae305b9910bcc5f02fa84a507d34"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_env_vars.js",
+          "sha256": "82ee3ec62e3b4dc76f9fa275725132bf7a2b1057ee6c70e0d343b22d004a0b8b"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_form_submissions.js",
+          "sha256": "f3fe1deb9ea1762e986387c37cca916c558a9f2a5ae196e679722fd04d1ef8b3"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_forms.js",
+          "sha256": "86c27bdcb77c4f2a9fb416e91b45579dd252ba3b75d7fe348978ca0f55766887"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_hooks.js",
+          "sha256": "6972b9e0c99df490a341eaef86ef47c156eb796a61796ee3fc85dfe2e8b634f5"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_members.js",
+          "sha256": "ba26e6c8220c8478d4bf14be733bcebb03ee06469d1b719a5339de7ce0dfad9b"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/list_sites.js",
+          "sha256": "d06ce45020c69f95bc246f981a9ec27aba9190886550eb8edf54477ad3f619d8"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/lock_deploy.js",
+          "sha256": "2c1a1b2094f4b7c5c73e88ee13f1af8a435eafa9f29ce95883ae24e47bd1f4c3"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/restore_deploy.js",
+          "sha256": "0d7bd7bf992786e712c1c4db2e9660330edea8b0a799074b73dbd478d97b5001"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/rollback_deploy.js",
+          "sha256": "5ff66045f41cfa3db333efeb8e709927476c467744613fd862fc6289c3a8f0e6"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/unlock_deploy.js",
+          "sha256": "c10c7de32ba95004cb0fe3f56b97b5e3a74c86f8d7f979f5499e01ddf475eec8"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/update_env_var.js",
+          "sha256": "bbd982dd0e36d8377fd09dd82ea5212d42928552cdf24f9d1b421722d7a8cbaf"
+        },
+        {
+          "path": "packages/com.netlify.main/workflows/update_site.js",
+          "sha256": "0f7341519248c8684b2583411e16a2ef9b1091f66401fda1a898b65cbd8009a3"
         }
       ]
     },

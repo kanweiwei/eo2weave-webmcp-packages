@@ -1,0 +1,457 @@
+{
+  "id": "com.datadog.main",
+  "version": "0.1.0",
+  "description": "Read and change a Datadog organization — 13 monitors, 6 dashboards, 5 slos, 1 logs, 4 apm, 9 metrics, 6 infrastructure, 3 services, 6 notebooks, 5 synthetics, 4 downtimes, 3 users, 2 rum, 2 incidents, 1 teams, 1 security, 4 admin — in your current app.datadoghq.com tab (monitors, dashboards, SLOs, logs, APM, metrics, infrastructure, services, notebooks, synthetics, downtimes, users, RUM, incidents, teams, security signals and admin settings). Uses your own logged-in Datadog session: same-origin /api/... calls with the dd-csrf-token the app keeps in localStorage.",
+  "tools": [
+    {
+      "name": "list_monitors",
+      "description": "List monitors in the Datadog organization. Supports filtering by tags and pagination. Returns monitor details including name, type, query, state, and tags.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_monitors.js"
+    },
+    {
+      "name": "get_monitor",
+      "description": "Get detailed information about a specific Datadog monitor by its ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_monitor.js"
+    },
+    {
+      "name": "search_monitors",
+      "description": "Search for monitors by query string. Supports searching by name, status, tags, and other attributes. Use Datadog monitor search syntax (e.g., \"status:Alert\", \"tag:env:prod\", \"type:metric\").",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_monitors.js"
+    },
+    {
+      "name": "mute_monitor",
+      "description": "Mute a monitor so it does not trigger alerts. Optionally specify a scope and end time.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mute_monitor.js"
+    },
+    {
+      "name": "unmute_monitor",
+      "description": "Unmute a previously muted monitor so it resumes alerting.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unmute_monitor.js"
+    },
+    {
+      "name": "delete_monitor",
+      "description": "Permanently delete a monitor. This action cannot be undone.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_monitor.js"
+    },
+    {
+      "name": "list_monitor_tags",
+      "description": "List all tags used across monitors. Useful for discovering available filter values.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_monitor_tags.js"
+    },
+    {
+      "name": "get_monitor_groups",
+      "description": "Get the status of individual groups for a multi-alert monitor. Useful for seeing which specific hosts, services, or tag combinations are alerting.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_monitor_groups.js"
+    },
+    {
+      "name": "get_monitor_state_history",
+      "description": "Preview the evaluation results of a monitor over a time range. Shows the timeseries data that the monitor evaluates against.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_monitor_state_history.js"
+    },
+    {
+      "name": "create_monitor",
+      "description": "Create a new Datadog monitor. Supports metric, service check, event, log, process, synthetics, and other monitor types.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_monitor.js"
+    },
+    {
+      "name": "update_monitor",
+      "description": "Update an existing Datadog monitor. Only specified fields are changed.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_monitor.js"
+    },
+    {
+      "name": "list_monitor_downtimes",
+      "description": "Get downtimes associated with a specific monitor.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_monitor_downtimes.js"
+    },
+    {
+      "name": "clone_monitor",
+      "description": "Clone an existing monitor to create a copy. Optionally override the name, query, message, or tags on the clone. The original monitor is not modified.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/clone_monitor.js"
+    },
+    {
+      "name": "list_dashboards",
+      "description": "List all dashboards in the Datadog organization. Returns dashboard summaries with titles, authors, and URLs.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dashboards.js"
+    },
+    {
+      "name": "get_dashboard",
+      "description": "Get full details of a Datadog dashboard by ID, including its widgets, layout, and template variables.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dashboard.js"
+    },
+    {
+      "name": "search_dashboards",
+      "description": "Search dashboards by title or description. Performs a client-side substring match across all dashboards.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_dashboards.js"
+    },
+    {
+      "name": "search_dashboards_advanced",
+      "description": "Search dashboards with advanced filters including author handle. Performs client-side filtering across all dashboards.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_dashboards_advanced.js"
+    },
+    {
+      "name": "delete_dashboard",
+      "description": "Permanently delete a Datadog dashboard. This action cannot be undone.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_dashboard.js"
+    },
+    {
+      "name": "clone_dashboard",
+      "description": "Clone an existing dashboard to create a copy. Optionally override the title or description. The original dashboard is not modified.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/clone_dashboard.js"
+    },
+    {
+      "name": "list_slos",
+      "description": "List Service Level Objectives (SLOs) in the Datadog organization with optional tag filtering.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_slos.js"
+    },
+    {
+      "name": "get_slo",
+      "description": "Get detailed information about a specific Service Level Objective (SLO) by ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_slo.js"
+    },
+    {
+      "name": "get_slo_history",
+      "description": "Get historical SLO data for a specific timeframe. Returns SLI values, error budget remaining, and uptime data.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_slo_history.js"
+    },
+    {
+      "name": "search_slos",
+      "description": "Search SLOs by name using substring matching.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_slos.js"
+    },
+    {
+      "name": "list_slo_corrections",
+      "description": "List all SLO status corrections in the Datadog organization.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_slo_corrections.js"
+    },
+    {
+      "name": "search_logs",
+      "description": "Search Datadog logs using query syntax. Supports filtering by service, host, status, tags, and free text. Uses the Datadog log query language (e.g., \"service:my-app status:error\", \"@http.status_code:500\").",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_logs.js"
+    },
+    {
+      "name": "search_spans",
+      "description": "Search APM spans/traces using Datadog query syntax. Filter by service, resource, operation, status, duration, and tags (e.g., \"service:web-store\", \"@http.status_code:500\", \"@duration:>5000000\").",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_spans.js"
+    },
+    {
+      "name": "get_trace",
+      "description": "Get a full trace by trace ID from Datadog APM. Accepts either hex or decimal trace IDs. Returns all spans within the trace, including orphaned spans.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_trace.js"
+    },
+    {
+      "name": "aggregate_spans",
+      "description": "Aggregate Datadog APM spans to compute counts, sums, averages, min, max, and cardinality, with optional grouping by fields or time intervals. Use this for aggregated analysis such as request counts over time, average duration by service, or error counts grouped by endpoint.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/aggregate_spans.js"
+    },
+    {
+      "name": "get_service_dependencies",
+      "description": "Get upstream and downstream service dependencies for an APM service. Returns services that call this service and services this service calls.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_service_dependencies.js"
+    },
+    {
+      "name": "query_metrics",
+      "description": "Query time-series metric data from Datadog. Use standard metric query syntax with aggregation, scope, and optional group-by (e.g., \"avg:system.cpu.user{env:prod} by {host}\").",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/query_metrics.js"
+    },
+    {
+      "name": "list_metrics",
+      "description": "List metric names available in Datadog. Filter by prefix to narrow results.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_metrics.js"
+    },
+    {
+      "name": "get_metric_metadata",
+      "description": "Get metadata for a specific metric including type, description, unit, and integration name.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_metric_metadata.js"
+    },
+    {
+      "name": "query_timeseries",
+      "description": "Execute a multi-query timeseries request using the Datadog internal query engine. Supports metrics, logs, spans, and other data sources with formula support.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/query_timeseries.js"
+    },
+    {
+      "name": "list_metric_tags",
+      "description": "List all tags associated with a specific metric. Useful for understanding available dimensions for filtering and grouping.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_metric_tags.js"
+    },
+    {
+      "name": "get_metric_tag_configuration",
+      "description": "Get the Metrics without Limits tag configuration for a metric, including its indexed or excluded tag keys, metric type, aggregation settings, and timestamps.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_metric_tag_configuration.js"
+    },
+    {
+      "name": "create_metric_tag_configuration",
+      "description": "Create a Metrics without Limits tag configuration for a metric that does not already have one. Returns the saved metric type, indexed or excluded tag keys, percentile setting, and timestamps.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_metric_tag_configuration.js"
+    },
+    {
+      "name": "update_metric_tag_configuration",
+      "description": "Update an existing Metrics without Limits tag configuration. Change any combination of tag keys, exclusion mode, or distribution percentiles. Returns the saved configuration.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_metric_tag_configuration.js"
+    },
+    {
+      "name": "delete_metric_tag_configuration",
+      "description": "Delete a Metrics without Limits tag configuration. The metric continues to exist, but Datadog resumes indexing all submitted tags for it.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_metric_tag_configuration.js"
+    },
+    {
+      "name": "list_hosts",
+      "description": "List infrastructure hosts reporting to Datadog. Supports filtering by name and pagination.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_hosts.js"
+    },
+    {
+      "name": "mute_host",
+      "description": "Mute a host to suppress all monitor alerts originating from it.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mute_host.js"
+    },
+    {
+      "name": "unmute_host",
+      "description": "Unmute a previously muted host to resume alerting.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unmute_host.js"
+    },
+    {
+      "name": "get_host_totals",
+      "description": "Get the total number of active and up hosts in the organization.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_host_totals.js"
+    },
+    {
+      "name": "list_host_tags",
+      "description": "List all tags for a specific host, organized by source (e.g., datadog-agent, cloud provider).",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_host_tags.js"
+    },
+    {
+      "name": "get_host_info",
+      "description": "Get detailed information about a specific host by hostname.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_host_info.js"
+    },
+    {
+      "name": "list_services",
+      "description": "List service definitions from the Datadog service catalog. Returns service names, owning teams, contacts, and links.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_services.js"
+    },
+    {
+      "name": "get_service_definition",
+      "description": "Get the full service catalog definition for a specific service, including team, contacts, links, and tags.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_service_definition.js"
+    },
+    {
+      "name": "search_services",
+      "description": "Search services in the service catalog by name, team, or other attributes.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_services.js"
+    },
+    {
+      "name": "list_notebooks",
+      "description": "List Datadog notebooks with optional text search. Notebooks are collaborative documents with time-synced data widgets.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_notebooks.js"
+    },
+    {
+      "name": "get_notebook",
+      "description": "Get full details of a Datadog notebook by ID, including its cells and metadata.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_notebook.js"
+    },
+    {
+      "name": "search_notebooks",
+      "description": "Search Datadog notebooks by name. Returns matching notebooks sorted by modification time.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_notebooks.js"
+    },
+    {
+      "name": "create_notebook",
+      "description": "Create a new Datadog notebook with markdown and metric cells.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_notebook.js"
+    },
+    {
+      "name": "update_notebook",
+      "description": "Update an existing Datadog notebook — change name, cells, or time span.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_notebook.js"
+    },
+    {
+      "name": "delete_notebook",
+      "description": "Permanently delete a Datadog notebook. This action cannot be undone.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_notebook.js"
+    },
+    {
+      "name": "list_synthetics_tests",
+      "description": "List synthetic monitoring tests (API, browser, mobile). Supports filtering by page size.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_synthetics_tests.js"
+    },
+    {
+      "name": "get_synthetics_test",
+      "description": "Get detailed information about a specific synthetic test by public ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_synthetics_test.js"
+    },
+    {
+      "name": "get_synthetics_results",
+      "description": "Get recent execution results for a synthetic test.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_synthetics_results.js"
+    },
+    {
+      "name": "trigger_synthetics_test",
+      "description": "Trigger an on-demand run of a synthetic test. Returns the triggered results with batch ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/trigger_synthetics_test.js"
+    },
+    {
+      "name": "pause_synthetics_test",
+      "description": "Pause or resume a synthetic test by changing its status.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pause_synthetics_test.js"
+    },
+    {
+      "name": "list_downtimes",
+      "description": "List scheduled downtimes (maintenance windows) in the Datadog organization.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_downtimes.js"
+    },
+    {
+      "name": "get_downtime",
+      "description": "Get detailed information about a specific scheduled downtime by ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_downtime.js"
+    },
+    {
+      "name": "cancel_downtime",
+      "description": "Cancel a scheduled downtime by ID. This resumes alerting for the affected monitors.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/cancel_downtime.js"
+    },
+    {
+      "name": "create_downtime",
+      "description": "Create a scheduled downtime (maintenance window) in Datadog.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_downtime.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Datadog user.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List users in the Datadog organization. Supports filtering and pagination.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get detailed information about a specific user by UUID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "search_rum_events",
+      "description": "Search Real User Monitoring (RUM) events. Filter by event type, user, URL, browser, and more using Datadog query syntax (e.g., \"@type:error\", \"@view.url:*/checkout/*\", \"@usr.id:user123\").",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_rum_events.js"
+    },
+    {
+      "name": "aggregate_rum_events",
+      "description": "Aggregate Datadog RUM events to compute counts, sums, averages, min, max, and cardinality, with optional grouping by fields or time intervals. Use this for aggregated analysis of RUM data such as session counts over time, error counts by page, or average loading times by browser.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/aggregate_rum_events.js"
+    },
+    {
+      "name": "list_incidents",
+      "description": "List incidents in the Datadog organization. Supports filtering by status and pagination. Note: Incident Management must be enabled.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_incidents.js"
+    },
+    {
+      "name": "get_incident",
+      "description": "Get detailed information about a specific incident by ID.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_incident.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List teams in the Datadog organization.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "search_security_signals",
+      "description": "Search security signals in Datadog Security Monitoring.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_security_signals.js"
+    },
+    {
+      "name": "get_permissions",
+      "description": "List all available permissions in the Datadog organization. Useful for understanding role-based access.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_permissions.js"
+    },
+    {
+      "name": "get_org_config",
+      "description": "Get a specific organization configuration value by name.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_org_config.js"
+    },
+    {
+      "name": "list_api_keys",
+      "description": "List API keys in the Datadog organization.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_api_keys.js"
+    },
+    {
+      "name": "get_usage_summary",
+      "description": "Get usage summary for the Datadog organization over a time range.",
+      "urlRegex": "^https://(?:[^/?#]+\\.)?datadoghq\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_usage_summary.js"
+    }
+  ]
+}

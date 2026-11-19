@@ -1,0 +1,247 @@
+{
+  "id": "com.netlify.main",
+  "version": "0.1.0",
+  "description": "Full port of the OpenTabs Netlify plugin: manage sites, deploys, builds, environment variables, DNS zones and records, notification and build hooks, deploy keys, forms and submissions, team members and audit events on app.netlify.com in your current tab. Uses your own logged-in Netlify session; every call rides the dashboard's same-origin bb-api cookies.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Netlify user including name, email, site count, MFA status, and login providers.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_accounts",
+      "description": "List all Netlify accounts (teams) the authenticated user has access to. Returns account name, slug, plan capabilities, billing info, and owner IDs.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_accounts.js"
+    },
+    {
+      "name": "get_account",
+      "description": "Get detailed information about a specific Netlify account (team) by its ID. Returns name, slug, plan capabilities, billing info, and owner IDs.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_account.js"
+    },
+    {
+      "name": "list_audit_events",
+      "description": "List audit log events for a Netlify account. Returns actions performed by team members such as site creation, deploy locks, and settings changes. Supports text search and pagination.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_audit_events.js"
+    },
+    {
+      "name": "list_members",
+      "description": "List all members of a Netlify account (team). Returns each member with their name, email, role, pending status, and MFA status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_members.js"
+    },
+    {
+      "name": "get_member",
+      "description": "Get detailed information about a specific team member in a Netlify account by their member ID. Returns name, email, role, pending status, and MFA status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_member.js"
+    },
+    {
+      "name": "list_sites",
+      "description": "List sites for a Netlify account. Supports filtering by name and pagination. Returns site name, URL, custom domain, framework, repo info, and SSL status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sites.js"
+    },
+    {
+      "name": "get_site",
+      "description": "Get detailed information about a specific Netlify site by its ID. Returns name, URLs, custom domain, framework, repo settings, SSL, and build configuration.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site.js"
+    },
+    {
+      "name": "create_site",
+      "description": "Create a new Netlify site in the specified account. Provide a site name (used as the subdomain). Returns the created site details.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_site.js"
+    },
+    {
+      "name": "update_site",
+      "description": "Update an existing Netlify site. Supports changing the site name, custom domain, repo branch, build command, and SSL settings. Only provided fields are updated.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_site.js"
+    },
+    {
+      "name": "delete_site",
+      "description": "Permanently delete a Netlify site by its ID. This removes the site, all deploys, and associated configuration. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_site.js"
+    },
+    {
+      "name": "list_deploys",
+      "description": "List deploys for a Netlify site. Returns deploy state, branch, commit info, context, framework, and timestamps. Supports pagination.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_deploys.js"
+    },
+    {
+      "name": "get_deploy",
+      "description": "Get detailed information about a specific Netlify deploy by its ID. Returns state, URLs, branch, commit, context, framework, error message, and lock status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_deploy.js"
+    },
+    {
+      "name": "lock_deploy",
+      "description": "Lock a deploy to prevent auto-publishing of new deploys. The locked deploy stays published until it is unlocked. Useful for pinning a known-good deploy in production.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/lock_deploy.js"
+    },
+    {
+      "name": "unlock_deploy",
+      "description": "Unlock a previously locked deploy, re-enabling auto-publishing. New deploys will be published automatically again.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unlock_deploy.js"
+    },
+    {
+      "name": "restore_deploy",
+      "description": "Restore a previous deploy by creating a new deploy with the same content. The restored deploy becomes the published version for the site.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/restore_deploy.js"
+    },
+    {
+      "name": "rollback_deploy",
+      "description": "Rollback a site to its previously published deploy. This is a quick way to revert the site without specifying a deploy ID.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/rollback_deploy.js"
+    },
+    {
+      "name": "list_builds",
+      "description": "List builds for a Netlify site. Returns build ID, associated deploy ID, commit SHA, completion status, and error messages. Supports pagination.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_builds.js"
+    },
+    {
+      "name": "create_build",
+      "description": "Trigger a new build for a Netlify site. This starts a fresh build and deploy using the current site configuration and linked repository.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_build.js"
+    },
+    {
+      "name": "list_env_vars",
+      "description": "List all environment variables for a Netlify account. Optionally scope to a specific site. Returns variable names, scopes, context-specific values, and secret status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_env_vars.js"
+    },
+    {
+      "name": "get_env_var",
+      "description": "Get a specific environment variable by key for a Netlify account. Optionally scope to a specific site. Returns the variable name, scopes, context-specific values, and secret status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_env_var.js"
+    },
+    {
+      "name": "create_env_vars",
+      "description": "Create one or more environment variables for a Netlify account. Each variable can have multiple context-specific values (e.g. different values for production vs deploy previews). Optionally scope to a specific site.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_env_vars.js"
+    },
+    {
+      "name": "update_env_var",
+      "description": "Replace an existing environment variable for a Netlify account. Replaces all values for the variable. Optionally scope to a specific site.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_env_var.js"
+    },
+    {
+      "name": "delete_env_var",
+      "description": "Delete an environment variable from a Netlify account by its key name. Optionally scope to a specific site. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_env_var.js"
+    },
+    {
+      "name": "list_dns_zones",
+      "description": "List DNS zones for a Netlify account. Returns zone name, record count, associated site, and infrastructure details. Filter by account slug.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dns_zones.js"
+    },
+    {
+      "name": "get_dns_zone",
+      "description": "Get detailed information about a specific DNS zone by its ID. Returns the zone name, record count, associated site, and timestamps.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dns_zone.js"
+    },
+    {
+      "name": "create_dns_zone",
+      "description": "Create a new DNS zone for a domain in a Netlify account. Optionally associate it with a specific site. The zone manages DNS records for the domain.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dns_zone.js"
+    },
+    {
+      "name": "list_dns_records",
+      "description": "List all DNS records in a Netlify DNS zone. Returns record hostname, type (A, AAAA, CNAME, MX, TXT, NS, etc.), value, TTL, and priority.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dns_records.js"
+    },
+    {
+      "name": "create_dns_record",
+      "description": "Create a new DNS record in a Netlify DNS zone. Supports A, AAAA, CNAME, MX, TXT, NS, and other record types. Specify hostname, type, value, and optionally TTL and priority.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dns_record.js"
+    },
+    {
+      "name": "delete_dns_record",
+      "description": "Delete a DNS record from a Netlify DNS zone. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_dns_record.js"
+    },
+    {
+      "name": "list_hooks",
+      "description": "List notification hooks (outgoing webhooks) for a Netlify site. Returns hook type, trigger event, configuration data, and disabled status.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_hooks.js"
+    },
+    {
+      "name": "delete_hook",
+      "description": "Delete a notification hook (outgoing webhook) by its ID. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_hook.js"
+    },
+    {
+      "name": "list_build_hooks",
+      "description": "List build hooks for a Netlify site. Build hooks are URLs that trigger a new build when POSTed to. Returns hook title, branch, and trigger URL.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_build_hooks.js"
+    },
+    {
+      "name": "create_build_hook",
+      "description": "Create a new build hook for a Netlify site. Build hooks generate a URL that triggers a new build for the specified branch when POSTed to.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_build_hook.js"
+    },
+    {
+      "name": "delete_build_hook",
+      "description": "Delete a build hook from a Netlify site by its ID. The hook URL will no longer trigger builds. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_build_hook.js"
+    },
+    {
+      "name": "list_deploy_keys",
+      "description": "List all deploy keys for the authenticated user. Deploy keys are SSH public keys used for authenticating deploys from CI/CD systems.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_deploy_keys.js"
+    },
+    {
+      "name": "create_deploy_key",
+      "description": "Generate a new deploy key (SSH key pair). Returns the public key which can be added to your Git provider for deploy authentication.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_deploy_key.js"
+    },
+    {
+      "name": "list_forms",
+      "description": "List all forms for a Netlify site. Returns form name, page paths, field names, submission count, and creation timestamp.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_forms.js"
+    },
+    {
+      "name": "list_form_submissions",
+      "description": "List submissions for a specific Netlify form. Returns submitter name, email, body text, full data key-value pairs, and timestamps. Supports pagination.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_form_submissions.js"
+    },
+    {
+      "name": "delete_submission",
+      "description": "Delete a form submission by its ID. This permanently removes the submission data. This action cannot be undone.",
+      "urlRegex": "^https://app\\.netlify\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_submission.js"
+    }
+  ]
+}
