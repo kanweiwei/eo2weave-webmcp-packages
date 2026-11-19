@@ -9,6 +9,7 @@
  * Usage: node scripts/fetch-opentabs.mjs
  */
 import { mkdir, readFile, writeFile, rm } from 'node:fs/promises'
+import { readdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
@@ -16,7 +17,10 @@ import { execFileSync } from 'node:child_process'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const cacheDir = path.join(root, '.cache', 'opentabs')
 
-const PLUGINS = {
+// The plugin name is the middle segment of the package id (com.google-docs.main →
+// google-docs), so every package is cached automatically. EXPLICIT wins when a
+// package id does not map 1:1 to its upstream plugin name.
+const EXPLICIT = {
   github: '@opentabs-dev/opentabs-plugin-github',
   notion: '@opentabs-dev/opentabs-plugin-notion',
   linear: '@opentabs-dev/opentabs-plugin-linear',
@@ -32,6 +36,15 @@ const PLUGINS = {
   'google-drive': '@opentabs-dev/opentabs-plugin-google-drive',
   'google-docs': '@opentabs-dev/opentabs-plugin-google-docs',
 }
+
+const packagesDir = path.join(root, 'packages')
+const DERIVED = Object.fromEntries(
+  readdirSync(packagesDir)
+    .filter((id) => existsSync(path.join(packagesDir, id, 'manifest.json')))
+    .map((id) => [id.split('.')[1], `@opentabs-dev/opentabs-plugin-${id.split('.')[1]}`]),
+)
+
+const PLUGINS = { ...DERIVED, ...EXPLICIT }
 
 async function fetchWithRetry(url, attempts = 3) {
   let lastError
@@ -51,6 +64,7 @@ async function fetchWithRetry(url, attempts = 3) {
 await mkdir(cacheDir, { recursive: true })
 
 for (const [plugin, pkg] of Object.entries(PLUGINS)) {
+  try {
   const registry = await (await fetchWithRetry(`https://registry.npmjs.org/${pkg}`)).json()
   const version = registry['dist-tags'].latest
   const tarball = registry.versions[version].dist.tarball
@@ -63,4 +77,7 @@ for (const [plugin, pkg] of Object.entries(PLUGINS)) {
   await rm(extracted, { force: true })
   await rm(tarballPath, { force: true })
   console.log(`${plugin}: cached ${pkg}@${version}`)
+  } catch (error) {
+    console.log(`${plugin}: skipped (${error.message.split('\n')[0]})`)
+  }
 }
