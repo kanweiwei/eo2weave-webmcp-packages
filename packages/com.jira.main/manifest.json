@@ -1,0 +1,127 @@
+{
+  "id": "com.jira.main",
+  "version": "0.1.0",
+  "description": "Search, read, create, update, transition, assign, link and comment on Jira issues, and read projects, agile boards, sprints, issue types, priorities and users on your *.atlassian.net site in your current tab. Uses your own logged-in Jira session.",
+  "tools": [
+    {
+      "name": "search_issues",
+      "description": "Search for Jira issues using JQL (Jira Query Language). Supports filtering by project, status, assignee, labels, and more.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_issues.js"
+    },
+    {
+      "name": "get_issue",
+      "description": "Get detailed information about a specific Jira issue by its key (e.g. KAN-1) or ID.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_issue.js"
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new Jira issue in a project. Requires a project key, summary, and issue type.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_issue.js"
+    },
+    {
+      "name": "update_issue",
+      "description": "Update fields on an existing Jira issue. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_issue.js"
+    },
+    {
+      "name": "delete_issue",
+      "description": "Delete a Jira issue. Optionally delete all subtasks as well.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_issue.js"
+    },
+    {
+      "name": "transition_issue",
+      "description": "Transition a Jira issue to a new status. Use get_transitions to find available transition IDs for an issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/transition_issue.js"
+    },
+    {
+      "name": "get_transitions",
+      "description": "Get available status transitions for a Jira issue. Use this to find transition IDs before calling transition_issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_transitions.js"
+    },
+    {
+      "name": "assign_issue",
+      "description": "Assign a Jira issue to a user, or unassign it by passing null. Use search_users to find account IDs.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/assign_issue.js"
+    },
+    {
+      "name": "link_issues",
+      "description": "Create a link between two Jira issues. Common link types: \"Blocks\", \"is blocked by\", \"relates to\", \"duplicates\".",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/link_issues.js"
+    },
+    {
+      "name": "add_watcher",
+      "description": "Add a user as a watcher on a Jira issue. The user will receive notifications for issue updates.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_watcher.js"
+    },
+    {
+      "name": "list_issue_types",
+      "description": "List available issue types for the Jira instance. Use this to find valid issue type names for create_issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issue_types.js"
+    },
+    {
+      "name": "list_priorities",
+      "description": "List available priority levels for the Jira instance. Use this to find valid priority names for create_issue and update_issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_priorities.js"
+    },
+    {
+      "name": "add_comment",
+      "description": "Add a comment to a Jira issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_comment.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments on a Jira issue with pagination support.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List Jira projects accessible to the current user with optional search.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a Jira project by its key or ID.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "list_boards",
+      "description": "List Jira boards (Scrum and Kanban). Returns board name, type, and associated project.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_boards.js"
+    },
+    {
+      "name": "list_sprints",
+      "description": "List sprints for a Jira board. Returns sprint name, state, and dates.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sprints.js"
+    },
+    {
+      "name": "search_users",
+      "description": "Search for Jira users by name or email. Useful for finding account IDs to use with assign_issue or create_issue.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_users.js"
+    },
+    {
+      "name": "get_myself",
+      "description": "Get the profile of the currently authenticated Jira user.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/(?!wiki/)[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_myself.js"
+    }
+  ]
+}
