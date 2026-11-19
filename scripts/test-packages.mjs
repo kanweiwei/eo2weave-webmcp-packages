@@ -59,6 +59,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.stackoverflow.main': 20,
   'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
@@ -177,6 +178,28 @@ const OPENTABS_TOOL_NAMES = {
     'list_shared_labels',
     'rename_shared_label',
     'remove_shared_label',
+  ],
+  'com.stackoverflow.main': [
+    'search_questions',
+    'get_question',
+    'list_questions',
+    'get_question_answers',
+    'get_question_comments',
+    'list_related_questions',
+    'list_linked_questions',
+    'list_featured_questions',
+    'list_unanswered_questions',
+    'get_similar_questions',
+    'get_answer',
+    'get_answer_comments',
+    'get_user',
+    'search_users',
+    'get_user_questions',
+    'get_user_answers',
+    'get_my_profile',
+    'list_tags',
+    'get_tag_info',
+    'search_excerpts',
   ],
 }
 
@@ -388,7 +411,12 @@ for (const id of packageIds) {
     ok(!/location\s*\.\s*href\s*=/.test(source), `${id}: no href assignment (${tool.name})`)
     ok(!/window\s*\.\s*open\s*\(/.test(source), `${id}: no window.open (${tool.name})`)
     // The session cookie must travel with the request, never be lifted out.
-    ok(source.includes("credentials: 'include'"), `${id}: sends credentials (${tool.name})`)
+    // Ports that call a public cross-origin API (stackoverflow → the Stack
+    // Exchange API, whose wildcard CORS rejects credentialed fetches) must send
+    // no credentials at all rather than leak the session to another origin.
+    const credentialsMode =
+      id === 'com.stackoverflow.main' ? "credentials: 'omit'" : "credentials: 'include'"
+    ok(source.includes(credentialsMode), `${id}: sends credentials (${tool.name})`)
   }
 }
 
@@ -451,6 +479,7 @@ function loadUpstreamSchemas() {
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
     'com.slack.main': 'slack',
+    'com.stackoverflow.main': 'stackoverflow',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -1340,6 +1369,345 @@ const HN_REPLY_PAGE = `<html><head><title>Reply | Hacker News</title></head><bod
   })
   equal(anonymous.status, 'error', 'npm list_tokens: logged-out page is an error')
   equal(anonymous.error_code, 'UNAUTHENTICATED', 'npm list_tokens: logged-out page is classified as UNAUTHENTICATED')
+}
+
+// --- Stack Overflow ----------------------------------------------------------
+//
+// The upstream plugin talks to the public Stack Exchange API
+// (api.stackexchange.com/2.3) with `site=stackoverflow` and `filter=withbody`
+// appended by its own helper, and reads the signed-in identity from the page
+// (`StackExchange.options.user`). These fixtures reproduce that envelope: paged
+// `{ items, has_more, quota_remaining }` bodies, the API's numeric `error_id`
+// failures, in-page identity for the authenticated tool, and a logged-out page.
+
+const SO_HOST = 'stackoverflow.com'
+
+/** The Stack Exchange question shape the port maps (unix dates, nested owner). */
+const SO_QUESTION = {
+  question_id: 11227809,
+  title: 'Why is processing a sorted array faster than processing an unsorted array?',
+  body: '<p>Here is a piece of C++ code…</p>',
+  tags: ['c++', 'performance', 'branch-prediction'],
+  score: 27341,
+  answer_count: 17,
+  view_count: 1980000,
+  is_answered: true,
+  accepted_answer_id: 11227902,
+  creation_date: 1340805096,
+  last_activity_date: 1749000000,
+  link: 'https://stackoverflow.com/questions/11227809',
+  owner: { display_name: 'GManNickG', reputation: 138000, user_id: 87234 },
+  bounty_amount: 500,
+  closed_reason: '',
+}
+
+const SO_ANSWER = {
+  answer_id: 11227902,
+  question_id: 11227809,
+  body: '<p>You are a victim of branch prediction fail.</p>',
+  score: 31000,
+  is_accepted: true,
+  creation_date: 1340808338,
+  last_activity_date: 1731000000,
+  owner: { display_name: 'Mysticial', reputation: 430000, user_id: 43421 },
+}
+
+const SO_USER = {
+  user_id: 22656,
+  display_name: 'Jon Skeet',
+  reputation: 1445000,
+  profile_image: 'https://i.sstatic.net/JonSkeet.jpg',
+  link: 'https://stackoverflow.com/users/22656/jon-skeet',
+  accept_rate: 87,
+  question_count: 40,
+  answer_count: 34000,
+  creation_date: 1222430705,
+  last_access_date: 1749100000,
+  location: 'Reading, United Kingdom',
+  website_url: 'https://codeblog.jonskeet.uk',
+  badge_counts: { gold: 900, silver: 9000, bronze: 90000 },
+}
+
+{
+  // stackoverflow: search_questions builds the advanced-search query exactly
+  // like the upstream helper — site, then the caller's params in declaration
+  // order, then the default withbody filter — and maps the whole question row.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'react hooks useEffect', tagged: 'javascript;react', pagesize: 2 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_QUESTION], has_more: true, quota_remaining: 297 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow search_questions: status')
+  const searchUrl = new URL(requests[0].url)
+  equal(searchUrl.origin + searchUrl.pathname, 'https://api.stackexchange.com/2.3/search/advanced', 'stackoverflow search_questions: API endpoint')
+  equal(searchUrl.searchParams.get('site'), 'stackoverflow', 'stackoverflow search_questions: site param')
+  equal(searchUrl.searchParams.get('q'), 'react hooks useEffect', 'stackoverflow search_questions: query text')
+  equal(searchUrl.searchParams.get('tagged'), 'javascript;react', 'stackoverflow search_questions: tagged filter')
+  equal(searchUrl.searchParams.get('order'), 'desc', 'stackoverflow search_questions: default order')
+  equal(searchUrl.searchParams.get('sort'), null, 'stackoverflow search_questions: no sort default, like upstream')
+  equal(searchUrl.searchParams.get('pagesize'), '2', 'stackoverflow search_questions: pagesize')
+  equal(searchUrl.searchParams.getAll('filter').join(','), 'withbody', 'stackoverflow search_questions: one withbody filter')
+  equal(requests[0].init.method, 'GET', 'stackoverflow search_questions: GET')
+  equal(requests[0].init.credentials, 'omit', 'stackoverflow search_questions: no cookies sent cross-origin')
+  equal(result.data.questions.length, 1, 'stackoverflow search_questions: question count')
+  const question = result.data.questions[0]
+  equal(question.question_id, 11227809, 'stackoverflow search_questions: question id is numeric')
+  equal(question.tags[1], 'performance', 'stackoverflow search_questions: tags')
+  equal(question.is_answered, true, 'stackoverflow search_questions: answered flag')
+  equal(question.accepted_answer_id, 11227902, 'stackoverflow search_questions: accepted answer id')
+  equal(question.creation_date, '2012-06-27T13:51:36.000Z', 'stackoverflow search_questions: unix date converted to ISO')
+  equal(question.owner_display_name, 'GManNickG', 'stackoverflow search_questions: owner display name')
+  equal(question.owner_reputation, 138000, 'stackoverflow search_questions: owner reputation')
+  equal(question.bounty_amount, 500, 'stackoverflow search_questions: bounty amount')
+  equal(result.data.has_more, true, 'stackoverflow search_questions: has_more')
+  equal(result.data.quota_remaining, 297, 'stackoverflow search_questions: quota')
+}
+
+{
+  // stackoverflow: get_question reads one question by id from the API and
+  // leaves every field absent from the payload at its documented default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [{ ...SO_QUESTION, bounty_amount: undefined, closed_reason: undefined }], has_more: false, quota_remaining: 300 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_question: status')
+  const questionUrl = new URL(requests[0].url)
+  equal(questionUrl.origin + questionUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809', 'stackoverflow get_question: question endpoint')
+  equal(questionUrl.searchParams.get('filter'), 'withbody', 'stackoverflow get_question: body filter')
+  equal(result.data.question.title.startsWith('Why is processing a sorted array'), true, 'stackoverflow get_question: title')
+  equal(result.data.question.body.includes('C++ code'), true, 'stackoverflow get_question: full body returned')
+  equal(result.data.question.bounty_amount, 0, 'stackoverflow get_question: absent bounty defaults to 0')
+  equal(result.data.question.closed_reason, '', 'stackoverflow get_question: absent close reason defaults to empty')
+  equal(result.data.question.owner_user_id, 87234, 'stackoverflow get_question: owner user id')
+
+  // An empty items array is a real answer from the API (deleted or bad id) and
+  // must surface as NOT_FOUND, not as a zero-filled question.
+  const missing = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 999999999 },
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [], has_more: false, quota_remaining: 300 }) },
+  })
+  equal(missing.status, 'error', 'stackoverflow get_question: empty items is an error')
+  equal(missing.error_code, 'NOT_FOUND', 'stackoverflow get_question: empty items classified as NOT_FOUND')
+}
+
+{
+  // stackoverflow: reading answers for a question defaults to votes/desc, and
+  // get_answer reads a single answer by id.
+  const requests = []
+  const answers = await runTool('com.stackoverflow.main', 'get_question_answers', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 299 })
+      },
+    },
+  })
+  equal(answers.status, 'ok', 'stackoverflow get_question_answers: status')
+  const answersUrl = new URL(requests[0].url)
+  equal(answersUrl.origin + answersUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809/answers', 'stackoverflow get_question_answers: endpoint')
+  equal(answersUrl.searchParams.get('sort'), 'votes', 'stackoverflow get_question_answers: default sort votes')
+  equal(answersUrl.searchParams.get('order'), 'desc', 'stackoverflow get_question_answers: default order desc')
+  equal(answers.data.answers[0].answer_id, 11227902, 'stackoverflow get_question_answers: answer id')
+  equal(answers.data.answers[0].is_accepted, true, 'stackoverflow get_question_answers: accepted flag')
+  equal(answers.data.answers[0].owner_display_name, 'Mysticial', 'stackoverflow get_question_answers: answer author')
+
+  const single = await runTool('com.stackoverflow.main', 'get_answer', {
+    input: { answer_id: 11227902 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 298 })
+      },
+    },
+  })
+  equal(single.status, 'ok', 'stackoverflow get_answer: status')
+  const answerUrl = new URL(requests[1].url)
+  equal(answerUrl.origin + answerUrl.pathname, 'https://api.stackexchange.com/2.3/answers/11227902', 'stackoverflow get_answer: answer endpoint')
+  equal(single.data.answer.score, 31000, 'stackoverflow get_answer: score')
+  equal(single.data.answer.creation_date, '2012-06-27T14:45:38.000Z', 'stackoverflow get_answer: ISO date')
+}
+
+{
+  // stackoverflow: get_user maps the public profile (nested badge_counts,
+  // accept_rate) and search_users sends inname with the reputation default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_user', {
+    input: { user_id: 22656 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 296 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_user: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_user: user endpoint')
+  equal(result.data.user.display_name, 'Jon Skeet', 'stackoverflow get_user: display name')
+  equal(result.data.user.reputation, 1445000, 'stackoverflow get_user: reputation')
+  equal(result.data.user.badge_gold, 900, 'stackoverflow get_user: gold badges from badge_counts')
+  equal(result.data.user.accept_rate, 87, 'stackoverflow get_user: accept rate')
+  equal(result.data.user.location, 'Reading, United Kingdom', 'stackoverflow get_user: location')
+
+  const found = await runTool('com.stackoverflow.main', 'search_users', {
+    input: { inname: 'skeet' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 295 })
+      },
+    },
+  })
+  equal(found.status, 'ok', 'stackoverflow search_users: status')
+  const usersUrl = new URL(requests[1].url)
+  equal(usersUrl.pathname, '/2.3/users', 'stackoverflow search_users: users endpoint')
+  equal(usersUrl.searchParams.get('inname'), 'skeet', 'stackoverflow search_users: inname')
+  equal(usersUrl.searchParams.get('sort'), 'reputation', 'stackoverflow search_users: default sort reputation')
+  equal(found.data.users[0].user_id, 22656, 'stackoverflow search_users: user id')
+}
+
+{
+  // stackoverflow: get_my_profile takes the user id from the page
+  // (StackExchange.options.user), never from the caller — and a logged-out page
+  // is a classified auth error, matching upstream getCurrentUserId().
+  const requests = []
+  const authed = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 294 })
+      },
+      globals: { StackExchange: { options: { user: { isRegistered: true, userId: 22656 } } } },
+    },
+  })
+  equal(authed.status, 'ok', 'stackoverflow get_my_profile: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_my_profile: page user id in the path')
+  equal(authed.data.user.display_name, 'Jon Skeet', 'stackoverflow get_my_profile: profile mapped')
+
+  const anonymous = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [] }) },
+  })
+  equal(anonymous.status, 'error', 'stackoverflow get_my_profile: logged-out page is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'stackoverflow get_my_profile: logged-out page classified as UNAUTHENTICATED')
+}
+
+{
+  // stackoverflow: get_tag_info makes the two upstream calls (info + wikis) and
+  // merges the wiki into the tag; search_excerpts maps question and answer hits.
+  const requests = []
+  const tag = await runTool('com.stackoverflow.main', 'get_tag_info', {
+    input: { tag: 'javascript' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (new URL(url).pathname.endsWith('/wikis')) {
+          return jsonResponse({
+            items: [{ tag_name: 'javascript', excerpt: 'For questions about programming in ECMAScript.', body: '<p>JavaScript wiki</p>' }],
+            has_more: false,
+            quota_remaining: 293,
+          })
+        }
+        return jsonResponse({
+          items: [{ name: 'javascript', count: 2400000, has_synonyms: true, is_moderator_only: false, is_required: false }],
+          has_more: false,
+          quota_remaining: 292,
+        })
+      },
+    },
+  })
+  equal(tag.status, 'ok', 'stackoverflow get_tag_info: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/tags/javascript/info', 'stackoverflow get_tag_info: tag info endpoint')
+  equal(new URL(requests[1].url).pathname, '/2.3/tags/javascript/wikis', 'stackoverflow get_tag_info: wiki endpoint')
+  equal(tag.data.tag.name, 'javascript', 'stackoverflow get_tag_info: tag name')
+  equal(tag.data.tag.count, 2400000, 'stackoverflow get_tag_info: tag count')
+  equal(tag.data.tag.has_synonyms, true, 'stackoverflow get_tag_info: synonyms flag')
+  equal(tag.data.tag.excerpt.includes('ECMAScript'), true, 'stackoverflow get_tag_info: wiki excerpt merged')
+  equal(tag.data.tag.wiki_body, '<p>JavaScript wiki</p>', 'stackoverflow get_tag_info: wiki body merged')
+
+  const excerpts = await runTool('com.stackoverflow.main', 'search_excerpts', {
+    input: { q: 'useEffect cleanup', accepted: true },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          items: [
+            {
+              question_id: 53331175,
+              answer_id: 0,
+              title: 'React useEffect cleanup',
+              excerpt: '…',
+              item_type: 'question',
+              tags: ['javascript', 'reactjs'],
+              score: 412,
+              is_answered: true,
+              creation_date: 1550000000,
+            },
+          ],
+          has_more: false,
+          quota_remaining: 291,
+        })
+      },
+    },
+  })
+  equal(excerpts.status, 'ok', 'stackoverflow search_excerpts: status')
+  const excerptsUrl = new URL(requests[2].url)
+  equal(excerptsUrl.pathname, '/2.3/search/excerpts', 'stackoverflow search_excerpts: endpoint')
+  equal(excerptsUrl.searchParams.get('accepted'), 'true', 'stackoverflow search_excerpts: boolean sent as true')
+  equal(excerptsUrl.searchParams.get('sort'), 'relevance', 'stackoverflow search_excerpts: default sort relevance')
+  equal(excerpts.data.results[0].item_type, 'question', 'stackoverflow search_excerpts: item type')
+  equal(excerpts.data.results[0].answer_id, 0, 'stackoverflow search_excerpts: question hit has answer_id 0')
+}
+
+{
+  // stackoverflow: the API's numeric error_id envelope is classified the way
+  // upstream does it (502 → rate limited), and a non-Stack-Overflow tab refuses
+  // to run instead of calling the API from the wrong site.
+  const limited = await runTool('com.stackoverflow.main', 'list_questions', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async () => jsonResponse({ error_id: 502, error_name: 'throttle_violation', error_message: 'too many requests from this IP' }),
+    },
+  })
+  equal(limited.status, 'error', 'stackoverflow error_id: 502 is an error')
+  equal(limited.error_code, 'RATE_LIMITED', 'stackoverflow error_id: 502 classified as RATE_LIMITED')
+
+  let requests = 0
+  const wrongHost = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'x' },
+    page: {
+      hostname: 'stackoverflow.com.evil.example',
+      fetch: async () => {
+        requests++
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(wrongHost.status, 'error', 'stackoverflow wrong host: is an error')
+  equal(wrongHost.error_code, 'UNSUPPORTED_PAGE', 'stackoverflow wrong host: classified as UNSUPPORTED_PAGE')
+  equal(requests, 0, 'stackoverflow wrong host: no API call is made')
 }
 
 // --- Slack -------------------------------------------------------------------
@@ -2463,6 +2831,42 @@ section('urlRegex probe: app.todoist.com')
     for (const url of mustMatch) ok(regex.test(url), `todoist urlRegex matches ${url} (${tool.name})`)
     for (const url of mustNotMatch)
       ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+section('urlRegex probe: stackoverflow.com')
+
+{
+  // Upstream scopes the plugin to `*://*.stackoverflow.com/*`, so the port keeps
+  // every subdomain (meta.*, www.*) while refusing lookalike hosts, plain HTTP
+  // and non-default ports.
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.stackoverflow.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://stackoverflow.com/',
+    'https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster',
+    'https://stackoverflow.com/questions?tab=Newest&pagesize=50',
+    'https://stackoverflow.com/users/22656/jon-skeet#answers',
+    'https://stackoverflow.com/search?q=react+hooks#top',
+    'https://stackoverflow.com/tags/javascript/info',
+    'https://meta.stackoverflow.com/questions/ask',
+    'https://www.stackoverflow.com/questions',
+  ]
+  const mustNotMatch = [
+    'http://stackoverflow.com/questions',
+    'https://stackoverflow.com.evil.example/questions',
+    'https://evil.example/stackoverflow.com/questions',
+    'https://stackoverflow.com:8443/questions',
+    'https://user@stackoverflow.com/questions',
+    'https://stackoverflow.co/questions',
+    'https://api.stackexchange.com/2.3/questions',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `stackoverflow urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `stackoverflow urlRegex rejects ${url} (${tool.name})`)
   }
 }
 

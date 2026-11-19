@@ -25,6 +25,7 @@ const PLUGINS = {
   jira: '@opentabs-dev/opentabs-plugin-jira',
   slack: '@opentabs-dev/opentabs-plugin-slack',
   todoist: '@opentabs-dev/opentabs-plugin-todoist',
+  stackoverflow: '@opentabs-dev/opentabs-plugin-stackoverflow',
 }
 
 async function fetchWithRetry(url, attempts = 3) {
