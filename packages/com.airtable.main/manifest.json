@@ -1,0 +1,55 @@
+{
+  "id": "com.airtable.main",
+  "version": "0.1.0",
+  "description": "Read and write Airtable bases, tables, records, cells and comments (workspaces, schema, records, activity, select choices) through your own logged-in airtable.com web session. Uses the web client's internal /v0.3 API in the current tab.",
+  "tools": [
+    {
+      "name": "list_workspaces",
+      "description": "List all workspaces and bases the current user has access to. Returns workspace metadata with nested base (application) information.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspaces.js"
+    },
+    {
+      "name": "get_base_schema",
+      "description": "Get the full schema of an Airtable base including all tables, fields (columns), and views. Use this to understand the structure before reading or writing records.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_base_schema.js"
+    },
+    {
+      "name": "list_records",
+      "description": "List all records (rows) in a table. Returns record IDs, creation times, and cell values keyed by field ID. Use get_base_schema first to learn the field IDs and their types.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_records.js"
+    },
+    {
+      "name": "get_record",
+      "description": "Get a single record (row) by its ID. Returns all cell values for the record.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_record.js"
+    },
+    {
+      "name": "update_cell",
+      "description": "Update a single cell value in a record. The value format depends on the field type: text fields accept strings, number fields accept numbers, select fields accept an object like {\"id\": \"selXxx\"}, and so on. Use get_base_schema to discover field IDs and types.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_cell.js"
+    },
+    {
+      "name": "get_record_activity",
+      "description": "Get the activity history and comments for a record. Returns a chronological list of changes (cell updates, record creation, comments, etc.) with user attribution.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_record_activity.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a comment to a record. Comments are visible to all collaborators on the base.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "get_field_choices",
+      "description": "Get the available choices for a single-select or multi-select field. Returns choice IDs, names, and colors. Use the choice ID (sel prefix) when setting cell values for select fields.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*airtable\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_field_choices.js"
+    }
+  ]
+}

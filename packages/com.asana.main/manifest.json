@@ -1,0 +1,151 @@
+{
+  "id": "com.asana.main",
+  "version": "0.1.0",
+  "description": "Read and write Asana tasks, projects, sections, comments, tags, teams and users on app.asana.com in your current tab. List and search tasks, create/update/complete/delete tasks, add followers, manage projects and sections, comment on tasks, and list workspaces, users, tags and teams. Uses your own logged-in Asana session.",
+  "tools": [
+    {
+      "name": "get_task",
+      "description": "Get detailed information about a specific task by its GID.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_task.js"
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task in a workspace. Optionally assign to a project, user, or parent task.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_task.js"
+    },
+    {
+      "name": "update_task",
+      "description": "Update an existing task — change name, completion status, assignee, dates, or notes.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_task.js"
+    },
+    {
+      "name": "delete_task",
+      "description": "Permanently delete a task by its GID. This action cannot be undone.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_task.js"
+    },
+    {
+      "name": "search_tasks",
+      "description": "Search for tasks in a workspace. Supports filtering by text, assignee, completion status, due dates, and projects.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_tasks.js"
+    },
+    {
+      "name": "get_tasks_for_project",
+      "description": "List tasks in a project. Supports pagination with limit and offset.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tasks_for_project.js"
+    },
+    {
+      "name": "get_tasks_for_section",
+      "description": "List tasks in a project section. Supports pagination with limit and offset.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tasks_for_section.js"
+    },
+    {
+      "name": "get_subtasks",
+      "description": "List subtasks of a parent task. Supports pagination with limit and offset.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_subtasks.js"
+    },
+    {
+      "name": "add_followers",
+      "description": "Add followers to a task. Followers receive notifications about task activity.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_followers.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List projects in a workspace. Returns projects sorted by name with optional filtering by archived status. Supports pagination via offset.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific project by its GID.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project in a workspace. Requires a workspace GID and project name. Optionally set notes, color, team, dates, and visibility.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project.js"
+    },
+    {
+      "name": "update_project",
+      "description": "Update an existing project. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_project.js"
+    },
+    {
+      "name": "list_sections",
+      "description": "List all sections in a project. Sections are used to organize tasks into groups within a project.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sections.js"
+    },
+    {
+      "name": "create_section",
+      "description": "Create a new section in a project. Sections organize tasks into groups.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_section.js"
+    },
+    {
+      "name": "add_task_to_section",
+      "description": "Add a task to a specific section. The task will appear at the top of the section. A task can only be in one section of a given project at a time.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_task_to_section.js"
+    },
+    {
+      "name": "get_stories_for_task",
+      "description": "List stories (comments and activity) on a task.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_stories_for_task.js"
+    },
+    {
+      "name": "create_story",
+      "description": "Add a comment to a task.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_story.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Asana user, including their workspaces.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get detailed information about a specific Asana user by their GID.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "list_users_for_workspace",
+      "description": "List all users in a workspace.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users_for_workspace.js"
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List all workspaces the current user has access to.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspaces.js"
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags in a workspace.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tags.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all teams in a workspace.",
+      "urlRegex": "^https://app\\.asana\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    }
+  ]
+}

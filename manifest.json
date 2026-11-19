@@ -1,6 +1,226 @@
 {
-  "generatedAt": "2026-11-19T05:53:59.635Z",
+  "generatedAt": "2026-11-19T06:11:46.281Z",
   "packages": [
+    {
+      "id": "com.airtable.main",
+      "version": "0.1.0",
+      "description": "Read and write Airtable bases, tables, records, cells and comments (workspaces, schema, records, activity, select choices) through your own logged-in airtable.com web session. Uses the web client's internal /v0.3 API in the current tab.",
+      "toolCount": 8,
+      "files": [
+        {
+          "path": "packages/com.airtable.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.airtable.main/manifest.json",
+          "sha256": "78bf85122def3176a15625f4f5be595b9c8337f12796de6f7cdf7ed1db09aa27"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/create_comment.js",
+          "sha256": "a3fbc7073eba7f0860def1ddd077a94bbcb060497ee1856bca79ea83342c1e86"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/get_base_schema.js",
+          "sha256": "8e2c397a59993669b592a2f1d633c47f8231beb463c67e98da5c41064c2b9beb"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/get_field_choices.js",
+          "sha256": "b8ef7b3859b152ff2c53bb6e26ba3f0951c17f1b2cdea7e27f3c84a44ae1bcb3"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/get_record_activity.js",
+          "sha256": "4daa33d3b67ba61b6a749db68d8cf77caed562d2c845751ff60b2b7d20008ef8"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/get_record.js",
+          "sha256": "c706eb6b66d77acca5f1637f96bbe85be15bcca0ba32daf4729d9bd75224a3f8"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/list_records.js",
+          "sha256": "624dec402f3b645ddd8815bc83471c978f798c80afdc2991c6d06598521f739b"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/list_workspaces.js",
+          "sha256": "711c8efa894e904759cff070a7c55d1c4a27e905e254ac0ac2bac4361e705e5a"
+        },
+        {
+          "path": "packages/com.airtable.main/workflows/update_cell.js",
+          "sha256": "01aa4dbf2d78ce300d4074ecb91e4f0d23414bd1ef3ab4d336c4477b62f416c3"
+        }
+      ]
+    },
+    {
+      "id": "com.asana.main",
+      "version": "0.1.0",
+      "description": "Read and write Asana tasks, projects, sections, comments, tags, teams and users on app.asana.com in your current tab. List and search tasks, create/update/complete/delete tasks, add followers, manage projects and sections, comment on tasks, and list workspaces, users, tags and teams. Uses your own logged-in Asana session.",
+      "toolCount": 24,
+      "files": [
+        {
+          "path": "packages/com.asana.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.asana.main/manifest.json",
+          "sha256": "dfd9b1a2df81e8e6e98b01dc323931c270757ff02a54bb634695868a5f85925a"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/add_followers.js",
+          "sha256": "974c3911476a0cd84873d56d5034eb69e827936e1dabe4aca5c2dd4ecf0e220f"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/add_task_to_section.js",
+          "sha256": "cbb14952ec3467860159efe2e0de8f880800724512e0dc42dc52d387bd1e3215"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/create_project.js",
+          "sha256": "c49f732137e5bd69c1290b26a2ba03e3f447cea8f5724697002d9c381eea8224"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/create_section.js",
+          "sha256": "1314b2aefe15e45f64d1999306b48a6ded7dfb233ee9d19e5982d30fe8ea65e1"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/create_story.js",
+          "sha256": "051bfc91adb071d82d5ce35a03885ad61aef8f21bff8efeeb6e4d687b28320fd"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/create_task.js",
+          "sha256": "ca5112af2323a3017df4452fbc9e8feaccbd41fae533394e12a63849efeeaa2b"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/delete_task.js",
+          "sha256": "4ac27df6890d2b3d35d593bb49a96c42991b3b3d2da51aaeb72dbd4824a15ac3"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_current_user.js",
+          "sha256": "03bd77c17c3c75217f5f31bb87720d890eee2f7452d2785bb56eaa1e4f63df28"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_project.js",
+          "sha256": "4c69730b408caf0faeec9c5196e09799d0cfaa9bd1f1ca37fd0bdb9c8acf36ff"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_stories_for_task.js",
+          "sha256": "18eb3d18932e1f0a3010961961b7d6159d473c1dfec1bbf19853720af3c5de54"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_subtasks.js",
+          "sha256": "21b013f2a28f78b2ff5d9c7afd8da7f90e237473e67ee2fdeb90ef8119ce9e92"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_task.js",
+          "sha256": "29fa24c4e780c7d2e7e2146362e445e11f4e8d6958e945a210ae5fcc02e40fdf"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_tasks_for_project.js",
+          "sha256": "a06c718a7651af46d05af0ae6d5e4326d49a2176022cfea8d70cc13426f5569d"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_tasks_for_section.js",
+          "sha256": "7567099e2aa4e11836b01dab10e9bee2228dde0adf1ceba815aee4fc839dc576"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/get_user.js",
+          "sha256": "176f1163428a4fdb613909919cfbae9020750fb9c65e98c4fdc777f391eb91a3"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_projects.js",
+          "sha256": "f04bf8a93a1e40afb8fbcc88e611c0645268e47cefbab0aa3ec5f228164389a9"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_sections.js",
+          "sha256": "b8c9b55c8e99e9591cee73ca9cf51dc2e765085dce8db724f58aec71ce427ba9"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_tags.js",
+          "sha256": "cfa831e80e786ac8950dc0e4a679b507bf41cc015c698d4ecd561e70c1bc32bd"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_teams.js",
+          "sha256": "22071a5caf32920894f3f6d3a151c537afd7b3c55d0d0648865ab53b1241c7bf"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_users_for_workspace.js",
+          "sha256": "fd3ef05b6537a20fbe0e1c95e1a8e37e49df487781227360e7c885db2d5f49a3"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/list_workspaces.js",
+          "sha256": "0658483c038df36ae72edf1e026aea00117fdf9f179a2de852e699d53d879b96"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/search_tasks.js",
+          "sha256": "b61ba3a012c1216d766290656dd4646d26eeed10720d9110db5dd5b1b6ab54b1"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/update_project.js",
+          "sha256": "f86a059f52f0a797e9e1a22c51e8b5f951bb93f0422e970b3d4ca2b21c7b69a5"
+        },
+        {
+          "path": "packages/com.asana.main/workflows/update_task.js",
+          "sha256": "0a0d04dbd6e316f17d8b9319b9d4cfa745c9efcac15553c9d1d3de8686669138"
+        }
+      ]
+    },
+    {
+      "id": "com.clickup.main",
+      "version": "0.1.0",
+      "description": "Read your ClickUp workspace from the current app.clickup.com tab: the signed-in user, workspaces and members, spaces, folders, lists, goals and custom fields. Uses your own logged-in ClickUp session.",
+      "toolCount": 11,
+      "files": [
+        {
+          "path": "packages/com.clickup.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.clickup.main/manifest.json",
+          "sha256": "7347d20176264581ea9d64b3662505c02007d5be6b3bbda003835c0ea263f7f2"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_current_user.js",
+          "sha256": "f89019c8a9cf6ac06f8ff0ad877df4ba13d8a73f6b62bbb2f7dc0c3f2c98e09f"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_custom_fields.js",
+          "sha256": "ea0a371312e4ef9f42023981dda94f42791b55eeff41eb58e2c9a5e3ee369246"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_folder.js",
+          "sha256": "1079f422317d4645c902c007e6794725e39c60aa34f0d610b00839982c54d7a3"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_folders.js",
+          "sha256": "f44dd1b418ac5323e69cbcfabd1fc889e638c5f631aa74a70f5aab6d06666c6e"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_goals.js",
+          "sha256": "f474227d0cb36e34c181dc2fd1f6cea9d20d65fa235330dc3ca87455ff688a96"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_list.js",
+          "sha256": "afa0a496a3a98ed07008e7744e6b25c266e431a0e9cd56d9110460e8384d4008"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_lists.js",
+          "sha256": "2743337247afb69a127ea2e62ee5d29054549bffd07bc59c48efd43ed4351c17"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_space.js",
+          "sha256": "8ed149930f0847975cbb833ca36747b491ca5430d4d405bff5db1f3fda24a4b0"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_spaces.js",
+          "sha256": "248847f5037eb218f9e19e524d266a734784958564df32dfada80b5b0e46124e"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_workspace_members.js",
+          "sha256": "e6b5d220b8c6464d31cbd1070c9fbcf1af2b2f4346fefe833ae3aaee34a6d4a8"
+        },
+        {
+          "path": "packages/com.clickup.main/workflows/get_workspace.js",
+          "sha256": "5de3491899586df58d87f83ec1384283a6625b97f022fb521ba1ac357e0611df"
+        }
+      ]
+    },
     {
       "id": "com.discord.main",
       "version": "0.2.0",

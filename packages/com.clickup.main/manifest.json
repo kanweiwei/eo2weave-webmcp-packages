@@ -1,0 +1,73 @@
+{
+  "id": "com.clickup.main",
+  "version": "0.1.0",
+  "description": "Read your ClickUp workspace from the current app.clickup.com tab: the signed-in user, workspaces and members, spaces, folders, lists, goals and custom fields. Uses your own logged-in ClickUp session.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated ClickUp user including name, email, timezone, and avatar.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_workspace",
+      "description": "Get detailed information about a ClickUp workspace including name, owner, plan, and member count. If no workspace_id is provided, returns the current workspace.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace.js"
+    },
+    {
+      "name": "get_workspace_members",
+      "description": "List all members in a ClickUp workspace including their name, email, role, and avatar. If no workspace_id is provided, uses the current workspace.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace_members.js"
+    },
+    {
+      "name": "get_spaces",
+      "description": "List all spaces in a ClickUp workspace. Spaces are top-level containers for organizing work. Returns space name, color, privacy, and archive status. By default excludes archived spaces.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_spaces.js"
+    },
+    {
+      "name": "get_space",
+      "description": "Get detailed information about a specific ClickUp space by its ID. Returns space name, color, privacy, features, and statuses.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_space.js"
+    },
+    {
+      "name": "get_folders",
+      "description": "List all folders in a ClickUp space. Folders organize lists within a space. By default excludes archived folders.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_folders.js"
+    },
+    {
+      "name": "get_folder",
+      "description": "Get detailed information about a specific ClickUp folder by its ID. Returns folder name, order, archive status, and parent space.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_folder.js"
+    },
+    {
+      "name": "get_lists",
+      "description": "List all lists in a ClickUp folder. Lists contain tasks and are the primary work containers. By default excludes archived lists.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_lists.js"
+    },
+    {
+      "name": "get_list",
+      "description": "Get detailed information about a specific ClickUp list by its ID. Returns list name, order, archive status, dates, and parent folder/space.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_list.js"
+    },
+    {
+      "name": "get_goals",
+      "description": "List all goals in a ClickUp workspace. Goals track high-level objectives and can contain key results. Returns goal name, description, completion percentage, and owner.",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_goals.js"
+    },
+    {
+      "name": "get_custom_fields",
+      "description": "List all custom fields defined in a ClickUp workspace. Custom fields add structured data to tasks (text, number, dropdown, checkbox, date, email, URL, etc.).",
+      "urlRegex": "^https?://app\\.clickup\\.com/(?:[^?#]*)(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_custom_fields.js"
+    }
+  ]
+}
