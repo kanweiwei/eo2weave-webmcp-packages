@@ -531,19 +531,34 @@ for (const id of packageIds) {
 
 section('parity: tool sets match the upstream OpenTabs plugins')
 
-for (const [id, expectedCount] of Object.entries(OPENTABS_TOOL_COUNTS)) {
-  const manifest = JSON.parse(readFileSync(path.join(packagesDir, id, 'manifest.json'), 'utf8'))
-  equal(manifest.tools.length, expectedCount, `${id}: tool count matches OpenTabs (${expectedCount})`)
+// Derived from the cache: every package whose upstream manifest is cached is
+// compared against it, so adding a package never means editing this file.
+const upstreamCacheDir = path.join(root, '.cache', 'opentabs')
+
+function upstreamToolsFor(id) {
+  const file = path.join(upstreamCacheDir, `${id.split('.')[1]}-tools.json`)
+  if (!existsSync(file)) return null
+  const cached = JSON.parse(readFileSync(file, 'utf8'))
+  const tools = Array.isArray(cached) ? cached : cached.tools
+  return Array.isArray(tools) ? tools : null
 }
 
-for (const [id, expectedNames] of Object.entries(OPENTABS_TOOL_NAMES)) {
+let parityCovered = 0
+for (const id of readdirSync(packagesDir).sort()) {
+  if (!existsSync(path.join(packagesDir, id, 'manifest.json'))) continue
+  const upstream = upstreamToolsFor(id)
+  if (!upstream) continue
+  parityCovered++
   const manifest = JSON.parse(readFileSync(path.join(packagesDir, id, 'manifest.json'), 'utf8'))
+  const expectedNames = upstream.map((tool) => tool.name).sort()
+  equal(manifest.tools.length, expectedNames.length, `${id}: tool count matches OpenTabs (${expectedNames.length})`)
   equal(
     manifest.tools.map((tool) => tool.name).sort().join(','),
-    [...expectedNames].sort().join(','),
+    expectedNames.join(','),
     `${id}: tool set matches OpenTabs`,
   )
 }
+console.log(`  (${parityCovered} packages compared against upstream manifests)`)
 
 /**
  * Read the inputSchema a workflow declares (the manifest carries only the tool
@@ -579,22 +594,14 @@ function workflowInputSchema(workflowPath) {
  */
 function loadUpstreamSchemas() {
   const cacheDir = path.join(root, '.cache', 'opentabs')
-  const packages = {
-    'com.github.main': 'github',
-    'com.notion.main': 'notion',
-    'com.linear.main': 'linear',
-    'com.hackernews.main': 'hackernews',
-    'com.npm.main': 'npm',
-    'com.slack.main': 'slack',
-    'com.jira.main': 'jira',
-    'com.todoist.main': 'todoist',
-    'com.reddit.main': 'reddit',
-    'com.stackoverflow.main': 'stackoverflow',
-    'com.google-calendar.main': 'google-calendar',
-    'com.google-docs.main': 'google-docs',
-    'com.google-drive.main': 'google-drive',
-    'com.wikipedia.main': 'wikipedia',
-  }
+  const packages = Object.fromEntries(
+    readdirSync(packagesDir)
+      .filter((id) => existsSync(path.join(packagesDir, id, 'manifest.json')))
+      // com.discord.main predates the ported-package contract and declares its
+      // schemas inside the workflow tree rather than as a top-level inputSchema.
+      .filter((id) => id !== 'com.discord.main')
+      .map((id) => [id, id.split('.')[1]]),
+  )
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
     const file = path.join(cacheDir, `${plugin}-tools.json`)
@@ -5587,6 +5594,21 @@ const GDOC_COMMENT = {
   equal(result.status, 'error', 'google-docs wrong host: error status')
   equal(result.error_code, 'UNSUPPORTED_PAGE', 'google-docs wrong host: UNSUPPORTED_PAGE')
   equal(requests.length, 0, 'google-docs wrong host: makes no request')
+}
+
+// --- 4b. Package-local test modules -----------------------------------------
+//
+// A package may ship its execution tests as scripts/tests/<package>.test.mjs
+// exporting `default function (ctx)`. They run here, before the registry check,
+// so a new package never has to edit this file (parallel ports never conflict).
+
+const testsDir = path.join(root, 'scripts', 'tests')
+if (existsSync(testsDir)) {
+  const ctx = { ok, equal, section, runTool, root, packagesDir }
+  for (const file of readdirSync(testsDir).filter((f) => f.endsWith('.test.mjs')).sort()) {
+    const mod = await import(pathToFileURL(path.join(testsDir, file)).href)
+    await mod.default(ctx)
+  }
 }
 
 section('registry manifest')
