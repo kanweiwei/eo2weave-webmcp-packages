@@ -59,6 +59,9 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.google-docs.main': 19,
+  'com.google-drive.main': 17,
+  'com.wikipedia.main': 19,
   'com.google-calendar.main': 18,
   'com.stackoverflow.main': 20,
   'com.reddit.main': 23,
@@ -247,6 +250,67 @@ const OPENTABS_TOOL_NAMES = {
     'list_settings',
     'get_setting',
     'get_colors',
+  ],
+  'com.wikipedia.main': [
+    'search_articles',
+    'get_article',
+    'get_page_summary',
+    'get_article_sections',
+    'get_section_content',
+    'get_article_categories',
+    'get_article_links',
+    'get_article_languages',
+    'get_backlinks',
+    'get_revisions',
+    'compare_revisions',
+    'get_recent_changes',
+    'get_random_articles',
+    'opensearch',
+    'get_current_user',
+    'get_user_contributions',
+    'get_category_members',
+    'get_page_views',
+    'get_featured_content',
+  ],
+  'com.google-drive.main': [
+    'get_current_user',
+    'list_files',
+    'get_file',
+    'search_files',
+    'create_file',
+    'create_folder',
+    'update_file',
+    'delete_file',
+    'move_file',
+    'copy_file',
+    'trash_file',
+    'restore_file',
+    'empty_trash',
+    'list_permissions',
+    'create_permission',
+    'delete_permission',
+    'get_storage_quota',
+  ],
+  'com.google-docs.main': [
+    'get_current_user',
+    'get_current_document',
+    'get_document',
+    'get_document_text',
+    'list_recent_documents',
+    'search_documents',
+    'create_document',
+    'copy_document',
+    'update_document_title',
+    'trash_document',
+    'restore_document',
+    'delete_document',
+    'list_comments',
+    'create_comment',
+    'reply_to_comment',
+    'resolve_comment',
+    'reopen_comment',
+    'delete_comment',
+    'delete_reply',
   ],
 }
 
@@ -527,6 +591,9 @@ function loadUpstreamSchemas() {
     'com.reddit.main': 'reddit',
     'com.stackoverflow.main': 'stackoverflow',
     'com.google-calendar.main': 'google-calendar',
+    'com.google-docs.main': 'google-docs',
+    'com.google-drive.main': 'google-drive',
+    'com.wikipedia.main': 'wikipedia',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -3753,6 +3820,1774 @@ const GCAL_EVENT = {
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
+
+section('execution: Wikipedia tools against a stubbed page')
+
+// --- Wikipedia ---------------------------------------------------------------
+// The wikipedia port speaks the MediaWiki action API on the tab's own origin
+// (/w/api.php, format=json&formatversion=2) for every tool except the three
+// Wikimedia REST endpoints (page summary, featured feed, page views). The tests
+// stub that same-origin fetch and assert both the request shape and the
+// upstream mapping of each response.
+
+function wikiPage(handler, extra = {}) {
+  const calls = []
+  const page = {
+    hostname: 'en.wikipedia.org',
+    href: 'https://en.wikipedia.org/wiki/JavaScript',
+    origin: 'https://en.wikipedia.org',
+    globals: { mw: { config: { values: { wgSiteName: 'Wikipedia' } } } },
+    fetch: async (url, init = {}) => {
+      calls.push({ url: String(url), init })
+      return handler(String(url), init)
+    },
+    ...extra,
+  }
+  return { page, calls }
+}
+
+const WIKI_ARTICLE_PAGE = {
+  pageid: 7072926,
+  ns: 0,
+  title: 'JavaScript',
+  extract: 'JavaScript, often abbreviated as JS, is a programming language.',
+  pageprops: { 'wikibase-shortdesc': 'Programming language' },
+  fullurl: 'https://en.wikipedia.org/wiki/JavaScript',
+  editurl: 'https://en.wikipedia.org/w/index.php?title=JavaScript&action=edit',
+  thumbnail: { source: 'https://upload.wikimedia.org/thumb.png', width: 300, height: 200 },
+  length: 123456,
+  touched: '2026-11-18T12:00:00Z',
+  protection: [
+    { type: 'edit', level: 'autoconfirmed', expiry: 'infinity' },
+    { type: 'move', level: 'sysop', expiry: 'infinity' },
+  ],
+}
+
+{
+  // Search: list=search with the default limit and the page-side mapping that
+  // strips the highlight markup out of the snippet.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      batchcomplete: true,
+      query: {
+        search: [
+          {
+            pageid: 7072926,
+            title: 'JavaScript',
+            snippet: '<span class="searchmatch">JavaScript</span> is a programming language',
+            size: 123456,
+            wordcount: 12345,
+            timestamp: '2026-11-18T12:00:00Z',
+          },
+        ],
+        searchinfo: { totalhits: 4291, suggestion: 'javascript tutorial' },
+      },
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'search_articles', {
+    input: { query: 'javascript' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia search_articles: status')
+  equal(result.data.results.length, 1, 'wikipedia search_articles: result count')
+  equal(result.data.results[0].pageid, 7072926, 'wikipedia search_articles: page id')
+  equal(result.data.results[0].snippet, 'JavaScript is a programming language', 'wikipedia search_articles: snippet stripped')
+  equal(result.data.results[0].wordcount, 12345, 'wikipedia search_articles: word count')
+  equal(result.data.total_hits, 4291, 'wikipedia search_articles: total hits')
+  equal(result.data.suggestion, 'javascript tutorial', 'wikipedia search_articles: suggestion')
+  const url = new URL(calls[0].url)
+  equal(url.origin, 'https://en.wikipedia.org', 'wikipedia search_articles: same-origin call')
+  equal(url.pathname, '/w/api.php', 'wikipedia search_articles: action API path')
+  equal(url.searchParams.get('action'), 'query', 'wikipedia search_articles: action')
+  equal(url.searchParams.get('list'), 'search', 'wikipedia search_articles: list')
+  equal(url.searchParams.get('srsearch'), 'javascript', 'wikipedia search_articles: query text')
+  equal(url.searchParams.get('srlimit'), '10', 'wikipedia search_articles: default limit')
+  equal(url.searchParams.get('format'), 'json', 'wikipedia search_articles: format')
+  equal(url.searchParams.get('formatversion'), '2', 'wikipedia search_articles: formatversion')
+  equal(calls[0].init.credentials, 'include', 'wikipedia search_articles: sends credentials')
+}
+
+{
+  // Search pagination: offset and a non-default limit travel as integers.
+  const { page, calls } = wikiPage(() => jsonResponse({ query: { search: [] } }))
+  const result = await runTool('com.wikipedia.main', 'search_articles', {
+    input: { query: 'rust', limit: 5, offset: 10 },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia search_articles paged: status')
+  equal(result.data.results.length, 0, 'wikipedia search_articles paged: empty page')
+  equal(result.data.total_hits, 0, 'wikipedia search_articles paged: missing total defaults to 0')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('srlimit'), '5', 'wikipedia search_articles paged: limit')
+  equal(url.searchParams.get('sroffset'), '10', 'wikipedia search_articles paged: offset')
+}
+
+{
+  // Article read: extracts|info|pageprops|pageimages in one request, mapped
+  // into the upstream page summary shape (description from pageprops).
+  const { page, calls } = wikiPage(() => jsonResponse({ query: { pages: [WIKI_ARTICLE_PAGE] } }))
+  const result = await runTool('com.wikipedia.main', 'get_article', {
+    input: { title: 'JavaScript' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_article: status')
+  equal(result.data.article.pageid, 7072926, 'wikipedia get_article: page id')
+  equal(result.data.article.title, 'JavaScript', 'wikipedia get_article: title')
+  equal(result.data.article.description, 'Programming language', 'wikipedia get_article: short description')
+  equal(result.data.article.url, 'https://en.wikipedia.org/wiki/JavaScript', 'wikipedia get_article: canonical url')
+  equal(result.data.article.thumbnail, 'https://upload.wikimedia.org/thumb.png', 'wikipedia get_article: thumbnail')
+  equal(result.data.article.length, 123456, 'wikipedia get_article: byte length')
+  equal(result.data.article.last_edited, '2026-11-18T12:00:00Z', 'wikipedia get_article: last edited')
+  equal(result.data.article.protection.length, 2, 'wikipedia get_article: protection entries')
+  equal(result.data.article.protection[1].level, 'sysop', 'wikipedia get_article: protection level')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('titles'), 'JavaScript', 'wikipedia get_article: titles param')
+  equal(
+    url.searchParams.get('prop'),
+    'extracts|info|pageprops|pageimages',
+    'wikipedia get_article: prop list',
+  )
+  equal(url.searchParams.get('exintro'), '1', 'wikipedia get_article: intro extract')
+  equal(url.searchParams.get('explaintext'), '1', 'wikipedia get_article: plain text')
+  equal(url.searchParams.get('piprop'), 'thumbnail', 'wikipedia get_article: thumbnail prop')
+  equal(url.searchParams.get('pithumbsize'), '300', 'wikipedia get_article: thumbnail size')
+  equal(url.searchParams.get('inprop'), 'url|displaytitle|protection', 'wikipedia get_article: info props')
+}
+
+{
+  // A missing title is reported as NOT_FOUND, not as an empty success.
+  const { page } = wikiPage(() =>
+    jsonResponse({ query: { pages: [{ ns: 0, title: 'Nope', missing: true }] } }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_article', {
+    input: { title: 'Nope' },
+    page,
+  })
+  equal(result.status, 'error', 'wikipedia get_article missing: error status')
+  equal(result.error_code, 'NOT_FOUND', 'wikipedia get_article missing: NOT_FOUND')
+  ok(result.message.includes('Nope'), 'wikipedia get_article missing: names the title')
+}
+
+{
+  // Wikimedia REST summary: underscore/percent encoding in the path plus the
+  // mobile/desktop URL and full-resolution image mapping.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      type: 'standard',
+      title: 'Albert Einstein',
+      displaytitle: 'Albert Einstein',
+      pageid: 736,
+      extract: 'Albert Einstein was a German-born theoretical physicist.',
+      description: 'German-born theoretical physicist (1879–1955)',
+      thumbnail: { source: 'https://upload.wikimedia.org/einstein-320.jpg', width: 320, height: 400 },
+      originalimage: { source: 'https://upload.wikimedia.org/einstein.jpg', width: 2000, height: 2500 },
+      content_urls: {
+        desktop: { page: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
+        mobile: { page: 'https://en.m.wikipedia.org/wiki/Albert_Einstein' },
+      },
+      timestamp: '2026-11-17T09:30:00Z',
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_page_summary', {
+    input: { title: 'Albert Einstein' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_page_summary: status')
+  equal(result.data.pageid, 736, 'wikipedia get_page_summary: page id')
+  equal(result.data.description, 'German-born theoretical physicist (1879–1955)', 'wikipedia get_page_summary: description')
+  equal(result.data.thumbnail, 'https://upload.wikimedia.org/einstein-320.jpg', 'wikipedia get_page_summary: thumbnail')
+  equal(result.data.original_image, 'https://upload.wikimedia.org/einstein.jpg', 'wikipedia get_page_summary: original image')
+  equal(result.data.url, 'https://en.wikipedia.org/wiki/Albert_Einstein', 'wikipedia get_page_summary: desktop url')
+  equal(result.data.mobile_url, 'https://en.m.wikipedia.org/wiki/Albert_Einstein', 'wikipedia get_page_summary: mobile url')
+  equal(result.data.timestamp, '2026-11-17T09:30:00Z', 'wikipedia get_page_summary: timestamp')
+  equal(calls[0].url, 'https://en.wikipedia.org/api/rest_v1/page/summary/Albert_Einstein', 'wikipedia get_page_summary: REST path')
+  equal(calls[0].init.credentials, 'include', 'wikipedia get_page_summary: sends credentials')
+}
+
+{
+  // REST 404 becomes NOT_FOUND with the caller's title in the message.
+  const { page } = wikiPage(() => jsonResponse({ title: 'Not found' }, 404))
+  const result = await runTool('com.wikipedia.main', 'get_page_summary', {
+    input: { title: 'Nonexistent article' },
+    page,
+  })
+  equal(result.status, 'error', 'wikipedia get_page_summary 404: error status')
+  equal(result.error_code, 'NOT_FOUND', 'wikipedia get_page_summary 404: NOT_FOUND')
+}
+
+{
+  // Table of contents: action=parse prop=sections keeps the raw string indexes
+  // so they can be fed back into get_section_content.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      parse: {
+        title: 'JavaScript',
+        pageid: 7072926,
+        sections: [
+          { toclevel: 1, level: '2', line: 'History', number: '1', index: '1', byteoffset: 900, anchor: 'History' },
+          { toclevel: 2, level: '3', line: 'Creation at Netscape', number: '1.1', index: '2', byteoffset: 1200, anchor: 'Creation_at_Netscape' },
+        ],
+      },
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_article_sections', {
+    input: { title: 'JavaScript' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_article_sections: status')
+  equal(result.data.title, 'JavaScript', 'wikipedia get_article_sections: title')
+  equal(result.data.sections.length, 2, 'wikipedia get_article_sections: section count')
+  equal(result.data.sections[1].index, '2', 'wikipedia get_article_sections: index is a string')
+  equal(result.data.sections[1].level, '3', 'wikipedia get_article_sections: heading level')
+  equal(result.data.sections[1].number, '1.1', 'wikipedia get_article_sections: section number')
+  equal(result.data.sections[1].anchor, 'Creation_at_Netscape', 'wikipedia get_article_sections: anchor')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('action'), 'parse', 'wikipedia get_article_sections: action=parse')
+  equal(url.searchParams.get('page'), 'JavaScript', 'wikipedia get_article_sections: page param')
+  equal(url.searchParams.get('prop'), 'sections', 'wikipedia get_article_sections: prop')
+}
+
+{
+  // Section body: parsed HTML is flattened to plain text (tags → spaces).
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      parse: {
+        title: 'JavaScript',
+        pageid: 7072926,
+        text: '<div class="mw-parser-output"><p>JavaScript was created by <a href="/wiki/Brendan_Eich">Brendan Eich</a> in 1995.</p></div>',
+      },
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_section_content', {
+    input: { title: 'JavaScript', section: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_section_content: status')
+  equal(result.data.section, 1, 'wikipedia get_section_content: section echoed')
+  equal(
+    result.data.content,
+    'JavaScript was created by Brendan Eich in 1995.',
+    'wikipedia get_section_content: tags stripped to text',
+  )
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('section'), '1', 'wikipedia get_section_content: section param')
+  equal(url.searchParams.get('prop'), 'text', 'wikipedia get_section_content: prop=text')
+  equal(url.searchParams.get('disabletoc'), '1', 'wikipedia get_section_content: toc disabled')
+  equal(url.searchParams.get('disableeditsection'), '1', 'wikipedia get_section_content: edit links disabled')
+}
+
+{
+  // MediaWiki answers application errors with HTTP 200: an invalid section is
+  // classified as VALIDATION instead of leaking a generic API error.
+  const { page } = wikiPage(() =>
+    jsonResponse({ error: { code: 'invalidsection', info: 'The section parameter must be a valid section id' } }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_section_content', {
+    input: { title: 'JavaScript', section: 99 },
+    page,
+  })
+  equal(result.status, 'error', 'wikipedia invalidsection: error status')
+  equal(result.error_code, 'VALIDATION', 'wikipedia invalidsection: VALIDATION')
+  ok(result.message.includes('99'), 'wikipedia invalidsection: names the section')
+}
+
+{
+  // Categories, links and languages all read one page prop each.
+  const categories = await runTool('com.wikipedia.main', 'get_article_categories', {
+    input: { title: 'JavaScript' },
+    page: wikiPage(() =>
+      jsonResponse({
+        query: {
+          pages: [
+            {
+              pageid: 7072926,
+              title: 'JavaScript',
+              categories: [
+                { ns: 14, title: 'Category:Programming languages' },
+                { ns: 14, title: 'Category:JavaScript' },
+              ],
+            },
+          ],
+        },
+      }),
+    ).page,
+  })
+  equal(categories.status, 'ok', 'wikipedia get_article_categories: status')
+  equal(categories.data.categories.length, 2, 'wikipedia get_article_categories: count')
+  equal(categories.data.categories[0].title, 'Category:Programming languages', 'wikipedia get_article_categories: title')
+
+  const { page: linksPage, calls: linkCalls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        pages: [
+          {
+            pageid: 7072926,
+            title: 'JavaScript',
+            links: [{ ns: 0, title: 'ECMAScript' }, { ns: 0, title: 'Java (programming language)' }],
+          },
+        ],
+      },
+    }),
+  )
+  const links = await runTool('com.wikipedia.main', 'get_article_links', {
+    input: { title: 'JavaScript' },
+    page: linksPage,
+  })
+  equal(links.status, 'ok', 'wikipedia get_article_links: status')
+  equal(links.data.links.join('|'), 'ECMAScript|Java (programming language)', 'wikipedia get_article_links: titles')
+  const linksUrl = new URL(linkCalls[0].url)
+  equal(linksUrl.searchParams.get('prop'), 'links', 'wikipedia get_article_links: prop')
+  equal(linksUrl.searchParams.get('plnamespace'), '0', 'wikipedia get_article_links: main namespace only')
+
+  const { page: langPage, calls: langCalls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        pages: [
+          {
+            pageid: 7072926,
+            title: 'JavaScript',
+            langlinks: [
+              { lang: 'fr', title: 'JavaScript', url: 'https://fr.wikipedia.org/wiki/JavaScript' },
+              { lang: 'de', '*': 'JavaScript', url: 'https://de.wikipedia.org/wiki/JavaScript' },
+            ],
+          },
+        ],
+      },
+    }),
+  )
+  const languages = await runTool('com.wikipedia.main', 'get_article_languages', {
+    input: { title: 'JavaScript', limit: 2 },
+    page: langPage,
+  })
+  equal(languages.status, 'ok', 'wikipedia get_article_languages: status')
+  equal(languages.data.languages[0].lang, 'fr', 'wikipedia get_article_languages: language code')
+  equal(languages.data.languages[0].url, 'https://fr.wikipedia.org/wiki/JavaScript', 'wikipedia get_article_languages: url')
+  equal(languages.data.languages[1].title, 'JavaScript', 'wikipedia get_article_languages: legacy * title fallback')
+  const langUrl = new URL(langCalls[0].url)
+  equal(langUrl.searchParams.get('llprop'), 'url', 'wikipedia get_article_languages: asks for urls')
+  equal(langUrl.searchParams.get('lllimit'), '2', 'wikipedia get_article_languages: limit')
+}
+
+{
+  // Backlinks and category members both map pageid + title pairs.
+  const { page: backlinkPage, calls: backlinkCalls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        backlinks: [
+          { pageid: 100, ns: 0, title: 'ECMAScript' },
+          { pageid: 101, ns: 0, title: 'Web browser' },
+        ],
+      },
+    }),
+  )
+  const backlinks = await runTool('com.wikipedia.main', 'get_backlinks', {
+    input: { title: 'JavaScript' },
+    page: backlinkPage,
+  })
+  equal(backlinks.status, 'ok', 'wikipedia get_backlinks: status')
+  equal(backlinks.data.backlinks.length, 2, 'wikipedia get_backlinks: count')
+  equal(backlinks.data.backlinks[1].pageid, 101, 'wikipedia get_backlinks: page id')
+  const backlinkUrl = new URL(backlinkCalls[0].url)
+  equal(backlinkUrl.searchParams.get('list'), 'backlinks', 'wikipedia get_backlinks: list')
+  equal(backlinkUrl.searchParams.get('bltitle'), 'JavaScript', 'wikipedia get_backlinks: title param')
+  equal(backlinkUrl.searchParams.get('blnamespace'), '0', 'wikipedia get_backlinks: namespace')
+
+  const { page: memberPage, calls: memberCalls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        categorymembers: [
+          { pageid: 200, ns: 14, title: 'Category:Scripting languages' },
+          { pageid: 201, ns: 14, title: 'Category:Programming languages' },
+        ],
+      },
+    }),
+  )
+  const members = await runTool('com.wikipedia.main', 'get_category_members', {
+    input: { category: 'Category:Programming languages', type: 'subcat' },
+    page: memberPage,
+  })
+  equal(members.status, 'ok', 'wikipedia get_category_members: status')
+  equal(members.data.members.length, 2, 'wikipedia get_category_members: count')
+  equal(members.data.members[0].title, 'Category:Scripting languages', 'wikipedia get_category_members: title')
+  const memberUrl = new URL(memberCalls[0].url)
+  equal(memberUrl.searchParams.get('cmtitle'), 'Category:Programming languages', 'wikipedia get_category_members: category param')
+  equal(memberUrl.searchParams.get('cmtype'), 'subcat', 'wikipedia get_category_members: type passthrough')
+}
+
+{
+  // Revision history plus the diff renderer: deleted/added cells become -/+ lines.
+  const { page: revPage, calls: revCalls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        pages: [
+          {
+            pageid: 7072926,
+            title: 'JavaScript',
+            revisions: [
+              {
+                revid: 1267000001,
+                parentid: 1266999999,
+                user: 'Ada Lovelace',
+                timestamp: '2026-11-18T12:00:00Z',
+                comment: 'Fix typo in the history section',
+                size: 123456,
+              },
+            ],
+          },
+        ],
+      },
+    }),
+  )
+  const revisions = await runTool('com.wikipedia.main', 'get_revisions', {
+    input: { title: 'JavaScript' },
+    page: revPage,
+  })
+  equal(revisions.status, 'ok', 'wikipedia get_revisions: status')
+  equal(revisions.data.revisions[0].revid, 1267000001, 'wikipedia get_revisions: revision id')
+  equal(revisions.data.revisions[0].user, 'Ada Lovelace', 'wikipedia get_revisions: editor')
+  equal(revisions.data.revisions[0].size, 123456, 'wikipedia get_revisions: size')
+  const revUrl = new URL(revCalls[0].url)
+  equal(revUrl.searchParams.get('prop'), 'revisions', 'wikipedia get_revisions: prop')
+  equal(revUrl.searchParams.get('rvlimit'), '10', 'wikipedia get_revisions: default limit')
+  equal(revUrl.searchParams.get('rvprop'), 'ids|timestamp|user|comment|size', 'wikipedia get_revisions: props')
+
+  const { page: diffPage, calls: diffCalls } = wikiPage(() =>
+    jsonResponse({
+      compare: {
+        fromid: 0,
+        fromrevid: 1266999999,
+        fromtitle: 'JavaScript',
+        toid: 0,
+        torevid: 1267000001,
+        totitle: 'JavaScript',
+        body: '<table><tr><td class="diff-deletedline"><div>was created in 1994</div></td><td class="diff-addedline"><div>was created in 1995 &amp; shipped</div></td></tr><tr><td colspan="2" class="diff-context"><div>Context line</div></td></tr></table>',
+      },
+    }),
+  )
+  const diff = await runTool('com.wikipedia.main', 'compare_revisions', {
+    input: { from_rev: 1266999999, to_rev: 1267000001 },
+    page: diffPage,
+  })
+  equal(diff.status, 'ok', 'wikipedia compare_revisions: status')
+  equal(diff.data.from_title, 'JavaScript', 'wikipedia compare_revisions: from title')
+  ok(diff.data.diff.includes('- was created in 1994'), 'wikipedia compare_revisions: deletion line')
+  ok(diff.data.diff.includes('+ was created in 1995 & shipped'), 'wikipedia compare_revisions: addition line with entity decoded')
+  ok(diff.data.diff.includes('Context line'), 'wikipedia compare_revisions: context line')
+  ok(!diff.data.diff.includes('<div>'), 'wikipedia compare_revisions: no markup left')
+  const diffUrl = new URL(diffCalls[0].url)
+  equal(diffUrl.searchParams.get('action'), 'compare', 'wikipedia compare_revisions: action=compare')
+  equal(diffUrl.searchParams.get('fromrev'), '1266999999', 'wikipedia compare_revisions: fromrev')
+  equal(diffUrl.searchParams.get('torev'), '1267000001', 'wikipedia compare_revisions: torev')
+  equal(diffUrl.searchParams.get('prop'), 'diff|title|ids', 'wikipedia compare_revisions: props')
+}
+
+{
+  // Recent changes: oldlen/newlen become old_size/new_size, filtered to edits.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        recentchanges: [
+          {
+            type: 'edit',
+            ns: 0,
+            title: 'Zig (programming language)',
+            pageid: 42,
+            revid: 1267000100,
+            old_revid: 1267000099,
+            user: 'andrewrk',
+            timestamp: '2026-11-19T03:00:00Z',
+            comment: 'Bump version',
+            oldlen: 9000,
+            newlen: 9050,
+          },
+        ],
+      },
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_recent_changes', { input: { limit: 1 }, page })
+  equal(result.status, 'ok', 'wikipedia get_recent_changes: status')
+  equal(result.data.changes[0].title, 'Zig (programming language)', 'wikipedia get_recent_changes: title')
+  equal(result.data.changes[0].old_size, 9000, 'wikipedia get_recent_changes: old size')
+  equal(result.data.changes[0].new_size, 9050, 'wikipedia get_recent_changes: new size')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('rctype'), 'edit', 'wikipedia get_recent_changes: edits only')
+  equal(url.searchParams.get('rcnamespace'), '0', 'wikipedia get_recent_changes: article namespace')
+  equal(url.searchParams.get('rclimit'), '1', 'wikipedia get_recent_changes: limit')
+}
+
+{
+  // Random articles and opensearch (a bare JSON array, not an object).
+  const random = await runTool('com.wikipedia.main', 'get_random_articles', {
+    input: { count: 2 },
+    page: wikiPage(() =>
+      jsonResponse({ query: { random: [{ id: 11, ns: 0, title: 'Banana' }, { id: 12, ns: 0, title: 'Kettle' }] } }),
+    ).page,
+  })
+  equal(random.status, 'ok', 'wikipedia get_random_articles: status')
+  equal(random.data.articles.length, 2, 'wikipedia get_random_articles: count')
+  equal(random.data.articles[0].title, 'Banana', 'wikipedia get_random_articles: title')
+
+  const { page: osPage, calls: osCalls } = wikiPage(() =>
+    jsonResponse(['javascript', ['JavaScript', 'JavaScript engine'], ['', ''], ['https://en.wikipedia.org/wiki/JavaScript', 'https://en.wikipedia.org/wiki/JavaScript_engine']]),
+  )
+  const os = await runTool('com.wikipedia.main', 'opensearch', {
+    input: { query: 'javascript', limit: 2 },
+    page: osPage,
+  })
+  equal(os.status, 'ok', 'wikipedia opensearch: status')
+  equal(os.data.suggestions.length, 2, 'wikipedia opensearch: suggestion count')
+  equal(os.data.suggestions[1].title, 'JavaScript engine', 'wikipedia opensearch: title')
+  equal(os.data.suggestions[1].url, 'https://en.wikipedia.org/wiki/JavaScript_engine', 'wikipedia opensearch: url')
+  const osUrl = new URL(osCalls[0].url)
+  equal(osUrl.searchParams.get('action'), 'opensearch', 'wikipedia opensearch: action')
+  equal(osUrl.searchParams.get('search'), 'javascript', 'wikipedia opensearch: search param')
+  equal(osUrl.searchParams.get('namespace'), '0', 'wikipedia opensearch: namespace')
+}
+
+{
+  // Logged-in profile: the identity comes from mw.config, never from the caller.
+  const { page, calls } = wikiPage(
+    () =>
+      jsonResponse({
+        query: {
+          userinfo: {
+            id: 1234,
+            userid: 1234,
+            name: 'Ada',
+            editcount: 4321,
+            registration: '2015-01-02T03:04:05Z',
+            groups: ['*', 'user', 'autoconfirmed', 'extendedconfirmed'],
+          },
+        },
+      }),
+    {
+      globals: {
+        mw: { config: { values: { wgSiteName: 'Wikipedia', wgUserName: 'Ada', wgUserId: 1234 } } },
+      },
+    },
+  )
+  const result = await runTool('com.wikipedia.main', 'get_current_user', { input: {}, page })
+  equal(result.status, 'ok', 'wikipedia get_current_user: status')
+  equal(result.data.user.name, 'Ada', 'wikipedia get_current_user: name')
+  equal(result.data.user.id, 1234, 'wikipedia get_current_user: id')
+  equal(result.data.user.editcount, 4321, 'wikipedia get_current_user: edit count')
+  equal(result.data.user.groups.length, 4, 'wikipedia get_current_user: groups')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('meta'), 'userinfo', 'wikipedia get_current_user: meta=userinfo')
+  equal(url.searchParams.get('uiprop'), 'editcount|registrationdate|groups', 'wikipedia get_current_user: props')
+}
+
+{
+  // Logged-out tab: get_current_user refuses before touching the API.
+  const { page, calls } = wikiPage(() => jsonResponse({}))
+  const result = await runTool('com.wikipedia.main', 'get_current_user', { input: {}, page })
+  equal(result.status, 'error', 'wikipedia logged out: error status')
+  equal(result.error_code, 'UNAUTHENTICATED', 'wikipedia logged out: UNAUTHENTICATED')
+  equal(calls.length, 0, 'wikipedia logged out: no API call')
+}
+
+{
+  // An anonymous visitor's mw.config exposes wgUserId 0, which the port treats
+  // as "not logged in" exactly like upstream's `!userId` check.
+  const { page, calls } = wikiPage(
+    () => jsonResponse({ query: { userinfo: { id: 0, name: '203.0.113.7', anon: true } } }),
+    {
+      globals: {
+        mw: { config: { values: { wgSiteName: 'Wikipedia', wgUserName: '203.0.113.7', wgUserId: 0 } } },
+      },
+    },
+  )
+  const result = await runTool('com.wikipedia.main', 'get_current_user', { input: {}, page })
+  equal(result.status, 'error', 'wikipedia anonymous visitor: error status')
+  equal(result.error_code, 'UNAUTHENTICATED', 'wikipedia anonymous visitor: UNAUTHENTICATED')
+  equal(calls.length, 0, 'wikipedia anonymous visitor: no API call')
+}
+
+{
+  // User contributions: ucuser rides in the query and sizes map through.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      query: {
+        usercontribs: [
+          {
+            user: 'Ada',
+            pageid: 42,
+            revid: 1267000200,
+            parentid: 1267000199,
+            ns: 0,
+            title: 'Analytical Engine',
+            timestamp: '2026-11-19T04:00:00Z',
+            comment: 'Add Babbage citation',
+            size: 5000,
+          },
+        ],
+      },
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_user_contributions', {
+    input: { username: 'Ada', limit: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_user_contributions: status')
+  equal(result.data.contributions[0].revid, 1267000200, 'wikipedia get_user_contributions: revid')
+  equal(result.data.contributions[0].comment, 'Add Babbage citation', 'wikipedia get_user_contributions: comment')
+  const url = new URL(calls[0].url)
+  equal(url.searchParams.get('list'), 'usercontribs', 'wikipedia get_user_contributions: list')
+  equal(url.searchParams.get('ucuser'), 'Ada', 'wikipedia get_user_contributions: user')
+  equal(url.searchParams.get('uclimit'), '1', 'wikipedia get_user_contributions: limit')
+}
+
+{
+  // Page views: the one cross-origin call, anonymous, against wikimedia.org.
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      items: [
+        { project: 'en.wikipedia', article: 'JavaScript', granularity: 'daily', timestamp: '2026110100', access: 'all-access', agent: 'all-agents', views: 1200 },
+        { project: 'en.wikipedia', article: 'JavaScript', granularity: 'daily', timestamp: '2026110200', access: 'all-access', agent: 'all-agents', views: 1800 },
+      ],
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_page_views', {
+    input: { title: 'JavaScript', start: '20261101', end: '20261102' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_page_views: status')
+  equal(result.data.article, 'JavaScript', 'wikipedia get_page_views: article')
+  equal(result.data.views[0].date, '20261101', 'wikipedia get_page_views: date from timestamp')
+  equal(result.data.views[1].count, 1800, 'wikipedia get_page_views: view count')
+  equal(result.data.total, 3000, 'wikipedia get_page_views: total')
+  equal(
+    calls[0].url,
+    'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/JavaScript/daily/20261101/20261102',
+    'wikipedia get_page_views: wikimedia metrics path',
+  )
+  equal(calls[0].init.credentials, 'omit', 'wikipedia get_page_views: anonymous request')
+}
+
+{
+  // Featured content: unencoded YYYY/MM/DD date, tfa + top-10 most read + top-5
+  // on-this-day trimming.
+  const mostread = Array.from({ length: 12 }, (_, i) => ({
+    title: 'Article ' + i,
+    extract: 'Extract ' + i,
+    views: 1000 - i,
+    thumbnail: i === 0 ? { source: 'https://upload.wikimedia.org/a0.jpg' } : undefined,
+  }))
+  const onthisday = Array.from({ length: 6 }, (_, i) => ({ text: 'Event ' + i, year: 1900 + i }))
+  const { page, calls } = wikiPage(() =>
+    jsonResponse({
+      tfa: { title: 'Alan Turing', extract: 'Alan Mathison Turing was an English mathematician.', thumbnail: { source: 'https://upload.wikimedia.org/turing.jpg' } },
+      mostread: { date: '2026-11-19Z', articles: mostread },
+      onthisday,
+    }),
+  )
+  const result = await runTool('com.wikipedia.main', 'get_featured_content', {
+    input: { date: '2026/11/19' },
+    page,
+  })
+  equal(result.status, 'ok', 'wikipedia get_featured_content: status')
+  equal(result.data.featured_article.title, 'Alan Turing', 'wikipedia get_featured_content: TFA title')
+  equal(result.data.featured_article.thumbnail, 'https://upload.wikimedia.org/turing.jpg', 'wikipedia get_featured_content: TFA thumbnail')
+  equal(result.data.most_read.length, 10, 'wikipedia get_featured_content: most read capped at 10')
+  equal(result.data.most_read[0].views, 1000, 'wikipedia get_featured_content: view count')
+  equal(result.data.on_this_day.length, 5, 'wikipedia get_featured_content: on-this-day capped at 5')
+  equal(result.data.on_this_day[1].year, 1901, 'wikipedia get_featured_content: event year')
+  equal(calls[0].url, 'https://en.wikipedia.org/api/rest_v1/feed/featured/2026/11/19', 'wikipedia get_featured_content: feed path')
+}
+
+{
+  // MediaWiki application errors arrive with HTTP 200: rate limiting and a
+  // missing title are classified, not reported as success.
+  const limited = await runTool('com.wikipedia.main', 'search_articles', {
+    input: { query: 'x' },
+    page: wikiPage(() => jsonResponse({ error: { code: 'ratelimited', info: 'You have exceeded your rate limit.' } })).page,
+  })
+  equal(limited.status, 'error', 'wikipedia ratelimited: error status')
+  equal(limited.error_code, 'RATE_LIMITED', 'wikipedia ratelimited: RATE_LIMITED')
+
+  const missing = await runTool('com.wikipedia.main', 'get_revisions', {
+    input: { title: 'Nope' },
+    page: wikiPage(() => jsonResponse({ error: { code: 'missingtitle', info: "The page you specified doesn't exist." } })).page,
+  })
+  equal(missing.status, 'error', 'wikipedia missingtitle: error status')
+  equal(missing.error_code, 'NOT_FOUND', 'wikipedia missingtitle: NOT_FOUND')
+
+  // A wrong host refuses to run and never calls the API.
+  let fetches = 0
+  const wrongHost = await runTool('com.wikipedia.main', 'get_article', {
+    input: { title: 'JavaScript' },
+    page: {
+      hostname: 'en.wikipedia.org.evil.example',
+      href: 'https://en.wikipedia.org.evil.example/wiki/JavaScript',
+      origin: 'https://en.wikipedia.org.evil.example',
+      globals: { mw: { config: { values: { wgSiteName: 'Wikipedia' } } } },
+      fetch: async () => {
+        fetches++
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(wrongHost.status, 'error', 'wikipedia wrong host: error status')
+  equal(wrongHost.error_code, 'UNSUPPORTED_PAGE', 'wikipedia wrong host: UNSUPPORTED_PAGE')
+  equal(fetches, 0, 'wikipedia wrong host: no API call')
+
+  // A dropped connection is a NETWORK failure, not an empty result.
+  const offline = await runTool('com.wikipedia.main', 'get_random_articles', {
+    input: {},
+    page: {
+      hostname: 'en.wikipedia.org',
+      href: 'https://en.wikipedia.org/wiki/Main_Page',
+      origin: 'https://en.wikipedia.org',
+      globals: { mw: { config: { values: { wgSiteName: 'Wikipedia' } } } },
+      fetch: async () => {
+        throw new TypeError('Failed to fetch')
+      },
+    },
+  })
+  equal(offline.status, 'error', 'wikipedia offline: error status')
+  equal(offline.error_code, 'NETWORK', 'wikipedia offline: NETWORK')
+}
+
+section('urlRegex probe: *.wikipedia.org')
+
+{
+  // Upstream scopes the plugin to `*://*.wikipedia.org/*`: the port keeps every
+  // language and project subdomain (en., de., en.m., ...) while refusing
+  // lookalike hosts, plain HTTP, non-default ports and the sibling
+  // wikimedia.org hosts.
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.wikipedia.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://en.wikipedia.org/wiki/JavaScript',
+    'https://en.wikipedia.org/',
+    'https://en.wikipedia.org/wiki/Albert_Einstein?action=history',
+    'https://en.wikipedia.org/wiki/JavaScript#History',
+    'https://de.wikipedia.org/wiki/JavaScript',
+    'https://zh.wikipedia.org/wiki/%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91',
+    'https://en.m.wikipedia.org/wiki/JavaScript',
+    'https://en.wikipedia.org/w/index.php?title=Special:RecentChanges&namespace=0#top',
+  ]
+  const mustNotMatch = [
+    'http://en.wikipedia.org/wiki/JavaScript',
+    'https://en.wikipedia.org.evil.example/wiki/JavaScript',
+    'https://evil.example/en.wikipedia.org/wiki/JavaScript',
+    'https://en.wikipedia.org:8443/wiki/JavaScript',
+    'https://user@en.wikipedia.org/wiki/JavaScript',
+    'https://wikimedia.org/api/rest_v1/page/summary/JavaScript',
+    'https://commons.wikimedia.org/wiki/File:Example.jpg',
+    'https://wikipedia.org.evil.example/',
+    'https://en.wikipediaorg/wiki/JavaScript',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `wikipedia urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `wikipedia urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+
+// --- urlRegex probe: drive.google.com ---------------------------------------
+
+section('urlRegex probe: drive.google.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.google-drive.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://drive.google.com/',
+    'https://drive.google.com/drive/u/0/my-drive',
+    'https://drive.google.com/drive/folders/1AbC?usp=drive_link',
+    'https://drive.google.com/file/d/1AbC/view#detail',
+  ]
+  const mustNotMatch = [
+    'http://drive.google.com/drive/u/0/my-drive',
+    'https://drive.google.com.evil.example/drive/u/0/my-drive',
+    'https://evildrive.google.com/drive/u/0/my-drive',
+    'https://drive.google.com:8443/drive/u/0/my-drive',
+    'https://mail.google.com/drive/u/0/my-drive',
+    'https://docs.google.com/drive/u/0/my-drive',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `google-drive urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `google-drive urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- Google Drive execution --------------------------------------------------
+// The Drive web app signs every call through gapi.client.request, which resolves
+// with { status, result }. The stub records the request descriptors (path,
+// method, params, body) and answers with realistic Drive v3 resources, so the
+// ported transport and field mapping really run.
+
+section('execution: Google Drive tools against a stubbed page')
+
+function gdrivePage(handler) {
+  const requests = []
+  const page = {
+    hostname: 'drive.google.com',
+    globals: {
+      gapi: {
+        client: {
+          request: async (options) => {
+            requests.push(options)
+            return handler(options)
+          },
+        },
+      },
+    },
+  }
+  return { requests, page }
+}
+
+const GDRIVE_FILE = {
+  kind: 'drive#file',
+  id: 'file-1',
+  name: 'Roadmap',
+  mimeType: 'application/vnd.google-apps.document',
+  modifiedTime: '2026-11-18T09:00:00.000Z',
+  createdTime: '2026-11-01T09:00:00.000Z',
+  size: '1024',
+  parents: ['folder-1'],
+  trashed: false,
+  starred: true,
+  shared: true,
+  webViewLink: 'https://docs.google.com/document/d/file-1/edit',
+  description: 'Q4 plan',
+  owners: [{ displayName: 'Ada Lovelace', emailAddress: 'ada@example.com' }],
+  lastModifyingUser: { displayName: 'Grace Hopper', emailAddress: 'grace@example.com' },
+}
+
+const GDRIVE_FOLDER = {
+  kind: 'drive#file',
+  id: 'folder-2',
+  name: 'Projects',
+  mimeType: 'application/vnd.google-apps.folder',
+  parents: ['root'],
+}
+
+{
+  // list_files: My Drive root by default — the q filter, the 50-item page, the
+  // modifiedTime ordering and the full field mask, then the file mapping.
+  const { requests, page } = gdrivePage(() => ({
+    status: 200,
+    result: { files: [GDRIVE_FILE, GDRIVE_FOLDER], nextPageToken: 'page-2' },
+  }))
+  const result = await runTool('com.google-drive.main', 'list_files', { input: {}, page })
+  equal(result.status, 'ok', 'google-drive list_files: status')
+  equal(result.data.files.length, 2, 'google-drive list_files: file count')
+  equal(result.data.files[0].name, 'Roadmap', 'google-drive list_files: file name')
+  equal(result.data.files[0].parent_id, 'folder-1', 'google-drive list_files: parent id')
+  equal(result.data.files[0].owner, 'Ada Lovelace', 'google-drive list_files: owner name')
+  equal(result.data.files[0].owner_email, 'ada@example.com', 'google-drive list_files: owner email')
+  equal(result.data.files[0].last_modified_by, 'Grace Hopper', 'google-drive list_files: last modifier')
+  equal(result.data.files[0].size, '1024', 'google-drive list_files: size stays a string')
+  equal(result.data.files[0].shared, true, 'google-drive list_files: shared flag')
+  equal(result.data.files[1].parent_id, 'root', 'google-drive list_files: folder parent')
+  equal(result.data.files[1].size, '', 'google-drive list_files: missing size is empty')
+  equal(result.data.next_page_token, 'page-2', 'google-drive list_files: next page token')
+  equal(requests[0].path, '/drive/v3/files', 'google-drive list_files: /drive/v3/files endpoint')
+  equal(requests[0].method, undefined, 'google-drive list_files: plain read sends no method')
+  equal(requests[0].body, undefined, 'google-drive list_files: read has no body')
+  equal(
+    requests[0].params.q,
+    "'root' in parents and trashed = false",
+    'google-drive list_files: default q excludes trashed',
+  )
+  equal(requests[0].params.pageSize, 50, 'google-drive list_files: default page size')
+  equal(requests[0].params.orderBy, 'modifiedTime desc', 'google-drive list_files: default ordering')
+  equal(requests[0].params.pageToken, undefined, 'google-drive list_files: undefined params filtered')
+  ok(
+    String(requests[0].params.fields).startsWith('nextPageToken,files(id,name,mimeType'),
+    'google-drive list_files: requests the list field mask',
+  )
+}
+
+{
+  // list_files inside a folder, including trashed items, ordered by name.
+  const { requests, page } = gdrivePage(() => ({ status: 200, result: { files: [] } }))
+  const result = await runTool('com.google-drive.main', 'list_files', {
+    input: { parent_id: 'folder-9', include_trashed: true, order_by: 'name', page_size: 5 },
+    page,
+  })
+  equal(result.status, 'ok', 'google-drive list_files folder: status')
+  equal(requests[0].params.q, "'folder-9' in parents", 'google-drive list_files folder: parent filter')
+  equal(requests[0].params.pageSize, 5, 'google-drive list_files folder: page size passthrough')
+  equal(requests[0].params.orderBy, 'name', 'google-drive list_files folder: ordering passthrough')
+  equal(result.data.files.length, 0, 'google-drive list_files folder: empty list stays ok')
+  equal(result.data.next_page_token, '', 'google-drive list_files folder: empty page token')
+}
+
+{
+  // search_files: fullText query with the upstream quote/backslash escaping, an
+  // optional MIME filter and the trashed clause, default page size 20.
+  const { requests, page } = gdrivePage(() => ({
+    status: 200,
+    result: { files: [GDRIVE_FILE] },
+  }))
+  const result = await runTool('com.google-drive.main', 'search_files', {
+    input: { query: "Ada's \\ notes", mime_type: 'application/vnd.google-apps.document' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-drive search_files: status')
+  equal(result.data.files[0].id, 'file-1', 'google-drive search_files: match id')
+  equal(
+    requests[0].params.q,
+    "fullText contains 'Ada\\'s \\\\ notes' and mimeType = 'application/vnd.google-apps.document' and trashed = false",
+    'google-drive search_files: escaped query, mime filter, trashed clause',
+  )
+  equal(requests[0].params.pageSize, 20, 'google-drive search_files: default page size 20')
+  equal(requests[0].path, '/drive/v3/files', 'google-drive search_files: /drive/v3/files endpoint')
+}
+
+{
+  // get_file: metadata read by id, encoded into the path, full field mask. This
+  // is the only content surface upstream exposes (web_view_link) — the plugin
+  // has no export/download tool.
+  const { requests, page } = gdrivePage(() => ({ status: 200, result: GDRIVE_FILE }))
+  const result = await runTool('com.google-drive.main', 'get_file', {
+    input: { file_id: 'file-1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-drive get_file: status')
+  equal(result.data.file.id, 'file-1', 'google-drive get_file: id')
+  equal(result.data.file.mime_type, 'application/vnd.google-apps.document', 'google-drive get_file: mime type')
+  equal(result.data.file.description, 'Q4 plan', 'google-drive get_file: description')
+  equal(
+    result.data.file.web_view_link,
+    'https://docs.google.com/document/d/file-1/edit',
+    'google-drive get_file: web view link',
+  )
+  equal(requests[0].path, '/drive/v3/files/file-1', 'google-drive get_file: /files/{id} path')
+  equal(requests[0].method, undefined, 'google-drive get_file: read sends no method')
+  ok(
+    String(requests[0].params.fields).indexOf('owners(displayName,emailAddress)') !== -1,
+    'google-drive get_file: asks for owners in the field mask',
+  )
+
+  const encoded = await runTool('com.google-drive.main', 'get_file', {
+    input: { file_id: 'folder/1' },
+    page,
+  })
+  equal(encoded.status, 'ok', 'google-drive get_file encoded: status')
+  equal(requests[1].path, '/drive/v3/files/folder%2F1', 'google-drive get_file: id is URL-encoded')
+}
+
+{
+  // create_folder: POST with the folder MIME type; parents only when supplied.
+  const { requests, page } = gdrivePage(() => ({ status: 200, result: GDRIVE_FOLDER }))
+  const nested = await runTool('com.google-drive.main', 'create_folder', {
+    input: { name: 'Projects', parent_id: 'folder-1', description: 'Q4 work' },
+    page,
+  })
+  equal(nested.status, 'ok', 'google-drive create_folder: status')
+  equal(nested.data.file.id, 'folder-2', 'google-drive create_folder: new folder id')
+  equal(requests[0].method, 'POST', 'google-drive create_folder: POST')
+  equal(requests[0].path, '/drive/v3/files', 'google-drive create_folder: /files endpoint')
+  const body = JSON.parse(requests[0].body)
+  equal(body.name, 'Projects', 'google-drive create_folder: name')
+  equal(body.mimeType, 'application/vnd.google-apps.folder', 'google-drive create_folder: folder MIME type')
+  equal(body.parents.join(','), 'folder-1', 'google-drive create_folder: parents')
+  equal(body.description, 'Q4 work', 'google-drive create_folder: description')
+
+  await runTool('com.google-drive.main', 'create_folder', { input: { name: 'Root folder' }, page })
+  const rootBody = JSON.parse(requests[1].body)
+  ok(!('parents' in rootBody), 'google-drive create_folder: omits parents without a parent id')
+  ok(!('description' in rootBody), 'google-drive create_folder: omits an unspecified description')
+}
+
+{
+  // create_file: the MIME type defaults to a Google Doc.
+  const { requests, page } = gdrivePage(() => ({ status: 200, result: GDRIVE_FILE }))
+  const result = await runTool('com.google-drive.main', 'create_file', {
+    input: { name: 'Notes' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-drive create_file: status')
+  equal(requests[0].method, 'POST', 'google-drive create_file: POST')
+  equal(
+    JSON.parse(requests[0].body).mimeType,
+    'application/vnd.google-apps.document',
+    'google-drive create_file: default MIME type',
+  )
+}
+
+{
+  // Rename (update_file PATCH, only the supplied field) and move (addParents /
+  // removeParents params, no body).
+  const { requests, page } = gdrivePage((options) => ({
+    status: 200,
+    result: { ...GDRIVE_FILE, name: options.body ? JSON.parse(options.body).name || GDRIVE_FILE.name : GDRIVE_FILE.name },
+  }))
+  const renamed = await runTool('com.google-drive.main', 'update_file', {
+    input: { file_id: 'file-1', name: 'Roadmap 2027' },
+    page,
+  })
+  equal(renamed.status, 'ok', 'google-drive update_file: status')
+  equal(renamed.data.file.name, 'Roadmap 2027', 'google-drive update_file: renamed file')
+  equal(requests[0].method, 'PATCH', 'google-drive update_file: PATCH')
+  equal(requests[0].path, '/drive/v3/files/file-1', 'google-drive update_file: /files/{id} path')
+  const patchBody = JSON.parse(requests[0].body)
+  equal(patchBody.name, 'Roadmap 2027', 'google-drive update_file: name in body')
+  ok(!('description' in patchBody), 'google-drive update_file: omits untouched fields')
+
+  const moved = await runTool('com.google-drive.main', 'move_file', {
+    input: { file_id: 'file-1', from_parent_id: 'folder-1', to_parent_id: 'folder-2' },
+    page,
+  })
+  equal(moved.status, 'ok', 'google-drive move_file: status')
+  equal(requests[1].method, 'PATCH', 'google-drive move_file: PATCH')
+  equal(requests[1].params.addParents, 'folder-2', 'google-drive move_file: addParents')
+  equal(requests[1].params.removeParents, 'folder-1', 'google-drive move_file: removeParents')
+  equal(requests[1].body, undefined, 'google-drive move_file: parent move needs no body')
+}
+
+{
+  // copy_file posts the copy body; trash/restore PATCH the trashed flag.
+  const { requests, page } = gdrivePage(() => ({ status: 200, result: GDRIVE_FILE }))
+  await runTool('com.google-drive.main', 'copy_file', {
+    input: { file_id: 'file-1', name: 'Copy of Roadmap', parent_id: 'folder-2' },
+    page,
+  })
+  equal(requests[0].path, '/drive/v3/files/file-1/copy', 'google-drive copy_file: /copy path')
+  equal(requests[0].method, 'POST', 'google-drive copy_file: POST')
+  const copyBody = JSON.parse(requests[0].body)
+  equal(copyBody.name, 'Copy of Roadmap', 'google-drive copy_file: name')
+  equal(copyBody.parents.join(','), 'folder-2', 'google-drive copy_file: parents')
+
+  await runTool('com.google-drive.main', 'trash_file', { input: { file_id: 'file-1' }, page })
+  equal(JSON.parse(requests[1].body).trashed, true, 'google-drive trash_file: sets trashed')
+  await runTool('com.google-drive.main', 'restore_file', { input: { file_id: 'file-1' }, page })
+  equal(JSON.parse(requests[2].body).trashed, false, 'google-drive restore_file: clears trashed')
+}
+
+{
+  // Sharing: list_permissions maps the permission list, create_permission posts
+  // the grantee and defaults sendNotificationEmail to true.
+  const { requests, page } = gdrivePage((options) => ({
+    status: 200,
+    result: options.method === 'POST'
+      ? { id: 'perm-2', type: 'user', role: 'writer', emailAddress: 'grace@example.com', displayName: 'Grace Hopper' }
+      : {
+          permissions: [
+            { id: 'perm-1', type: 'user', role: 'owner', emailAddress: 'ada@example.com', displayName: 'Ada Lovelace' },
+            { id: 'perm-3', type: 'domain', role: 'reader', domain: 'example.com' },
+          ],
+        },
+  }))
+  const listed = await runTool('com.google-drive.main', 'list_permissions', {
+    input: { file_id: 'file-1' },
+    page,
+  })
+  equal(listed.status, 'ok', 'google-drive list_permissions: status')
+  equal(listed.data.permissions.length, 2, 'google-drive list_permissions: permission count')
+  equal(listed.data.permissions[0].role, 'owner', 'google-drive list_permissions: role')
+  equal(listed.data.permissions[1].domain, 'example.com', 'google-drive list_permissions: domain grantee')
+  equal(
+    requests[0].path,
+    '/drive/v3/files/file-1/permissions',
+    'google-drive list_permissions: /permissions path',
+  )
+  equal(
+    requests[0].params.fields,
+    'permissions(id,type,role,emailAddress,displayName,domain)',
+    'google-drive list_permissions: permission field mask',
+  )
+
+  const shared = await runTool('com.google-drive.main', 'create_permission', {
+    input: { file_id: 'file-1', type: 'user', role: 'writer', email: 'grace@example.com' },
+    page,
+  })
+  equal(shared.status, 'ok', 'google-drive create_permission: status')
+  equal(shared.data.permission.id, 'perm-2', 'google-drive create_permission: permission id')
+  equal(shared.data.permission.display_name, 'Grace Hopper', 'google-drive create_permission: grantee name')
+  equal(requests[1].method, 'POST', 'google-drive create_permission: POST')
+  equal(requests[1].params.sendNotificationEmail, true, 'google-drive create_permission: notifies by default')
+  const shareBody = JSON.parse(requests[1].body)
+  equal(shareBody.type, 'user', 'google-drive create_permission: type')
+  equal(shareBody.role, 'writer', 'google-drive create_permission: role')
+  equal(shareBody.emailAddress, 'grace@example.com', 'google-drive create_permission: grantee email')
+  ok(!('domain' in shareBody), 'google-drive create_permission: omits an absent domain')
+}
+
+{
+  // Account reads: the About endpoint maps the profile and the storage quota
+  // (byte counts stay strings; missing counters default to '0').
+  const { requests, page } = gdrivePage(() => ({
+    status: 200,
+    result: {
+      user: {
+        displayName: 'Ada Lovelace',
+        emailAddress: 'ada@example.com',
+        permissionId: 'perm-1',
+        photoLink: 'https://lh3.googleusercontent.com/ada',
+      },
+      storageQuota: { limit: '16106127360', usage: '1073741824', usageInDrive: '805306368' },
+    },
+  }))
+  const me = await runTool('com.google-drive.main', 'get_current_user', { input: {}, page })
+  equal(me.status, 'ok', 'google-drive get_current_user: status')
+  equal(me.data.user.display_name, 'Ada Lovelace', 'google-drive get_current_user: display name')
+  equal(me.data.user.permission_id, 'perm-1', 'google-drive get_current_user: permission id')
+  equal(me.data.storage_quota.limit_bytes, '16106127360', 'google-drive get_current_user: limit stays a string')
+  equal(me.data.storage_quota.usage_in_trash_bytes, '0', 'google-drive get_current_user: missing trash usage')
+  equal(requests[0].path, '/drive/v3/about', 'google-drive get_current_user: /about endpoint')
+
+  const quota = await runTool('com.google-drive.main', 'get_storage_quota', { input: {}, page })
+  equal(quota.status, 'ok', 'google-drive get_storage_quota: status')
+  equal(quota.data.storage_quota.usage_in_drive_bytes, '805306368', 'google-drive get_storage_quota: drive usage')
+  equal(requests[1].params.fields, 'storageQuota', 'google-drive get_storage_quota: quota field mask')
+}
+
+{
+  // Permanent deletes: gapi rejects a 204 No Content DELETE, which upstream
+  // treats as success.
+  const { requests, page } = gdrivePage(() => {
+    const error = new Error('No Content')
+    error.status = 204
+    throw error
+  })
+  const deleted = await runTool('com.google-drive.main', 'delete_file', {
+    input: { file_id: 'file-1' },
+    page,
+  })
+  equal(deleted.status, 'ok', 'google-drive delete_file: 204 counts as success')
+  equal(deleted.data.success, true, 'google-drive delete_file: success flag')
+  equal(requests[0].method, 'DELETE', 'google-drive delete_file: DELETE')
+  equal(requests[0].path, '/drive/v3/files/file-1', 'google-drive delete_file: /files/{id} path')
+
+  const emptied = await runTool('com.google-drive.main', 'empty_trash', { input: {}, page })
+  equal(emptied.status, 'ok', 'google-drive empty_trash: 204 counts as success')
+  equal(requests[1].path, '/drive/v3/files/trash', 'google-drive empty_trash: /files/trash path')
+  equal(requests[1].method, 'DELETE', 'google-drive empty_trash: DELETE')
+
+  const removed = await runTool('com.google-drive.main', 'delete_permission', {
+    input: { file_id: 'file-1', permission_id: 'perm-2' },
+    page,
+  })
+  equal(removed.status, 'ok', 'google-drive delete_permission: 204 counts as success')
+  equal(
+    requests[2].path,
+    '/drive/v3/files/file-1/permissions/perm-2',
+    'google-drive delete_permission: nested permission path',
+  )
+}
+
+{
+  // Auth failures are classified, not thrown: a gapi 401 is AUTH, a 404 is
+  // NOT_FOUND, and the Drive error message survives.
+  const unauthorized = gdrivePage(() => {
+    const error = new Error('Invalid Credentials')
+    error.status = 401
+    error.result = { error: { code: 401, message: 'Invalid Credentials' } }
+    throw error
+  })
+  const auth = await runTool('com.google-drive.main', 'list_files', {
+    input: {},
+    page: unauthorized.page,
+  })
+  equal(auth.status, 'error', 'google-drive gapi 401: error status')
+  equal(auth.error_code, 'AUTH', 'google-drive gapi 401: classified as AUTH')
+  equal(auth.message, 'Invalid Credentials', 'google-drive gapi 401: upstream message')
+
+  const missing = gdrivePage(() => {
+    const error = new Error('File not found: file-404.')
+    error.status = 404
+    error.result = { error: { code: 404, message: 'File not found: file-404.' } }
+    throw error
+  })
+  const notFound = await runTool('com.google-drive.main', 'get_file', {
+    input: { file_id: 'file-404' },
+    page: missing.page,
+  })
+  equal(notFound.status, 'error', 'google-drive gapi 404: error status')
+  equal(notFound.error_code, 'NOT_FOUND', 'google-drive gapi 404: classified as NOT_FOUND')
+}
+
+{
+  // Logged-out tab: the Drive app never publishes gapi, so after the upstream
+  // 8s readiness window the same-origin /drive/v3 path answers with Google's
+  // marketing HTML instead of JSON — reported as AUTH "not ready", not as data.
+  const requests = []
+  const result = await runTool('com.google-drive.main', 'list_files', {
+    input: {},
+    page: {
+      hostname: 'drive.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse('<!doctype html><html><head><title>Google Drive</title></head></html>')
+      },
+    },
+  })
+  equal(result.status, 'error', 'google-drive logged-out: error status')
+  equal(result.error_code, 'AUTH', 'google-drive logged-out: classified as AUTH')
+  ok(String(result.message).includes('not ready'), 'google-drive logged-out: explains the tab is not ready')
+  equal(requests[0].init.credentials, 'include', 'google-drive logged-out: fallback sends credentials')
+  ok(
+    String(requests[0].url).startsWith('https://drive.google.com/drive/v3/files?'),
+    'google-drive logged-out: keeps the same-origin Drive v3 path',
+  )
+}
+
+
+
+
+// --- urlRegex probe: docs.google.com ----------------------------------------
+
+section('urlRegex probe: docs.google.com')
+
+{
+  const manifest = JSON.parse(readFileSync(path.join(packagesDir, 'com.google-docs.main', 'manifest.json'), 'utf8'))
+  const mustMatch = [
+    'https://docs.google.com/document/d/1abcDEF_ghi-jkl/edit',
+    'https://docs.google.com/document/d/1abcDEF_ghi-jkl/edit?tab=t.0',
+    'https://docs.google.com/document/d/1abcDEF_ghi-jkl/edit?usp=sharing&tab=t.1#heading=h.abc',
+    'https://docs.google.com/document/u/0/d/1abcDEF_ghi-jkl/edit',
+    'https://docs.google.com/document/',
+  ]
+  const mustNotMatch = [
+    'http://docs.google.com/document/d/1abcDEF_ghi-jkl/edit',
+    'https://docs.google.com.evil.example/document/d/1abc/edit',
+    'https://evildocs.google.com/document/d/1abc/edit',
+    'https://docs.google.com:8443/document/d/1abc/edit',
+    'https://docs.google.com/spreadsheets/d/1abc/edit',
+    'https://docs.google.com/presentation/d/1abc/edit',
+    'https://drive.google.com/document/d/1abc/edit',
+    'https://mail.google.com/document/d/1abc/edit',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `google-docs urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch) ok(!regex.test(url), `google-docs urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- Google Docs execution ---------------------------------------------------
+// The Docs editor loads gapi and every plugin call goes through
+// gapi.client.request with a Drive v3 path (upstream has no Docs API v2/v1
+// batchUpdate usage). The stubs below record those request descriptors, answer
+// with realistic Drive resources, and serve the editor HTML the plain-text and
+// comment-anchor paths parse.
+
+section('execution: Google Docs tools against a stubbed page')
+
+function gdocsPage(handler, extra = {}) {
+  const requests = []
+  const apiKeys = []
+  const page = {
+    hostname: 'docs.google.com',
+    href: 'https://docs.google.com/document/d/DOC1/edit',
+    globals: {
+      gapi: {
+        client: {
+          request: async (options) => {
+            requests.push(options)
+            return handler(options)
+          },
+          setApiKey: (key) => apiKeys.push(key),
+        },
+      },
+    },
+    ...extra,
+  }
+  return { requests, apiKeys, page }
+}
+
+const GDOC_FILE = {
+  kind: 'drive#file',
+  id: 'DOC1',
+  name: 'Roadmap Q4',
+  mimeType: 'application/vnd.google-apps.document',
+  createdTime: '2026-10-01T08:00:00.000Z',
+  modifiedTime: '2026-11-18T12:30:00.000Z',
+  trashed: false,
+  starred: true,
+  shared: true,
+  ownedByMe: true,
+  webViewLink: 'https://docs.google.com/document/d/DOC1/edit',
+  owners: [{ displayName: 'Ada Lovelace', emailAddress: 'ada@example.com' }],
+  lastModifyingUser: { displayName: 'Grace Hopper', emailAddress: 'grace@example.com' },
+}
+
+// Two model chunks written out of document order, one non-text op and one
+// trailing blank line: the parser must sort by ibi, drop blanks and ignore ops
+// that are not `ty: "is"`.
+const GDOC_HTML = `<!doctype html><html><head><title>Roadmap Q4 - Google Docs</title></head><body>
+<script>DOCS_modelChunk = {"chunk":[{"ty":"is","s":"Q4 priorities\\n","ibi":2},{"ty":"ds"}]};</script>
+<script>DOCS_modelChunk = {"chunk":[{"ty":"is","s":"Ship the port\\n","ibi":1},{"ty":"te","s":"not body text"}]};</script>
+</body></html>`
+
+{
+  // get_current_document: the document is the one in the tab, the tab id comes
+  // from ?tab=, and the page's embedded gmsSuiteApiKey is handed to gapi once.
+  const { requests, apiKeys, page } = gdocsPage(() => ({ status: 200, result: GDOC_FILE }), {
+    href: 'https://docs.google.com/document/d/DOC1/edit?tab=t.0',
+  })
+  page.globals.preload = { globals: { gmsSuiteApiKey: 'page-key' } }
+  const result = await runTool('com.google-docs.main', 'get_current_document', { input: {}, page })
+  equal(result.status, 'ok', 'google-docs get_current_document: status')
+  equal(result.message, null, 'google-docs get_current_document: null message on success')
+  equal(result.data.document.id, 'DOC1', 'google-docs get_current_document: id')
+  equal(result.data.document.title, 'Roadmap Q4', 'google-docs get_current_document: title')
+  equal(result.data.document.trashed, false, 'google-docs get_current_document: trashed flag')
+  equal(result.data.document.starred, true, 'google-docs get_current_document: starred flag')
+  equal(result.data.document.owner, 'Ada Lovelace', 'google-docs get_current_document: owner name')
+  equal(result.data.document.owner_email, 'ada@example.com', 'google-docs get_current_document: owner email')
+  equal(result.data.document.last_modified_by, 'Grace Hopper', 'google-docs get_current_document: last modifier')
+  equal(result.data.active_tab.id, 't.0', 'google-docs get_current_document: tab id from the URL')
+  equal(result.data.active_tab.title, 'Current tab', 'google-docs get_current_document: tab title')
+  equal(result.data.active_tab.is_current_tab, true, 'google-docs get_current_document: current tab flag')
+  equal(result.data.tabs.length, 1, 'google-docs get_current_document: tabs')
+  equal(requests[0].path, '/drive/v3/files/DOC1', 'google-docs get_current_document: file endpoint')
+  ok(
+    String(requests[0].params.fields).startsWith('id,name,mimeType,modifiedTime'),
+    'google-docs get_current_document: requests the document field set',
+  )
+  equal(requests[0].method, undefined, 'google-docs get_current_document: plain GET')
+  equal(apiKeys[0], 'page-key', 'google-docs get_current_document: sets the page API key')
+  equal(apiKeys.length, 1, 'google-docs get_current_document: sets the API key once')
+}
+
+{
+  // get_document with an explicit id that is not the open tab: the caller's
+  // tab_id is reported back instead of the (unavailable) live tab.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: GDOC_FILE }))
+  const result = await runTool('com.google-docs.main', 'get_document', {
+    input: { document_id: 'DOC9', tab_id: 't.5' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs get_document: status')
+  equal(result.data.document.id, 'DOC1', 'google-docs get_document: mapped document')
+  equal(result.data.selected_tab.id, 't.5', 'google-docs get_document: explicit tab id')
+  equal(result.data.selected_tab.title, 'Tab t.5', 'google-docs get_document: explicit tab title')
+  equal(requests[0].path, '/drive/v3/files/DOC9', 'google-docs get_document: explicit id endpoint')
+
+  // The live tab of the open document cannot be swapped for another one.
+  const live = gdocsPage(() => ({ status: 200, result: GDOC_FILE }), {
+    href: 'https://docs.google.com/document/d/DOC1/edit?tab=t.0',
+  })
+  const rejected = await runTool('com.google-docs.main', 'get_document', {
+    input: { tab_id: 't.9' },
+    page: live.page,
+  })
+  equal(rejected.status, 'error', 'google-docs get_document: foreign tab is an error')
+  equal(rejected.error_code, 'VALIDATION', 'google-docs get_document: foreign tab is VALIDATION')
+  ok(String(rejected.message).includes('active tab'), 'google-docs get_document: explains the active-tab limit')
+}
+
+{
+  // Plain text: the editor HTML is fetched with the session cookie and the
+  // DOCS_modelChunk blobs are parsed in document order.
+  const requests = []
+  const result = await runTool('com.google-docs.main', 'get_document_text', {
+    input: {},
+    page: {
+      hostname: 'docs.google.com',
+      href: 'https://docs.google.com/document/d/DOC1/edit',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse(GDOC_HTML)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'google-docs get_document_text: status')
+  equal(result.data.document_id, 'DOC1', 'google-docs get_document_text: document id from the tab')
+  equal(result.data.title, 'Roadmap Q4', 'google-docs get_document_text: title without the Google Docs suffix')
+  equal(result.data.text, 'Ship the port\nQ4 priorities', 'google-docs get_document_text: chunks sorted by ibi')
+  ok(
+    String(requests[0].url).startsWith('https://docs.google.com/document/d/DOC1/edit?tab=t.0&_cb='),
+    'google-docs get_document_text: fetches the editor HTML',
+  )
+  equal(requests[0].init.credentials, 'include', 'google-docs get_document_text: sends credentials')
+  equal(requests[0].init.cache, 'no-store', 'google-docs get_document_text: bypasses the cache')
+}
+
+{
+  // create_document: JSON POST with the Docs mime type, optional fields omitted.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: { ...GDOC_FILE, id: 'DOC2', name: 'New doc' } }))
+  const result = await runTool('com.google-docs.main', 'create_document', {
+    input: { name: 'New doc' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs create_document: status')
+  equal(result.data.document.id, 'DOC2', 'google-docs create_document: new id')
+  equal(requests[0].path, '/drive/v3/files', 'google-docs create_document: files endpoint')
+  equal(requests[0].method, 'POST', 'google-docs create_document: POST')
+  const body = JSON.parse(requests[0].body)
+  equal(body.name, 'New doc', 'google-docs create_document: name')
+  equal(body.mimeType, 'application/vnd.google-apps.document', 'google-docs create_document: Docs mime type')
+  ok(!('parents' in body), 'google-docs create_document: omits an unspecified folder')
+  ok(!('description' in body), 'google-docs create_document: omits an unspecified description')
+}
+
+{
+  // update_document_title: PATCH with only the new name.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: { ...GDOC_FILE, name: 'Renamed' } }))
+  const result = await runTool('com.google-docs.main', 'update_document_title', {
+    input: { document_id: 'DOC1', title: 'Renamed' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs update_document_title: status')
+  equal(result.data.document.title, 'Renamed', 'google-docs update_document_title: new title')
+  equal(requests[0].method, 'PATCH', 'google-docs update_document_title: PATCH')
+  equal(requests[0].path, '/drive/v3/files/DOC1', 'google-docs update_document_title: file endpoint')
+  equal(requests[0].body, '{"name":"Renamed"}', 'google-docs update_document_title: only the name is sent')
+}
+
+{
+  // trash_document / restore_document flip the trashed flag in place.
+  const trashed = gdocsPage(() => ({ status: 200, result: { ...GDOC_FILE, trashed: true } }))
+  const trashResult = await runTool('com.google-docs.main', 'trash_document', {
+    input: { document_id: 'DOC1' },
+    page: trashed.page,
+  })
+  equal(trashResult.status, 'ok', 'google-docs trash_document: status')
+  equal(trashResult.data.document.trashed, true, 'google-docs trash_document: trashed flag')
+  equal(trashed.requests[0].body, '{"trashed":true}', 'google-docs trash_document: PATCH body')
+
+  const restored = gdocsPage(() => ({ status: 200, result: { ...GDOC_FILE, trashed: false } }))
+  const restoreResult = await runTool('com.google-docs.main', 'restore_document', {
+    input: { document_id: 'DOC1' },
+    page: restored.page,
+  })
+  equal(restoreResult.status, 'ok', 'google-docs restore_document: status')
+  equal(restored.requests[0].body, '{"trashed":false}', 'google-docs restore_document: PATCH body')
+}
+
+{
+  // delete_document: a permanent DELETE, whose 204 is a rejection for gapi and
+  // must not be reported as an error.
+  const { requests, page } = gdocsPage(() => {
+    const error = new Error('No Content')
+    error.status = 204
+    throw error
+  })
+  const result = await runTool('com.google-docs.main', 'delete_document', {
+    input: { document_id: 'DOC1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs delete_document: status')
+  equal(result.data.success, true, 'google-docs delete_document: success flag')
+  equal(requests[0].method, 'DELETE', 'google-docs delete_document: DELETE')
+  equal(requests[0].path, '/drive/v3/files/DOC1', 'google-docs delete_document: file endpoint')
+}
+
+{
+  // copy_document: POST to /copy with only the supplied overrides.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: { ...GDOC_FILE, id: 'DOC3', name: 'Roadmap Q4 (copy)' } }))
+  const result = await runTool('com.google-docs.main', 'copy_document', {
+    input: { document_id: 'DOC1', name: 'Roadmap Q4 (copy)', folder_id: 'FOLDER1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs copy_document: status')
+  equal(result.data.document.id, 'DOC3', 'google-docs copy_document: copy id')
+  equal(requests[0].path, '/drive/v3/files/DOC1/copy', 'google-docs copy_document: copy endpoint')
+  const body = JSON.parse(requests[0].body)
+  equal(body.name, 'Roadmap Q4 (copy)', 'google-docs copy_document: new name')
+  equal(body.parents[0], 'FOLDER1', 'google-docs copy_document: target folder')
+  ok(!('description' in body), 'google-docs copy_document: omits an unspecified description')
+}
+
+{
+  // search_documents: Drive query with the upstream mime + trashed filters and
+  // the upstream escaping of a quoted search term.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: { files: [GDOC_FILE], nextPageToken: 'p2' } }))
+  const result = await runTool('com.google-docs.main', 'search_documents', {
+    input: { query: "ada's notes" },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs search_documents: status')
+  equal(result.data.documents.length, 1, 'google-docs search_documents: result count')
+  equal(result.data.documents[0].title, 'Roadmap Q4', 'google-docs search_documents: mapped title')
+  equal(result.data.next_page_token, 'p2', 'google-docs search_documents: next page token')
+  equal(
+    requests[0].params.q,
+    "mimeType = 'application/vnd.google-apps.document' and (name contains 'ada\\'s notes' or fullText contains 'ada\\'s notes') and trashed = false",
+    'google-docs search_documents: escaped Drive query',
+  )
+  equal(requests[0].params.pageSize, 20, 'google-docs search_documents: default page size')
+  ok(!('orderBy' in requests[0].params), 'google-docs search_documents: no orderBy upstream')
+}
+
+{
+  // get_current_user: /about maps the profile and the storage quota strings.
+  const { requests, page } = gdocsPage(() => ({
+    status: 200,
+    result: {
+      user: { displayName: 'Ada Lovelace', emailAddress: 'ada@example.com', permissionId: 'perm-1', photoLink: 'https://lh3.example/ada' },
+      storageQuota: { limit: '16106127360', usage: '1073741824', usageInDrive: '1000000000', usageInDriveTrash: '73741824' },
+    },
+  }))
+  const result = await runTool('com.google-docs.main', 'get_current_user', { input: {}, page })
+  equal(result.status, 'ok', 'google-docs get_current_user: status')
+  equal(result.data.user.display_name, 'Ada Lovelace', 'google-docs get_current_user: display name')
+  equal(result.data.user.permission_id, 'perm-1', 'google-docs get_current_user: permission id')
+  equal(result.data.storage_quota.limit_bytes, '16106127360', 'google-docs get_current_user: quota limit stays a string')
+  equal(result.data.storage_quota.usage_in_trash_bytes, '73741824', 'google-docs get_current_user: trash usage')
+  equal(requests[0].path, '/drive/v3/about', 'google-docs get_current_user: about endpoint')
+  ok(String(requests[0].params.fields).includes('storageQuota'), 'google-docs get_current_user: requests the quota')
+}
+
+// Comments: Drive v3 exposes threads at /files/:id/comments with resolution
+// expressed as a reply whose action is "resolve"/"reopen", and pagination via
+// nextPageToken. list_comments additionally filters orphaned threads by the
+// kix.<id> anchors embedded in the editor HTML.
+
+const GDOC_COMMENT = {
+  id: 'c1',
+  author: { displayName: 'Grace Hopper', emailAddress: 'grace@example.com' },
+  content: 'Tighten this intro',
+  createdTime: '2026-11-10T09:00:00.000Z',
+  modifiedTime: '2026-11-10T09:00:00.000Z',
+  resolved: false,
+  quotedFileContent: { mimeType: 'text/plain', value: 'Ship the port' },
+  anchor: 'kix.a1b2c3d4e5f6g7',
+  replies: [
+    {
+      id: 'r1',
+      author: { displayName: 'Ada Lovelace', emailAddress: 'ada@example.com' },
+      content: 'Agreed',
+      createdTime: '2026-11-10T10:00:00.000Z',
+      modifiedTime: '2026-11-10T10:00:00.000Z',
+      action: 'reopen',
+    },
+  ],
+}
+
+{
+  // list_comments: two comment pages fetched internally, resolved threads
+  // dropped by the default status, the orphan (its kix id is absent from the
+  // HTML) dropped, and the page token treated as an offset.
+  const { requests, page } = gdocsPage((options) => ({
+    status: 200,
+    result: String(options.params.pageToken || '') === 'p2'
+      ? { comments: [{ ...GDOC_COMMENT, id: 'c3', anchor: 'kix.orphan0000000000' }] }
+      : {
+          comments: [
+            GDOC_COMMENT,
+            { ...GDOC_COMMENT, id: 'c2', resolved: true },
+          ],
+          nextPageToken: 'p2',
+        },
+  }))
+  const html = '<html><body><span id="kix.a1b2c3d4e5f6g7"></span></body></html>'
+  const fetches = []
+  page.fetch = async (url, init) => {
+    fetches.push({ url, init })
+    return htmlResponse(html)
+  }
+  const result = await runTool('com.google-docs.main', 'list_comments', { input: {}, page })
+  equal(result.status, 'ok', 'google-docs list_comments: status')
+  equal(result.data.comments.length, 1, 'google-docs list_comments: open, live comments only')
+  equal(result.data.comments[0].id, 'c1', 'google-docs list_comments: surviving comment')
+  equal(result.data.comments[0].resolved, false, 'google-docs list_comments: resolved flag')
+  equal(result.data.comments[0].quoted_text, 'Ship the port', 'google-docs list_comments: quoted text')
+  equal(result.data.comments[0].replies[0].action, 'reopen', 'google-docs list_comments: reply action')
+  equal(result.data.next_page_token, '', 'google-docs list_comments: no more pages')
+  equal(requests.length, 2, 'google-docs list_comments: fetches every comment page')
+  equal(requests[0].path, '/drive/v3/files/DOC1/comments', 'google-docs list_comments: comments endpoint')
+  equal(requests[0].params.pageSize, 100, 'google-docs list_comments: upstream page size')
+  equal(requests[0].params.includeDeleted, false, 'google-docs list_comments: includeDeleted default')
+  equal(requests[1].params.pageToken, 'p2', 'google-docs list_comments: follows nextPageToken')
+  ok(
+    String(fetches[0].url).endsWith('/document/d/DOC1/edit'),
+    'google-docs list_comments: reads the editor HTML for anchors',
+  )
+  equal(fetches[0].init.credentials, 'include', 'google-docs list_comments: sends credentials for the HTML')
+
+  // include_orphaned keeps the orphan and status "all" keeps resolved threads;
+  // page_size then slices the filtered set and returns an offset token.
+  const second = gdocsPage((options) => ({
+    status: 200,
+    result: String(options.params.pageToken || '') === 'p2'
+      ? { comments: [{ ...GDOC_COMMENT, id: 'c3', anchor: 'kix.orphan0000000000' }] }
+      : { comments: [GDOC_COMMENT, { ...GDOC_COMMENT, id: 'c2', resolved: true }], nextPageToken: 'p2' },
+  }))
+  const all = await runTool('com.google-docs.main', 'list_comments', {
+    input: { status: 'all', include_orphaned: true, page_size: 2 },
+    page: second.page,
+  })
+  equal(all.status, 'ok', 'google-docs list_comments all: status')
+  equal(all.data.comments.length, 2, 'google-docs list_comments all: first page slice')
+  equal(all.data.next_page_token, '2', 'google-docs list_comments all: offset token')
+}
+
+{
+  // create_comment: the quote becomes quotedFileContent and the response is
+  // mapped, replies included.
+  const { requests, page } = gdocsPage(() => ({ status: 200, result: GDOC_COMMENT }))
+  const result = await runTool('com.google-docs.main', 'create_comment', {
+    input: { document_id: 'DOC1', content: 'Tighten this intro', quoted_text: 'Ship the port' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs create_comment: status')
+  equal(result.data.comment.author, 'Grace Hopper', 'google-docs create_comment: author')
+  equal(result.data.comment.anchor, 'kix.a1b2c3d4e5f6g7', 'google-docs create_comment: anchor')
+  equal(requests[0].path, '/drive/v3/files/DOC1/comments', 'google-docs create_comment: comments endpoint')
+  equal(requests[0].method, 'POST', 'google-docs create_comment: POST')
+  const body = JSON.parse(requests[0].body)
+  equal(body.content, 'Tighten this intro', 'google-docs create_comment: content')
+  equal(body.quotedFileContent.value, 'Ship the port', 'google-docs create_comment: quoted text')
+  equal(body.quotedFileContent.mimeType, 'text/plain', 'google-docs create_comment: quoted mime type')
+}
+
+{
+  // reply_to_comment posts content plus the upstream reopen action.
+  const { requests, page } = gdocsPage(() => ({
+    status: 200,
+    result: { id: 'r2', author: { displayName: 'Ada' }, content: 'Done', createdTime: '2026-11-11T00:00:00.000Z' },
+  }))
+  const result = await runTool('com.google-docs.main', 'reply_to_comment', {
+    input: { document_id: 'DOC1', comment_id: 'c1', content: 'Done' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs reply_to_comment: status')
+  equal(result.data.reply.id, 'r2', 'google-docs reply_to_comment: reply id')
+  equal(result.data.reply.content, 'Done', 'google-docs reply_to_comment: reply content')
+  equal(requests[0].path, '/drive/v3/files/DOC1/comments/c1/replies', 'google-docs reply_to_comment: replies endpoint')
+  const body = JSON.parse(requests[0].body)
+  equal(body.action, 'reopen', 'google-docs reply_to_comment: upstream action')
+}
+
+{
+  // resolve_comment: a resolve reply, then a re-read of the thread.
+  const { requests, page } = gdocsPage((options) => {
+    if (String(options.path).endsWith('/replies')) return { status: 200, result: { id: 'r3', action: 'resolve' } }
+    return { status: 200, result: { ...GDOC_COMMENT, resolved: true } }
+  })
+  const result = await runTool('com.google-docs.main', 'resolve_comment', {
+    input: { document_id: 'DOC1', comment_id: 'c1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google-docs resolve_comment: status')
+  equal(result.data.comment.resolved, true, 'google-docs resolve_comment: resolved in the mapped comment')
+  equal(requests.length, 2, 'google-docs resolve_comment: reply then re-read')
+  equal(JSON.parse(requests[0].body).action, 'resolve', 'google-docs resolve_comment: resolve action')
+  equal(requests[0].method, 'POST', 'google-docs resolve_comment: posts the action reply')
+  equal(requests[1].path, '/drive/v3/files/DOC1/comments/c1', 'google-docs resolve_comment: re-reads the thread')
+  equal(requests[1].method, undefined, 'google-docs resolve_comment: re-read is a GET')
+}
+
+{
+  // delete_comment / delete_reply: permanent DELETEs with the 204 rejection.
+  const comment = gdocsPage(() => {
+    const error = new Error('No Content')
+    error.status = 204
+    throw error
+  })
+  const commentResult = await runTool('com.google-docs.main', 'delete_comment', {
+    input: { document_id: 'DOC1', comment_id: 'c1' },
+    page: comment.page,
+  })
+  equal(commentResult.status, 'ok', 'google-docs delete_comment: status')
+  equal(commentResult.data.success, true, 'google-docs delete_comment: success flag')
+  equal(comment.requests[0].path, '/drive/v3/files/DOC1/comments/c1', 'google-docs delete_comment: endpoint')
+  equal(comment.requests[0].method, 'DELETE', 'google-docs delete_comment: DELETE')
+
+  const reply = gdocsPage(() => {
+    const error = new Error('No Content')
+    error.status = 204
+    throw error
+  })
+  const replyResult = await runTool('com.google-docs.main', 'delete_reply', {
+    input: { document_id: 'DOC1', comment_id: 'c1', reply_id: 'r1' },
+    page: reply.page,
+  })
+  equal(replyResult.status, 'ok', 'google-docs delete_reply: status')
+  equal(reply.requests[0].path, '/drive/v3/files/DOC1/comments/c1/replies/r1', 'google-docs delete_reply: endpoint')
+}
+
+{
+  // No gapi on the tab: the same Drive path goes out as a same-origin fetch, and
+  // Google's signed-out HTML is reported as AUTH instead of as data.
+  const requests = []
+  const result = await runTool('com.google-docs.main', 'get_document', {
+    input: { document_id: 'DOC1' },
+    page: {
+      hostname: 'docs.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse('<!doctype html><html><head><title>Sign in - Google Accounts</title></head></html>')
+      },
+    },
+  })
+  equal(result.status, 'error', 'google-docs logged-out get_document: error status')
+  equal(result.error_code, 'AUTH', 'google-docs logged-out get_document: AUTH')
+  ok(String(result.message).includes('not ready'), 'google-docs logged-out get_document: explains the tab is not ready')
+  ok(
+    String(requests[0].url).startsWith('https://docs.google.com/drive/v3/files/DOC1?fields=') &&
+      String(requests[0].url).includes('lastModifyingUser'),
+    'google-docs logged-out get_document: same-origin Drive path',
+  )
+  equal(requests[0].init.credentials, 'include', 'google-docs logged-out get_document: sends credentials')
+
+  // A signed-out editor HTML read is AUTH too, never an empty document.
+  const text = await runTool('com.google-docs.main', 'get_document_text', {
+    input: { document_id: 'DOC1' },
+    page: {
+      hostname: 'docs.google.com',
+      fetch: async () => htmlResponse('<!doctype html><html><head><title>Sign in</title></head></html>'),
+    },
+  })
+  equal(text.status, 'error', 'google-docs logged-out get_document_text: error status')
+  equal(text.error_code, 'AUTH', 'google-docs logged-out get_document_text: AUTH')
+}
+
+{
+  // A gapi call that rejects with 401 is classified, not thrown out of the
+  // workflow, and keeps the upstream message.
+  const { page } = gdocsPage(() => {
+    const error = new Error('Invalid Credentials')
+    error.status = 401
+    error.result = { error: { code: 401, message: 'Invalid Credentials' } }
+    throw error
+  })
+  const result = await runTool('com.google-docs.main', 'get_current_user', { input: {}, page })
+  equal(result.status, 'error', 'google-docs gapi 401: error status')
+  equal(result.error_code, 'AUTH', 'google-docs gapi 401: AUTH')
+  equal(result.message, 'Invalid Credentials', 'google-docs gapi 401: upstream message')
+
+  // 403 is AUTH as well; 404 keeps its own classification.
+  const forbidden = gdocsPage(() => {
+    const error = new Error('The caller does not have permission')
+    error.status = 403
+    error.result = { error: { code: 403, message: 'The caller does not have permission' } }
+    throw error
+  })
+  const denied = await runTool('com.google-docs.main', 'get_document', { input: { document_id: 'DOC1' }, page: forbidden.page })
+  equal(denied.error_code, 'AUTH', 'google-docs gapi 403: AUTH')
+
+  const missing = gdocsPage(() => {
+    const error = new Error('File not found')
+    error.status = 404
+    error.result = { error: { code: 404, message: 'File not found' } }
+    throw error
+  })
+  const notFound = await runTool('com.google-docs.main', 'get_document', { input: { document_id: 'nope' }, page: missing.page })
+  equal(notFound.error_code, 'NOT_FOUND', 'google-docs gapi 404: NOT_FOUND')
+}
+
+{
+  // A tab on another Google host is refused before any request.
+  const requests = []
+  const result = await runTool('com.google-docs.main', 'get_current_user', {
+    input: {},
+    page: {
+      hostname: 'drive.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(result.status, 'error', 'google-docs wrong host: error status')
+  equal(result.error_code, 'UNSUPPORTED_PAGE', 'google-docs wrong host: UNSUPPORTED_PAGE')
+  equal(requests.length, 0, 'google-docs wrong host: makes no request')
+}
 
 section('registry manifest')
 

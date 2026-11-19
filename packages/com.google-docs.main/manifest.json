@@ -1,0 +1,121 @@
+{
+  "id": "com.google-docs.main",
+  "version": "0.1.0",
+  "description": "Read, search, create, rename, trash and delete Google Docs, read their plain text, and manage comments (list, create, reply, resolve, reopen, delete) on docs.google.com in your current tab. Uses your own logged-in Google Docs session through the page's gapi client.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated Google account profile and Drive storage quota that back the current Google Docs session.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_current_document",
+      "description": "Get metadata, revision info, and available tabs for the Google Doc currently open in the editor. This is the recommended first step before reading or editing the active document.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_document.js"
+    },
+    {
+      "name": "get_document",
+      "description": "Get metadata, revision info, and tab details for a Google Doc by ID. If document_id is omitted, the tool reads the document currently open in the editor.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_document.js"
+    },
+    {
+      "name": "get_document_text",
+      "description": "Get the plain-text content of a Google Doc. Fetches the latest saved document content from the server, including edits by other collaborators. Returns the full document text as paragraphs joined by newlines.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_document_text.js"
+    },
+    {
+      "name": "list_recent_documents",
+      "description": "List recently viewed Google Docs from Drive, ordered by most recently viewed and then most recently modified.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recent_documents.js"
+    },
+    {
+      "name": "search_documents",
+      "description": "Search Google Docs by title and full-text content using the authenticated Drive search index. Trashed documents are excluded by default.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_documents.js"
+    },
+    {
+      "name": "create_document",
+      "description": "Create a new blank Google Doc in Drive. Open the new document in Google Docs and call update_document when you want to add or replace its content.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_document.js"
+    },
+    {
+      "name": "copy_document",
+      "description": "Create a copy of an existing Google Doc. You can optionally rename the new copy, move it into a folder, and set a Drive description.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/copy_document.js"
+    },
+    {
+      "name": "update_document_title",
+      "description": "Rename a Google Doc in Drive without changing its content.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_document_title.js"
+    },
+    {
+      "name": "trash_document",
+      "description": "Move a Google Doc to the Drive trash. The document can still be restored later with restore_document.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/trash_document.js"
+    },
+    {
+      "name": "restore_document",
+      "description": "Restore a Google Doc from the Drive trash back to its previous location.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/restore_document.js"
+    },
+    {
+      "name": "delete_document",
+      "description": "Permanently delete a Google Doc from Drive. This skips the trash and cannot be undone through the Google Docs plugin.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_document.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comment threads on a Google Doc, including replies, resolution status, and the quoted document text each comment is anchored to. Returns comments ordered by creation time. By default, only open (unresolved) comments are returned — use the status parameter to include resolved or all comments. Orphaned comments (anchored to text that was deleted from the document) are excluded by default.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a new comment to a Google Doc. Optionally anchor the comment to specific quoted text in the document. If quoted_text is provided, the comment appears as a margin note next to that text.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "reply_to_comment",
+      "description": "Add a reply to an existing comment thread on a Google Doc.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reply_to_comment.js"
+    },
+    {
+      "name": "resolve_comment",
+      "description": "Mark a comment thread as resolved (done). In the Drive API, resolving is done by creating a reply with action \"resolve\".",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/resolve_comment.js"
+    },
+    {
+      "name": "reopen_comment",
+      "description": "Reopen a previously resolved comment thread. In the Drive API, reopening is done by creating a reply with action \"reopen\".",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reopen_comment.js"
+    },
+    {
+      "name": "delete_comment",
+      "description": "Permanently delete a comment thread from a Google Doc. Only the comment author or the document owner can delete comments. This action cannot be undone.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_comment.js"
+    },
+    {
+      "name": "delete_reply",
+      "description": "Permanently delete a reply from a comment thread on a Google Doc. Only the reply author or the document owner can delete replies. This action cannot be undone.",
+      "urlRegex": "^https://docs\\.google\\.com/document/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_reply.js"
+    }
+  ]
+}

@@ -28,6 +28,9 @@ const PLUGINS = {
   todoist: '@opentabs-dev/opentabs-plugin-todoist',
   stackoverflow: '@opentabs-dev/opentabs-plugin-stackoverflow',
   'google-calendar': '@opentabs-dev/opentabs-plugin-google-calendar',
+  wikipedia: '@opentabs-dev/opentabs-plugin-wikipedia',
+  'google-drive': '@opentabs-dev/opentabs-plugin-google-drive',
+  'google-docs': '@opentabs-dev/opentabs-plugin-google-docs',
 }
 
 async function fetchWithRetry(url, attempts = 3) {

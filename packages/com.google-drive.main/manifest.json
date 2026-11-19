@@ -1,0 +1,109 @@
+{
+  "id": "com.google-drive.main",
+  "version": "0.1.0",
+  "description": "List, search, read, create, copy, move, rename, trash and delete files and folders, manage sharing permissions, and read the account profile and storage quota on drive.google.com in your current tab. Uses your own logged-in Google Drive session through the page's gapi client.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated Google Drive user profile including display name, email, and storage quota. Uses the Drive v3 About endpoint.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_files",
+      "description": "List files and folders in Google Drive. By default lists items in the root \"My Drive\" folder. Use parent_id to list children of a specific folder. Supports ordering by name, modifiedTime, or createdTime. Trashed files are excluded by default.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_files.js"
+    },
+    {
+      "name": "get_file",
+      "description": "Get detailed information about a specific file or folder by its ID. Returns metadata including name, MIME type, size, owner, sharing status, and a web view link.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file.js"
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files and folders in Google Drive by name or full-text content. The query searches file names and document content. Use mime_type to filter by type (e.g., \"application/vnd.google-apps.folder\" for folders, \"application/vnd.google-apps.document\" for Docs, \"application/vnd.google-apps.spreadsheet\" for Sheets). Trashed files are excluded by default.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_files.js"
+    },
+    {
+      "name": "create_file",
+      "description": "Create a new empty file in Google Drive. For Google Workspace types, use: \"application/vnd.google-apps.document\" (Docs), \"application/vnd.google-apps.spreadsheet\" (Sheets), \"application/vnd.google-apps.presentation\" (Slides). For regular files, use standard MIME types like \"text/plain\". Specify parent_id to create inside a folder, otherwise it goes to My Drive root.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_file.js"
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a new folder in Google Drive. Specify parent_id to create a nested folder, otherwise it goes to My Drive root.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_folder.js"
+    },
+    {
+      "name": "update_file",
+      "description": "Update file or folder metadata — rename, change description, or toggle starred status. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_file.js"
+    },
+    {
+      "name": "delete_file",
+      "description": "Permanently delete a file or folder. This bypasses the trash — the file cannot be recovered. For a safer alternative, use trash_file to move it to trash first.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_file.js"
+    },
+    {
+      "name": "move_file",
+      "description": "Move a file or folder to a different parent folder. Specify the current parent to remove and the new parent to add. Use \"root\" for My Drive root.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/move_file.js"
+    },
+    {
+      "name": "copy_file",
+      "description": "Create a copy of a file. Optionally specify a new name and parent folder for the copy. Folders cannot be copied.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/copy_file.js"
+    },
+    {
+      "name": "trash_file",
+      "description": "Move a file or folder to the trash. Trashed files can be restored with restore_file or permanently deleted with empty_trash. Files in the trash are automatically deleted after 30 days.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/trash_file.js"
+    },
+    {
+      "name": "restore_file",
+      "description": "Restore a file or folder from the trash back to its original location.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/restore_file.js"
+    },
+    {
+      "name": "empty_trash",
+      "description": "Permanently delete all files in the trash. This action cannot be undone. All trashed files will be permanently removed.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/empty_trash.js"
+    },
+    {
+      "name": "list_permissions",
+      "description": "List all sharing permissions on a file or folder. Returns who has access and their role (owner, writer, commenter, reader).",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_permissions.js"
+    },
+    {
+      "name": "create_permission",
+      "description": "Share a file or folder with a user, group, domain, or make it public. For user/group sharing, provide an email address. For domain sharing, provide a domain name. Use type \"anyone\" to make the file accessible via link.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_permission.js"
+    },
+    {
+      "name": "delete_permission",
+      "description": "Remove a sharing permission from a file or folder. Use list_permissions to find permission IDs.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_permission.js"
+    },
+    {
+      "name": "get_storage_quota",
+      "description": "Get the current Google Drive storage quota including total limit, usage, usage in Drive, and usage in trash. All values are in bytes.",
+      "urlRegex": "^https://drive\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_storage_quota.js"
+    }
+  ]
+}
