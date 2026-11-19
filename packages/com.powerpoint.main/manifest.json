@@ -1,0 +1,241 @@
+{
+  "id": "com.powerpoint.main",
+  "version": "0.1.0",
+  "description": "Read, search, organize and edit PowerPoint presentations in OneDrive and SharePoint from the current PowerPoint tab: drive and file metadata, thumbnails, version history, sharing links and permissions, slide and speaker-note text, slide layouts, and in-place PPTX edits (text, shapes, images, slides, notes) batched through presentation sessions. Uses Microsoft Graph v1.0 with the tab's own logged-in Microsoft 365 session.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Microsoft 365 user including name, email, and user ID.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "reauthenticate",
+      "description": "Clear cached MSAL state and reload the SharePoint/OneDrive tab to force a fresh Microsoft Graph token. Use this when another PowerPoint tool returns an authentication error pointing at this tool. After invoking, wait ~5 seconds for the tab to finish reloading, then retry the original operation.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/reauthenticate.js"
+    },
+    {
+      "name": "get_drive",
+      "description": "Get OneDrive storage information including total capacity, used space, and remaining quota.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_drive.js"
+    },
+    {
+      "name": "list_children",
+      "description": "List files and folders in a OneDrive folder. Defaults to the root folder. Returns file name, size, type, and modification info.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_children.js"
+    },
+    {
+      "name": "list_recent",
+      "description": "List recently accessed files across OneDrive. Returns the most recently viewed or edited files with their metadata.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_recent.js"
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files and folders in OneDrive by name. Returns matching items sorted by relevance.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/search_files.js"
+    },
+    {
+      "name": "list_shared_with_me",
+      "description": "List files that other people have shared with you. Returns file metadata including who shared it.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_shared_with_me.js"
+    },
+    {
+      "name": "get_item",
+      "description": "Get detailed information about a file or folder by its item ID. Returns name, size, MIME type, creation/modification details, and web URL.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_item.js"
+    },
+    {
+      "name": "get_download_url",
+      "description": "Get a temporary download URL for a file. The URL is pre-authenticated and expires after a short time.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_download_url.js"
+    },
+    {
+      "name": "get_thumbnails",
+      "description": "Get thumbnail preview images for a file. Returns URLs for small, medium, and large thumbnails. Useful for previewing presentations without opening them.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_thumbnails.js"
+    },
+    {
+      "name": "rename_item",
+      "description": "Rename a file or folder in OneDrive by its item ID. Returns the updated item details.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/rename_item.js"
+    },
+    {
+      "name": "delete_item",
+      "description": "Permanently delete a file or folder from OneDrive by its item ID. This action cannot be undone.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/delete_item.js"
+    },
+    {
+      "name": "copy_item",
+      "description": "Create a copy of a file in OneDrive. Optionally specify a new name and destination folder. The copy operation runs asynchronously.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/copy_item.js"
+    },
+    {
+      "name": "move_item",
+      "description": "Move a file or folder to a different folder in OneDrive. Returns the updated item details.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/move_item.js"
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a new folder in OneDrive. Specify a name and optional parent folder. Returns the created folder details.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/create_folder.js"
+    },
+    {
+      "name": "create_presentation",
+      "description": "Create a new blank PowerPoint presentation (.pptx) with one empty slide in OneDrive. Specify a name and optional parent folder. Returns the created file details. The result is a valid, immediately editable presentation.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/create_presentation.js"
+    },
+    {
+      "name": "get_preview_url",
+      "description": "Get an embeddable preview URL for a file. The URL can be used to embed a read-only preview of the presentation in an iframe.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_preview_url.js"
+    },
+    {
+      "name": "open_presentation",
+      "description": "Open an edit session for a presentation. Downloads the PPTX once and caches it in memory so subsequent edit tools (add_shape, update_shape, delete_shape, add_image, duplicate_slide, etc.) run without round-tripping through Graph. Captures the file eTag so commit_presentation can detect concurrent edits via If-Match. Call commit_presentation when done, or discard_presentation to throw away pending changes. Sessions auto-expire after 10 minutes of inactivity.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/open_presentation.js"
+    },
+    {
+      "name": "commit_presentation",
+      "description": "Flush a session's pending edits to the Graph API with an optimistic If-Match check against the eTag captured at open time. If the file changed in the browser since the session was opened, the commit is refused and pending edits are preserved — call discard_presentation to drop them, or inspect and commit anyway via a new session. If the session has no dirty edits, the commit is a no-op that just closes the session.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/commit_presentation.js"
+    },
+    {
+      "name": "discard_presentation",
+      "description": "Drop a presentation session without uploading. Any pending edits are lost. Idempotent — returns `discarded: false` if no session was open for the given item.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/discard_presentation.js"
+    },
+    {
+      "name": "list_presentation_sessions",
+      "description": "List all open presentation sessions in the current tab, including which items are cached, whether they have dirty edits, and how long they have been idle. Useful for recovering context after a long conversation or confirming a session is still alive before committing.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_presentation_sessions.js"
+    },
+    {
+      "name": "get_slides",
+      "description": "Get all slides from a PowerPoint presentation with their text content. Downloads the PPTX file, parses it, and extracts text from each slide.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_slides.js"
+    },
+    {
+      "name": "get_slide_content",
+      "description": "Get detailed text content and speaker notes for a specific slide by number (1-indexed). Downloads the PPTX file and extracts all text and notes.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_slide_content.js"
+    },
+    {
+      "name": "get_slide_layout",
+      "description": "Return the full structural layout of a slide — every shape, text box, placeholder, picture, table, and chart — with position, size, rotation, fill color, and text formatting. All positions and sizes are in inches. Use this to understand what is on a slide before editing. Each shape has a stable `id` that future edit tools will use as a handle.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_slide_layout.js"
+    },
+    {
+      "name": "add_text_box",
+      "description": "Add a new text box to a slide at the given position. Positions and sizes are in inches. Optional formatting controls font size, weight, color, font family, and alignment. Returns the new shape id, which can be passed to `update_shape` for further tweaks.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/add_text_box.js"
+    },
+    {
+      "name": "add_shape",
+      "description": "Add a new preset shape (rectangle, ellipse, arrow, star, callout, ...) to a slide. Positions and sizes are in inches. Optional fill color, rotation, and centered text. The `preset` parameter accepts any DrawingML preset geometry name — common choices are listed in the enum. Returns the new shape id for follow-up edits via `update_shape`.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/add_shape.js"
+    },
+    {
+      "name": "add_image",
+      "description": "Insert an image onto a slide. Accepts base64-encoded image bytes (with or without a data: URI prefix) and a format hint. Positions and sizes are in inches. Supported formats: png, jpeg, jpg, gif, bmp, tiff, svg. Returns the new picture shape id for follow-up edits via `update_shape`.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/add_image.js"
+    },
+    {
+      "name": "update_slide_text",
+      "description": "Replace the text of a slide's first text box, one paragraph per line. Use \\n to separate lines. Targets the first text box that already has content, falling back to the first (often empty) placeholder — it does not specifically resolve the title placeholder, so on slides where another text box comes first that box is edited. For precise control over a specific shape, use `update_shape` with a shape id from `get_slide_layout` instead.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/update_slide_text.js"
+    },
+    {
+      "name": "update_shape",
+      "description": "Modify an existing shape on a slide — change its text, position, size, rotation, and/or solid fill color. Find the shape id via `get_slide_layout`. Any field you omit is left unchanged. Positions and sizes are in inches; rotation is in degrees (clockwise). Fill accepts a hex color like \"FFCC00\" or \"#ffcc00\" and cannot be applied to picture shapes.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/update_shape.js"
+    },
+    {
+      "name": "delete_shape",
+      "description": "Remove a shape from a slide. Find the shape id via `get_slide_layout`. Deleting a group removes all of its child shapes.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/delete_shape.js"
+    },
+    {
+      "name": "duplicate_shape",
+      "description": "Clone an existing shape on a slide. The copy is placed just below-right of the original with a small offset so it is visible. Returns the new shape id which can be passed to `update_shape` to customize it. Internal cNvPr ids are reassigned to avoid collisions.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/duplicate_shape.js"
+    },
+    {
+      "name": "get_slide_notes",
+      "description": "Get the speaker notes for a specific slide by number. Downloads the PPTX and extracts the notes text.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/get_slide_notes.js"
+    },
+    {
+      "name": "update_slide_notes",
+      "description": "Set the speaker notes for a specific slide. Downloads the PPTX, writes the notes XML, and re-uploads. If the slide has no notes yet, an empty notes part is created automatically. Use \\n for line breaks.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/update_slide_notes.js"
+    },
+    {
+      "name": "delete_slide",
+      "description": "Delete a slide from a PowerPoint presentation by number (1-indexed). Downloads the PPTX, removes the slide and updates all references, then re-uploads.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/delete_slide.js"
+    },
+    {
+      "name": "duplicate_slide",
+      "description": "Clone an existing slide. Copies the slide XML and its relationships (including an independent copy of any speaker notes) and registers the new slide in the presentation index. Use this to template new slides from existing ones. By default the clone is appended to the end of the deck — pass `insert_at` (1-indexed) to place it at a specific position.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/duplicate_slide.js"
+    },
+    {
+      "name": "list_permissions",
+      "description": "List all permissions and sharing links for a file or folder. Shows who has access and what role they have.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_permissions.js"
+    },
+    {
+      "name": "create_sharing_link",
+      "description": "Create a sharing link for a file or folder. Supports view-only and edit links with anonymous or organization scope.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/create_sharing_link.js"
+    },
+    {
+      "name": "delete_permission",
+      "description": "Remove a sharing permission or revoke a sharing link from a file or folder.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/delete_permission.js"
+    },
+    {
+      "name": "list_versions",
+      "description": "List version history of a file. Returns all saved versions with modifier, timestamp, and size.",
+      "urlRegex": "^https://(?:powerpoint\\.cloud\\.microsoft/[^?#]*(?:\\?[^#]*)?(?:#.*)?|[^/?#]+\\.sharepoint\\.com/[^?#]*(?::p:|\\.(?:pptx?|pptm|ppsx?))[^?#]*(?:\\?[^#]*)?(?:#.*)?)$",
+      "path": "workflows/list_versions.js"
+    }
+  ]
+}
