@@ -1,0 +1,217 @@
+{
+  "id": "com.twilio.main",
+  "version": "0.1.0",
+  "description": "Read and change a Twilio account — 3 account, 5 phone numbers, 4 messages, 4 calls, 3 recordings, 2 usage, 3 messaging services, 3 verify services, 2 alerts, 3 API keys, 3 applications (35 tools) — in your current console.twilio.com tab (subaccounts, balance, incoming/caller-ID numbers, SMS/MMS, voice calls, recordings, usage records and triggers, messaging services, Verify services, Monitor alerts, API keys and TwiML applications). Uses your own logged-in Twilio Console session: the account SID and auth token are bootstrapped from the Console project-info endpoint, then every call is the real api.twilio.com / messaging / verify / monitor REST request with Basic auth.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the current Twilio account info including SID, friendly name, status, and type.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_subaccounts",
+      "description": "List all subaccounts under the current Twilio account. Returns account SIDs, names, and statuses.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_subaccounts.js"
+    },
+    {
+      "name": "get_balance",
+      "description": "Get the current account balance including currency.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_balance.js"
+    },
+    {
+      "name": "list_phone_numbers",
+      "description": "List incoming phone numbers on the account with their capabilities, voice/SMS URLs, and status.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_phone_numbers.js"
+    },
+    {
+      "name": "get_phone_number",
+      "description": "Get detailed information about a specific incoming phone number by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_phone_number.js"
+    },
+    {
+      "name": "update_phone_number",
+      "description": "Update configuration for an incoming phone number. Change the friendly name, voice/SMS webhook URLs, HTTP methods, or status callback.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_phone_number.js"
+    },
+    {
+      "name": "search_available_numbers",
+      "description": "Search for available local phone numbers that can be purchased. Filter by country, area code, or number pattern.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_available_numbers.js"
+    },
+    {
+      "name": "list_caller_ids",
+      "description": "List verified outgoing caller IDs on the account. These are phone numbers verified for use as caller ID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_caller_ids.js"
+    },
+    {
+      "name": "list_messages",
+      "description": "List SMS/MMS messages. Supports filtering by recipient, sender, and date sent.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_messages.js"
+    },
+    {
+      "name": "get_message",
+      "description": "Get a specific SMS/MMS message by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_message.js"
+    },
+    {
+      "name": "send_message",
+      "description": "Send an SMS or MMS message. Requires a Twilio phone number as the sender.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a message by its SID. This action is permanent and cannot be undone.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "list_calls",
+      "description": "List voice calls. Supports filtering by recipient, sender, and call status.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_calls.js"
+    },
+    {
+      "name": "get_call",
+      "description": "Get a specific voice call by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_call.js"
+    },
+    {
+      "name": "create_call",
+      "description": "Initiate a voice call. Requires a TwiML URL that returns instructions for the call.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_call.js"
+    },
+    {
+      "name": "update_call",
+      "description": "Modify an in-progress call. Use this to redirect a call to a new TwiML URL or to end a call by setting its status to \"completed\" or \"canceled\".",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_call.js"
+    },
+    {
+      "name": "list_recordings",
+      "description": "List call recordings. Optionally filter by the call SID they belong to.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recordings.js"
+    },
+    {
+      "name": "get_recording",
+      "description": "Get a specific call recording by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_recording.js"
+    },
+    {
+      "name": "delete_recording",
+      "description": "Delete a recording by its SID. This action is permanent and cannot be undone.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_recording.js"
+    },
+    {
+      "name": "list_usage_records",
+      "description": "List account usage records. Optionally filter by category (e.g., sms, calls) and date range.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_usage_records.js"
+    },
+    {
+      "name": "list_usage_triggers",
+      "description": "List usage triggers configured on the account.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_usage_triggers.js"
+    },
+    {
+      "name": "list_messaging_services",
+      "description": "List messaging services configured on the account.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_messaging_services.js"
+    },
+    {
+      "name": "get_messaging_service",
+      "description": "Get a specific messaging service by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_messaging_service.js"
+    },
+    {
+      "name": "create_messaging_service",
+      "description": "Create a new messaging service for sending SMS/MMS at scale.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_messaging_service.js"
+    },
+    {
+      "name": "list_verify_services",
+      "description": "List verification services configured on the account.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_verify_services.js"
+    },
+    {
+      "name": "get_verify_service",
+      "description": "Get a specific verification service by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_verify_service.js"
+    },
+    {
+      "name": "create_verify_service",
+      "description": "Create a new verification service for sending OTP codes via SMS, call, or email.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_verify_service.js"
+    },
+    {
+      "name": "list_alerts",
+      "description": "List account alerts from the Twilio Monitor. Optionally filter by log level.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alerts.js"
+    },
+    {
+      "name": "get_alert",
+      "description": "Get a specific alert by its SID from Twilio Monitor.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_alert.js"
+    },
+    {
+      "name": "list_api_keys",
+      "description": "List API keys on the account.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_api_keys.js"
+    },
+    {
+      "name": "create_api_key",
+      "description": "Create a new API key. The secret is only returned once at creation time — store it securely.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_api_key.js"
+    },
+    {
+      "name": "delete_api_key",
+      "description": "Delete an API key by its SID. This action is permanent and cannot be undone.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_api_key.js"
+    },
+    {
+      "name": "list_applications",
+      "description": "List TwiML applications. Optionally search by friendly name.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_applications.js"
+    },
+    {
+      "name": "get_application",
+      "description": "Get a specific TwiML application by its SID.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_application.js"
+    },
+    {
+      "name": "create_application",
+      "description": "Create a new TwiML application for handling voice and SMS webhooks.",
+      "urlRegex": "^https://console\\.twilio\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_application.js"
+    }
+  ]
+}

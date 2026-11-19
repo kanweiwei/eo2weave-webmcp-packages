@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T06:47:01.685Z",
+  "generatedAt": "2026-11-19T07:09:15.124Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -2314,6 +2314,178 @@
       ]
     },
     {
+      "id": "com.powerpoint.main",
+      "version": "0.1.0",
+      "description": "Read, search, organize and edit PowerPoint presentations in OneDrive and SharePoint from the current PowerPoint tab: drive and file metadata, thumbnails, version history, sharing links and permissions, slide and speaker-note text, slide layouts, and in-place PPTX edits (text, shapes, images, slides, notes) batched through presentation sessions. Uses Microsoft Graph v1.0 with the tab's own logged-in Microsoft 365 session.",
+      "toolCount": 39,
+      "files": [
+        {
+          "path": "packages/com.powerpoint.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.powerpoint.main/manifest.json",
+          "sha256": "e1658dc3dec8ec4f2626e9d49a34c4137966775ecb8f3f1592fba7af7447a450"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/add_image.js",
+          "sha256": "edcbd212dd0b4e587a920c2304cd1a002a15a837910f4beb2216b2991f4674bf"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/add_shape.js",
+          "sha256": "d2e6db7bcf9207001c437f739573a6b35d406e560492a43853a516497359bf3d"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/add_text_box.js",
+          "sha256": "c833f42d69a60deff5ef2c8c2705d68ee16e91d4789f3b902ccdb962447590d7"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/commit_presentation.js",
+          "sha256": "f6efacff8bdf873dca11423c0a664d1fe569ca064b38ca6fdf5c3b302930ec15"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/copy_item.js",
+          "sha256": "2484797b8ff058114edaad158e453cd3b7a9defede73fd56d7fb9c5286090d00"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/create_folder.js",
+          "sha256": "05bb1ffb4176af5bf259628dadee370b948655b3c538d5805342667c7b58a919"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/create_presentation.js",
+          "sha256": "ab2fe4acbdd7481ee4229c8eb12352c866aea1e31019f0701867a01de1f04881"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/create_sharing_link.js",
+          "sha256": "4a47c3eb877e4961ba1361da2f429e0152ca048380c5c799048226c2a974cf7d"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/delete_item.js",
+          "sha256": "07e7233352ca9878d26e7f9e6aa43a147e11b73c620e03e674f4adc330f8e30f"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/delete_permission.js",
+          "sha256": "307bd2d241227487a7e5ad692022bb9541e52809f27f70538c8bbc5c84b23892"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/delete_shape.js",
+          "sha256": "8cf8de504a39e6ca3f9af22a6f134656a980b35093f6c5fdaea3a634e6c2a629"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/delete_slide.js",
+          "sha256": "9b6887290a5e1cd10bc8b7777041a8874bb5e4e04ddcfb4c15f848e7088e4ba5"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/discard_presentation.js",
+          "sha256": "5e0d286622ddd30925e59ebdc79d7669a9d4335c6af75e81fc26ab0d38385ca6"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/duplicate_shape.js",
+          "sha256": "fbe0232efd636bfc3092620ac3a6228a40686d3854dc9e4173f8992b09092e87"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/duplicate_slide.js",
+          "sha256": "69963d9ad51b2f2d7439d9697b9d20c343adc926546d11dbd1648c09dbdb47e8"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_current_user.js",
+          "sha256": "f88072bfc00f50e1bb405dd66b88729aaf33d36c28c2c53b8f79aad394813e32"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_download_url.js",
+          "sha256": "1bedf5ab77c8b168663af825bc60ff0ad5c600789bf1184bd03a123712362c86"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_drive.js",
+          "sha256": "304f7f34678670daaa1db8077f087ea736619c7538136117bca4346bc97866b0"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_item.js",
+          "sha256": "6d470234d13469e96c239d12fb9bf361d2a93f6c0c23e03a56beee40e7c3e382"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_preview_url.js",
+          "sha256": "872a2a8df3667344fc1193396234130d6172d03ae55d9155587fde94dd16f182"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_slide_content.js",
+          "sha256": "07f523b7d6191d97abb9dc86952fe22d96c1708140ce10b7f6da98fcff5b3cd8"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_slide_layout.js",
+          "sha256": "cf0d7d4e3e4cd38e96502625f5f04b0c28adc17d9fe26b58b649a6956fc7b5ee"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_slide_notes.js",
+          "sha256": "b242ef56a991ee04b100d2bd42f69f3f0de7620207df3718dd257d14c747fafd"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_slides.js",
+          "sha256": "4a08c21323ff8deabc88f6b88fc928e278cad9f8f195a03c93c581fd90825b8f"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/get_thumbnails.js",
+          "sha256": "dcfdfd41708c9bd1a85050d202c1cade25c6d259f0dbbcbe5e133f54457f7da5"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_children.js",
+          "sha256": "89ec9f16ff5e2af3fc252664150a57dfcac5cbd4b81d8864c020a5785bab201a"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_permissions.js",
+          "sha256": "7dac4a6a733079fc00c0f2d769fc1cf688094b095d223f8083d1eab98facf5ab"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_presentation_sessions.js",
+          "sha256": "5384cfdc00dc5f112a9e398316b5d38aac6ce254a3b383d7aef9ddfc52389a5e"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_recent.js",
+          "sha256": "bcd33a0704868c4560ce6f636b183aaeb4059ed4a7bc2f8325c6744cc8e91af2"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_shared_with_me.js",
+          "sha256": "1e4c9ed3dd2ea48ec4fe0bd98d392c4c86f56b0691cd8755860d2ed46c4e0cfe"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/list_versions.js",
+          "sha256": "6a1b04f58d6374e10338c4047aed8d93715437576fd263bd1589896b6ebee28e"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/move_item.js",
+          "sha256": "1a0f37598f46c4c8d63fb8524e3969b88712f6fde23938be1fbd230e39c10b85"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/open_presentation.js",
+          "sha256": "42ba2440e80b12dc54f78f3f319d6750c01454869c5999643faaa11eb019022d"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/reauthenticate.js",
+          "sha256": "8868a7893c4ca908697094870d951ddec52db79d634824ceefb0f8885cb16fe8"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/rename_item.js",
+          "sha256": "e6cd8a0e7e6f318168f186395a103a800f3d8bc1a1ccce06688d1bd63baa97fe"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/search_files.js",
+          "sha256": "24fc0f315c8640a237eb7a981a268d3ecafe644ed194240c30ff047b3046957d"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/update_shape.js",
+          "sha256": "aa8d7a7c035e80452f8a51c5094032fd577bf365dc0d042798104dc2a367e36f"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/update_slide_notes.js",
+          "sha256": "91182082e07c33fdd9f591c2e1117ab37eb5be011305741f9669fa9658b32206"
+        },
+        {
+          "path": "packages/com.powerpoint.main/workflows/update_slide_text.js",
+          "sha256": "ab526450ff16edef1fd0b758110637d4d57642b375a7fab63efab728ec79ab18"
+        }
+      ]
+    },
+    {
       "id": "com.reddit.main",
       "version": "0.1.0",
       "description": "Read and act on Reddit in your current tab: browse posts and comment threads, search posts and subreddits, read profiles, subscriptions and your inbox, and vote, save, hide, report, submit posts/comments, edit, delete, subscribe and send private messages. Uses your own logged-in Reddit session.",
@@ -2418,6 +2590,222 @@
         {
           "path": "packages/com.reddit.main/workflows/vote.js",
           "sha256": "ed21facd9fee359e19fdb986771f97ab0b158a779e9ca49f3d6db54710976e3e"
+        }
+      ]
+    },
+    {
+      "id": "com.retool.main",
+      "version": "0.1.0",
+      "description": "Full port of the OpenTabs Retool plugin: read and write apps (pages), app state and components, folders, resources and resource folders, workflows, runs, triggers and releases, environments, source-control branches and settings, playground queries (run SQL and gRPC), Retool Database grids and AI agents on retool.com in your current tab. Uses your own logged-in Retool session: same-origin /api calls carrying the page's xsrfToken cookie as X-Xsrf-Token.",
+      "toolCount": 50,
+      "files": [
+        {
+          "path": "packages/com.retool.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.retool.main/manifest.json",
+          "sha256": "3a03e5cf129e030f30017b0174b614c244768449b7295c9b88d897f782f2de1b"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/add_component.js",
+          "sha256": "facb01188965b6b90fb239b100df89d9579092b79a32b66a3d49629b684e050a"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/add_query.js",
+          "sha256": "b5ba33590daec3aaf5371942088522fec6f896991f6220808118dcde3d9c4b65"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/change_user_name.js",
+          "sha256": "01630a36a058179b6ffeb7b78559893ba33afc2d01069097ec8ea950754ad5be"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/clone_app.js",
+          "sha256": "0c9328a04bf1714b5b4b02f8a2bf578411d39af514667e91d5588343ae6a1d01"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/create_app_from_toolscript_archive.js",
+          "sha256": "bf87c475eb0d6bae5cf53356782c8ad4b8b388e0895c047f4cd7fe0a74922543"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/create_app.js",
+          "sha256": "745e681c98493ad729094f7897e329f5ef64654b6ff866f53a6e8f77ccebd724"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/create_folder.js",
+          "sha256": "f0e7addf83e2448f3e56e5b0c4fd5a73aa58718c7060b900cf5a2b4ce104b665"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/create_resource_folder.js",
+          "sha256": "92d38f40c2844274a57865e114fbfb13188920e56748fa6e8d94cc1fcb311e16"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/create_resource.js",
+          "sha256": "311ca3f7fea293caa6e7e6092c713a326f685e9d6a8f7b163c09fab1f3263aa1"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/delete_app.js",
+          "sha256": "22326cb3e7b590a094163abc8fe5037d31fba98229de526be8128a8de591cfb4"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/delete_folder.js",
+          "sha256": "f728ce6a0602b924dffd2d38652018ebdaa80f4c2561cdd16d4c46f3fe6626ad"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/delete_resource_folder.js",
+          "sha256": "1b4a6cb39a1c2ba188faf3eab7e8a22c7186825c4ffa184f5eafce304c764119"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/export_toolscript_archive.js",
+          "sha256": "4613a0d84f8e927a1ca571165cc58b04f460f19ee499ef22821a9c37ca104d09"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/force_editor_save.js",
+          "sha256": "5d1b4200c0e1ea5650d07d4818c11f2aaf431b744c2f317cf475586a68a8fa52"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_app_docs.js",
+          "sha256": "7a334d8613549a30050e1363d9c2806f4d0e844d0f6e4f0b263d7e42800203c1"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_app_state.js",
+          "sha256": "207a28965aa1986fc527217a0bbe9e5c4e987c6c290f8725f29a90130690b284"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_app.js",
+          "sha256": "97f8ef916b44537d9f01c289b95af7d7f6123d72ac4e4f8dfdd77454d111bbc3"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_current_user.js",
+          "sha256": "c6bd1d523cf70a648bb67b0ac9de60706c3ace9fd58acff4ae8bd7d3843e3b31"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_organization.js",
+          "sha256": "bc1df078907ca0d102ba09595a94e69b8ec66a1285d9eb61cdfd1b1aa07bb583"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_resource.js",
+          "sha256": "7b612e169ae5f2fc2ea7bd63e5cd925a219dd9c21bebd82866d96e058b72dd04"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_source_control_settings.js",
+          "sha256": "b218ab381bd8cb85fbb9ac4165dbd9049bd2df45d814c3a29f4466c6da6794fb"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflow_releases.js",
+          "sha256": "eb668da2252f6e2f7a0363266a2549acbec90a895f46b747107452d537be934d"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflow_run_count.js",
+          "sha256": "55b3340433c525518b3e627693a39e42213ddee727ef79252e6fe0ffea2c6b8a"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflow_run_log.js",
+          "sha256": "4090b6d3b830e9d6e094baf47941eee9d7ded018fd208cbe7f8ae1e509af7ccb"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflow_run.js",
+          "sha256": "2333de2114c0659d02f23902ad19bc74876a2af2c16162b20bdd5e86a0d33719"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflow.js",
+          "sha256": "0c9079f740337a8e924ae2fa84847ccb304f57640fca17f77654c2b46f3746eb"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/get_workflows_config.js",
+          "sha256": "3511c7a68e4de7d0a48e531420b40326993cf5d8955dccf81347383bf0e9e3e5"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_agents.js",
+          "sha256": "4f6a1f35bf5ea297d69754df85f8aeb3ba8d8171bad8355f85de035723c74307"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_app_tags.js",
+          "sha256": "1c3056ce4c46ff56185ac59bbd47a14891905095eed87f1ac641537b5497b54f"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_apps.js",
+          "sha256": "372103ad9dcc23d8a2e3f45ea941034f65a92c9dfe20f44ac00125a018badc6c"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_branches.js",
+          "sha256": "6eb5a2d4938a5ff1900401fcebcc2a2bfa8ed0d9da7ecf04fc3644a1c412f1a3"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_components.js",
+          "sha256": "e579f41d75712cf5ed8af2ea32bb44880833fb568893a53dd83c03aadd46cf21"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_environments.js",
+          "sha256": "2ff49d7a5515ea8d2cb643863219877dd56e5bfd5e9cf70908724e61eefcc79d"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_experiments.js",
+          "sha256": "b82d6432a1a3561f5523475f7b0ad01a5a54fbbcc134a94bd9028da77f67244c"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_grids.js",
+          "sha256": "5c38b01f73d3f428f4b8408126328a2e8ce2c013b40fb3843947b2a18e4ad38e"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_page_names.js",
+          "sha256": "b2f8225ea5e556412d179f1cdd81607172f098747941b7d75d1e5bf0c64fba8a"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_page_saves.js",
+          "sha256": "da684cc7111ab04cdfff134a8dde6ae4431dbadbd3c68fa46bea33066bf0d95d"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_playground_queries.js",
+          "sha256": "216078f977d4466f87cfecb0847b5fb82dd6229cb3458ab293fb137e5c700007"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_resources.js",
+          "sha256": "a49c18d38fe503425fcb5e2cdc5ef575912ae39c551bed31b5d5c75850582695"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_user_spaces.js",
+          "sha256": "7f9ed89d12f6583dbba0654e9ad90f63888677488c6bfe31f87899fd0e56e7f6"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_workflow_runs.js",
+          "sha256": "3d773d259eb73695ed26cff7d35c97380195f00d16278ac7b785c4e7516f1e2b"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_workflow_triggers.js",
+          "sha256": "7409c36a920bff43af5a6dcdfc62176b2d80bc2a6e7ae022440d94210db1a56d"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/list_workflows.js",
+          "sha256": "36115c1d1440ec73f8d9db610050a5735f09261969a26064d46446b3a3da5025"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/lookup_app.js",
+          "sha256": "74d759fa03b29dde1372aa4efa2dd029333a6c3030c1fe38a99907865e00e2ae"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/move_resource_to_folder.js",
+          "sha256": "c857c02c40984450053d7bd7f97fd0c6f5aee54bbf6fc32b7e1d9b07a1615401"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/rename_folder.js",
+          "sha256": "4444dded9e50bfdfd83f64771aaa44683e2b7dd806b2cb11740a77e3f9e7ca4f"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/run_grpc.js",
+          "sha256": "fba933811696d1b50804f6459339ae19054f296b0d6dba054c03391ff786e5e5"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/run_query.js",
+          "sha256": "75415a0ba1533bef3fadc92404a08f9b8de6889de64bb95149366ced0a2e7ca0"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/save_page.js",
+          "sha256": "1ff73aa3bc16032f9d257ef0296d6f846a8eb815d02f1194b69fa703ba538c31"
+        },
+        {
+          "path": "packages/com.retool.main/workflows/update_app_from_toolscript_archive.js",
+          "sha256": "5bca0a16fe61028cf2213952f230204b33efba09438f001a3c8a2af0a174e35e"
         }
       ]
     },
@@ -2766,6 +3154,162 @@
         {
           "path": "packages/com.todoist.main/workflows/update_task.js",
           "sha256": "92851ed65ad4d17ad09357d2693aa7fee9a5e3f1bb29d95668d1391689b4b0c2"
+        }
+      ]
+    },
+    {
+      "id": "com.twilio.main",
+      "version": "0.1.0",
+      "description": "Read and change a Twilio account — 3 account, 5 phone numbers, 4 messages, 4 calls, 3 recordings, 2 usage, 3 messaging services, 3 verify services, 2 alerts, 3 API keys, 3 applications (35 tools) — in your current console.twilio.com tab (subaccounts, balance, incoming/caller-ID numbers, SMS/MMS, voice calls, recordings, usage records and triggers, messaging services, Verify services, Monitor alerts, API keys and TwiML applications). Uses your own logged-in Twilio Console session: the account SID and auth token are bootstrapped from the Console project-info endpoint, then every call is the real api.twilio.com / messaging / verify / monitor REST request with Basic auth.",
+      "toolCount": 35,
+      "files": [
+        {
+          "path": "packages/com.twilio.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.twilio.main/manifest.json",
+          "sha256": "628b0865b58e270708254a55e34733c52036eaa9a3bcb5b3a3e731e8441177b5"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/create_api_key.js",
+          "sha256": "76c543c464a817491dff27ab0d69f0dd6337e6a1bcf97f80aec5cd74030df279"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/create_application.js",
+          "sha256": "382f0a5b7ee6af8c5b2ad87ca7bc5f70db06a0b5ea68f8dd0b1430fe81fbbadc"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/create_call.js",
+          "sha256": "e9431f3ca47aa6141d3258e8deb0e63331af8fb38cce976beb5b1aff38b64b75"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/create_messaging_service.js",
+          "sha256": "09254a0fe3b6ad1c9a5cdddfec587d9e920cd56edc354f68191a6531a3b45591"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/create_verify_service.js",
+          "sha256": "f70f0b7bcb82b95a7da4a35d836e17aaae5891ebdb3412c36cc457366242465a"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/delete_api_key.js",
+          "sha256": "d6c391b661e05a6fc0234e4895fefbdb95d4a643402205543ce25e582bb4a9db"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/delete_message.js",
+          "sha256": "35a67e557552383189042ba8e8f4c2802d1870fbafa08d9d6ed5c510f0b46ce2"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/delete_recording.js",
+          "sha256": "943d83d156de014cebb680f360f5fafd82ae14c0a25de8aef48ce8fe98048794"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_alert.js",
+          "sha256": "70cb028fe9839ef8d9b20ea6c28665c2d452a0cc9824ff2dc84ec8b713ad8813"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_application.js",
+          "sha256": "930052ea3e9e2ce139163c62d97d610bd703c5d06a095368be8fbb2b179f0aa0"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_balance.js",
+          "sha256": "ef310e75287e17d456f88f88c1b13647923ffabb734c44da275b3cb9731ece3a"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_call.js",
+          "sha256": "9864ef121b60026c606619ea28bffd2a156ae54c2604b34c8cebcc7389f4f5e9"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_current_user.js",
+          "sha256": "238afb6674ebd08c6fb746bc5d964a41bd63dc7920187b7eb5f7db9a1f0caf42"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_message.js",
+          "sha256": "7b7d23c266a8ec3610f9c57d4e1885eb8407abd95e219607c9e3b67cdcef09b4"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_messaging_service.js",
+          "sha256": "43b666d3af9d0caf3c63812b83daa8f06503cae0b4aad2517950b9b892e7c22e"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_phone_number.js",
+          "sha256": "c7f0b166bfce04b4a99bd4caf1b9c4e874780d287a55d4fdf7d1dba6a2ef2f24"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_recording.js",
+          "sha256": "7b51b5df4dc34c101049993761fea55442b9f38a11b09324fcc5a96656356d64"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/get_verify_service.js",
+          "sha256": "1475e3909d856b999e465ccb83501b6b201c5c71b7d1e9c126b43157627c5cf3"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_alerts.js",
+          "sha256": "132ba780918f16242a7d51f2fb28f67442ef3e1c39b58a313abc0fccf9830507"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_api_keys.js",
+          "sha256": "dde17c3268671f2d4bd075530e12edb300af4dc92111db8a0eac813c9ff87e4e"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_applications.js",
+          "sha256": "1fc4f4b21e406204b124bef4b27367f95081ff33f9e7c1eb13f894ec03fdb656"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_caller_ids.js",
+          "sha256": "0edcfa54139e05263d896155f81f76ddda2f91c562aa5715f07001565645f5f6"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_calls.js",
+          "sha256": "d40d765d450066a34bbd475d3ef0ed5b90db04d52f6ca8c180492b375d8eda74"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_messages.js",
+          "sha256": "755709829c8da01cb6e39c1abd4df5035b3d3b7b4c83f018b45521d2cd5c4ab6"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_messaging_services.js",
+          "sha256": "f22630835a9de2824b15073d2f3a8bdece86fb781cfe8aa8db16ca3dd33f025c"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_phone_numbers.js",
+          "sha256": "080779eb8a09ebe6b147ec9195240041c9a9907fc8f938e297088e3bf495ebb4"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_recordings.js",
+          "sha256": "cfc961a26867b3dd78f220c3bdedccdd1e07e6e867148361968cee012c3f15cf"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_subaccounts.js",
+          "sha256": "df4955446f43f02d4ba753d7e1c9f284e864a421ac9c392cd1da6556b3effd65"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_usage_records.js",
+          "sha256": "0c1a7102000e0443a532cb841880df3cc3b075099977f86cd6213dcb6a6a75d6"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_usage_triggers.js",
+          "sha256": "ae7866398ed0ce593caff008c98a2fb697f4870f671f46d168fa21e0ad76b24e"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/list_verify_services.js",
+          "sha256": "f7899a0b38ea08c425ec50177094e27e4ddd5261c22cdf7d4489b4e262984299"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/search_available_numbers.js",
+          "sha256": "5f7c3fa850d6ca7be6d1d35c5587c02dd1368725ee8e7fb7fc005873d75aa230"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/send_message.js",
+          "sha256": "c4691f1b16842f16e0e49f3f51f7d08da181f8ebd660e690766fd75b77048702"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/update_call.js",
+          "sha256": "1f566447498c667541e14593eaa5315d5bc8dbcdfe7d25f74b36cf1a17c14b0d"
+        },
+        {
+          "path": "packages/com.twilio.main/workflows/update_phone_number.js",
+          "sha256": "f98d4227f0650ca171696f0d862460984e7f40cb7b6f4e43a6d3ad18283f1f56"
         }
       ]
     },
