@@ -62,6 +62,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
+  'com.google-calendar.main': 18,
 }
 
 /**
@@ -120,6 +121,26 @@ const OPENTABS_TOOL_NAMES = {
     'remove_reaction',
     'pin_message',
     'unpin_message',
+  ],
+  'com.google-calendar.main': [
+    'list_events',
+    'get_event',
+    'create_event',
+    'update_event',
+    'delete_event',
+    'quick_add_event',
+    'move_event',
+    'list_event_instances',
+    'search_events',
+    'list_calendars',
+    'get_calendar',
+    'create_calendar',
+    'update_calendar',
+    'delete_calendar',
+    'query_freebusy',
+    'list_settings',
+    'get_setting',
+    'get_colors',
   ],
   'com.jira.main': [
     'search_issues',
@@ -451,6 +472,7 @@ function loadUpstreamSchemas() {
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
     'com.slack.main': 'slack',
+    'com.google-calendar.main': 'google-calendar',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -2464,6 +2486,537 @@ section('urlRegex probe: app.todoist.com')
     for (const url of mustNotMatch)
       ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
   }
+}
+
+// --- urlRegex probe: calendar.google.com ------------------------------------
+
+section('urlRegex probe: calendar.google.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.google-calendar.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://calendar.google.com/',
+    'https://calendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com/calendar/u/0/r/day?src=cal&ctz=Asia%2FShanghai',
+    'https://calendar.google.com/calendar/u/0/r/eventedit/abc123#main',
+  ]
+  const mustNotMatch = [
+    'http://calendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com.evil.example/calendar/u/0/r/week',
+    'https://evilcalendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com:8443/calendar/u/0/r/week',
+    'https://mail.google.com/calendar/u/0/r/week',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `google-calendar urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `google-calendar urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- Google Calendar execution ----------------------------------------------
+// The Calendar web app signs every API call through gapi.client.request, which
+// resolves with { status, result }. The stub records the request descriptors and
+// answers with realistic Calendar resources, so the ported transport parsing and
+// resource mapping really run.
+
+section('execution: Google Calendar tools against a stubbed page')
+
+function gcalPage(handler, extra = {}) {
+  const requests = []
+  const page = {
+    hostname: 'calendar.google.com',
+    globals: {
+      gapi: {
+        client: {
+          request: async (options) => {
+            requests.push(options)
+            return handler(options)
+          },
+        },
+      },
+    },
+    ...extra,
+  }
+  return { requests, page }
+}
+
+const GCAL_EVENT = {
+  kind: 'calendar#event',
+  id: 'evt_1',
+  status: 'confirmed',
+  htmlLink: 'https://www.google.com/calendar/event?eid=ZXZ0XzE',
+  summary: 'Weekly sync',
+  description: 'Roadmap checkpoint',
+  location: 'Room 4',
+  creator: { email: 'ada@example.com', self: true },
+  organizer: { email: 'ada@example.com', displayName: 'Ada Lovelace' },
+  start: { dateTime: '2026-11-20T10:00:00+08:00', timeZone: 'Asia/Shanghai' },
+  end: { dateTime: '2026-11-20T10:30:00+08:00', timeZone: 'Asia/Shanghai' },
+  created: '2026-11-01T09:00:00.000Z',
+  updated: '2026-11-18T09:00:00.000Z',
+  attendees: [
+    { email: 'grace@example.com', displayName: 'Grace Hopper', responseStatus: 'accepted', optional: true },
+    { email: 'ada@example.com', self: true, organizer: true, responseStatus: 'accepted' },
+  ],
+  reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 10 }] },
+  colorId: '7',
+  transparency: 'transparent',
+  visibility: 'private',
+  eventType: 'default',
+  hangoutLink: 'https://meet.google.com/abc-defg-hij',
+  conferenceData: {
+    entryPoints: [
+      { entryPointType: 'phone', uri: 'tel:+1-555-0100' },
+      { entryPointType: 'video', uri: 'https://meet.google.com/abc-defg-hij?hs=224' },
+    ],
+  },
+}
+
+{
+  // Calendar list: the primary calendar plus a subscribed holiday calendar.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      items: [
+        {
+          id: 'ada@example.com',
+          summary: 'Ada Lovelace',
+          timeZone: 'Asia/Shanghai',
+          backgroundColor: '#9fe1e7',
+          foregroundColor: '#1d1d1d',
+          selected: true,
+          accessRole: 'owner',
+          primary: true,
+        },
+        {
+          id: 'en.usa#holiday@group.v.calendar.google.com',
+          summary: 'Holidays in the United States',
+          accessRole: 'reader',
+          selected: false,
+        },
+      ],
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_calendars', {
+    input: { show_hidden: true },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_calendars: status')
+  equal(result.data.calendars.length, 2, 'google list_calendars: calendar count')
+  equal(result.data.calendars[0].is_primary, true, 'google list_calendars: primary flag')
+  equal(result.data.calendars[0].time_zone, 'Asia/Shanghai', 'google list_calendars: time zone')
+  equal(result.data.calendars[1].access_role, 'reader', 'google list_calendars: access role')
+  equal(requests[0].path, '/calendar/v3/users/me/calendarList', 'google list_calendars: endpoint')
+  equal(requests[0].params.showHidden, true, 'google list_calendars: showHidden param')
+  ok(!('showDeleted' in requests[0].params), 'google list_calendars: undefined params filtered')
+}
+
+{
+  // Event list for an explicit range: singleEvents expansion defaults to true and
+  // orderBy follows it.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { items: [GCAL_EVENT], nextPageToken: 'page-2' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_events', {
+    input: { time_min: '2026-11-19T00:00:00+08:00', time_max: '2026-11-26T00:00:00+08:00' },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_events: status')
+  equal(result.data.events[0].summary, 'Weekly sync', 'google list_events: summary')
+  equal(result.data.events[0].start.date_time, '2026-11-20T10:00:00+08:00', 'google list_events: start')
+  equal(result.data.events[0].organizer_email, 'ada@example.com', 'google list_events: organizer')
+  equal(result.data.next_page_token, 'page-2', 'google list_events: next page token')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events', 'google list_events: endpoint')
+  equal(requests[0].params.timeMin, '2026-11-19T00:00:00+08:00', 'google list_events: timeMin')
+  equal(requests[0].params.timeMax, '2026-11-26T00:00:00+08:00', 'google list_events: timeMax')
+  equal(requests[0].params.maxResults, 25, 'google list_events: default maxResults')
+  equal(requests[0].params.singleEvents, true, 'google list_events: singleEvents default')
+  equal(requests[0].params.orderBy, 'startTime', 'google list_events: orderBy default')
+}
+
+{
+  // Single event read: attendees, reminder overrides and the video conference
+  // entry point all map through upstream's defensive mappers.
+  const { requests, page } = gcalPage(() => ({ status: 200, result: GCAL_EVENT }))
+  const result = await runTool('com.google-calendar.main', 'get_event', {
+    input: { event_id: 'evt_1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_event: status')
+  equal(result.data.event.id, 'evt_1', 'google get_event: id')
+  equal(result.data.event.attendees.length, 2, 'google get_event: attendee count')
+  equal(
+    result.data.event.attendees[0].response_status,
+    'accepted',
+    'google get_event: attendee response status',
+  )
+  equal(result.data.event.attendees[0].is_optional, true, 'google get_event: optional flag')
+  equal(result.data.event.uses_default_reminders, false, 'google get_event: custom reminders')
+  equal(result.data.event.reminders[0].method, 'popup', 'google get_event: reminder method')
+  equal(
+    result.data.event.conference_uri,
+    'https://meet.google.com/abc-defg-hij?hs=224',
+    'google get_event: video entry point',
+  )
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1', 'google get_event: endpoint')
+}
+
+{
+  // Create: timed event body mapping, attendees as { email }, explicit reminders,
+  // and sendUpdates defaulting to none.
+  const { requests, page } = gcalPage((options) => ({
+    status: 200,
+    result: {
+      ...GCAL_EVENT,
+      summary: JSON.parse(options.body).summary,
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'create_event', {
+    input: {
+      summary: 'Design review',
+      start_datetime: '2026-11-21T14:00:00+08:00',
+      time_zone: 'Asia/Shanghai',
+      attendees: ['grace@example.com'],
+      reminders: [{ method: 'email', minutes: 30 }],
+      color_id: '9',
+    },
+    page,
+  })
+  equal(result.status, 'ok', 'google create_event: status')
+  equal(result.data.event.summary, 'Design review', 'google create_event: summary round trip')
+  const body = JSON.parse(requests[0].body)
+  equal(requests[0].method, 'POST', 'google create_event: POST')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events', 'google create_event: endpoint')
+  equal(body.start.dateTime, '2026-11-21T14:00:00+08:00', 'google create_event: start dateTime')
+  equal(body.start.timeZone, 'Asia/Shanghai', 'google create_event: start time zone')
+  equal(body.end.dateTime, '2026-11-21T14:00:00+08:00', 'google create_event: end defaults to start')
+  equal(body.attendees[0].email, 'grace@example.com', 'google create_event: attendee mapping')
+  equal(body.reminders.useDefault, false, 'google create_event: reminders disabled default')
+  equal(body.reminders.overrides[0].minutes, 30, 'google create_event: reminder minutes')
+  equal(body.colorId, '9', 'google create_event: color id')
+  equal(requests[0].params.sendUpdates, 'none', 'google create_event: sendUpdates default')
+}
+
+{
+  // Update: PATCH semantics — only the fields the caller sent reach the body.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, summary: 'Weekly sync (moved)' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'update_event', {
+    input: { event_id: 'evt_1', summary: 'Weekly sync (moved)', start_datetime: '2026-11-20T11:00:00+08:00' },
+    page,
+  })
+  equal(result.status, 'ok', 'google update_event: status')
+  equal(result.data.event.summary, 'Weekly sync (moved)', 'google update_event: summary')
+  const body = JSON.parse(requests[0].body)
+  equal(requests[0].method, 'PATCH', 'google update_event: PATCH')
+  equal(body.summary, 'Weekly sync (moved)', 'google update_event: summary in body')
+  equal(body.start.dateTime, '2026-11-20T11:00:00+08:00', 'google update_event: start in body')
+  ok(!('description' in body), 'google update_event: omitted fields stay out of the body')
+  ok(!('end' in body), 'google update_event: untouched end stays out of the body')
+  equal(requests[0].params.sendUpdates, 'none', 'google update_event: sendUpdates default')
+}
+
+{
+  // Delete: DELETE on the instance id, and the gapi response without a result
+  // body still reports the deletion.
+  const { requests, page } = gcalPage(() => ({ status: 204 }))
+  const result = await runTool('com.google-calendar.main', 'delete_event', {
+    input: { event_id: 'evt_1', send_updates: 'all' },
+    page,
+  })
+  equal(result.status, 'ok', 'google delete_event: status')
+  equal(result.data.deleted, true, 'google delete_event: deleted flag')
+  equal(requests[0].method, 'DELETE', 'google delete_event: DELETE')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1', 'google delete_event: endpoint')
+  equal(requests[0].params.sendUpdates, 'all', 'google delete_event: sendUpdates passthrough')
+}
+
+{
+  // Free/busy: POST body built from calendar_ids, per-calendar busy slots and
+  // request errors mapped into strings.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      calendars: {
+        'ada@example.com': { busy: [{ start: '2026-11-20T10:00:00Z', end: '2026-11-20T10:30:00Z' }] },
+        'grace@example.com': { errors: [{ domain: 'global', reason: 'notFound' }] },
+      },
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'query_freebusy', {
+    input: { time_min: '2026-11-20T00:00:00Z', time_max: '2026-11-21T00:00:00Z' },
+    page,
+  })
+  equal(result.status, 'ok', 'google query_freebusy: status')
+  equal(result.data.calendars[0].busy[0].start, '2026-11-20T10:00:00Z', 'google query_freebusy: busy start')
+  equal(result.data.calendars[1].errors[0], 'global: notFound', 'google query_freebusy: error string')
+  equal(requests[0].path, '/calendar/v3/freeBusy', 'google query_freebusy: endpoint')
+  const body = JSON.parse(requests[0].body)
+  equal(body.items[0].id, 'primary', 'google query_freebusy: default calendar id')
+}
+
+{
+  // Colors: object maps become ordered arrays keyed by colour id.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      calendar: { '1': { background: '#ac725e', foreground: '#1d1d1d' } },
+      event: { '9': { background: '#5484ed', foreground: '#ffffff' } },
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_colors', { page })
+  equal(result.status, 'ok', 'google get_colors: status')
+  equal(result.data.calendar_colors[0].id, '1', 'google get_colors: calendar colour id')
+  equal(result.data.event_colors[0].background, '#5484ed', 'google get_colors: event colour')
+  equal(requests[0].path, '/calendar/v3/colors', 'google get_colors: endpoint')
+}
+
+{
+  // Quick add: natural-language text rides as a query param on quickAdd.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, summary: 'Lunch with Sarah' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'quick_add_event', {
+    input: { text: 'Lunch with Sarah tomorrow at noon' },
+    page,
+  })
+  equal(result.status, 'ok', 'google quick_add_event: status')
+  equal(result.data.event.summary, 'Lunch with Sarah', 'google quick_add_event: event summary')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/quickAdd', 'google quick_add_event: endpoint')
+  equal(requests[0].method, 'POST', 'google quick_add_event: POST')
+  equal(requests[0].params.text, 'Lunch with Sarah tomorrow at noon', 'google quick_add_event: text param')
+}
+
+{
+  // Move: POST with the destination calendar id as a param.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, organizer: { email: 'team@group.calendar.google.com' } },
+  }))
+  const result = await runTool('com.google-calendar.main', 'move_event', {
+    input: { event_id: 'evt_1', destination: 'team@group.calendar.google.com' },
+    page,
+  })
+  equal(result.status, 'ok', 'google move_event: status')
+  equal(
+    result.data.event.organizer_email,
+    'team@group.calendar.google.com',
+    'google move_event: new organizer',
+  )
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1/move', 'google move_event: endpoint')
+  equal(requests[0].params.destination, 'team@group.calendar.google.com', 'google move_event: destination')
+}
+
+{
+  // Recurring instances: nested resource plus the recurring parent id.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      items: [{ ...GCAL_EVENT, id: 'evt_1_20261127', recurringEventId: 'evt_1' }],
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_event_instances', {
+    input: { event_id: 'evt_1', max_results: 5 },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_event_instances: status')
+  equal(result.data.events[0].recurring_event_id, 'evt_1', 'google list_event_instances: parent id')
+  equal(
+    requests[0].path,
+    '/calendar/v3/calendars/primary/events/evt_1/instances',
+    'google list_event_instances: endpoint',
+  )
+  equal(requests[0].params.maxResults, 5, 'google list_event_instances: maxResults passthrough')
+}
+
+{
+  // Search: reads the calendar list, keeps owner/writer calendars only, then
+  // queries each of them with q + singleEvents.
+  const { requests, page } = gcalPage((options) => {
+    if (options.path === '/calendar/v3/users/me/calendarList') {
+      return {
+        status: 200,
+        result: {
+          items: [
+            { id: 'ada@example.com', accessRole: 'owner', primary: true },
+            { id: 'old@group.calendar.google.com', accessRole: 'reader' },
+          ],
+        },
+      }
+    }
+    return { status: 200, result: { items: [GCAL_EVENT] } }
+  })
+  const result = await runTool('com.google-calendar.main', 'search_events', {
+    input: { q: 'sync' },
+    page,
+  })
+  equal(result.status, 'ok', 'google search_events: status')
+  equal(result.data.events.length, 1, 'google search_events: result count')
+  equal(requests.length, 2, 'google search_events: one list read plus one writable calendar')
+  equal(
+    requests[1].path,
+    '/calendar/v3/calendars/ada%40example.com/events',
+    'google search_events: queries the writable calendar',
+  )
+  equal(requests[1].params.q, 'sync', 'google search_events: query param')
+  equal(requests[1].params.singleEvents, true, 'google search_events: expands recurring events')
+}
+
+{
+  // Calendar metadata read: the id is URL-encoded into the path.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { id: 'team@group.calendar.google.com', summary: 'Team', timeZone: 'UTC' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_calendar', {
+    input: { calendar_id: 'team@group.calendar.google.com' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_calendar: status')
+  equal(result.data.calendar.summary, 'Team', 'google get_calendar: summary')
+  equal(
+    requests[0].path,
+    '/calendar/v3/calendars/team%40group.calendar.google.com',
+    'google get_calendar: encoded calendar id',
+  )
+}
+
+{
+  // Secondary calendar create / update / delete round trip.
+  const { requests, page } = gcalPage((options) => ({
+    status: options.method === 'DELETE' ? 204 : 200,
+    result: { id: 'new@group.calendar.google.com', summary: 'Projects', timeZone: 'Asia/Shanghai' },
+  }))
+  const created = await runTool('com.google-calendar.main', 'create_calendar', {
+    input: { summary: 'Projects', time_zone: 'Asia/Shanghai' },
+    page,
+  })
+  equal(created.status, 'ok', 'google create_calendar: status')
+  equal(created.data.calendar.id, 'new@group.calendar.google.com', 'google create_calendar: id')
+  equal(requests[0].path, '/calendar/v3/calendars', 'google create_calendar: endpoint')
+  equal(JSON.parse(requests[0].body).timeZone, 'Asia/Shanghai', 'google create_calendar: time zone body')
+
+  const updated = await runTool('com.google-calendar.main', 'update_calendar', {
+    input: { calendar_id: 'new@group.calendar.google.com', summary: 'Projects 2027' },
+    page,
+  })
+  equal(updated.status, 'ok', 'google update_calendar: status')
+  equal(requests[1].method, 'PATCH', 'google update_calendar: PATCH')
+  const updateBody = JSON.parse(requests[1].body)
+  equal(updateBody.summary, 'Projects 2027', 'google update_calendar: summary in body')
+  ok(!('timeZone' in updateBody), 'google update_calendar: omitted fields stay out of the body')
+
+  const deleted = await runTool('com.google-calendar.main', 'delete_calendar', {
+    input: { calendar_id: 'new@group.calendar.google.com' },
+    page,
+  })
+  equal(deleted.status, 'ok', 'google delete_calendar: status')
+  equal(deleted.data.deleted, true, 'google delete_calendar: deleted flag')
+  equal(requests[2].method, 'DELETE', 'google delete_calendar: DELETE')
+}
+
+{
+  // Single setting read: setting id is encoded into the nested path.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { id: 'timezone', value: 'Asia/Shanghai' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_setting', {
+    input: { setting_id: 'timezone' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_setting: status')
+  equal(result.data.setting.value, 'Asia/Shanghai', 'google get_setting: value')
+  equal(requests[0].path, '/calendar/v3/users/me/settings/timezone', 'google get_setting: endpoint')
+}
+
+{
+  // Auth failure, logged-out tab: no gapi on the page and the same-origin
+  // /calendar/v3 path answers with Google's marketing HTML instead of JSON.
+  const requests = []
+  const result = await runTool('com.google-calendar.main', 'list_events', {
+    input: {},
+    page: {
+      hostname: 'calendar.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse('<!doctype html><html><head><title>Google Calendar</title></head></html>')
+      },
+    },
+  })
+  equal(result.status, 'error', 'google logged-out: error status')
+  equal(result.error_code, 'AUTH', 'google logged-out: classified as AUTH')
+  ok(
+    String(result.message).includes('not ready'),
+    'google logged-out: explains the tab is not ready',
+  )
+  equal(requests[0].init.credentials, 'include', 'google logged-out: sends credentials')
+  ok(
+    String(requests[0].url).startsWith('https://calendar.google.com/calendar/v3/calendars/primary/events'),
+    'google logged-out: keeps the same-origin API path',
+  )
+}
+
+{
+  // A gapi call that rejects with a 401 is surfaced as an AUTH error result, not
+  // as a thrown adapter failure.
+  const { page } = gcalPage(() => {
+    const error = new Error('Invalid Credentials')
+    error.status = 401
+    error.result = { error: { code: 401, message: 'Invalid Credentials' } }
+    throw error
+  })
+  const result = await runTool('com.google-calendar.main', 'list_settings', { page })
+  equal(result.status, 'error', 'google gapi 401: error status')
+  equal(result.error_code, 'AUTH', 'google gapi 401: classified as AUTH')
+  equal(result.message, 'Invalid Credentials', 'google gapi 401: upstream error message')
+}
+
+{
+  // A gapi 404 keeps its own classification.
+  const { page } = gcalPage(() => {
+    const error = new Error('Not Found')
+    error.status = 404
+    error.result = { error: { code: 404, message: 'Not Found' } }
+    throw error
+  })
+  const result = await runTool('com.google-calendar.main', 'get_event', {
+    input: { event_id: 'missing' },
+    page,
+  })
+  equal(result.status, 'error', 'google gapi 404: error status')
+  equal(result.error_code, 'NOT_FOUND', 'google gapi 404: classified as NOT_FOUND')
+}
+
+{
+  // Fallback transport: the XSSI guard line Google may prepend is stripped before
+  // the JSON parse, so settings still map.
+  const requests = []
+  const result = await runTool('com.google-calendar.main', 'list_settings', {
+    page: {
+      hostname: 'calendar.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(")]}'\n{\"items\":[{\"id\":\"timezone\",\"value\":\"Asia/Shanghai\"},{\"id\":\"locale\",\"value\":\"en\"}]}")
+      },
+    },
+  })
+  equal(result.status, 'ok', 'google fallback settings: status')
+  equal(result.data.settings.length, 2, 'google fallback settings: setting count')
+  equal(result.data.settings[0].value, 'Asia/Shanghai', 'google fallback settings: value')
+  equal(
+    requests[0].url,
+    'https://calendar.google.com/calendar/v3/users/me/settings',
+    'google fallback settings: same-origin path',
+  )
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
