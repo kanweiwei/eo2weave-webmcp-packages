@@ -1,0 +1,145 @@
+{
+  "id": "com.reddit.main",
+  "version": "0.1.0",
+  "description": "Read and act on Reddit in your current tab: browse posts and comment threads, search posts and subreddits, read profiles, subscriptions and your inbox, and vote, save, hide, report, submit posts/comments, edit, delete, subscribe and send private messages. Uses your own logged-in Reddit session.",
+  "tools": [
+    {
+      "name": "get_me",
+      "description": "Get the authenticated user's Reddit profile including username, karma, and account details",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_me.js"
+    },
+    {
+      "name": "list_posts",
+      "description": "List posts from a subreddit or the front page. Supports sorting by hot, new, top, rising, and controversial. Use the \"after\" cursor for pagination.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_posts.js"
+    },
+    {
+      "name": "get_post",
+      "description": "Get a Reddit post and its comments by subreddit and post ID. Returns the post details and a flattened comment tree.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_post.js"
+    },
+    {
+      "name": "search_posts",
+      "description": "Search for posts across Reddit or within a specific subreddit. Supports sorting and time filtering.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_posts.js"
+    },
+    {
+      "name": "submit_post",
+      "description": "Submit a new text or link post to a subreddit. Note: some subreddits may require captcha for new or low-karma accounts.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/submit_post.js"
+    },
+    {
+      "name": "submit_comment",
+      "description": "Post a comment on a Reddit post or reply to an existing comment",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/submit_comment.js"
+    },
+    {
+      "name": "get_comment_thread",
+      "description": "Get a specific comment and its nested replies. Focuses the comment tree on a particular comment, returning its full reply chain regardless of nesting depth. Use this to read deeply nested conversations that get_post may truncate.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_comment_thread.js"
+    },
+    {
+      "name": "edit_text",
+      "description": "Edit the body text of a self-post or comment. Only the author can edit their own content. Link posts cannot be edited.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_text.js"
+    },
+    {
+      "name": "delete",
+      "description": "Permanently delete a post or comment. Only the author can delete their own content. This action cannot be undone.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete.js"
+    },
+    {
+      "name": "vote",
+      "description": "Upvote, downvote, or remove a vote on a post or comment",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/vote.js"
+    },
+    {
+      "name": "save",
+      "description": "Save or unsave a post or comment to your saved items",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/save.js"
+    },
+    {
+      "name": "hide",
+      "description": "Hide or unhide a post from your feed. Hidden posts no longer appear in listings but can be viewed directly.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/hide.js"
+    },
+    {
+      "name": "report",
+      "description": "Report a post or comment to the subreddit moderators for rule violations.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/report.js"
+    },
+    {
+      "name": "list_user_content",
+      "description": "Browse a user's posts, comments, or saved items. Use \"submitted\" for posts, \"comments\" for comments, \"saved\" for saved items (own profile only), \"upvoted\"/\"downvoted\" for voted items (own profile only), or \"overview\" for both posts and comments.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_user_content.js"
+    },
+    {
+      "name": "get_subreddit",
+      "description": "Get detailed information about a subreddit including description, subscriber count, and rules",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_subreddit.js"
+    },
+    {
+      "name": "list_flairs",
+      "description": "List available post flairs for a subreddit. Use the returned flair ID with submit_post to satisfy subreddits that require flair.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_flairs.js"
+    },
+    {
+      "name": "search_subreddits",
+      "description": "Search for subreddits by name or topic",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_subreddits.js"
+    },
+    {
+      "name": "list_subscriptions",
+      "description": "List subreddits the authenticated user is subscribed to",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_subscriptions.js"
+    },
+    {
+      "name": "list_popular_subreddits",
+      "description": "List popular, new, or default subreddits. Use category \"popular\" for most popular, \"new\" for newest, or \"default\" for default subreddits.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_popular_subreddits.js"
+    },
+    {
+      "name": "subscribe",
+      "description": "Subscribe to or unsubscribe from a subreddit",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/subscribe.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get public profile information for a Reddit user by username",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "send_message",
+      "description": "Send a private message to another Reddit user",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "read_inbox",
+      "description": "Read messages from the authenticated user's inbox. Includes private messages and comment replies.",
+      "urlRegex": "^https://(?:www|old|new)\\.reddit\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_inbox.js"
+    }
+  ]
+}

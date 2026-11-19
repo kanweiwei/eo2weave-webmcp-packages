@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T04:11:40.839Z",
+  "generatedAt": "2026-11-19T05:27:03.510Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -838,6 +838,114 @@
         {
           "path": "packages/com.npm.main/workflows/search_packages.js",
           "sha256": "5bd127befc0e9b4d59d2415028d4ab45be81a85ad81b6f96a407ce102a638f11"
+        }
+      ]
+    },
+    {
+      "id": "com.reddit.main",
+      "version": "0.1.0",
+      "description": "Read and act on Reddit in your current tab: browse posts and comment threads, search posts and subreddits, read profiles, subscriptions and your inbox, and vote, save, hide, report, submit posts/comments, edit, delete, subscribe and send private messages. Uses your own logged-in Reddit session.",
+      "toolCount": 23,
+      "files": [
+        {
+          "path": "packages/com.reddit.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.reddit.main/manifest.json",
+          "sha256": "5bd1c49c9295881fbf810bb01db5fb322ad07c58ad70d6e0b79810db3cb12c0c"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/delete.js",
+          "sha256": "1e9cfd751f8f24a33ddfdebbd722b41c425084ae022b9266e6d9aa24ea813a78"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/edit_text.js",
+          "sha256": "ae1fd423270e63807599bc5f7d9410f82476e5356f5799dcf71ab166f2947f72"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/get_comment_thread.js",
+          "sha256": "349f3a99ad10a01ac684aab7865f8ebaa9cc3bfca85beb7fc557a8459f1b1c97"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/get_me.js",
+          "sha256": "d3d619206376b21d1be8389e7c2f13a434370789e0392fc844f250337abc9afa"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/get_post.js",
+          "sha256": "8e3b75a504a01e9e221a2e93ac9cb0e6e285563bcf52de516c4f017bfa8229c7"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/get_subreddit.js",
+          "sha256": "3121d4b4d82f09caab6b50cf1c1109908807d756c3f7f28252aabf272846ed5b"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/get_user.js",
+          "sha256": "64e8525be38fc41c665bd8fbf6a82887f74e3168a4af5cd93ad1446e104f284c"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/hide.js",
+          "sha256": "55f5dc93ba92b4511cd32ee19acf39660990e8069d9918124a97d49bc6c4d695"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/list_flairs.js",
+          "sha256": "3f411cc42d51fe9468b299b62ea535c7a454b61f45bb178fe1b788d9e124a9c0"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/list_popular_subreddits.js",
+          "sha256": "508ca5a44a51b5b7ab8e869baacbddfcd8bf8befee4d5d77355787d22236c2d3"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/list_posts.js",
+          "sha256": "a813105a758999e960b11e77ac968b70acbf4325f9dccfabfaa2f87d2cd3be3e"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/list_subscriptions.js",
+          "sha256": "093dd864ac07ac87d39846fc97f626777289a93c6456cafc64604255d91ee2fa"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/list_user_content.js",
+          "sha256": "dc374a2067db7c70ccc1d209fa4efb0dc4fc36cc52b34d8d1e30829a3c4a9373"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/read_inbox.js",
+          "sha256": "99b3fd680a7e633d6f9d51ee68610682b46b46b9b42d1b7ed5ecfe417fdcafa9"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/report.js",
+          "sha256": "17531ca475083003d0cb021478fc357461645cd33b8e01accfb01b16cfc7ab23"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/save.js",
+          "sha256": "d7bd838b26f60e7fcd269148b3892eac0edc395042c33d143e5f9d63a0cdd49a"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/search_posts.js",
+          "sha256": "73e0b764e72ff24aa6895b5f642466db5ef36572dc61d9b7a0f04647b8e5385d"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/search_subreddits.js",
+          "sha256": "ec6b7131623a17b27d967004ac8a5ff17eb859fc6347aa534c828e4bf7b2f2af"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/send_message.js",
+          "sha256": "2a0cba9d4903b423a2f39d46ba3ba80bc5c576de07e6ab16defb0f9ae5cb2bd7"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/submit_comment.js",
+          "sha256": "e9b3bbf2f549730e3b0f9b8d096fa09685e6323195c3ee45c9f3db71d8064020"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/submit_post.js",
+          "sha256": "06f3c0635ef07a5b392c59c74568c553c2d307efbac32cec1d62aadd61c788c4"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/subscribe.js",
+          "sha256": "2cadf57dc1573087441c19fb4daa71eaa887cf908d57d49bbcde193303538bc3"
+        },
+        {
+          "path": "packages/com.reddit.main/workflows/vote.js",
+          "sha256": "ed21facd9fee359e19fdb986771f97ab0b158a779e9ca49f3d6db54710976e3e"
         }
       ]
     },

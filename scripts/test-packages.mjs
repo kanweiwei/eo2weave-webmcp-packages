@@ -62,6 +62,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
+  'com.reddit.main': 23,
 }
 
 /**
@@ -177,6 +178,31 @@ const OPENTABS_TOOL_NAMES = {
     'list_shared_labels',
     'rename_shared_label',
     'remove_shared_label',
+  ],
+  'com.reddit.main': [
+    'get_me',
+    'list_posts',
+    'get_post',
+    'search_posts',
+    'submit_post',
+    'submit_comment',
+    'get_comment_thread',
+    'edit_text',
+    'delete',
+    'vote',
+    'save',
+    'hide',
+    'report',
+    'list_user_content',
+    'get_subreddit',
+    'list_flairs',
+    'search_subreddits',
+    'list_subscriptions',
+    'list_popular_subreddits',
+    'subscribe',
+    'get_user',
+    'send_message',
+    'read_inbox',
   ],
 }
 
@@ -451,6 +477,7 @@ function loadUpstreamSchemas() {
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
     'com.slack.main': 'slack',
+    'com.reddit.main': 'reddit',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -2463,6 +2490,341 @@ section('urlRegex probe: app.todoist.com')
     for (const url of mustMatch) ok(regex.test(url), `todoist urlRegex matches ${url} (${tool.name})`)
     for (const url of mustNotMatch)
       ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- Reddit ------------------------------------------------------------------
+// The reddit runtime posts form bodies (plus the modhash), exchanges the CSRF
+// cookie for a bearer token on the /svc/shreddit/token endpoint, and reads the
+// nested Listing shape; these tests stub exactly those seams.
+
+function redditListing(children, after = null) {
+  return { kind: 'Listing', data: { after, before: null, children, dist: children.length } }
+}
+
+const REDDIT_POST = {
+  kind: 't3',
+  data: {
+    id: 'abc123',
+    name: 't3_abc123',
+    title: 'Zig 0.15 released',
+    author: 'andrewrk',
+    subreddit: 'programming',
+    score: 412,
+    upvote_ratio: 0.95,
+    num_comments: 88,
+    url: 'https://example.com/zig',
+    permalink: '/r/programming/comments/abc123/zig/',
+    selftext: '',
+    is_self: false,
+    created_utc: 1763500000,
+    over_18: false,
+    stickied: false,
+    link_flair_text: 'News',
+    thumbnail: '',
+  },
+}
+
+const REDDIT_SELF_POST = {
+  kind: 't3',
+  data: {
+    ...REDDIT_POST.data,
+    id: 'def456',
+    name: 't3_def456',
+    title: 'What editor do you use?',
+    url: 'https://www.reddit.com/r/programming/comments/def456/',
+    permalink: '/r/programming/comments/def456/editor/',
+    selftext: 'I switched to helix and I like it.',
+    is_self: true,
+    link_flair_text: null,
+  },
+}
+
+function redditComment(overrides = {}) {
+  return {
+    kind: 't1',
+    data: {
+      id: 'c1',
+      name: 't1_c1',
+      author: 'commenter',
+      body: 'Nice release.',
+      score: 12,
+      created_utc: 1763500100,
+      parent_id: 't3_abc123',
+      depth: 0,
+      is_submitter: false,
+      replies: '',
+      ...overrides,
+    },
+  }
+}
+
+function redditPage(handler, extra = {}) {
+  const calls = []
+  const page = {
+    hostname: 'www.reddit.com',
+    href: 'https://www.reddit.com/r/programming/',
+    origin: 'https://www.reddit.com',
+    cookie: 'csrf_token=csrf-test-token; reddit_session=session-cookie',
+    fetch: async (url, init = {}) => {
+      calls.push({ url: String(url), init })
+      return handler(String(url), init)
+    },
+    ...extra,
+  }
+  return { page, calls }
+}
+
+const REDDIT_MODHASH = { kind: 't2', data: { modhash: 'mh-test', name: 'tester' } }
+
+{
+  // Listing read: default hot listing, metadata only (url/selftext withheld).
+  const { page, calls } = redditPage(() =>
+    jsonResponse(redditListing([REDDIT_POST, REDDIT_SELF_POST], 't3_next')),
+  )
+  const result = await runTool('com.reddit.main', 'list_posts', {
+    input: { subreddit: 'programming' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit list_posts: status')
+  equal(result.data.posts.length, 2, 'reddit list_posts: maps every child')
+  equal(result.data.posts[0].title, 'Zig 0.15 released', 'reddit list_posts: title')
+  equal(result.data.posts[0].score, 412, 'reddit list_posts: score')
+  equal(result.data.posts[0].url, null, 'reddit list_posts: url withheld without include_body')
+  equal(result.data.posts[0].selftext, null, 'reddit list_posts: selftext withheld without include_body')
+  equal(result.data.posts[1].link_flair_text, null, 'reddit list_posts: absent flair is null')
+  equal(result.data.after, 't3_next', 'reddit list_posts: cursor returned')
+  equal(calls[0].url, 'https://www.reddit.com/r/programming/hot.json?limit=25', 'reddit list_posts: hot endpoint')
+}
+
+{
+  // Paginated read with a time filter and bodies: cursor and t both travel.
+  const { page, calls } = redditPage(() => jsonResponse(redditListing([REDDIT_SELF_POST])))
+  const result = await runTool('com.reddit.main', 'list_posts', {
+    input: {
+      subreddit: 'programming',
+      sort: 'top',
+      t: 'week',
+      limit: 2,
+      after: 't3_next',
+      include_body: true,
+    },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit list_posts page 2: status')
+  equal(
+    calls[0].url,
+    'https://www.reddit.com/r/programming/top.json?limit=2&t=week&after=t3_next',
+    'reddit list_posts page 2: cursor and t in query',
+  )
+  equal(result.data.posts[0].url, REDDIT_SELF_POST.data.url, 'reddit list_posts: include_body returns url')
+  equal(result.data.posts[0].selftext, 'I switched to helix and I like it.', 'reddit list_posts: include_body returns selftext')
+  equal(result.data.after, null, 'reddit list_posts: null cursor at the end')
+}
+
+{
+  // Post + flattened comment tree: depth caps the recursion.
+  const { page, calls } = redditPage(() =>
+    jsonResponse([
+      redditListing([REDDIT_POST]),
+      redditListing([
+        redditComment({
+          replies: { kind: 'Listing', data: { children: [redditComment({ id: 'c2', name: 't1_c2', depth: 1, parent_id: 't1_c1', replies: { kind: 'Listing', data: { children: [redditComment({ id: 'c3', depth: 2, parent_id: 't1_c2' })] } } })] } },
+        }),
+      ]),
+    ]),
+  )
+  const result = await runTool('com.reddit.main', 'get_post', {
+    input: { subreddit: 'programming', post_id: 'abc123', comment_limit: 10, comment_depth: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit get_post: status')
+  equal(result.data.post.id, 'abc123', 'reddit get_post: post id')
+  equal(result.data.post.selftext, '', 'reddit get_post: empty selftext stays a string')
+  equal(calls[0].url, 'https://www.reddit.com/r/programming/comments/abc123.json?limit=10&depth=1', 'reddit get_post: endpoint')
+  equal(result.data.comments.length, 2, 'reddit get_post: depth cap drops the grandchild')
+  equal(result.data.comments[1].depth, 1, 'reddit get_post: flattened reply keeps depth')
+  equal(result.data.comments[1].parent_id, 't1_c1', 'reddit get_post: reply keeps parent fullname')
+}
+
+{
+  // Vote write: modhash fetched once, form body carries uh + api_type.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/vote') return jsonResponse({})
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'vote', {
+    input: { id: 't3_abc123', dir: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit vote: status')
+  equal(result.data.success, true, 'reddit vote: success flag')
+  equal(calls.length, 2, 'reddit vote: modhash then vote')
+  equal(calls[1].url, 'https://www.reddit.com/api/vote', 'reddit vote: endpoint')
+  equal(calls[1].init.method, 'POST', 'reddit vote: POST')
+  equal(calls[1].init.headers['X-Modhash'], 'mh-test', 'reddit vote: X-Modhash header')
+  equal(calls[1].init.headers['Content-Type'], 'application/x-www-form-urlencoded', 'reddit vote: form content type')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('id'), 't3_abc123', 'reddit vote: id in form body')
+  equal(body.get('dir'), '1', 'reddit vote: dir as string in form body')
+  equal(body.get('uh'), 'mh-test', 'reddit vote: uh carries the modhash')
+  equal(body.get('api_type'), 'json', 'reddit vote: api_type=json')
+}
+
+{
+  // Comment POST: JSON-in-json response; optional fields are not invented.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/comment')
+      return jsonResponse({
+        json: { errors: [], data: { things: [{ kind: 't1', data: { id: 't1_new', parent: 't3_abc123', contentText: 'hello', link: '' } }] } },
+      })
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'submit_comment', {
+    input: { thing_id: 't3_abc123', text: 'hello **world**' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit submit_comment: status')
+  equal(result.data.id, 't1_new', 'reddit submit_comment: new comment id')
+  equal(result.data.parent, 't3_abc123', 'reddit submit_comment: parent fullname')
+  equal(result.data.body, 'hello **world**', 'reddit submit_comment: body as submitted')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('thing_id'), 't3_abc123', 'reddit submit_comment: thing_id in form body')
+  equal(body.get('text'), 'hello **world**', 'reddit submit_comment: markdown text in form body')
+  equal(body.has('nsfw'), false, 'reddit submit_comment: no stray fields')
+}
+
+{
+  // Submit post: text post omits unset optional fields, errors[] is surfaced.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/submit')
+      return jsonResponse({ json: { errors: [], data: { name: 't3_new', id: 'new', url: 'https://www.reddit.com/r/programming/comments/new/x/' } } })
+    return jsonResponse({}, 404)
+  })
+  const created = await runTool('com.reddit.main', 'submit_post', {
+    input: { subreddit: 'programming', title: 'Hello', kind: 'self', text: 'body' },
+    page,
+  })
+  equal(created.status, 'ok', 'reddit submit_post: status')
+  equal(created.data.name, 't3_new', 'reddit submit_post: fullname')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('sr'), 'programming', 'reddit submit_post: sr')
+  equal(body.get('kind'), 'self', 'reddit submit_post: kind')
+  equal(body.has('url'), false, 'reddit submit_post: unset url omitted')
+  equal(body.has('flair_id'), false, 'reddit submit_post: unset flair omitted')
+  equal(body.has('nsfw'), false, 'reddit submit_post: false nsfw omitted')
+
+  const rejectedPage = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    return jsonResponse({ json: { errors: [['SUBREDDIT_NOTALLOWED', 'that community does not allow text posts', 'sr']] } })
+  })
+  const rejected = await runTool('com.reddit.main', 'submit_post', {
+    input: { subreddit: 'programming', title: 'Hello', kind: 'self' },
+    page: rejectedPage.page,
+  })
+  equal(rejected.status, 'error', 'reddit submit_post: errors[] is an error')
+  equal(rejected.error_code, 'VALIDATION', 'reddit submit_post: errors[] is VALIDATION')
+  ok(String(rejected.message).includes('does not allow'), 'reddit submit_post: upstream message surfaced')
+}
+
+{
+  // Private messages: CSRF cookie -> bearer token -> oauth.reddit.com form POST.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/svc/shreddit/token')
+      return jsonResponse({ token: 'bearer-test', expires: new Date(Date.now() + 600000).toISOString() })
+    if (url === 'https://oauth.reddit.com/api/compose') return jsonResponse({ json: { errors: [] } })
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'send_message', {
+    input: { to: 'someuser', subject: 'Hi', text: 'Hello there' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit send_message: status')
+  equal(result.data.success, true, 'reddit send_message: success flag')
+  equal(calls[0].url, 'https://www.reddit.com/svc/shreddit/token', 'reddit send_message: token endpoint')
+  equal(JSON.parse(calls[0].init.body).csrf_token, 'csrf-test-token', 'reddit send_message: token body reads csrf cookie')
+  equal(calls[1].url, 'https://oauth.reddit.com/api/compose', 'reddit send_message: oauth endpoint')
+  equal(calls[1].init.headers.Authorization, 'Bearer bearer-test', 'reddit send_message: bearer auth header')
+  equal(calls[1].init.credentials, undefined, 'reddit send_message: bearer call sends no cookies')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('to'), 'someuser', 'reddit send_message: to')
+  equal(body.get('api_type'), 'json', 'reddit send_message: api_type=json')
+}
+
+{
+  // Inbox: listing mapping + cursor.
+  const message = {
+    kind: 't4',
+    data: {
+      id: 'm1',
+      name: 't4_m1',
+      author: 'reddit',
+      subject: 'Welcome',
+      body: 'Welcome to Reddit.',
+      dest: 'tester',
+      created_utc: 1763500000,
+      was_comment: false,
+      new: true,
+    },
+  }
+  const { page, calls } = redditPage(() => jsonResponse(redditListing([message], 't4_next')))
+  const result = await runTool('com.reddit.main', 'read_inbox', { input: { limit: 5, after: 't4_prev' }, page })
+  equal(result.status, 'ok', 'reddit read_inbox: status')
+  equal(result.data.messages[0].subject, 'Welcome', 'reddit read_inbox: subject')
+  equal(result.data.messages[0].new, true, 'reddit read_inbox: unread flag')
+  equal(result.data.after, 't4_next', 'reddit read_inbox: cursor returned')
+  equal(calls[0].url, 'https://www.reddit.com/message/inbox.json?limit=5&after=t4_prev', 'reddit read_inbox: endpoint with cursor')
+}
+
+{
+  // Auth failure paths: reads surface AUTH on 401; writes fail at the modhash.
+  const { page } = redditPage(() => jsonResponse({ message: 'Unauthorized' }, 401))
+  const read = await runTool('com.reddit.main', 'get_me', { input: {}, page })
+  equal(read.status, 'error', 'reddit auth: get_me 401 is an error')
+  equal(read.error_code, 'AUTH', 'reddit auth: get_me 401 is AUTH')
+
+  const { page: writePage } = redditPage((url) => jsonResponse({ message: 'Unauthorized' }, 401))
+  const write = await runTool('com.reddit.main', 'save', { input: { id: 't3_abc123' }, page: writePage })
+  equal(write.status, 'error', 'reddit auth: write without session is an error')
+  equal(write.error_code, 'AUTH', 'reddit auth: write without session is AUTH')
+  ok(String(write.message).includes('modhash'), 'reddit auth: write error names the modhash')
+}
+
+// --- urlRegex probes ---------------------------------------------------------
+// www.reddit.com, old.reddit.com and new.reddit.com are the upstream
+// urlPatterns; a lookalike host or the plain-HTTP origin must not match, while
+// any path, query or hash tail on a real host must.
+
+section('urlRegex probe: reddit.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.reddit.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://www.reddit.com/',
+    'https://www.reddit.com/r/programming/',
+    'https://www.reddit.com/r/programming/comments/abc123/zig/?sort=top&limit=50',
+    'https://old.reddit.com/r/programming/comments/abc123/zig/#c1',
+    'https://new.reddit.com/r/programming/.json?raw_json=1#top',
+  ]
+  const mustNotMatch = [
+    'https://reddit.com/r/programming/',
+    'http://www.reddit.com/r/programming/',
+    'https://www.reddit.com.evil.example/r/programming/',
+    'https://evilwww.reddit.com/r/programming/',
+    'https://user@www.reddit.com/r/programming/',
+    'https://www.reddit.com:8443/r/programming/',
+    'https://oauth.reddit.com/api/compose',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `reddit urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `reddit urlRegex rejects ${url} (${tool.name})`)
   }
 }
 
