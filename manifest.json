@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:09:15.124Z",
+  "generatedAt": "2026-11-19T07:26:16.188Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -450,6 +450,154 @@
         {
           "path": "packages/com.bluesky.main/workflows/unrepost.js",
           "sha256": "8fed4415ece784a8ad37206c328d5f3b9cc47e66939b33745f206a75cd1472fb"
+        }
+      ]
+    },
+    {
+      "id": "com.circleci.main",
+      "version": "0.1.0",
+      "description": "Read and operate CircleCI pipelines, workflows, jobs, contexts, environment variables, schedules and insights (builds, cancel, rerun, approve, trigger) on app.circleci.com in your current tab, using your own logged-in CircleCI session.",
+      "toolCount": 33,
+      "files": [
+        {
+          "path": "packages/com.circleci.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.circleci.main/manifest.json",
+          "sha256": "c4df638abb0848e94d173baa52238950404dfe810d0165106da77f74f879301a"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/approve_job.js",
+          "sha256": "84c9ddedf3d2f09a2ab5600c168d5b9fffac6fb836e808361483ca9febbfc2c8"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/cancel_job.js",
+          "sha256": "48942011afe191ec5b9368a2faa66e4187fc11ff5692aec8fd5de94fd3794611"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/cancel_workflow.js",
+          "sha256": "e06d3ac21b8d3a39a88c6a0788e62f032dc4ea3b919ef7d6f29cac54d5c33c46"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/create_context.js",
+          "sha256": "3690ca1ac2ae3f3e2b7dde2d13e708fc3f14046302db7008e2985d294254ac3a"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/create_env_var.js",
+          "sha256": "346a2a581b5b87ea49fad7f042d47fb37d39a4693201a07fd981659958e49b6a"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/create_schedule.js",
+          "sha256": "517f5c03f66107b0950a10e099dd4a32970c7c130ca1c80a63c9584efb7e0f26"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/delete_context.js",
+          "sha256": "52471741e229e594369a24a4e4a616ef72b5a00db75276b351e6527a569b7639"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/delete_env_var.js",
+          "sha256": "067d1114c19d0ac955f6ad880c98253c8a66806db3c5f14af804b71614ce9a06"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/delete_schedule.js",
+          "sha256": "c19bdae0f4999b5dbaebf8b3ad0e8105b2b822d22d429523794b77bf3d12e09a"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_context.js",
+          "sha256": "763ba0b9a4df00fbb4179db9370ce1ec9ab2c89dd3575eb4ab15fbf0a4b36151"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_current_user.js",
+          "sha256": "c12f9ced0ec195fd590974687d565412371c6fed8a1fd2db5db30df60bd8ff56"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_flaky_tests.js",
+          "sha256": "f03ff80e600d52eff6f3e8baf7f19d9a030273a664fe399648876e722cec76a5"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_job_artifacts.js",
+          "sha256": "520cd3c3ba459bf7fb88ad78a74afd6b17f0e30e5e3dce3dea0f24da02d87a5a"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_job_tests.js",
+          "sha256": "3b4cc0bac580bf7c8195e4dfb9dc7766d5bea35ac3572dd9f82473e0d878ba85"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_job.js",
+          "sha256": "c98d917a4a41cec30e67b265863127ef1af05c8cbcecbfbc9fe6acad918b08cf"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_pipeline_config.js",
+          "sha256": "5dceeaa988ea38c68f048f6b5aec92346743a2afb03d7694e81532f334db1f79"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_pipeline_workflows.js",
+          "sha256": "d3e5c2e222ecf657bd8a662e653cb94470a1dbbc1fcbd6346490bcc9d66f7d66"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_pipeline.js",
+          "sha256": "e4b1ab543711fdfaf031eb7725a65aa21a9c73dc605001f9035db4bab6d3c8aa"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_project_workflow_metrics.js",
+          "sha256": "46bb7bdbec96fa7bc732d166989f923322ef823f5f2d244169f0018f5a0a84ea"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_project.js",
+          "sha256": "440701b24e3088d5670221f0a9ebad7658645f7e17865a26cede17f0b8c1a1d1"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_workflow_job_metrics.js",
+          "sha256": "924d586f5ada7ddf8bb4b4e090cdadfee80c3648eba1bb1179424fec379e7da9"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_workflow_jobs.js",
+          "sha256": "ea1599ece91542472e11f3f3da0e44927fa69b899af5f124eb4447212bd2bac4"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_workflow_runs.js",
+          "sha256": "4e55fcacb19d7cdd38b9319864be05fbd386c714edb6ed5a74236d5bbee53df8"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/get_workflow.js",
+          "sha256": "177d0ae8dfaffdb09a6a9e3ce14aa4839d963ac1cf03a6bbab0cd28e9c61ea48"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_collaborations.js",
+          "sha256": "6e9ed8854b0570bbf5487fc58ec7ceceb09ea5023883c8c1a1b03af64e25b4c7"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_context_env_vars.js",
+          "sha256": "b2a0547a32bab7c38992e08ce3843aa34e2861c20c381ac12ce7476e5f48f6bb"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_contexts.js",
+          "sha256": "e4b01f0dcbb1955414156761cfd97122e79c25f9be08054f68fc695071a59984"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_env_vars.js",
+          "sha256": "48d5cadc2e0048c65219834510483d834922b49d53dae41d27eaebb04963a947"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_pipelines.js",
+          "sha256": "ba3e1619219be05eef2040a07d3dfe09015cfcfa14bd8d83a4c0490c4d8a5a5e"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/list_schedules.js",
+          "sha256": "02b35c73c94c1fbac1367eb620c1758d525a11ea7867dd22ec54b0c91333a9c2"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/rerun_workflow.js",
+          "sha256": "7e9041a850731746814e8c19fef8d28c4e7ccced69d1bde79a206a735f466504"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/trigger_pipeline.js",
+          "sha256": "ca7ad4b8925ae9f340f0f2081710562d099abeb50ebd6535e12d753af32b5bc8"
+        },
+        {
+          "path": "packages/com.circleci.main/workflows/update_schedule.js",
+          "sha256": "3a25eaecf45d1a4b3414aa7bc68e2abcb0f040108a6eb6c5d8feca03aad6085e"
         }
       ]
     },
@@ -2314,6 +2462,174 @@
       ]
     },
     {
+      "id": "com.posthog.main",
+      "version": "0.1.0",
+      "description": "PostHog product analytics for the us.posthog.com / eu.posthog.com tab you are already logged into — 38 tools covering dashboards, insights, feature flags, experiments, annotations, persons, cohorts, surveys, actions, projects, HogQL and trends queries, raw events and event/property definitions. Same-origin /api/environments/<team>/... and /api/projects/<team>/... calls with the tab's session cookie and the posthog_csrftoken CSRF header.",
+      "toolCount": 38,
+      "files": [
+        {
+          "path": "packages/com.posthog.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.posthog.main/manifest.json",
+          "sha256": "a52a0154a8ec778072797bdf418037beb9dc5517254cfe3dc8981350d52ac316"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/create_annotation.js",
+          "sha256": "a52a2895489c0b2a7efb1a7ef3169876c9109e0e5bcd91e6f6a167db59ce067d"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/create_dashboard.js",
+          "sha256": "6f26424901a5e1b0190fe0b87b0680c553826797503a375a4565e8cb04f9efc2"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/create_experiment.js",
+          "sha256": "62abf6f68154280b3ee78f402a4e779f9532fb8838d49813b288d0b260e52d35"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/create_feature_flag.js",
+          "sha256": "1c4c4872dc702bbd3d78a00ec2afeadb017d4ad6d4eaaa5a4344b90488c8fd59"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/create_insight.js",
+          "sha256": "4c22d29b15feec22bd7291ebe9cc3cf3b65d252cfa0cef357c6c9ec82e3b4e5f"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/delete_annotation.js",
+          "sha256": "974cfa0a43d41e4b0be684f7f6717907e3220994ae83309572bbfd145dabc822"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/delete_dashboard.js",
+          "sha256": "bc948e646b10487ec4c4781d661784f22aadf3f1220aa993a87caa6a8336c994"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/delete_feature_flag.js",
+          "sha256": "598a282280340e1f38f9f84428696a0e13bd3eab2e0c26b76018cd2ed4208169"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/delete_insight.js",
+          "sha256": "e94c15872fe803283399d4041c2c1b308ba0b3f4736f441be32ca60554d32431"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_action.js",
+          "sha256": "75ca4132578b8a6ab4e4196c39c1205d6da1cd7793a2754f5023ce203355e56e"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_cohort.js",
+          "sha256": "2ba6e9d0bf57d542e8ef32734e9f0be4d9ff891fbcf826d3f85ea75f0d57d5ce"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_current_user.js",
+          "sha256": "2f1bbc600ab3626cd05f5edff2af4c6fc13291d48e1d94ea573c958bba4ee0fb"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_dashboard.js",
+          "sha256": "0a5788f5b7629765e4c3c5d9b4b89d948db2a013277f167f866d18e7d4e12078"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_experiment.js",
+          "sha256": "5eb789e7c79c7baf2a661172083b43357d30a455c2ea38a4a6c618bf01eb7282"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_feature_flag.js",
+          "sha256": "6d41492e67865c08fdaf033fd7c1dea1af2eb8cbad4e650aaaf68b5e3c268f63"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_insight.js",
+          "sha256": "5bcd141ac9f072e36c7b68e7ffe906c51d3dc06eeeb80abb7f5b2b97b756959b"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_organization.js",
+          "sha256": "fc6a8fa7e4f9062f9ff2296af81803039081ccd7969dc4a0d64247c94a9d520c"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_person.js",
+          "sha256": "8382b3c9b96b6e1cd24069d274af1b7f91016e0d000d9aba180e4d51884b9c09"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_project.js",
+          "sha256": "8b5ec6ba2ff5a075fbcab1334893280414c4999a1a4a560185cc24d33faaf2fa"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/get_survey.js",
+          "sha256": "c489b41888699df25cb9f41f7b8a31fbabded77ee1b2b6647a554faaac675dbe"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_actions.js",
+          "sha256": "d380b8dc5833580e3ac62f3473d7b4383cd5c32d182e23fee040ea47c84125ee"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_annotations.js",
+          "sha256": "c6f0279dadc658f1bbaa2ae28e17e7416a2cadfcbd747e06622edb7aac1944a9"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_cohorts.js",
+          "sha256": "2b5c61047c9afbd9f1888f2d0f1cc6760e1add1083ea18a312c8aa5a22a6f7a2"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_dashboards.js",
+          "sha256": "97032e5605147121577907e3adec40c13383151b1918831d6dd7eacdb59b8f43"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_event_definitions.js",
+          "sha256": "b9020912012b112f2e3dd1f5928f088d5f8842f2acce4bb7fcfe46cf2daf9d26"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_events.js",
+          "sha256": "e128104d4578f04ccb6e9e9cb8fd7f0400457d1fd86a01a1cf28b2c946624f7b"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_experiments.js",
+          "sha256": "32a5119abdddcfb051ac4f1434f3e397c476ef704a60b5af3afd9fdc4773e73b"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_feature_flags.js",
+          "sha256": "475ae9580edf0c4a90fed8f7b8eab9b79172f10620ce2afbb89b05ceedc66762"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_insights.js",
+          "sha256": "bfff0cd853ea856990eb778d52cc8a9eb0e593c861525bac1e33cf0e8023ec07"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_persons.js",
+          "sha256": "db48bf57d4b940a202f4e0282495576076e6f2787c64c1fcf8256a63659245b1"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_projects.js",
+          "sha256": "0123ba752229787a42a17d9fea5f2eff3b56e2c3f80a2554d570ca3d208d3581"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_property_definitions.js",
+          "sha256": "971a4197cec53875fbb4b435728ac39ac06822b9cb83dfc73775ae26457500c5"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/list_surveys.js",
+          "sha256": "f20c44073b3f8fdca707ccf9d14fa2a620199a58a2a388e753216ef2dd0e1915"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/run_query.js",
+          "sha256": "6d5703e1f87f57e9866980406dbc11387ef9b6b08820904ae1a3de3d9cd6f653"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/run_trends_query.js",
+          "sha256": "7d98894d1de9d85fdfd7e2fd08691cbea81d5a1b833ae3190044fb60bcf2b892"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/update_dashboard.js",
+          "sha256": "ef7e35a219d97ea629317d32beb24ac97fe739490fe48e6209e3fd432f12835b"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/update_feature_flag.js",
+          "sha256": "991152a7b8493644dfc34f0180739fc0f26b272a16dab8cf0b35fc91d6c2909d"
+        },
+        {
+          "path": "packages/com.posthog.main/workflows/update_insight.js",
+          "sha256": "f5f94d425b929c8286ee0a76ecd69eb4ad3095f70fcf0a34a35d9abb7e1bfc94"
+        }
+      ]
+    },
+    {
       "id": "com.powerpoint.main",
       "version": "0.1.0",
       "description": "Read, search, organize and edit PowerPoint presentations in OneDrive and SharePoint from the current PowerPoint tab: drive and file metadata, thumbnails, version history, sharing links and permissions, slide and speaker-note text, slide layouts, and in-place PPTX edits (text, shapes, images, slides, notes) batched through presentation sessions. Uses Microsoft Graph v1.0 with the tab's own logged-in Microsoft 365 session.",
@@ -3006,6 +3322,174 @@
         {
           "path": "packages/com.stackoverflow.main/workflows/search_users.js",
           "sha256": "2f157d9a7000ab2219af4b7fb5ca3343c675498d605b29e1dff7394a7f722350"
+        }
+      ]
+    },
+    {
+      "id": "com.terraform-cloud.main",
+      "version": "0.1.0",
+      "description": "Read and manage HCP Terraform (Terraform Cloud) organizations, projects, workspaces, runs, plans, applies, state versions, variables, variable sets and teams on app.terraform.io in your current tab. Uses your own logged-in HCP Terraform session, including CSRF-protected writes.",
+      "toolCount": 38,
+      "files": [
+        {
+          "path": "packages/com.terraform-cloud.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/manifest.json",
+          "sha256": "2aa9853284fd84971a80f4eb96a594bfefa22f4b75ac868b336f7fb7066d5bd2"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/apply_run.js",
+          "sha256": "40d761a129a45ea96945e12da836a4056faaae17b0cd6ff19a7666a4bb2c0490"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/cancel_run.js",
+          "sha256": "593c121572072a9121ece697d6eb6389d769f8553989c7ea46f06bbe894e5064"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/create_project.js",
+          "sha256": "cfcaa22e46252b3726423916ccddc51fbfe81217f598fb002ce8795b64185011"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/create_run.js",
+          "sha256": "2a70dfa1a7952a29ec3fe51e7feeca415700be3e53efa11fc5b2c1a44ff71169"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/create_variable_set.js",
+          "sha256": "3c5d9b8f7be5584980bc9833c1b4e3e9f0a90fc92ab606961f52f538d2a5cd96"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/create_variable.js",
+          "sha256": "9fe96b9d245ec84e7bda15c8333ffbc8a8bfe4b3991ff9d11d1e2522bd5f25ab"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/create_workspace.js",
+          "sha256": "0141a1130e62feaf6273676f4e548f29866f035be76efd857343bb8c3e16e9ff"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/delete_project.js",
+          "sha256": "0702a7966eb9973e9e19314d2c76709adc14852ac961086ccfac3a1500981fb4"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/delete_variable_set.js",
+          "sha256": "29e5d236c2e7d4886aa9955573923fc2e68786d3eac7fbd1097e8a3de7c34944"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/delete_variable.js",
+          "sha256": "b3dcc8853375c7c3d49718a358de8df1dff9bd747e398b89eaed0f50dae86add"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/delete_workspace.js",
+          "sha256": "001bdc5e2599a7980ca35e195b58aec782d7ac8e4d83ef62d2c262c53d6f7328"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/discard_run.js",
+          "sha256": "05e4972585d0dd8190c56226dec583308e7f006d7c880c77c91fc55494fc87cc"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_apply.js",
+          "sha256": "d0a4286d4231157823685ace050abf67c29b18eb4cfc69f74c29c156f3d1e6c7"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_current_state_version.js",
+          "sha256": "d7744a6fe86163925cfd0e68eacfb8ae2e6f930962e0905ba4b755241f97a4c8"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_current_user.js",
+          "sha256": "6093dd48443fd86e6183f63ff74784421a871afc224d53a0e98c427fd36807f4"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_organization.js",
+          "sha256": "222ec9a9636b8e4e5f262dd29404ac6e400ff058c610015a8820f7afe88d67c9"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_plan_json_output.js",
+          "sha256": "8ddd00a486a8a574826e6a8f91826fb1404c258f8dad98b3a1c63f1bb23552db"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_plan.js",
+          "sha256": "4513aacb4a471d25a5fd737738ebeb4a6ee1e1a8418ad16595aab928df24838e"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_project.js",
+          "sha256": "de95cad8056f566a9bc17de0918b992e60ab063e81c92889d0ccc95c839d4cee"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_run.js",
+          "sha256": "e9ea8dfa9e633d8ae2986cfb9df6a3447ac92cfa851b4e92619a4fa2aa89965d"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_team.js",
+          "sha256": "fe49991048f9e12bf6850c43ccf509d760a661da8785d5645d93b129b315aebb"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_variable_set.js",
+          "sha256": "d1f1f61c7a3744849589f2e6b90f1e900f225ad8c2c66608f74f9dece52206ad"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/get_workspace.js",
+          "sha256": "a9952ee4cdf001efdc0beaf1e6fc5e82fd39223f3d7a34035934ae8389da85b8"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_organization_members.js",
+          "sha256": "eb96675bd1b51a974c3ef16ed0ba655507e1c60dc7634a755a23c98326c20f88"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_organizations.js",
+          "sha256": "638f9016b0a84bc2d5342eee40e766b83fbd1c23cd675b4ad53e674f32a0766f"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_projects.js",
+          "sha256": "2dd405c0ac36aadbd46080b7be5f11228d3b71fff9f85b4d2b6d3b1d94513591"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_runs.js",
+          "sha256": "729f41614acbe2a36f61228e55c1a8a05d06eff00787b7da838e44d905c2b1c9"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_state_versions.js",
+          "sha256": "45f8b10052175cc73eb6b763d4b719a6d8c24f7a0145d9f8fce7d5cfab3fbe47"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_team_access.js",
+          "sha256": "ee3be2f595961f12900c6f41dcf30c5c344229c265f7d71d6dbfa580fdf5c842"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_teams.js",
+          "sha256": "53ceb5d63d41e6893c70158f426fda4678371a4419fb2d3a181d35061e10fbf0"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_variable_sets.js",
+          "sha256": "d51251397f77234687a5fbebeb0a961c09e28d540204dcbe43cdbba8ad33df59"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_workspace_variables.js",
+          "sha256": "1885c6cbb00983f0725a0f39ebe2acbbb7f35d752cc499dba087f8178c9131a2"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/list_workspaces.js",
+          "sha256": "fa0e8480dd47fe2d3ca9a2e32e46b55bae77b00690ce489c00024dbfbcffb60c"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/lock_workspace.js",
+          "sha256": "5e1e6610125b9c5ad20973ee24881224eaf7957f744659b95623b900d757b532"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/unlock_workspace.js",
+          "sha256": "9a52a113ea00d2cf24f19702380761c55d9633c9654515494e56f83bd2b29362"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/update_project.js",
+          "sha256": "c087f93ca6b5ce5cf3deae5cc2b34cb2f13ece5ae8452b764f472bfea947f10d"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/update_variable.js",
+          "sha256": "a6b51a62da9ceebcbbd16410a050400db3cffb592ee31636bd213bdf37007996"
+        },
+        {
+          "path": "packages/com.terraform-cloud.main/workflows/update_workspace.js",
+          "sha256": "925e3252e1fd9bb5b1e9d4b5e9653585467131bfe4eba69e9128d29e8a5ec1ee"
         }
       ]
     },
