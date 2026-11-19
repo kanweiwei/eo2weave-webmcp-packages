@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T05:36:04.568Z",
+  "generatedAt": "2026-11-19T05:53:59.635Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -362,6 +362,182 @@
         {
           "path": "packages/com.google-calendar.main/workflows/update_event.js",
           "sha256": "59ab608061e2518eb1eaa964fdb0a3fb48aea59b4023607a6143576fd0a24619"
+        }
+      ]
+    },
+    {
+      "id": "com.google-docs.main",
+      "version": "0.1.0",
+      "description": "Read, search, create, rename, trash and delete Google Docs, read their plain text, and manage comments (list, create, reply, resolve, reopen, delete) on docs.google.com in your current tab. Uses your own logged-in Google Docs session through the page's gapi client.",
+      "toolCount": 19,
+      "files": [
+        {
+          "path": "packages/com.google-docs.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-docs.main/manifest.json",
+          "sha256": "8406a6d6f60108f1417a4efbeec1f8467ea207119032fe0b66e5118e7222dd21"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/copy_document.js",
+          "sha256": "684bbb18712fa4845efb09416226c963f1e50451f2f5d9cab43d91b6b92d9f32"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/create_comment.js",
+          "sha256": "e7ff5068d561a4153b11b775de2662cbe9b662fcc53121a9fe1cad7ca48bea5a"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/create_document.js",
+          "sha256": "e24d1a57ee79aeb0dcce49c482905384b7dd6eddb06b5e132a450625b6412968"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/delete_comment.js",
+          "sha256": "ef69b5738f95983b21a8a541e1596e6f6341b2feee0eaeccbbbb4bd85a1f7797"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/delete_document.js",
+          "sha256": "0d15f6faf2e4908fb8a6a31a2a915d9ae5b035fab66519c62ed8a01bb2699ff0"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/delete_reply.js",
+          "sha256": "d6ca28d307a64344d0616be2f36b776f60d7416f00c9876af02c7f7c873f57e0"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/get_current_document.js",
+          "sha256": "fcaba056444e62172c7d47469af14ee3d910eadca6d60a898e4f8aca77123267"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/get_current_user.js",
+          "sha256": "1b69e536beb30632974f9139d747fcbcc6ea693abc02871030497ac9c2989f03"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/get_document_text.js",
+          "sha256": "8a34186cb19a68aebf306b729c6ad0967fdcf36c516adf600978b082532ac2c7"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/get_document.js",
+          "sha256": "a648b1e601844c5286672e40405f20b5a63338064499d03027d3915125651d18"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/list_comments.js",
+          "sha256": "6a9754a463f8f33e8d045014622a7d2b93ec7f1336e48c670a8f380cebfaad28"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/list_recent_documents.js",
+          "sha256": "d4aa792101ec5fc0f5b0d1a7884d2e74faaf63ad7ef92db231499bf937c8c84e"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/reopen_comment.js",
+          "sha256": "e63b46ba2261271528fadc8e8b61df94796d915c5b3a5a30b9984ef0d073e285"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/reply_to_comment.js",
+          "sha256": "876fdbab5c73a1a8d4c3829187c6fd2205d7f4215feb92688618fcea72cf6f7e"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/resolve_comment.js",
+          "sha256": "3b37ee240d5959b676332ee3f3fd06dc0357d68b927803bc970afcab20aa2d9b"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/restore_document.js",
+          "sha256": "d3d46e36fefea4cf8c5975a29b4f03c46b93e83471d3a8583afbe97628059666"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/search_documents.js",
+          "sha256": "c02d354f98c585077a7977ab426062c694242336c25ab694173793533db29fc9"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/trash_document.js",
+          "sha256": "fc794091b6d5ffa255f23dfef4f24bbcca8419ed6aa6e1e62b7ceb32254a7986"
+        },
+        {
+          "path": "packages/com.google-docs.main/workflows/update_document_title.js",
+          "sha256": "093b10a4ab9466ea1c6c10adf7ccdc45262b9afb2ef7a4b6dde4a59714cde3e1"
+        }
+      ]
+    },
+    {
+      "id": "com.google-drive.main",
+      "version": "0.1.0",
+      "description": "List, search, read, create, copy, move, rename, trash and delete files and folders, manage sharing permissions, and read the account profile and storage quota on drive.google.com in your current tab. Uses your own logged-in Google Drive session through the page's gapi client.",
+      "toolCount": 17,
+      "files": [
+        {
+          "path": "packages/com.google-drive.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-drive.main/manifest.json",
+          "sha256": "5bc3fd86925396cfb7be72a0555cb6a28739d3ad24013a36111f3a1a52b0a360"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/copy_file.js",
+          "sha256": "f6ebcff2bb987704be3aa8b55f39bcad3e4e4cfa15b12b8e2e8b5236da8d9579"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/create_file.js",
+          "sha256": "151348af21fcec54c5e81a2e0c1289869aec5359e7e74016d14de19b675530f0"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/create_folder.js",
+          "sha256": "bb455b5d823aebf0fb3bb784d91c13ed86dc3ec453a480b8cd6fab63cf54e994"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/create_permission.js",
+          "sha256": "dc739e5e62aa869dad4f7fa9bbb4866857fa3c7ada223e915a9e9f38aa388319"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/delete_file.js",
+          "sha256": "68b47c164be5b04092ee6b3de1673753f64b9fd096d95f9da5f557bc96a8f935"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/delete_permission.js",
+          "sha256": "d2b448582de912e030b2360c8c07cbc68dcf02c12b1d4eaaf0c0f92d3da0456c"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/empty_trash.js",
+          "sha256": "5bccd54d41938cac7451c65873fd90c9ceceb1ac9bd08a811c844cebaf9a14df"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/get_current_user.js",
+          "sha256": "d4f6016b3fcfb452ee3ef78d66a4a9dadee8e5acce6b850138b713e2cfe7df94"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/get_file.js",
+          "sha256": "17cd9a0d63504c03bd473ca4e35e98512dbdb230b41c4459b17b6e475d3cb2b9"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/get_storage_quota.js",
+          "sha256": "3ea995c5844511acc176be94985c0dcc1e08ebd648fb1155ac704f222db95f74"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/list_files.js",
+          "sha256": "3da9b85eb73a7b603c549f3e5972594a892dd8ea458609dd5d63d1345fef7c7f"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/list_permissions.js",
+          "sha256": "1b625d9f8a24a63f98735da72066725f1cfebba525e295279663f0815393c1f7"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/move_file.js",
+          "sha256": "3a2f5f03ea42a756c580a35cd28c72b2b03f6c9de3773d40c45f1cc122d3b639"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/restore_file.js",
+          "sha256": "ae28c541a4e6ecca942efaaccec2898b47fe9d77de6f72ea04372528b68a96d7"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/search_files.js",
+          "sha256": "8afe1676ba38d8209de51196d6bde99174d2bc424622171283018ea0bd4c3534"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/trash_file.js",
+          "sha256": "7df92471a652ebc19e28de214f6f676fad41ae84f33cf9c8ba3889c69c6c9247"
+        },
+        {
+          "path": "packages/com.google-drive.main/workflows/update_file.js",
+          "sha256": "907fdf91048f4fa9290dc1493d568d9b82865d9b5cc880f149c48e992b05aa47"
         }
       ]
     },
@@ -1382,6 +1558,98 @@
         {
           "path": "packages/com.todoist.main/workflows/update_task.js",
           "sha256": "92851ed65ad4d17ad09357d2693aa7fee9a5e3f1bb29d95668d1391689b4b0c2"
+        }
+      ]
+    },
+    {
+      "id": "com.wikipedia.main",
+      "version": "0.1.0",
+      "description": "Read Wikipedia articles, search, sections, categories, links, languages, revisions and diffs, recent changes, page views and featured content, and your own account or a user's contributions on *.wikipedia.org in your current tab. Uses your own logged-in Wikipedia session where authentication is required.",
+      "toolCount": 19,
+      "files": [
+        {
+          "path": "packages/com.wikipedia.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.wikipedia.main/manifest.json",
+          "sha256": "2f4cd52af42cc4fb7c4d1d0feb4bb99ff3af49c36ed2b1b1a6f2f109f00d88d1"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/compare_revisions.js",
+          "sha256": "ce4c638aa4edaf9c883d6324e4b07969a495369f1b54bec6ed793a8b9b2e44e3"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_article_categories.js",
+          "sha256": "3d4272bbdb957c2089e3340ba1a26dbf3f50d90c4a12b4af88989becdaddff36"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_article_languages.js",
+          "sha256": "c10047e4decf0f0dbc7a7ea255841acd60a6ef7ea44377ad486b531b4ce62579"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_article_links.js",
+          "sha256": "1f5209f1d6612ddd95541f19f375690c09d53f6b7eb8a2be95de3aa314a5cf4b"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_article_sections.js",
+          "sha256": "81f4dfe2bbda3ef399b13c70bb9a6ec04a70d695c6ec92192c783d979965ba25"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_article.js",
+          "sha256": "e06b1cb1f23e67d817d13ca997608a237643c6119c6de88fd41d157d347c16be"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_backlinks.js",
+          "sha256": "1ca6c01e6530720b504ae1b18473f6064b81b44a17922051c44db317d716680b"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_category_members.js",
+          "sha256": "8729b47c41707daceb177b974659e1edbfb94ffed66368e679056e26ed552a4f"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_current_user.js",
+          "sha256": "287eb3c15347af2eecbf35e623ff7dc335282208483b030c08682eb2c2f8c115"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_featured_content.js",
+          "sha256": "2c79fa56126d152e5ff42d0905fe7012e20e7602048167b0ea5da38d1214acb8"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_page_summary.js",
+          "sha256": "8bfadb7f5f91d63662003ddb2003718795eb18cacefb83cab51135f065ae47bc"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_page_views.js",
+          "sha256": "ce9e470038b9fe34a82439bd7b6783907983e956f09036869ba1e13ad4409ee3"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_random_articles.js",
+          "sha256": "e74bcf6d65ac9da6fa1cb1d44503ced29a53bc22177a4bcdd5d9ad24662aed44"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_recent_changes.js",
+          "sha256": "074f795a02083b7bba4d9b06eeb540eb7e243a0510da1f6eec1b65070b2f6568"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_revisions.js",
+          "sha256": "777bd05990d45bb53fe22f8f32278fb48d46d3e5a9e19f25a775f5726e398d3a"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_section_content.js",
+          "sha256": "018bd9352a9e37f0f2652ec4bbef9c771f2d81fe5fa19d4498f76e4d96346009"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/get_user_contributions.js",
+          "sha256": "a2a8de35c27ae0d40113ba22cdedfce8ff6b1adcafcb37b20b739ad63f67231b"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/opensearch.js",
+          "sha256": "5afaf2d6670cddeac3f858a1aba3720cf621acb267beb9bf4c504706f36540ee"
+        },
+        {
+          "path": "packages/com.wikipedia.main/workflows/search_articles.js",
+          "sha256": "9ce22ba41ad55c7524c2b8a7d4ff9c43d4bf857a54ce3ef6e410cd0a54751ac7"
         }
       ]
     }

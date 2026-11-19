@@ -1,0 +1,121 @@
+{
+  "id": "com.wikipedia.main",
+  "version": "0.1.0",
+  "description": "Read Wikipedia articles, search, sections, categories, links, languages, revisions and diffs, recent changes, page views and featured content, and your own account or a user's contributions on *.wikipedia.org in your current tab. Uses your own logged-in Wikipedia session where authentication is required.",
+  "tools": [
+    {
+      "name": "search_articles",
+      "description": "Search Wikipedia articles by keyword. Returns matching articles with snippets, word counts, and timestamps. Supports pagination via offset.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_articles.js"
+    },
+    {
+      "name": "get_article",
+      "description": "Get a Wikipedia article summary including the introduction extract, description, thumbnail, protection status, and URL. Use get_article_sections for the full table of contents, or get_section_content to read a specific section.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_article.js"
+    },
+    {
+      "name": "get_page_summary",
+      "description": "Get a concise summary of a Wikipedia article using the Wikimedia REST API. Returns a clean extract, description, thumbnail, original image, and desktop/mobile URLs. Lighter than get_article.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_page_summary.js"
+    },
+    {
+      "name": "get_article_sections",
+      "description": "Get the table of contents (section headings) of a Wikipedia article. Returns section index, heading level, heading text, and anchor. Use the section index with get_section_content to read individual sections.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_article_sections.js"
+    },
+    {
+      "name": "get_section_content",
+      "description": "Get the plain text content of a specific section of a Wikipedia article. Use get_article_sections first to find section indexes. Section 0 returns the article introduction.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_section_content.js"
+    },
+    {
+      "name": "get_article_categories",
+      "description": "Get the categories that a Wikipedia article belongs to. Returns category titles. Supports pagination via continue token.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_article_categories.js"
+    },
+    {
+      "name": "get_article_links",
+      "description": "Get the internal Wikipedia links from an article. Returns titles of all linked articles. Useful for exploring related topics.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_article_links.js"
+    },
+    {
+      "name": "get_article_languages",
+      "description": "Get the list of languages an article is available in. Returns language codes, article titles in each language, and URLs.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_article_languages.js"
+    },
+    {
+      "name": "get_backlinks",
+      "description": "Get the pages that link to a specific Wikipedia article (also known as \"What links here\"). Useful for understanding how widely referenced an article is.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_backlinks.js"
+    },
+    {
+      "name": "get_revisions",
+      "description": "Get the edit history (revisions) of a Wikipedia article. Returns revision IDs, editors, timestamps, edit summaries, and page sizes. Ordered from newest to oldest.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_revisions.js"
+    },
+    {
+      "name": "compare_revisions",
+      "description": "Compare two revisions of a Wikipedia article to see what changed. Returns a text diff showing additions and deletions. Provide two revision IDs from get_revisions.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/compare_revisions.js"
+    },
+    {
+      "name": "get_recent_changes",
+      "description": "Get recent edits made across Wikipedia. Returns article titles, editors, timestamps, edit summaries, and size changes. Filtered to article namespace (main content) edits only.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_recent_changes.js"
+    },
+    {
+      "name": "get_random_articles",
+      "description": "Get random Wikipedia articles. Returns article IDs and titles. Useful for discovering content or selecting a random topic.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_random_articles.js"
+    },
+    {
+      "name": "opensearch",
+      "description": "Autocomplete search for Wikipedia article titles. Returns matching titles and their URLs. Faster and lighter than search_articles — use this for title suggestions and quick lookups.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/opensearch.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently logged-in Wikipedia user including username, edit count, registration date, and user groups.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_contributions",
+      "description": "Get recent edits made by a Wikipedia user. Returns edited articles, revision IDs, timestamps, edit summaries, and page sizes.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_contributions.js"
+    },
+    {
+      "name": "get_category_members",
+      "description": "Get the pages that belong to a specific Wikipedia category. Returns article titles. The category name should include the \"Category:\" prefix (e.g., \"Category:Programming languages\").",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_category_members.js"
+    },
+    {
+      "name": "get_page_views",
+      "description": "Get the daily page view counts for a Wikipedia article over a date range. Uses the Wikimedia REST API. Dates must be in YYYYMMDD format. Maximum range is 365 days.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_page_views.js"
+    },
+    {
+      "name": "get_featured_content",
+      "description": "Get Wikipedia's featured content for a specific date: Today's Featured Article, most-read articles, and On This Day events. Uses the Wikimedia REST API.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*wikipedia\\.org/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_featured_content.js"
+    }
+  ]
+}
