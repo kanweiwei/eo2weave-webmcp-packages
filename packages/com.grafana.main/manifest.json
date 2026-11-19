@@ -1,0 +1,181 @@
+{
+  "id": "com.grafana.main",
+  "version": "0.1.0",
+  "description": "Read and manage Grafana dashboards, folders, data sources, alert rules, contact points, annotations, teams, service accounts and snapshots on your own Grafana instance in the current tab. Uses your logged-in Grafana session; Grafana is self-hosted, so the package works on any instance host.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the currently authenticated Grafana user profile including name, email, login, organization, and admin status.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_preferences",
+      "description": "Get the current user's Grafana preferences including theme, home dashboard, timezone, and language.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_preferences.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get the current Grafana organization details including name and address.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_org_users",
+      "description": "List all users in the current Grafana organization with their roles, email, and last seen time. Supports pagination.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_org_users.js"
+    },
+    {
+      "name": "list_org_quotas",
+      "description": "List all resource quotas for the current Grafana organization including limits and current usage for dashboards, data sources, alert rules, etc.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_org_quotas.js"
+    },
+    {
+      "name": "search_dashboards",
+      "description": "Search for dashboards and folders by query, tag, type, or starred status. Returns matching items with metadata.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_dashboards.js"
+    },
+    {
+      "name": "get_dashboard",
+      "description": "Get a dashboard by its UID. Returns full dashboard metadata including panels, permissions, folder, and version.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dashboard.js"
+    },
+    {
+      "name": "create_dashboard",
+      "description": "Create a new dashboard. Provide a title and optionally tags, folder UID, and panel definitions as JSON.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dashboard.js"
+    },
+    {
+      "name": "update_dashboard",
+      "description": "Update an existing dashboard. Fetches the current version, applies changes (title, tags), and saves with the correct version to avoid conflicts.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_dashboard.js"
+    },
+    {
+      "name": "delete_dashboard",
+      "description": "Permanently delete a dashboard by its UID. This action cannot be undone.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_dashboard.js"
+    },
+    {
+      "name": "star_dashboard",
+      "description": "Star (favorite) a dashboard by its UID. Starred dashboards appear in the starred section.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/star_dashboard.js"
+    },
+    {
+      "name": "unstar_dashboard",
+      "description": "Remove a star from a dashboard by its UID.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unstar_dashboard.js"
+    },
+    {
+      "name": "list_folders",
+      "description": "List all folders in the Grafana instance. Folders organize dashboards into logical groups. Supports pagination via limit and page parameters.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_folders.js"
+    },
+    {
+      "name": "get_folder",
+      "description": "Get detailed information about a specific Grafana folder by its UID. Returns the folder title, UID, URL, and metadata.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_folder.js"
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a new folder in Grafana to organize dashboards. Requires a title. Optionally specify a custom UID — if omitted, Grafana auto-generates one.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_folder.js"
+    },
+    {
+      "name": "delete_folder",
+      "description": "Permanently delete a Grafana folder by its UID. This also deletes all dashboards contained within the folder. This action cannot be undone.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_folder.js"
+    },
+    {
+      "name": "list_datasources",
+      "description": "List all configured data sources in the Grafana instance. Data sources define connections to backends like Prometheus, InfluxDB, Elasticsearch, PostgreSQL, and more.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_datasources.js"
+    },
+    {
+      "name": "get_datasource",
+      "description": "Get detailed information about a specific data source by its UID. Returns the data source name, type, URL, database, access mode, and configuration.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_datasource.js"
+    },
+    {
+      "name": "list_alert_rules",
+      "description": "List all provisioned alert rules in the Grafana instance. Alert rules define conditions that trigger alerts when metrics cross thresholds or match expressions.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alert_rules.js"
+    },
+    {
+      "name": "get_alert_rule",
+      "description": "Get detailed information about a specific alert rule by its UID. Returns the rule title, condition, evaluation interval, folder, labels, and notification settings.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_alert_rule.js"
+    },
+    {
+      "name": "delete_alert_rule",
+      "description": "Permanently delete a provisioned alert rule by its UID. This stops the rule from evaluating and removes it from the alerting system. This action cannot be undone.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_alert_rule.js"
+    },
+    {
+      "name": "list_contact_points",
+      "description": "List all provisioned contact points in the Grafana alerting system. Contact points define notification channels (email, Slack, PagerDuty, webhook, etc.) where alerts are sent.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_contact_points.js"
+    },
+    {
+      "name": "list_annotations",
+      "description": "List annotations in Grafana. Annotations mark points in time on dashboard graphs — useful for correlating deployments, incidents, or other events with metric changes. Filter by dashboard, panel, tags, or time range.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_annotations.js"
+    },
+    {
+      "name": "create_annotation",
+      "description": "Create a new annotation in Grafana. Annotations mark points or time ranges on dashboard graphs — useful for recording deployments, incidents, configuration changes, or any event you want to correlate with metrics. Optionally associate with a specific dashboard and panel.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_annotation.js"
+    },
+    {
+      "name": "delete_annotation",
+      "description": "Permanently delete an annotation by its numeric ID. This removes the annotation marker from all dashboard graphs. This action cannot be undone.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_annotation.js"
+    },
+    {
+      "name": "search_teams",
+      "description": "Search for teams in the Grafana instance. Teams group users together for shared dashboard and folder permissions. Supports text search and pagination.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_teams.js"
+    },
+    {
+      "name": "list_team_members",
+      "description": "List all members of a specific team by team ID. Returns each member with their user ID, login, email, and avatar URL.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_team_members.js"
+    },
+    {
+      "name": "list_service_accounts",
+      "description": "Search and list service accounts in the Grafana instance. Service accounts are used for API access and automation — each has its own set of API tokens and permissions.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_service_accounts.js"
+    },
+    {
+      "name": "list_snapshots",
+      "description": "List all dashboard snapshots in the Grafana instance. Snapshots are point-in-time captures of dashboard data that can be shared externally without requiring Grafana access.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_snapshots.js"
+    }
+  ]
+}

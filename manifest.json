@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T08:14:01.982Z",
+  "generatedAt": "2026-11-19T15:10:55.296Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -658,6 +658,142 @@
         {
           "path": "packages/com.clickup.main/workflows/get_workspace.js",
           "sha256": "5de3491899586df58d87f83ec1384283a6625b97f022fb521ba1ac357e0611df"
+        }
+      ]
+    },
+    {
+      "id": "com.cloudflare.main",
+      "version": "0.1.0",
+      "description": "Read and change Cloudflare zones, DNS records, zone settings, rulesets, firewall and page rules, SSL certificates, cache, Workers, Pages, KV, D1, Queues, AI models, Vectorize, Tunnels, email routing, Waiting Rooms and alerting policies, plus GraphQL analytics, on dash.cloudflare.com in your current tab. Uses your own logged-in Cloudflare dashboard session.",
+      "toolCount": 30,
+      "files": [
+        {
+          "path": "packages/com.cloudflare.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.cloudflare.main/manifest.json",
+          "sha256": "a016ac97d20266881fd99f9eb152418dd67fdd5877a71db0f2211962502c2eff"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/create_dns_record.js",
+          "sha256": "b8eaf19d91f3b9646ff7eac0e6b470c2b2df8665732e1d3964d9c4a4864ade4b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/delete_dns_record.js",
+          "sha256": "0ec1e6533eddcee36e09d635805bd3c95aee9daf6703cfbfa25000b0076c6881"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_ruleset.js",
+          "sha256": "28ff9f410220a0d8620e0b1d1b1379d4560f9394d1eceba2f1f8f81951510e15"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_user.js",
+          "sha256": "4c4a412a3fc2c995aa469e966ad3391f51e53928cb92a5c9c830707d8fc57f9a"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_zone_settings.js",
+          "sha256": "71f5baa9170f8de75cfb3c4857c51e64aa83df1f53a9ab109db9f5a5c665deff"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_zone.js",
+          "sha256": "529664cd35952f271e6e2f04a88cc9f5d5173584f4bdb37bdaba3a632dec4f3b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/graphql_query.js",
+          "sha256": "a67ee29b74050822347d9be416b60bff4bd1eab3f8f11d5e2870ef46fae5f634"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_ai_models.js",
+          "sha256": "d9f0d349adf7110aaf5321c7efe4b52ae64436dea7014c746a37c77732ced78d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_alerting_policies.js",
+          "sha256": "cbab7e5eaf4d1d9720dce3d6e30b9ba5223e53b67bd0f587a6fac5332bd913fc"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_d1_databases.js",
+          "sha256": "6f8475bb33d81e86532a4fb3cb3d98e125c07266395e063255c30afe7ff62a4b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_dns_records.js",
+          "sha256": "c9c99d70ae5dda8552249378744603789e63da2ec40ebf1792d1cd2bbbe545d9"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_email_addresses.js",
+          "sha256": "d153d55fe0b3bbeb76a2a94ec8b2231532b895ab59224bc3bd5e60098ee6591b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_email_routing_rules.js",
+          "sha256": "1875a8efde5fa2f18d69b2c7349d4f395029ebab588486e502bb064cefdf12f5"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_firewall_rules.js",
+          "sha256": "e5f313047d465cb1ea9b4c61de66873cf60e110c67d32680a0d4a631d71bfa78"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_kv_namespaces.js",
+          "sha256": "0544d363c6068180af45786a9ffaab089813387f542c7f1ef888395540668545"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_page_rules.js",
+          "sha256": "b401f714ab34180597eb83ae11d4d84a0eaa7a90d12e02b4e6da1210a3f3e210"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_pages_projects.js",
+          "sha256": "b8ba538ee875baf145bd9af6724c9e362f0bae9c69da985d0726bad2be38bbf8"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_queues.js",
+          "sha256": "894ca30d7c959b03528dd9553c034bd1aab21b30e296baef15eb1d9db2e6aaec"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_rules_lists.js",
+          "sha256": "d7ebc25fc7799ecb92639d95d9461ca656ef94ea5b0afb95ce8f1d85638f6bc6"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_rulesets.js",
+          "sha256": "dcd76bb5e51e98ac247e9a5e2b1536b6318a94d2eb42d9d8e8960b59643a1dfd"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_ssl_certificates.js",
+          "sha256": "87975f931da9c695642acbf71f052894c9466c9a5d87a6f04b0d7d521604e20d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_tunnels.js",
+          "sha256": "5b69be8acae092840c8ad32f0914b357f5bf7f8f1a8bb3a673a5973c5c30a36d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_vectorize_indexes.js",
+          "sha256": "6cde03ef85d3260de3f35fb82fd9ee174283fe99beeb005b4a09f6941d536054"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_waiting_rooms.js",
+          "sha256": "128e7507eaa11a913a586d6df8fc7cbf961f45c7a440276b8803b6dbd4340205"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_worker_routes.js",
+          "sha256": "5f13d52a776d8650aa7ad23691bf9536b0e8e8c3116d1e93e52eb575fcfd8011"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_workers.js",
+          "sha256": "1391f3dbd0a370f50046a32f5824950554c8c8d215ccd4343814f041c6c62bc1"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_zones.js",
+          "sha256": "1daf4c40e3711d638cc5b214c8866c235c5d08d5dd4a27f41697d8f0222e890b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/purge_cache.js",
+          "sha256": "8a804ba94a9581b83aabacfccf4abf09223d5487a65b24a975f781475932513f"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/update_dns_record.js",
+          "sha256": "e37bbdfbc6560a869f371b1729879cb7ddf4067bfea70ecdfafb62fe89ee8790"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/update_zone_setting.js",
+          "sha256": "f553e9d2e4e6ba7b609f126d52c00693a962e26af63fa88f6b869085a83a6d59"
         }
       ]
     },
@@ -1718,6 +1854,138 @@
         {
           "path": "packages/com.google-drive.main/workflows/update_file.js",
           "sha256": "907fdf91048f4fa9290dc1493d568d9b82865d9b5cc880f149c48e992b05aa47"
+        }
+      ]
+    },
+    {
+      "id": "com.grafana.main",
+      "version": "0.1.0",
+      "description": "Read and manage Grafana dashboards, folders, data sources, alert rules, contact points, annotations, teams, service accounts and snapshots on your own Grafana instance in the current tab. Uses your logged-in Grafana session; Grafana is self-hosted, so the package works on any instance host.",
+      "toolCount": 29,
+      "files": [
+        {
+          "path": "packages/com.grafana.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.grafana.main/manifest.json",
+          "sha256": "74d1ad760614233dc9ed011c0fd05509f9e7bdf9c8f73a1f979d21cbbac988d3"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/create_annotation.js",
+          "sha256": "a5aa22a1992bd03a625463cd19addcfb2a4d03a572ee6a5173f4c749436d03dc"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/create_dashboard.js",
+          "sha256": "d71721d3e4faf071df13291c1ddd29608d52b37bf616d5888fb7fb069099253c"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/create_folder.js",
+          "sha256": "ad9186bf23d1f13e3680a8f24b0755bd79ceb5be2cf97141dbc80d68197d1611"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/delete_alert_rule.js",
+          "sha256": "794025baac29a9fc0cf162f3f8046f02735f722acc3b30d3825bf1d1a2a17bc1"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/delete_annotation.js",
+          "sha256": "4478ad774aa86f3812011b68d578a11bdd8210a2d4dc7b64e4b10b5f5a583e1a"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/delete_dashboard.js",
+          "sha256": "6a3d7b71f16ac9eb115d26b97e6830a855983bdea0c3add5ef30bdf4a24fa17c"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/delete_folder.js",
+          "sha256": "9d762fe8e9caccc69e78b96098ad16573739b8affcab0a67efe8d2ce94a9c2e5"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_alert_rule.js",
+          "sha256": "da2b3ebf0f4954f2d283e93c5a1b6045885eb72d77e18563854516babaaf7573"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_current_user.js",
+          "sha256": "269631a710d3b48c64fc3b8bca5206ef5bf1e507a2604120dbdea98f295a0ba9"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_dashboard.js",
+          "sha256": "52010e875896e4170d4f9c6ec92e78b751bef9072c4a5cd8a161853b1545cb8e"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_datasource.js",
+          "sha256": "2a32d71909e066128361a688c499e10c8e641e8a5aa4e9f07ae1a2c19dbf73c4"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_folder.js",
+          "sha256": "940076a9ad62c408de5c67a9da7d4ad737a11ae648859eab2f365ba3e6f2d83f"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_organization.js",
+          "sha256": "d2d0179b27af19f2c810b9abf4f5093700370e0f388a8257cba970f309559e59"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/get_user_preferences.js",
+          "sha256": "e4a2ab8ee5bd12479cb09fb310074ae9532b8860862354931995e8bcebb42beb"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_alert_rules.js",
+          "sha256": "1072062b446afe2627ae2441daee62103eec317c671fa8fbd71f639c2a4b2951"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_annotations.js",
+          "sha256": "4e81716e059b5c2dfe65c36ba50e879c4c2df4229689e03d815b86a9776320a7"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_contact_points.js",
+          "sha256": "47ac1c43140a0d1ec3587c4ac52159056705dde994ee5042e8401760e8f7d981"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_datasources.js",
+          "sha256": "ead205e79d1a458e6ae6f2b26fb975313016f16493762c823063695854bbc5c0"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_folders.js",
+          "sha256": "29bbee0001fe8d898144aa27b2f0537ad2f9bc6a40cbdc45ed2987f669b8b05f"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_org_quotas.js",
+          "sha256": "851c3b2abf54427b7a0674509304416fb21df9bc2f292e14a376b606cf722ee4"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_org_users.js",
+          "sha256": "eb1e75a9198e3a813adefb7d167d59c80b40cb0d6d98d851d33368c30ff51823"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_service_accounts.js",
+          "sha256": "1c2ae1596241a95f63149a403042c32966b098cb52c5c4ed045abceea2d55eaa"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_snapshots.js",
+          "sha256": "ae71d0bd6146b88c6e6ec5587c6b416bb1a7482f625e02be3bf0c8ff80ddeea9"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/list_team_members.js",
+          "sha256": "eebb4b27801de651b2e8bd700c4b5ac15da6027685d10a368cd70290553e6881"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/search_dashboards.js",
+          "sha256": "5a8231d8426aed27b8cf498fb0d1b4a3c9bfb38904d7969fe3499fef11b59416"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/search_teams.js",
+          "sha256": "a2361e83415064e3e616404e9e3900eab5803bba78ac41dfb32061c416c0af8c"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/star_dashboard.js",
+          "sha256": "d5fbd0a261cfc9692c48ad5743ca9078a22d1e76509c73242511ad5f5fa7bf2c"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/unstar_dashboard.js",
+          "sha256": "63ff37293eb1f55288626d43f5f88b0ca7100daaba081031734aee1570e18e44"
+        },
+        {
+          "path": "packages/com.grafana.main/workflows/update_dashboard.js",
+          "sha256": "42434832e27543bd38ace3c9cbfbea8de506955342eeb8fc74c04fec561706e1"
         }
       ]
     },
