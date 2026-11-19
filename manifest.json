@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:53:10.228Z",
+  "generatedAt": "2026-11-19T08:14:01.982Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -3554,6 +3554,142 @@
         {
           "path": "packages/com.stackoverflow.main/workflows/search_users.js",
           "sha256": "2f157d9a7000ab2219af4b7fb5ca3343c675498d605b29e1dff7394a7f722350"
+        }
+      ]
+    },
+    {
+      "id": "com.stripe.main",
+      "version": "0.1.0",
+      "description": "Read and manage Stripe customers, products, prices, payment intents, invoices, subscriptions, balance, balance transactions and events on dashboard.stripe.com in your current tab. Uses your own logged-in Stripe Dashboard session.",
+      "toolCount": 30,
+      "files": [
+        {
+          "path": "packages/com.stripe.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.stripe.main/manifest.json",
+          "sha256": "bbd6d3727c5e725649db0684dd4ef4d04467a9de0c325276154653097d374d43"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/create_customer.js",
+          "sha256": "ccb5f530276887687ebf18be3140f251efa1928001a0c5e215beff1198dea360"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/create_invoice.js",
+          "sha256": "ce436e19cc757a1594348fac8c1a8364ffa3cbe4354233ee0e3201d8fe3c4d8f"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/create_price.js",
+          "sha256": "7d570f3023a79f10aef0e1bdf3d81281c99d5d7ab8123237514a0b9b47292071"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/create_product.js",
+          "sha256": "ddbe57801c97ec51fa42dea7a6a8a862344662a26db803bb045e911fbc1d2e45"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/delete_customer.js",
+          "sha256": "33ec8e5adeef2a3dfa498596797d2e0c5ed42db387f0e664cce47dcd16da9443"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/finalize_invoice.js",
+          "sha256": "7af457e14d4bcd1cb3634a6d630e8b48946d7b4451bca9c99997768ca9163728"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_account.js",
+          "sha256": "457ca6f33d08357d1c0066c15cf1affba91696c3964450de8882ae1cbc5bd2b1"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_balance.js",
+          "sha256": "8de5f61daf585adc55bf61221a45d8dfb6c212c81967a5f345dafc0087b53d09"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_customer.js",
+          "sha256": "afffce806d0a211d1cbde8a745d06421099261641749a14147526ad1cdc5bd3f"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_event.js",
+          "sha256": "31236b8522d0ce0fc67378847461916048a51586105b26d262dcc7f3e60cd232"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_invoice.js",
+          "sha256": "339425ad73b86dc6612d9f68fec3548a0ab14efdd62e9cef4e915f322948844a"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_payment_intent.js",
+          "sha256": "650fbd5755abdd68c7e3b2720353ffca55ff37251a64cf59572ffa0e16e8b5f8"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_price.js",
+          "sha256": "e0b512a4c70e6d291bd2ee0caaec4bb1043cedf39ccdb48e5ce158a3b46bb600"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_product.js",
+          "sha256": "f45b7c342f27eea8fba454d8a10164c4a88a58bc1a0035f74a8ff7d05e6cd4c4"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/get_subscription.js",
+          "sha256": "cf8a6fb448c1de49e00228754795a6e59818af993ee01b6dd647c5db846740bc"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_balance_transactions.js",
+          "sha256": "d1353f3d1bcaa5cfb33d307ce4036d84bebd3685982c048819263018ba166721"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_customers.js",
+          "sha256": "e0303b656eec64425c49ae180a3ebcef61220e42a58d1d37d2dff0a8ff88d88b"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_events.js",
+          "sha256": "a40b6006a033643af13e974439221851ad31c342bf86df8ae72403ab241fd4b7"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_invoices.js",
+          "sha256": "65467d84ba99e189e51f3389e235f136a15b40676bb6d114b0643c86b33bbded"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_payment_intents.js",
+          "sha256": "e32de08c395db51ef36de884be152ad1350f49aecbc37d5be097f38141e6e1c8"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_prices.js",
+          "sha256": "68488c792b72fb3bcfbbcc4427e19f05b2d91b1baee23de286fd005ccf4e9d31"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_products.js",
+          "sha256": "3740c3bf07ccf97ac22bcfa8e98a347288381e7f245d0901f3ee291b17d584ba"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/list_subscriptions.js",
+          "sha256": "573d7e3e69935e9b4ef261f5845475daad2885c31ddaf80f361304769fbb695d"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/search_customers.js",
+          "sha256": "c68eec20c167c3709f864bb2cfcf1887d2337e5205407a5c5bd8fb2e99f50672"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/search_invoices.js",
+          "sha256": "680c524a7b4d4e0d73d1fb9f01c4b569a4ad9fc6ba09fbe5b18998eb978425a9"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/search_payment_intents.js",
+          "sha256": "36ff2ca248a1f05966798b07cdf502c64927c7875d135822247e0c54acdcae48"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/search_subscriptions.js",
+          "sha256": "21a2e8e097147a820d3e4040ff6fe56991a424f626dcc91a7dce49fcb2d046ad"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/update_customer.js",
+          "sha256": "41c773461c134d74616544f4a55bacd90721d8571502a9b4c5a48f1c42c7c23a"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/update_product.js",
+          "sha256": "3ae08534ace71d5a320b419db03fe6db4e0647fb4f57212ff2134ce2e1248fcf"
+        },
+        {
+          "path": "packages/com.stripe.main/workflows/void_invoice.js",
+          "sha256": "3da655fa6c9b545eb685b20ee1b293274f4d5bbe72559dc3042875e8620d7cc4"
         }
       ]
     },

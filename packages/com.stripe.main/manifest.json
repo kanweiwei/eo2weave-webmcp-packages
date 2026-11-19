@@ -1,0 +1,187 @@
+{
+  "id": "com.stripe.main",
+  "version": "0.1.0",
+  "description": "Read and manage Stripe customers, products, prices, payment intents, invoices, subscriptions, balance, balance transactions and events on dashboard.stripe.com in your current tab. Uses your own logged-in Stripe Dashboard session.",
+  "tools": [
+    {
+      "name": "get_account",
+      "description": "Get the current Stripe account information including business name, email, country, and default currency. Reads from the page bootstrap data for instant response.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_account.js"
+    },
+    {
+      "name": "list_customers",
+      "description": "List customers in your Stripe account. Returns customers sorted by creation date (newest first). Use starting_after for cursor-based pagination.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_customers.js"
+    },
+    {
+      "name": "get_customer",
+      "description": "Get detailed information about a specific customer by their ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_customer.js"
+    },
+    {
+      "name": "create_customer",
+      "description": "Create a new customer in your Stripe account.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_customer.js"
+    },
+    {
+      "name": "update_customer",
+      "description": "Update an existing customer. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_customer.js"
+    },
+    {
+      "name": "delete_customer",
+      "description": "Permanently delete a customer and all their subscriptions and payment sources. This cannot be undone.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_customer.js"
+    },
+    {
+      "name": "search_customers",
+      "description": "Search customers using Stripe search syntax. Example queries: \"email:'test@example.com'\", \"name:'John'\", \"metadata['key']:'value'\".",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_customers.js"
+    },
+    {
+      "name": "list_products",
+      "description": "List products in your Stripe account. Returns products sorted by creation date (newest first). Use starting_after for cursor-based pagination.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_products.js"
+    },
+    {
+      "name": "get_product",
+      "description": "Get detailed information about a specific product by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_product.js"
+    },
+    {
+      "name": "create_product",
+      "description": "Create a new product. Products describe the specific goods or services you offer to your customers.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_product.js"
+    },
+    {
+      "name": "update_product",
+      "description": "Update an existing product. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_product.js"
+    },
+    {
+      "name": "list_prices",
+      "description": "List prices in your Stripe account. Optionally filter by product. Returns prices sorted by creation date (newest first).",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_prices.js"
+    },
+    {
+      "name": "get_price",
+      "description": "Get detailed information about a specific price by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_price.js"
+    },
+    {
+      "name": "create_price",
+      "description": "Create a new price for a product. Prices define how much and how often to charge for a product.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_price.js"
+    },
+    {
+      "name": "list_payment_intents",
+      "description": "List payment intents in your Stripe account. Returns payment intents sorted by creation date (newest first).",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_payment_intents.js"
+    },
+    {
+      "name": "get_payment_intent",
+      "description": "Get detailed information about a specific payment intent by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_payment_intent.js"
+    },
+    {
+      "name": "search_payment_intents",
+      "description": "Search payment intents using Stripe search syntax. Example queries: \"status:'succeeded'\", \"customer:'cus_xxx'\", \"amount>1000\".",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_payment_intents.js"
+    },
+    {
+      "name": "list_invoices",
+      "description": "List invoices in your Stripe account. Returns invoices sorted by creation date (newest first).",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_invoices.js"
+    },
+    {
+      "name": "get_invoice",
+      "description": "Get detailed information about a specific invoice by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_invoice.js"
+    },
+    {
+      "name": "create_invoice",
+      "description": "Create a new draft invoice for a customer. After creation, add invoice items and then finalize it.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_invoice.js"
+    },
+    {
+      "name": "finalize_invoice",
+      "description": "Finalize a draft invoice, transitioning it to open status. After finalization, the invoice can be sent to the customer or paid automatically.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/finalize_invoice.js"
+    },
+    {
+      "name": "void_invoice",
+      "description": "Void an open invoice. The invoice will be marked as void and no payment will be collected.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/void_invoice.js"
+    },
+    {
+      "name": "search_invoices",
+      "description": "Search invoices using Stripe search syntax. Example queries: \"status:'open'\", \"customer:'cus_xxx'\", \"total>5000\".",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_invoices.js"
+    },
+    {
+      "name": "list_subscriptions",
+      "description": "List subscriptions in your Stripe account. Returns subscriptions sorted by creation date (newest first).",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_subscriptions.js"
+    },
+    {
+      "name": "get_subscription",
+      "description": "Get detailed information about a specific subscription by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_subscription.js"
+    },
+    {
+      "name": "search_subscriptions",
+      "description": "Search subscriptions using Stripe search syntax. Example queries: \"status:'active'\", \"customer:'cus_xxx'\".",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_subscriptions.js"
+    },
+    {
+      "name": "get_balance",
+      "description": "Get the current balance of your Stripe account, broken down by currency. Shows available and pending balances.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_balance.js"
+    },
+    {
+      "name": "list_balance_transactions",
+      "description": "List balance transactions (charges, refunds, payouts, etc.) showing how funds flow through your account.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_balance_transactions.js"
+    },
+    {
+      "name": "list_events",
+      "description": "List events in your Stripe account. Events represent changes to Stripe objects (up to 30 days). Optionally filter by event type.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_events.js"
+    },
+    {
+      "name": "get_event",
+      "description": "Get detailed information about a specific event by its ID.",
+      "urlRegex": "^https://dashboard\\.stripe\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event.js"
+    }
+  ]
+}
