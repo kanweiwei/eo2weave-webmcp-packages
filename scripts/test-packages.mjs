@@ -59,6 +59,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.slack.main': 22,
 }
 
 /**
@@ -93,6 +94,30 @@ const OPENTABS_TOOL_NAMES = {
     'get_organization',
     'list_user_packages',
     'list_tokens',
+  ],
+  'com.slack.main': [
+    'send_message',
+    'edit_message',
+    'delete_message',
+    'read_messages',
+    'read_thread',
+    'search_messages',
+    'list_channels',
+    'get_channel_info',
+    'create_channel',
+    'set_channel_topic',
+    'set_channel_purpose',
+    'invite_to_channel',
+    'list_members',
+    'get_user_profile',
+    'list_users',
+    'open_dm',
+    'upload_file',
+    'list_files',
+    'add_reaction',
+    'remove_reaction',
+    'pin_message',
+    'unpin_message',
   ],
 }
 
@@ -360,6 +385,7 @@ function loadUpstreamSchemas() {
     'com.linear.main': 'linear',
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
+    'com.slack.main': 'slack',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -1249,6 +1275,423 @@ const HN_REPLY_PAGE = `<html><head><title>Reply | Hacker News</title></head><bod
   })
   equal(anonymous.status, 'error', 'npm list_tokens: logged-out page is an error')
   equal(anonymous.error_code, 'UNAUTHENTICATED', 'npm list_tokens: logged-out page is classified as UNAUTHENTICATED')
+}
+
+// --- Slack -------------------------------------------------------------------
+//
+// Slack's web client authenticates every call with the `xoxc-` token its own
+// runtime exposes (localConfig_v2 in the legacy workspace client, boot_data
+// globals in the current one) and takes the API as a form-encoded POST to the
+// workspace host. These fixtures reproduce that: token read out of the page,
+// `application/x-www-form-urlencoded` body carrying the token plus the
+// client's `_x_*` metadata, and Slack's `{ ok, error }` envelope.
+
+const SLACK_WORKSPACE = 'acme.slack.com'
+
+function slackPage({ token = 'xoxc-test-token', fetch } = {}) {
+  return {
+    hostname: SLACK_WORKSPACE,
+    localStorage: {
+      localConfig_v2: JSON.stringify({
+        teams: { T0123: { token, url: 'https://acme.slack.com/', name: 'Acme' } },
+        lastActiveTeamId: 'T0123',
+      }),
+    },
+    fetch,
+  }
+}
+
+function slackForm(request) {
+  return new URLSearchParams(request.init.body)
+}
+
+{
+  // Slack: list_channels is a workspace listing — form-encoded POST, the page
+  // token and team id, channel mapping with defensive defaults.
+  const requests = []
+  const result = await runTool('com.slack.main', 'list_channels', {
+    input: {},
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          channels: [
+            {
+              id: 'C1',
+              name: 'general',
+              is_channel: true,
+              is_private: false,
+              num_members: 12,
+              topic: { value: 'Team news' },
+              purpose: { value: 'Chatter' },
+            },
+            { id: 'C2', name: 'random' },
+          ],
+          response_metadata: { next_cursor: 'cursor-2' },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack list_channels: status')
+  equal(result.data.channels.length, 2, 'slack list_channels: channel count')
+  equal(result.data.channels[0].name, 'general', 'slack list_channels: channel name')
+  equal(result.data.channels[0].num_members, 12, 'slack list_channels: member count is a number')
+  equal(result.data.channels[0].topic.value, 'Team news', 'slack list_channels: topic text')
+  equal(result.data.channels[1].num_members, 0, 'slack list_channels: missing fields default to 0')
+  equal(result.data.channels[1].is_private, false, 'slack list_channels: private flag defaults')
+  equal(result.data.response_metadata.next_cursor, 'cursor-2', 'slack list_channels: next cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.list', 'slack list_channels: workspace API endpoint')
+  equal(requests[0].init.method, 'POST', 'slack list_channels: uses POST')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    'application/x-www-form-urlencoded',
+    'slack list_channels: form-encoded body',
+  )
+  equal(requests[0].init.credentials, 'include', 'slack list_channels: sends credentials')
+  const form = slackForm(requests[0])
+  equal(form.get('token'), 'xoxc-test-token', 'slack list_channels: sends the page token')
+  equal(form.get('limit'), '100', 'slack list_channels: default limit')
+  equal(form.get('types'), 'public_channel', 'slack list_channels: default types')
+  equal(form.get('_x_team_id'), 'T0123', 'slack list_channels: sends the team id')
+  equal(form.get('_x_mode'), 'online', 'slack list_channels: sends the client metadata')
+}
+
+{
+  // Slack: the current app.slack.com client exposes auth as window.boot_data
+  // rather than localConfig — same call path, workspace URL from team_url.
+  const requests = []
+  const result = await runTool('com.slack.main', 'get_channel_info', {
+    input: { channel: 'C1' },
+    page: {
+      hostname: 'app.slack.com',
+      globals: {
+        boot_data: { api_token: 'xoxc-boot', team_id: 'T9', team_url: 'https://acme.slack.com' },
+      },
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          channel: { id: 'C1', name: 'general', is_channel: true, num_members: 3, topic: { value: 't' }, purpose: { value: 'p' } },
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'slack get_channel_info boot_data: status')
+  equal(result.data.channel.id, 'C1', 'slack get_channel_info boot_data: channel id')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.info', 'slack get_channel_info: workspace URL from boot_data')
+  equal(slackForm(requests[0]).get('token'), 'xoxc-boot', 'slack get_channel_info: token from boot_data')
+
+  // An Enterprise Grid tab belongs to the upstream slack-enterprise plugin: it
+  // must fail loudly instead of silently acting on the wrong workspace type.
+  const enterprise = await runTool('com.slack.main', 'get_channel_info', {
+    input: { channel: 'C1' },
+    page: {
+      hostname: 'app.slack.com',
+      globals: { boot_data: { api_token: 'xoxc-boot', is_enterprise_install: true } },
+      fetch: async () => jsonResponse({ ok: true }),
+    },
+  })
+  equal(enterprise.status, 'error', 'slack enterprise workspace: is an error')
+  equal(enterprise.error_code, 'ENTERPRISE_WORKSPACE', 'slack enterprise workspace: is classified')
+}
+
+{
+  // Slack: read_messages is cursor-paginated — the cursor travels as a form
+  // field, the limit stays numeric, and the next cursor comes back verbatim.
+  const requests = []
+  const result = await runTool('com.slack.main', 'read_messages', {
+    input: { channel: 'C1', limit: 50, cursor: 'dGVhbTpDMTIz' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: [
+            { type: 'message', user: 'U1', text: 'deploying now', ts: '1700000000.000100' },
+            { text: 'system note', ts: '1700000000.000200' },
+          ],
+          response_metadata: { next_cursor: 'bmV4dA' },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack read_messages: status')
+  equal(result.data.messages.length, 2, 'slack read_messages: message count')
+  equal(result.data.messages[0].user, 'U1', 'slack read_messages: author id')
+  equal(result.data.messages[0].type, 'message', 'slack read_messages: message type')
+  equal(result.data.messages[0].ts, '1700000000.000100', 'slack read_messages: timestamp is the id')
+  equal(result.data.messages[1].type, 'message', 'slack read_messages: type defaults')
+  equal(result.data.messages[1].user, undefined, 'slack read_messages: author omitted when absent')
+  equal(result.data.response_metadata.next_cursor, 'bmV4dA', 'slack read_messages: forwards the next cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.history', 'slack read_messages: history endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('channel'), 'C1', 'slack read_messages: channel')
+  equal(form.get('limit'), '50', 'slack read_messages: limit stays a number')
+  equal(form.get('cursor'), 'dGVhbTpDMTIz', 'slack read_messages: cursor')
+}
+
+{
+  // Slack: read_thread maps the reply shape and only reports pagination when
+  // Slack actually returned a next cursor.
+  const requests = []
+  const result = await runTool('com.slack.main', 'read_thread', {
+    input: { channel: 'C1', ts: '1700000000.000100' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: [
+            { type: 'message', user: 'U1', text: 'parent', ts: '1700000000.000100', thread_ts: '1700000000.000100' },
+            { type: 'message', user: 'U2', text: 'reply', ts: '1700000000.000300', thread_ts: '1700000000.000100' },
+          ],
+          has_more: false,
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack read_thread: status')
+  equal(result.data.messages.length, 2, 'slack read_thread: includes the parent')
+  equal(result.data.messages[1].thread_ts, '1700000000.000100', 'slack read_thread: reply thread timestamp')
+  equal(result.data.has_more, false, 'slack read_thread: has_more flag')
+  equal(result.data.response_metadata, undefined, 'slack read_thread: no pagination metadata without a cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.replies', 'slack read_thread: replies endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('ts'), '1700000000.000100', 'slack read_thread: parent ts')
+  equal(form.get('limit'), '20', 'slack read_thread: default limit')
+}
+
+{
+  // Slack: send_message is a write through the same form-encoded path; an
+  // optional thread_ts must reach the body and be omitted otherwise.
+  const requests = []
+  const result = await runTool('com.slack.main', 'send_message', {
+    input: { channel: 'C1', text: 'shipping v1', thread_ts: '1700000000.000100' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, channel: 'C1', ts: '1700000000.000900' })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack send_message: status')
+  equal(result.data.channel, 'C1', 'slack send_message: channel')
+  equal(result.data.ts, '1700000000.000900', 'slack send_message: posted ts')
+  equal(requests[0].url, 'https://acme.slack.com/api/chat.postMessage', 'slack send_message: postMessage endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('text'), 'shipping v1', 'slack send_message: message text')
+  equal(form.get('thread_ts'), '1700000000.000100', 'slack send_message: thread reply target')
+
+  const plain = await runTool('com.slack.main', 'send_message', {
+    input: { channel: 'C1', text: 'top level' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, channel: 'C1', ts: '1700000000.001000' })
+      },
+    }),
+  })
+  equal(plain.status, 'ok', 'slack send_message without thread: status')
+  equal(slackForm(requests[1]).get('thread_ts'), null, 'slack send_message: omits an absent thread_ts')
+}
+
+{
+  // Slack: create_channel creates and then sets the topic in a second call.
+  const requests = []
+  const result = await runTool('com.slack.main', 'create_channel', {
+    input: { name: 'project-updates', topic: 'Launch notes' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (String(url).endsWith('/api/conversations.create'))
+          return jsonResponse({ ok: true, channel: { id: 'C9', name: 'project-updates', is_private: false } })
+        return jsonResponse({ ok: true, channel: { id: 'C9', topic: { value: 'Launch notes' } } })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack create_channel: status')
+  equal(result.data.channel.id, 'C9', 'slack create_channel: new channel id')
+  equal(result.data.channel.is_private, false, 'slack create_channel: public by default')
+  equal(result.data.warning, undefined, 'slack create_channel: no warning when the topic is set')
+  equal(requests.length, 2, 'slack create_channel: create then setTopic')
+  const create = slackForm(requests[0])
+  equal(create.get('name'), 'project-updates', 'slack create_channel: channel name')
+  equal(create.get('is_private'), 'false', 'slack create_channel: private flag is sent')
+  const topic = slackForm(requests[1])
+  equal(requests[1].url, 'https://acme.slack.com/api/conversations.setTopic', 'slack create_channel: setTopic endpoint')
+  equal(topic.get('channel'), 'C9', 'slack create_channel: topic target')
+  equal(topic.get('topic'), 'Launch notes', 'slack create_channel: topic text')
+}
+
+{
+  // Slack: a failed topic update after a successful create is a warning, not a
+  // failed tool call — the channel exists, the caller must learn that.
+  const result = await runTool('com.slack.main', 'create_channel', {
+    input: { name: 'ops', topic: 'Runbooks' },
+    page: slackPage({
+      fetch: async (url) => {
+        if (String(url).endsWith('/api/conversations.create'))
+          return jsonResponse({ ok: true, channel: { id: 'C10', name: 'ops', is_private: true } })
+        return jsonResponse({ ok: false, error: 'cant_update_channel' })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack create_channel topic failure: still ok')
+  equal(result.data.channel.id, 'C10', 'slack create_channel topic failure: channel reported')
+  ok(
+    String(result.data.warning).startsWith('Channel created but failed to set topic'),
+    'slack create_channel topic failure: warning explains the partial success',
+  )
+}
+
+{
+  // Slack: upload_file posts multipart form data (V1 files.upload) — never a
+  // JSON body — and lets the browser set the multipart boundary.
+  const requests = []
+  const result = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'hello world', filename: 'note.txt', initial_comment: 'see attached' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, file: { id: 'F1', title: 'ignored by the port' } })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack upload_file: status')
+  equal(result.data.file.id, 'F1', 'slack upload_file: file id from the response')
+  equal(result.data.file.title, 'note.txt', 'slack upload_file: title falls back to the filename')
+  equal(requests[0].url, 'https://acme.slack.com/api/files.upload', 'slack upload_file: files.upload endpoint')
+  equal(requests[0].init.method, 'POST', 'slack upload_file: uses POST')
+  ok(requests[0].init.body instanceof FormData, 'slack upload_file: body is FormData')
+  equal(requests[0].init.headers, undefined, 'slack upload_file: lets the browser set the multipart boundary')
+  const body = requests[0].init.body
+  equal(body.get('channels'), 'C1', 'slack upload_file: target channel')
+  equal(body.get('filename'), 'note.txt', 'slack upload_file: filename')
+  equal(body.get('initial_comment'), 'see attached', 'slack upload_file: comment')
+  equal(body.get('file').name, 'note.txt', 'slack upload_file: file part carries the name')
+  equal(requests[0].init.credentials, 'include', 'slack upload_file: sends credentials')
+}
+
+{
+  // Slack: a base64 upload checks the claimed format's magic bytes before any
+  // request, and keeps the decoded byte length.
+  const requests = []
+  const png = await runTool('com.slack.main', 'upload_file', {
+    input: {
+      channel: 'C1',
+      content: 'iVBORw0KGgoAAAANSUhEUg==',
+      is_base64: true,
+      filename: 'chart.png',
+    },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, file: { id: 'F2' } })
+      },
+    }),
+  })
+  equal(png.status, 'ok', 'slack upload_file base64 png: status')
+  equal(requests[0].init.body.get('file').size, 16, 'slack upload_file base64 png: decoded byte length')
+
+  const mismatch = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'aGVsbG8=', is_base64: true, filename: 'chart.pdf' },
+    page: slackPage({
+      fetch: async () => {
+        throw new Error('must not send a mismatched file')
+      },
+    }),
+  })
+  equal(mismatch.status, 'error', 'slack upload_file magic mismatch: is an error')
+  equal(mismatch.error_code, 'VALIDATION', 'slack upload_file magic mismatch: is VALIDATION')
+
+  const blocked = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'MZ', filename: 'setup.exe' },
+    page: slackPage({ fetch: async () => jsonResponse({ ok: true }) }),
+  })
+  equal(blocked.status, 'error', 'slack upload_file blocked extension: is an error')
+  equal(blocked.error_code, 'VALIDATION', 'slack upload_file blocked extension: is VALIDATION')
+}
+
+{
+  // Slack: search_messages passes the enum sort fields through untouched and
+  // unwraps the nested messages envelope.
+  const requests = []
+  const result = await runTool('com.slack.main', 'search_messages', {
+    input: { query: 'from:@ada in:#general', count: 5, page: 2, sort: 'timestamp', sort_dir: 'asc' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: {
+            total: 1,
+            matches: [
+              { channel: { id: 'C1', name: 'general' }, username: 'ada', text: 'hello', ts: '1700000000.000100', permalink: 'https://acme.slack.com/archives/C1/p1700000000000100' },
+            ],
+            paging: { count: 5, total: 1, page: 2, pages: 1 },
+          },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack search_messages: status')
+  equal(result.data.messages.total, 1, 'slack search_messages: total')
+  equal(result.data.messages.matches[0].channel.name, 'general', 'slack search_messages: match channel')
+  equal(result.data.messages.matches[0].permalink.indexOf('https://acme.slack.com/archives/'), 0, 'slack search_messages: permalink')
+  equal(result.data.messages.paging.page, 2, 'slack search_messages: paging page')
+  const form = slackForm(requests[0])
+  equal(requests[0].url, 'https://acme.slack.com/api/search.messages', 'slack search_messages: search endpoint')
+  equal(form.get('sort'), 'timestamp', 'slack search_messages: sort enum')
+  equal(form.get('sort_dir'), 'asc', 'slack search_messages: sort direction enum')
+  equal(form.get('count'), '5', 'slack search_messages: count')
+  equal(form.get('page'), '2', 'slack search_messages: page')
+}
+
+{
+  // Slack: the auth-failure path. No token on the page is AUTH and makes no
+  // request; a rejected token (invalid_auth) is AUTH; a 429 is RATE_LIMITED.
+  const anonymousRequests = []
+  const anonymous = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: {
+      hostname: SLACK_WORKSPACE,
+      fetch: async (url, init) => {
+        anonymousRequests.push({ url, init })
+        return jsonResponse({ ok: true, members: [] })
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'slack list_users logged out: is an error')
+  equal(anonymous.error_code, 'AUTH', 'slack list_users logged out: is AUTH')
+  equal(anonymousRequests.length, 0, 'slack list_users logged out: makes no request')
+
+  const rejected = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: slackPage({ fetch: async () => jsonResponse({ ok: false, error: 'invalid_auth' }) }),
+  })
+  equal(rejected.status, 'error', 'slack list_users invalid token: is an error')
+  equal(rejected.error_code, 'AUTH', 'slack list_users invalid token: is AUTH')
+  ok(String(rejected.message).includes('invalid_auth'), 'slack list_users invalid token: keeps the Slack error')
+
+  const rateLimited = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: slackPage({
+      fetch: async () => ({
+        ok: false,
+        status: 429,
+        headers: { get: (name) => (name === 'Retry-After' ? '30' : null) },
+        async text() {
+          return 'ratelimited'
+        },
+        async json() {
+          return {}
+        },
+      }),
+    }),
+  })
+  equal(rateLimited.status, 'error', 'slack list_users rate limited: is an error')
+  equal(rateLimited.error_code, 'RATE_LIMITED', 'slack list_users rate limited: is RATE_LIMITED')
 }
 
 // --- 4. Registry manifest ----------------------------------------------------

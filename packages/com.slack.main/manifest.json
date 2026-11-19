@@ -1,0 +1,139 @@
+{
+  "id": "com.slack.main",
+  "version": "0.1.0",
+  "description": "Read and search messages and threads, list channels and users, and send, edit, delete, react to, pin and upload files, plus manage channels and DMs on *.slack.com in your current tab. Uses your own logged-in Slack session.",
+  "tools": [
+    {
+      "name": "send_message",
+      "description": "Send a message to a Slack channel or thread",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "edit_message",
+      "description": "Edit an existing Slack message. The caller must be the original author of the message.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a Slack message. The caller must be the original author, or the channel must allow message deletion.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "read_messages",
+      "description": "Read recent messages from a Slack channel with optional date-range filtering and pagination",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_messages.js"
+    },
+    {
+      "name": "read_thread",
+      "description": "Read replies in a Slack thread. Returns all messages including the parent message, with optional pagination.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_thread.js"
+    },
+    {
+      "name": "search_messages",
+      "description": "Search for messages across Slack channels with optional pagination and sorting",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_messages.js"
+    },
+    {
+      "name": "list_channels",
+      "description": "List channels in the Slack workspace with optional pagination",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_channels.js"
+    },
+    {
+      "name": "get_channel_info",
+      "description": "Get detailed information about a Slack channel including topic, purpose, and member count",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_channel_info.js"
+    },
+    {
+      "name": "create_channel",
+      "description": "Create a new public or private Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_channel.js"
+    },
+    {
+      "name": "set_channel_topic",
+      "description": "Set the topic of a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_channel_topic.js"
+    },
+    {
+      "name": "set_channel_purpose",
+      "description": "Set the purpose of a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_channel_purpose.js"
+    },
+    {
+      "name": "invite_to_channel",
+      "description": "Invite a user to a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/invite_to_channel.js"
+    },
+    {
+      "name": "list_members",
+      "description": "List member user IDs of a Slack channel with optional pagination. Returns user IDs only — use get_user_profile to resolve a specific user ID to a name/profile, or list_users to get all workspace users with names.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_members.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Retrieve a Slack user's profile information by user ID",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List users in the Slack workspace with optional pagination",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "open_dm",
+      "description": "Open a direct message conversation with one or more users. Returns an existing DM channel if one already exists, or creates a new one. For multi-person DMs (group DMs), pass multiple comma-separated user IDs.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/open_dm.js"
+    },
+    {
+      "name": "upload_file",
+      "description": "Upload a file to a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/upload_file.js"
+    },
+    {
+      "name": "list_files",
+      "description": "List files in a Slack channel or workspace with optional filters",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_files.js"
+    },
+    {
+      "name": "add_reaction",
+      "description": "Add an emoji reaction to a Slack message",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_reaction.js"
+    },
+    {
+      "name": "remove_reaction",
+      "description": "Remove an emoji reaction from a Slack message",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_reaction.js"
+    },
+    {
+      "name": "pin_message",
+      "description": "Pin a message to a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pin_message.js"
+    },
+    {
+      "name": "unpin_message",
+      "description": "Unpin a message from a Slack channel",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)?slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unpin_message.js"
+    }
+  ]
+}

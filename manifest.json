@@ -744,6 +744,110 @@
           "sha256": "5bd127befc0e9b4d59d2415028d4ab45be81a85ad81b6f96a407ce102a638f11"
         }
       ]
+    },
+    {
+      "id": "com.slack.main",
+      "version": "0.1.0",
+      "description": "Read and search messages and threads, list channels and users, and send, edit, delete, react to, pin and upload files, plus manage channels and DMs on *.slack.com in your current tab. Uses your own logged-in Slack session.",
+      "toolCount": 22,
+      "files": [
+        {
+          "path": "packages/com.slack.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.slack.main/manifest.json",
+          "sha256": "298f4ba4de2e433fcd816a911eed59c10b70ddb09bddb4c535c5c83a7edace04"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/add_reaction.js",
+          "sha256": "42ebbe7b7d942d731ae4cc03f81900665d9457062dd469b595c51d82626a390b"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/create_channel.js",
+          "sha256": "cfc273c3377e1bd6dc0828cfbb1ba812b4bff26eb09b701934bd375c5496a37a"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/delete_message.js",
+          "sha256": "b40c36c8fad5d925e75c2dc6ac0c5633b112227b3bc7749e53923adfad435aa0"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/edit_message.js",
+          "sha256": "7ce3e5943c1783774ed1151950151812645386f084678be49dfa3b3e8fe271cd"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/get_channel_info.js",
+          "sha256": "499a2113021218294d26d908900d2428a1314227a8ab75a6dcfb7741e8825491"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/get_user_profile.js",
+          "sha256": "021b396cb744fd34f1e5b22989a1e340723033b75b5ac40e8cd0d715cf52b4d7"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/invite_to_channel.js",
+          "sha256": "1b2923c3853089f66a3e4d758307d8c26bb35627473e324df50f8e501a90965d"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/list_channels.js",
+          "sha256": "a2d1fc400d27a3f0a34f09f227dc3bbedb9ed5cf370c7ce44e4c00a147c556ff"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/list_files.js",
+          "sha256": "9937e66729b15988f921bdde38ca29b347e27c697c1e1c5cb16f126d008b8896"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/list_members.js",
+          "sha256": "924877154433c3a61ca2b29d19a991f4b95a61ee08b311a3fc516371e9d24846"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/list_users.js",
+          "sha256": "0cdea24bcd41fe0b30bb9f207f3f27868f9afba1b65a02ed3ee0803556960275"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/open_dm.js",
+          "sha256": "fcc8e55a93e5987973fbe9579d65b1a25e262db08806bd6a93e6a2ecfceb302f"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/pin_message.js",
+          "sha256": "a9c1b96e6971dc68db502e97dc9de1a8720627e1c4822f5db76063ff9f55256c"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/read_messages.js",
+          "sha256": "3fb968994d012a43549a2249155e853836bd029376b8ccb23897f5832a62f92a"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/read_thread.js",
+          "sha256": "a6cb933a0734c20ef5ffe87731281132d62235b05288b252199d0eb62316a3d2"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/remove_reaction.js",
+          "sha256": "a10ed31a0fe9c1de7c4171b6cd16d782f759c685ef361cdfff3f7b07d69a22a0"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/search_messages.js",
+          "sha256": "f5f4b59746e6262a1dcdb81bff4d60bf12007634e061a34773a789b3e02d6e84"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/send_message.js",
+          "sha256": "9ad6ba962cfbd6308d3af1b6f7dbe8d502ce22d9fe97903a9e1ccbb331fadda0"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/set_channel_purpose.js",
+          "sha256": "3c204c6d3f86e215421be8162cccf3ac1da30645bf22eaf558abab408de7db25"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/set_channel_topic.js",
+          "sha256": "25b34064bc6742dd5c85ba82f3487624be7cb92bb1971a634a4781d723ef09e3"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/unpin_message.js",
+          "sha256": "b56b7731ccce1386f79120c488d8051e4af76054fe24091f8a69e27497270d2c"
+        },
+        {
+          "path": "packages/com.slack.main/workflows/upload_file.js",
+          "sha256": "fa2b43c4749c136b2a4abd798b2b2896df2d4b3b03c9e086ecf4e4180010970e"
+        }
+      ]
     }
   ]
 }
