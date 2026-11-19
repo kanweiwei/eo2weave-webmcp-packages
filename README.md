@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-33 packages, 969 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+34 packages, 998 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -83,6 +83,7 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.circleci.main` | 33 | OpenTabs plugin (MIT) |
 | `com.todoist.main` | 33 | OpenTabs plugin (MIT) |
 | `com.tumblr.main` | 32 | OpenTabs plugin (MIT) |
+| `com.grafana.main` | 29 | OpenTabs plugin (MIT) |
 | `com.x.main` | 31 | OpenTabs plugin (MIT) |
 | `com.bitbucket.main` | 27 | OpenTabs plugin (MIT) |
 | `com.discord.main` | 26 | OpenTabs plugin (MIT) |
