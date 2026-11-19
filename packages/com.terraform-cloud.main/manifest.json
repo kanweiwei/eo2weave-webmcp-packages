@@ -1,0 +1,235 @@
+{
+  "id": "com.terraform-cloud.main",
+  "version": "0.1.0",
+  "description": "Read and manage HCP Terraform (Terraform Cloud) organizations, projects, workspaces, runs, plans, applies, state versions, variables, variable sets and teams on app.terraform.io in your current tab. Uses your own logged-in HCP Terraform session, including CSRF-protected writes.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated user profile including username, email, and 2FA status.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_organizations",
+      "description": "List all organizations the current user belongs to. Returns organization name, plan, and resource count.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organizations.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get detailed information about a specific organization by name.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_organization_members",
+      "description": "List members of an organization with their status and email.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_members.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List projects in an organization. Projects group workspaces together.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a project by its ID.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project in an organization.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project.js"
+    },
+    {
+      "name": "update_project",
+      "description": "Update a project name or description.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_project.js"
+    },
+    {
+      "name": "delete_project",
+      "description": "Delete a project. The project must have no workspaces.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_project.js"
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List workspaces in an organization. Supports filtering by name search and pagination.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspaces.js"
+    },
+    {
+      "name": "get_workspace",
+      "description": "Get detailed information about a workspace by its ID.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace.js"
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new workspace in an organization. Optionally specify project, execution mode, Terraform version, and other settings.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_workspace.js"
+    },
+    {
+      "name": "update_workspace",
+      "description": "Update workspace settings. Only specified fields are changed.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_workspace.js"
+    },
+    {
+      "name": "delete_workspace",
+      "description": "Permanently delete a workspace. This action cannot be undone.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_workspace.js"
+    },
+    {
+      "name": "lock_workspace",
+      "description": "Lock a workspace to prevent new runs. Provide an optional reason.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/lock_workspace.js"
+    },
+    {
+      "name": "unlock_workspace",
+      "description": "Unlock a workspace to allow new runs.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unlock_workspace.js"
+    },
+    {
+      "name": "list_runs",
+      "description": "List runs for a workspace. Returns run status, message, and change detection.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_runs.js"
+    },
+    {
+      "name": "get_run",
+      "description": "Get detailed information about a specific run including status, plan details, and available actions.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_run.js"
+    },
+    {
+      "name": "create_run",
+      "description": "Queue a new plan/apply run for a workspace. Optionally set as destroy, plan-only, or refresh-only.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_run.js"
+    },
+    {
+      "name": "apply_run",
+      "description": "Apply a run that is waiting for confirmation. The run must be in \"planned\" or \"policy_checked\" status.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/apply_run.js"
+    },
+    {
+      "name": "cancel_run",
+      "description": "Cancel a run that is currently planning or awaiting confirmation.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/cancel_run.js"
+    },
+    {
+      "name": "discard_run",
+      "description": "Discard a run that is waiting for confirmation. The plan will not be applied.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/discard_run.js"
+    },
+    {
+      "name": "get_plan",
+      "description": "Get details about a plan including resource changes and status. Use the plan ID from a run's relationships.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_plan.js"
+    },
+    {
+      "name": "get_plan_json_output",
+      "description": "Get the JSON-formatted output of a plan. Returns the planned resource changes in machine-readable format. The plan must be finished.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_plan_json_output.js"
+    },
+    {
+      "name": "get_apply",
+      "description": "Get details about an apply including resource changes and status.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_apply.js"
+    },
+    {
+      "name": "list_state_versions",
+      "description": "List state versions for a workspace. Returns version history with serial numbers and status.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_state_versions.js"
+    },
+    {
+      "name": "get_current_state_version",
+      "description": "Get the current (latest) state version for a workspace.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_state_version.js"
+    },
+    {
+      "name": "list_workspace_variables",
+      "description": "List all variables for a workspace including Terraform and environment variables.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspace_variables.js"
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a new variable in a workspace. Set category to \"terraform\" for Terraform variables or \"env\" for environment variables.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_variable.js"
+    },
+    {
+      "name": "update_variable",
+      "description": "Update a workspace variable. Only specified fields are changed.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_variable.js"
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a workspace variable.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_variable.js"
+    },
+    {
+      "name": "list_variable_sets",
+      "description": "List variable sets in an organization. Variable sets allow sharing variables across workspaces.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_variable_sets.js"
+    },
+    {
+      "name": "get_variable_set",
+      "description": "Get detailed information about a variable set.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_variable_set.js"
+    },
+    {
+      "name": "create_variable_set",
+      "description": "Create a new variable set in an organization. Set global to true to apply to all workspaces.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_variable_set.js"
+    },
+    {
+      "name": "delete_variable_set",
+      "description": "Delete a variable set.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_variable_set.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List teams in an organization.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "get_team",
+      "description": "Get detailed information about a team including member count and visibility.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_team.js"
+    },
+    {
+      "name": "list_team_access",
+      "description": "List team access permissions for a workspace. Shows which teams have access and their permission levels.",
+      "urlRegex": "^https://app\\.terraform\\.io/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_team_access.js"
+    }
+  ]
+}

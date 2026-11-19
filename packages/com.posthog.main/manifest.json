@@ -1,0 +1,235 @@
+{
+  "id": "com.posthog.main",
+  "version": "0.1.0",
+  "description": "PostHog product analytics for the us.posthog.com / eu.posthog.com tab you are already logged into — 38 tools covering dashboards, insights, feature flags, experiments, annotations, persons, cohorts, surveys, actions, projects, HogQL and trends queries, raw events and event/property definitions. Same-origin /api/environments/<team>/... and /api/projects/<team>/... calls with the tab's session cookie and the posthog_csrftoken CSRF header.",
+  "tools": [
+    {
+      "name": "create_annotation",
+      "description": "Create a new annotation to mark an important event on PostHog charts.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_annotation.js"
+    },
+    {
+      "name": "create_dashboard",
+      "description": "Create a new dashboard in the current PostHog project.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dashboard.js"
+    },
+    {
+      "name": "create_experiment",
+      "description": "Create a new A/B test experiment. Requires a name and feature flag key.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_experiment.js"
+    },
+    {
+      "name": "create_feature_flag",
+      "description": "Create a new boolean feature flag. The key must be unique within the project and is used in code to check the flag.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_feature_flag.js"
+    },
+    {
+      "name": "create_insight",
+      "description": "Create a new saved insight in the current PostHog project. Provide a HogQL query string and the insight will be created as a HogQL visualization. Optionally specify a name, description, and dashboard to add it to.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_insight.js"
+    },
+    {
+      "name": "delete_annotation",
+      "description": "Delete an annotation by marking it as deleted (soft delete).",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_annotation.js"
+    },
+    {
+      "name": "delete_dashboard",
+      "description": "Delete a dashboard by marking it as deleted (soft delete). The dashboard can potentially be recovered.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_dashboard.js"
+    },
+    {
+      "name": "delete_feature_flag",
+      "description": "Delete a feature flag by marking it as deleted (soft delete).",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_feature_flag.js"
+    },
+    {
+      "name": "delete_insight",
+      "description": "Delete an insight by marking it as deleted (soft delete).",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_insight.js"
+    },
+    {
+      "name": "get_action",
+      "description": "Get detailed information about a specific action including its tags and calculation status.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_action.js"
+    },
+    {
+      "name": "get_cohort",
+      "description": "Get detailed information about a specific cohort including its person count and calculation status.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cohort.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated PostHog user including email, name, and organization details.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_dashboard",
+      "description": "Get detailed information about a specific dashboard including its tiles and sharing status.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dashboard.js"
+    },
+    {
+      "name": "get_experiment",
+      "description": "Get detailed information about a specific experiment including its dates and feature flag key.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_experiment.js"
+    },
+    {
+      "name": "get_feature_flag",
+      "description": "Get detailed information about a specific feature flag including its key, rollout configuration, and tags.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_feature_flag.js"
+    },
+    {
+      "name": "get_insight",
+      "description": "Get detailed information about a specific insight including its query configuration and dashboard associations.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_insight.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get details about the current PostHog organization including name and membership level.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "get_person",
+      "description": "Get detailed information about a specific person including their properties and distinct IDs.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_person.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific PostHog project by its ID.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "get_survey",
+      "description": "Get detailed information about a specific survey including its type, dates, and archive status.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_survey.js"
+    },
+    {
+      "name": "list_actions",
+      "description": "List actions in the current PostHog project. Actions are groups of events defined by matching rules.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_actions.js"
+    },
+    {
+      "name": "list_annotations",
+      "description": "List annotations in the current PostHog project. Annotations mark important events on charts.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_annotations.js"
+    },
+    {
+      "name": "list_cohorts",
+      "description": "List cohorts in the current PostHog project. Cohorts are groups of persons defined by shared properties or behaviors.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_cohorts.js"
+    },
+    {
+      "name": "list_dashboards",
+      "description": "List all dashboards in the current PostHog project. Returns dashboard names, tags, and tile counts.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dashboards.js"
+    },
+    {
+      "name": "list_event_definitions",
+      "description": "List all event types that have been sent to the current PostHog project. Returns event names with 30-day volume and last-seen timestamps. Useful for discovering what events are being tracked before querying them.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_event_definitions.js"
+    },
+    {
+      "name": "list_events",
+      "description": "List raw events from the current PostHog project. Returns individual event occurrences with their properties. Filter by event name, person distinct ID, or date range. Events are ordered by timestamp descending (newest first).",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_events.js"
+    },
+    {
+      "name": "list_experiments",
+      "description": "List A/B test experiments in the current PostHog project.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_experiments.js"
+    },
+    {
+      "name": "list_feature_flags",
+      "description": "List feature flags in the current PostHog project. Supports filtering by active status and search query.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_feature_flags.js"
+    },
+    {
+      "name": "list_insights",
+      "description": "List insights (trends, funnels, retention, paths, etc.) in the current PostHog project. Insights are the core analytics visualizations.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_insights.js"
+    },
+    {
+      "name": "list_persons",
+      "description": "List persons (users) tracked in the current PostHog project. Supports search by name, email, or distinct ID.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_persons.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List all projects in the current PostHog organization. Projects contain events, dashboards, feature flags, and other analytics data.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "list_property_definitions",
+      "description": "List all property definitions (event properties, person properties, or group properties) in the current PostHog project. Returns property names and types. Use type filter to scope: \"event\" for event properties, \"person\" for person properties.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_property_definitions.js"
+    },
+    {
+      "name": "list_surveys",
+      "description": "List surveys in the current PostHog project. Surveys collect user feedback via popover, button, email, or API.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_surveys.js"
+    },
+    {
+      "name": "run_query",
+      "description": "Execute a HogQL (SQL-like) query against PostHog event data. HogQL supports SELECT, aggregations (count, uniqExact, avg, sum, min, max), GROUP BY, ORDER BY, WHERE, and JOIN. Query the `events` table for raw events, `persons` for person data. Example: \"SELECT event, count() as total FROM events WHERE timestamp > now() - INTERVAL 7 DAY GROUP BY event ORDER BY total DESC LIMIT 20\".",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_query.js"
+    },
+    {
+      "name": "run_trends_query",
+      "description": "Run a time series trends query over events. Returns data points per interval (day, week, month, hour). Supports multiple series, math aggregations (total, unique users, average, sum, min, max), and breakdowns by property. Easier to use than raw HogQL for standard time series charts.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_trends_query.js"
+    },
+    {
+      "name": "update_dashboard",
+      "description": "Update an existing dashboard. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_dashboard.js"
+    },
+    {
+      "name": "update_feature_flag",
+      "description": "Update an existing feature flag. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_feature_flag.js"
+    },
+    {
+      "name": "update_insight",
+      "description": "Update an existing insight. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://(?:us|eu|app)\\.posthog\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_insight.js"
+    }
+  ]
+}
