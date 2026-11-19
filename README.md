@@ -62,23 +62,57 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
+33 packages, 969 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+under the same name, with the same input properties and `required` list (asserted against the
+cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
+README documents its transport, error contract, deviations and complete tool table.
+
 | Package | Tools | Source |
 | --- | --- | --- |
-| `com.discord.main` | 8 | OpenTabs Discord plugin (MIT) — pilot port |
-| `com.github.main` | 35 | OpenTabs GitHub plugin (MIT) |
-| `com.notion.main` | 18 | OpenTabs Notion plugin (MIT) |
-| `com.linear.main` | 59 | OpenTabs Linear plugin (MIT) |
-
-The GitHub, Notion and Linear packages are **full-fidelity 1:1 ports**: every upstream tool is
-present under the same name, with the same input schema and the same endpoint mechanics, write
-tools included. Each package's README documents the mechanics, the error contract, the complete
-tool table and the four-locale (zh-CN / en-US / ja-JP / ko-KR) tool descriptions.
+| `com.datadog.main` | 75 | OpenTabs plugin (MIT) |
+| `com.linear.main` | 59 | OpenTabs plugin (MIT) |
+| `com.slack-enterprise.main` | 54 | OpenTabs plugin (MIT) |
+| `com.retool.main` | 50 | OpenTabs plugin (MIT) |
+| `com.netlify.main` | 40 | OpenTabs plugin (MIT) |
+| `com.powerpoint.main` | 39 | OpenTabs plugin (MIT) |
+| `com.bluesky.main` | 38 | OpenTabs plugin (MIT) |
+| `com.posthog.main` | 38 | OpenTabs plugin (MIT) |
+| `com.terraform-cloud.main` | 38 | OpenTabs plugin (MIT) |
+| `com.github.main` | 35 | OpenTabs plugin (MIT) |
+| `com.twilio.main` | 35 | OpenTabs plugin (MIT) |
+| `com.circleci.main` | 33 | OpenTabs plugin (MIT) |
+| `com.todoist.main` | 33 | OpenTabs plugin (MIT) |
+| `com.tumblr.main` | 32 | OpenTabs plugin (MIT) |
+| `com.x.main` | 31 | OpenTabs plugin (MIT) |
+| `com.bitbucket.main` | 27 | OpenTabs plugin (MIT) |
+| `com.discord.main` | 26 | OpenTabs plugin (MIT) |
+| `com.asana.main` | 24 | OpenTabs plugin (MIT) |
+| `com.reddit.main` | 23 | OpenTabs plugin (MIT) |
+| `com.gitlab.main` | 22 | OpenTabs plugin (MIT) |
+| `com.slack.main` | 22 | OpenTabs plugin (MIT) |
+| `com.confluence.main` | 21 | OpenTabs plugin (MIT) |
+| `com.jira.main` | 20 | OpenTabs plugin (MIT) |
+| `com.stackoverflow.main` | 20 | OpenTabs plugin (MIT) |
+| `com.google-docs.main` | 19 | OpenTabs plugin (MIT) |
+| `com.wikipedia.main` | 19 | OpenTabs plugin (MIT) |
+| `com.google-calendar.main` | 18 | OpenTabs plugin (MIT) |
+| `com.notion.main` | 18 | OpenTabs plugin (MIT) |
+| `com.google-drive.main` | 17 | OpenTabs plugin (MIT) |
+| `com.npm.main` | 14 | OpenTabs plugin (MIT) |
+| `com.clickup.main` | 11 | OpenTabs plugin (MIT) |
+| `com.hackernews.main` | 10 | OpenTabs plugin (MIT) |
+| `com.airtable.main` | 8 | OpenTabs plugin (MIT) |
 
 ## Migration notes
 
-`com.discord.main` is the pilot port (from OpenTabs, MIT). The GitHub, Notion and Linear packages
-are full ports of the corresponding OpenTabs plugins. Further OpenTabs migrations are done
-manually for now — a converter script may be added later if batch demand materializes.
+Each upstream OpenTabs plugin is ported on its own branch (`feat/<plugin>-port`) in its own
+worktree and merged through a PR; the batch PRs (#1–#16) carried several ports each. The upstream
+manifests are the source of truth for parity: `npm run fetch-opentabs` caches them under
+`.cache/opentabs/` (gitignored), and `npm test` compares the tool set, input properties and
+`required` list of every package against the cached manifest — a package whose manifest is not
+cached is skipped with a notice rather than failing the suite.
+
+`com.discord.main` started as the pilot port and is a full 26-tool port today.
 
 ## Related
 
