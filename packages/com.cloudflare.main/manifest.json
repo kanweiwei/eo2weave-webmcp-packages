@@ -1,0 +1,187 @@
+{
+  "id": "com.cloudflare.main",
+  "version": "0.1.0",
+  "description": "Read and change Cloudflare zones, DNS records, zone settings, rulesets, firewall and page rules, SSL certificates, cache, Workers, Pages, KV, D1, Queues, AI models, Vectorize, Tunnels, email routing, Waiting Rooms and alerting policies, plus GraphQL analytics, on dash.cloudflare.com in your current tab. Uses your own logged-in Cloudflare dashboard session.",
+  "tools": [
+    {
+      "name": "list_zones",
+      "description": "List all zones (domains) in the Cloudflare account. Returns domain names, status, plan, nameservers, and configuration. Supports filtering by name and status, with pagination.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_zones.js"
+    },
+    {
+      "name": "get_zone",
+      "description": "Get detailed information about a specific zone (domain) by its zone ID.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_zone.js"
+    },
+    {
+      "name": "get_zone_settings",
+      "description": "Get all settings for a zone. Returns ~56 settings including security level, SSL mode, cache TTL, minification, HTTP/2, Always Use HTTPS, Brotli compression, development mode, and more. Each setting shows its current value and whether it is editable on the current plan.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_zone_settings.js"
+    },
+    {
+      "name": "update_zone_setting",
+      "description": "Update a single zone setting by its ID. Common settings: \"always_use_https\" (on/off), \"min_tls_version\" (\"1.0\"/\"1.1\"/\"1.2\"/\"1.3\"), \"ssl\" (\"off\"/\"flexible\"/\"full\"/\"strict\"), \"brotli\" (on/off), \"browser_cache_ttl\" (number), \"development_mode\" (on/off), \"security_level\" (\"off\"/\"essentially_off\"/\"low\"/\"medium\"/\"high\"/\"under_attack\"). Use get_zone_settings first to see available settings and their current values.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_zone_setting.js"
+    },
+    {
+      "name": "list_dns_records",
+      "description": "List DNS records for a zone. Returns record type, name, content, TTL, and proxy status. Supports filtering by type and name, with pagination.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dns_records.js"
+    },
+    {
+      "name": "create_dns_record",
+      "description": "Create a new DNS record for a zone. Supports A, AAAA, CNAME, MX, TXT, and other record types.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dns_record.js"
+    },
+    {
+      "name": "update_dns_record",
+      "description": "Update an existing DNS record. Requires the zone ID and record ID. All fields are overwritten.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_dns_record.js"
+    },
+    {
+      "name": "delete_dns_record",
+      "description": "Delete a DNS record from a zone. This action is irreversible.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_dns_record.js"
+    },
+    {
+      "name": "list_rulesets",
+      "description": "List all rulesets for a zone. Rulesets contain WAF, rate limiting, redirect, and transform rules organized by phase (e.g., http_request_firewall_managed, ddos_l7, http_request_sanitize).",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_rulesets.js"
+    },
+    {
+      "name": "get_ruleset",
+      "description": "Get a specific ruleset with all its rules. Returns the full rule definitions including expressions, actions, and configuration. Use list_rulesets first to discover ruleset IDs.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_ruleset.js"
+    },
+    {
+      "name": "list_firewall_rules",
+      "description": "List classic firewall rules for a zone. Returns rule expressions, actions, priority, and status.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_firewall_rules.js"
+    },
+    {
+      "name": "list_rules_lists",
+      "description": "List account-level IP/CIDR lists used in firewall rules, WAF custom rules, and other security features. These lists define sets of IPs, ASNs, or hostnames that can be referenced by rules.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_rules_lists.js"
+    },
+    {
+      "name": "list_page_rules",
+      "description": "List page rules for a zone. Page rules define URL-based behaviors like redirects, cache settings, and security level overrides.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_page_rules.js"
+    },
+    {
+      "name": "list_ssl_certificates",
+      "description": "List SSL/TLS certificate packs for a zone. Returns certificate type (universal, advanced, custom), status, hostnames covered, and validity dates.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_ssl_certificates.js"
+    },
+    {
+      "name": "purge_cache",
+      "description": "Purge cached content for a zone. Can purge everything, specific URLs, or by tags/prefixes/hosts. Use purge_everything=true to clear all cached files.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/purge_cache.js"
+    },
+    {
+      "name": "list_workers",
+      "description": "List all Workers scripts in the account. Returns script names, modification dates, usage models, and compatibility dates.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workers.js"
+    },
+    {
+      "name": "list_worker_routes",
+      "description": "List Workers routes for a zone. Worker routes map URL patterns to Worker scripts that handle matching requests.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_worker_routes.js"
+    },
+    {
+      "name": "list_pages_projects",
+      "description": "List all Cloudflare Pages projects in the account. Returns project names, subdomains, production branches, and linked Git repositories.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pages_projects.js"
+    },
+    {
+      "name": "list_kv_namespaces",
+      "description": "List all Workers KV namespaces in the account. Returns namespace IDs and titles.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_kv_namespaces.js"
+    },
+    {
+      "name": "list_d1_databases",
+      "description": "List D1 SQL databases in the account. D1 is Cloudflare's serverless SQL database.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_d1_databases.js"
+    },
+    {
+      "name": "list_queues",
+      "description": "List Cloudflare Queues in the account. Queues provide reliable message delivery between Workers.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_queues.js"
+    },
+    {
+      "name": "list_ai_models",
+      "description": "Search and list Workers AI models available in the account. Returns model names, descriptions, task types, and properties. Supports filtering by name and task.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_ai_models.js"
+    },
+    {
+      "name": "list_vectorize_indexes",
+      "description": "List Vectorize vector database indexes in the account. Vectorize stores vector embeddings for semantic search and RAG applications.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_vectorize_indexes.js"
+    },
+    {
+      "name": "list_tunnels",
+      "description": "List Cloudflare Tunnels in the account. Tunnels create secure outbound-only connections from your infrastructure to Cloudflare, without opening inbound ports.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tunnels.js"
+    },
+    {
+      "name": "list_email_routing_rules",
+      "description": "List email routing rules for a zone. Email routing rules define how incoming emails are forwarded to destination addresses.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_email_routing_rules.js"
+    },
+    {
+      "name": "list_email_addresses",
+      "description": "List email routing destination addresses for the account. These are the verified email addresses that incoming emails can be forwarded to.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_email_addresses.js"
+    },
+    {
+      "name": "list_waiting_rooms",
+      "description": "List Waiting Rooms for a zone. Waiting Rooms queue visitors during traffic spikes to protect origin servers from overload.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_waiting_rooms.js"
+    },
+    {
+      "name": "list_alerting_policies",
+      "description": "List notification/alerting policies for the account. Policies define triggers (DDoS attacks, certificate expiry, origin health, etc.) and notification destinations (email, webhook, PagerDuty).",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alerting_policies.js"
+    },
+    {
+      "name": "graphql_query",
+      "description": "Execute a GraphQL query against the Cloudflare Analytics API. Use this for analytics data, traffic stats, firewall events, DNS analytics, and other metrics not available via REST endpoints. Common query fields: httpRequests1dGroups (daily HTTP stats), firewallEventsAdaptiveGroups (WAF events), httpRequestsAdaptiveGroups (detailed traffic). Pass the zone tag as a filter. Example query: { viewer { zones(filter: { zoneTag: \"ZONE_ID\" }) { httpRequests1dGroups(limit: 7, filter: { date_geq: \"2026-03-01\" }) { dimensions { date } sum { requests pageViews } } } } }",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/graphql_query.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get the currently authenticated Cloudflare user profile, including email, name, and account details.",
+      "urlRegex": "^https://dash\\.cloudflare\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    }
+  ]
+}
