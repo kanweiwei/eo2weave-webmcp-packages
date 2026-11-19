@@ -1,0 +1,331 @@
+{
+  "id": "com.slack-enterprise.main",
+  "version": "0.1.0",
+  "description": "Slack Enterprise Grid tools (54) for app.slack.com: messages, threads, search, channels and membership admin, users, files, pins, stars, reactions, bookmarks, user groups, reminders and Do Not Disturb — reads and writes. Uses your own logged-in enterprise Slack session in the current tab.",
+  "tools": [
+    {
+      "name": "send_message",
+      "description": "Send a message to a Slack channel or direct message. Supports Slack mrkdwn formatting. To reply in a thread, use reply_to_thread instead.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "read_messages",
+      "description": "Read recent messages from a Slack channel with optional date-range filtering and pagination. Returns messages in reverse chronological order.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_messages.js"
+    },
+    {
+      "name": "read_thread",
+      "description": "Read replies in a Slack thread. Returns all messages including the parent message, with optional pagination.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_thread.js"
+    },
+    {
+      "name": "reply_to_thread",
+      "description": "Reply to a message thread in Slack. Posts a reply linked to the specified parent message.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reply_to_thread.js"
+    },
+    {
+      "name": "react_to_message",
+      "description": "Add an emoji reaction to a Slack message. Use emoji name without colons (e.g., \"thumbsup\" not \":thumbsup:\").",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/react_to_message.js"
+    },
+    {
+      "name": "update_message",
+      "description": "Edit an existing Slack message. The caller must be the original author of the message.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a message from a Slack channel. The caller must be the original author, or the channel must allow message deletion. This action is permanent and irreversible.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "search_messages",
+      "description": "Search for messages across Slack channels with optional pagination and sorting. Supports Slack search modifiers (e.g., \"from:@user in:#channel before:2024-01-01\").",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_messages.js"
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files in Slack by name, type, or content. Returns file metadata including download URLs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_files.js"
+    },
+    {
+      "name": "search_users",
+      "description": "Search for users in the Slack workspace by name or email. Fetches the user list and filters client-side since the Slack Web API does not provide a dedicated user search endpoint.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_users.js"
+    },
+    {
+      "name": "search_channels",
+      "description": "Search for channels by name in the Slack workspace. Returns matching channels sorted by recent activity. Useful for finding channels by name pattern (e.g., \"incident\" to find all incident channels).",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_channels.js"
+    },
+    {
+      "name": "list_channels",
+      "description": "List channels in the Slack workspace with type filtering, archive exclusion, and cursor-based pagination. Supports public_channel, private_channel, mpim (group DM), and im (1:1 DM) types.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_channels.js"
+    },
+    {
+      "name": "get_channel_info",
+      "description": "Get detailed information about a Slack channel including topic, purpose, and member count.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_channel_info.js"
+    },
+    {
+      "name": "list_channel_members",
+      "description": "List member user IDs of a Slack channel with cursor-based pagination. Returns user IDs — use get_user_info to resolve a specific user ID to a name/profile, or list_users to get all workspace users with names.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_channel_members.js"
+    },
+    {
+      "name": "open_dm",
+      "description": "Open a direct message conversation with one or more users. Returns an existing DM channel if one already exists, or creates a new one. For multi-person DMs (group DMs), pass multiple comma-separated user IDs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/open_dm.js"
+    },
+    {
+      "name": "create_channel",
+      "description": "Create a new public or private Slack channel. Channel names must be lowercase, max 80 characters, using hyphens instead of spaces. On Enterprise Grid, the channel is created in the current workspace.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_channel.js"
+    },
+    {
+      "name": "archive_channel",
+      "description": "Archive a Slack channel. Archived channels are hidden from the channel list but messages are preserved. Members can still search archived channel history.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/archive_channel.js"
+    },
+    {
+      "name": "unarchive_channel",
+      "description": "Unarchive a Slack channel, restoring it to the active channel list. All previous messages and members are preserved.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unarchive_channel.js"
+    },
+    {
+      "name": "set_channel_topic",
+      "description": "Set the topic of a Slack channel. The topic appears in the channel header and is visible to all members. Max 250 characters.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_channel_topic.js"
+    },
+    {
+      "name": "set_channel_purpose",
+      "description": "Set the purpose/description of a Slack channel. The purpose describes what the channel is used for and appears in channel details. Max 250 characters.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_channel_purpose.js"
+    },
+    {
+      "name": "invite_to_channel",
+      "description": "Invite one or more users to a Slack channel. Invited users receive a notification and gain access to the full channel history.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/invite_to_channel.js"
+    },
+    {
+      "name": "kick_from_channel",
+      "description": "Remove a user from a Slack channel. The user will be notified of the removal.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/kick_from_channel.js"
+    },
+    {
+      "name": "rename_channel",
+      "description": "Rename a Slack channel. Names must be lowercase, max 80 chars, using hyphens instead of spaces.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/rename_channel.js"
+    },
+    {
+      "name": "join_channel",
+      "description": "Join a public Slack channel. Only works for public channels — private channels require an invitation via invite_to_channel.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/join_channel.js"
+    },
+    {
+      "name": "leave_channel",
+      "description": "Leave a Slack channel. You will stop receiving notifications and the channel will be removed from your sidebar.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/leave_channel.js"
+    },
+    {
+      "name": "get_user_info",
+      "description": "Get detailed information about a Slack user including name, display name, and admin status.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_info.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List users in the Slack workspace with cursor-based pagination. Returns user IDs, names, admin status, and bot flag.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "get_my_profile",
+      "description": "Get the current authenticated user's profile including user ID, username, team name, and admin status.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_my_profile.js"
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get detailed information about a Slack file including its metadata, file size, and download URL.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file_info.js"
+    },
+    {
+      "name": "list_files",
+      "description": "List files in the Slack workspace with optional filters for channel, user, and file type. Returns file metadata including download URLs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_files.js"
+    },
+    {
+      "name": "upload_file",
+      "description": "Upload a file to a Slack channel. Supports UTF-8 text content or base64-encoded binary files. Maximum file size is 20MB. Executable file types are blocked.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/upload_file.js"
+    },
+    {
+      "name": "pin_message",
+      "description": "Pin a message to a Slack channel. Pinning posts a notification in the channel visible to all members.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pin_message.js"
+    },
+    {
+      "name": "unpin_message",
+      "description": "Remove a pinned message from a Slack channel.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unpin_message.js"
+    },
+    {
+      "name": "list_pins",
+      "description": "List all pinned items in a Slack channel including messages and files.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pins.js"
+    },
+    {
+      "name": "star_message",
+      "description": "Add a star to a Slack message for quick access later. Starred items appear in your saved items list.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/star_message.js"
+    },
+    {
+      "name": "star_file",
+      "description": "Add a star to a Slack file for quick access later.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/star_file.js"
+    },
+    {
+      "name": "unstar_message",
+      "description": "Remove a star from a Slack message.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unstar_message.js"
+    },
+    {
+      "name": "unstar_file",
+      "description": "Remove a star from a Slack file.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unstar_file.js"
+    },
+    {
+      "name": "list_stars",
+      "description": "List all starred/saved items for the authenticated user. On Enterprise Grid, tries the modern saved.list API first, then falls back to stars.list.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_stars.js"
+    },
+    {
+      "name": "remove_reaction",
+      "description": "Remove an emoji reaction from a Slack message. Removes the authenticated user's reaction.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_reaction.js"
+    },
+    {
+      "name": "get_reactions",
+      "description": "Get all reactions on a Slack message with emoji names and user lists.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_reactions.js"
+    },
+    {
+      "name": "list_bookmarks",
+      "description": "List all bookmarks (pinned links) in a Slack channel. Bookmarks appear at the top of the channel and link to external resources like dashboards, runbooks, and documents.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_bookmarks.js"
+    },
+    {
+      "name": "add_bookmark",
+      "description": "Add a bookmark (pinned link) to a Slack channel. Bookmarks appear at the top of the channel for quick access to external resources.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_bookmark.js"
+    },
+    {
+      "name": "remove_bookmark",
+      "description": "Remove a bookmark from a Slack channel. Use list_bookmarks to find bookmark IDs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_bookmark.js"
+    },
+    {
+      "name": "list_user_groups",
+      "description": "List all user groups (handle groups) in the Slack workspace. User groups are @-mentionable teams like @engineering or @oncall-payments.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_user_groups.js"
+    },
+    {
+      "name": "list_user_group_members",
+      "description": "List member user IDs of a specific user group. Use list_user_groups to find group IDs, then get_user_info to resolve user IDs to names.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_user_group_members.js"
+    },
+    {
+      "name": "set_status",
+      "description": "Update the current authenticated user's status text and emoji. Pass empty strings to clear the status. Optionally set an expiration time.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_status.js"
+    },
+    {
+      "name": "add_reminder",
+      "description": "Create a new Slack reminder for the authenticated user. Specify the reminder text and when it should fire as a Unix timestamp.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_reminder.js"
+    },
+    {
+      "name": "list_reminders",
+      "description": "List all reminders for the authenticated user, including pending and completed reminders.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_reminders.js"
+    },
+    {
+      "name": "delete_reminder",
+      "description": "Delete a Slack reminder. Use list_reminders to find reminder IDs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_reminder.js"
+    },
+    {
+      "name": "complete_reminder",
+      "description": "Mark a Slack reminder as complete. Use list_reminders to find reminder IDs.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/complete_reminder.js"
+    },
+    {
+      "name": "set_snooze",
+      "description": "Enable Do Not Disturb mode for the specified number of minutes. Pauses all notifications.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_snooze.js"
+    },
+    {
+      "name": "end_snooze",
+      "description": "End the current Do Not Disturb snooze session and resume notifications.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/end_snooze.js"
+    },
+    {
+      "name": "get_dnd_status",
+      "description": "Get the current Do Not Disturb status for the authenticated user, including scheduled DND times and active snooze status.",
+      "urlRegex": "^https://app\\.slack\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dnd_status.js"
+    }
+  ]
+}
