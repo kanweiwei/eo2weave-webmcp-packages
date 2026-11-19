@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:53:10.228Z",
+  "generatedAt": "2026-11-19T08:14:14.407Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -658,6 +658,142 @@
         {
           "path": "packages/com.clickup.main/workflows/get_workspace.js",
           "sha256": "5de3491899586df58d87f83ec1384283a6625b97f022fb521ba1ac357e0611df"
+        }
+      ]
+    },
+    {
+      "id": "com.cloudflare.main",
+      "version": "0.1.0",
+      "description": "Read and change Cloudflare zones, DNS records, zone settings, rulesets, firewall and page rules, SSL certificates, cache, Workers, Pages, KV, D1, Queues, AI models, Vectorize, Tunnels, email routing, Waiting Rooms and alerting policies, plus GraphQL analytics, on dash.cloudflare.com in your current tab. Uses your own logged-in Cloudflare dashboard session.",
+      "toolCount": 30,
+      "files": [
+        {
+          "path": "packages/com.cloudflare.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.cloudflare.main/manifest.json",
+          "sha256": "a016ac97d20266881fd99f9eb152418dd67fdd5877a71db0f2211962502c2eff"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/create_dns_record.js",
+          "sha256": "b8eaf19d91f3b9646ff7eac0e6b470c2b2df8665732e1d3964d9c4a4864ade4b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/delete_dns_record.js",
+          "sha256": "0ec1e6533eddcee36e09d635805bd3c95aee9daf6703cfbfa25000b0076c6881"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_ruleset.js",
+          "sha256": "28ff9f410220a0d8620e0b1d1b1379d4560f9394d1eceba2f1f8f81951510e15"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_user.js",
+          "sha256": "4c4a412a3fc2c995aa469e966ad3391f51e53928cb92a5c9c830707d8fc57f9a"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_zone_settings.js",
+          "sha256": "71f5baa9170f8de75cfb3c4857c51e64aa83df1f53a9ab109db9f5a5c665deff"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/get_zone.js",
+          "sha256": "529664cd35952f271e6e2f04a88cc9f5d5173584f4bdb37bdaba3a632dec4f3b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/graphql_query.js",
+          "sha256": "a67ee29b74050822347d9be416b60bff4bd1eab3f8f11d5e2870ef46fae5f634"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_ai_models.js",
+          "sha256": "d9f0d349adf7110aaf5321c7efe4b52ae64436dea7014c746a37c77732ced78d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_alerting_policies.js",
+          "sha256": "cbab7e5eaf4d1d9720dce3d6e30b9ba5223e53b67bd0f587a6fac5332bd913fc"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_d1_databases.js",
+          "sha256": "6f8475bb33d81e86532a4fb3cb3d98e125c07266395e063255c30afe7ff62a4b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_dns_records.js",
+          "sha256": "c9c99d70ae5dda8552249378744603789e63da2ec40ebf1792d1cd2bbbe545d9"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_email_addresses.js",
+          "sha256": "d153d55fe0b3bbeb76a2a94ec8b2231532b895ab59224bc3bd5e60098ee6591b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_email_routing_rules.js",
+          "sha256": "1875a8efde5fa2f18d69b2c7349d4f395029ebab588486e502bb064cefdf12f5"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_firewall_rules.js",
+          "sha256": "e5f313047d465cb1ea9b4c61de66873cf60e110c67d32680a0d4a631d71bfa78"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_kv_namespaces.js",
+          "sha256": "0544d363c6068180af45786a9ffaab089813387f542c7f1ef888395540668545"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_page_rules.js",
+          "sha256": "b401f714ab34180597eb83ae11d4d84a0eaa7a90d12e02b4e6da1210a3f3e210"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_pages_projects.js",
+          "sha256": "b8ba538ee875baf145bd9af6724c9e362f0bae9c69da985d0726bad2be38bbf8"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_queues.js",
+          "sha256": "894ca30d7c959b03528dd9553c034bd1aab21b30e296baef15eb1d9db2e6aaec"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_rules_lists.js",
+          "sha256": "d7ebc25fc7799ecb92639d95d9461ca656ef94ea5b0afb95ce8f1d85638f6bc6"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_rulesets.js",
+          "sha256": "dcd76bb5e51e98ac247e9a5e2b1536b6318a94d2eb42d9d8e8960b59643a1dfd"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_ssl_certificates.js",
+          "sha256": "87975f931da9c695642acbf71f052894c9466c9a5d87a6f04b0d7d521604e20d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_tunnels.js",
+          "sha256": "5b69be8acae092840c8ad32f0914b357f5bf7f8f1a8bb3a673a5973c5c30a36d"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_vectorize_indexes.js",
+          "sha256": "6cde03ef85d3260de3f35fb82fd9ee174283fe99beeb005b4a09f6941d536054"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_waiting_rooms.js",
+          "sha256": "128e7507eaa11a913a586d6df8fc7cbf961f45c7a440276b8803b6dbd4340205"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_worker_routes.js",
+          "sha256": "5f13d52a776d8650aa7ad23691bf9536b0e8e8c3116d1e93e52eb575fcfd8011"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_workers.js",
+          "sha256": "1391f3dbd0a370f50046a32f5824950554c8c8d215ccd4343814f041c6c62bc1"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/list_zones.js",
+          "sha256": "1daf4c40e3711d638cc5b214c8866c235c5d08d5dd4a27f41697d8f0222e890b"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/purge_cache.js",
+          "sha256": "8a804ba94a9581b83aabacfccf4abf09223d5487a65b24a975f781475932513f"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/update_dns_record.js",
+          "sha256": "e37bbdfbc6560a869f371b1729879cb7ddf4067bfea70ecdfafb62fe89ee8790"
+        },
+        {
+          "path": "packages/com.cloudflare.main/workflows/update_zone_setting.js",
+          "sha256": "f553e9d2e4e6ba7b609f126d52c00693a962e26af63fa88f6b869085a83a6d59"
         }
       ]
     },
