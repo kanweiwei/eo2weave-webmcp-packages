@@ -59,6 +59,9 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.google-calendar.main': 18,
+  'com.stackoverflow.main': 20,
+  'com.reddit.main': 23,
   'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
@@ -177,6 +180,73 @@ const OPENTABS_TOOL_NAMES = {
     'list_shared_labels',
     'rename_shared_label',
     'remove_shared_label',
+  ],
+  'com.reddit.main': [
+    'get_me',
+    'list_posts',
+    'get_post',
+    'search_posts',
+    'submit_post',
+    'submit_comment',
+    'get_comment_thread',
+    'edit_text',
+    'delete',
+    'vote',
+    'save',
+    'hide',
+    'report',
+    'list_user_content',
+    'get_subreddit',
+    'list_flairs',
+    'search_subreddits',
+    'list_subscriptions',
+    'list_popular_subreddits',
+    'subscribe',
+    'get_user',
+    'send_message',
+    'read_inbox',
+  ],
+  'com.stackoverflow.main': [
+    'search_questions',
+    'get_question',
+    'list_questions',
+    'get_question_answers',
+    'get_question_comments',
+    'list_related_questions',
+    'list_linked_questions',
+    'list_featured_questions',
+    'list_unanswered_questions',
+    'get_similar_questions',
+    'get_answer',
+    'get_answer_comments',
+    'get_user',
+    'search_users',
+    'get_user_questions',
+    'get_user_answers',
+    'get_my_profile',
+    'list_tags',
+    'get_tag_info',
+    'search_excerpts',
+  ],
+  'com.google-calendar.main': [
+    'list_events',
+    'get_event',
+    'create_event',
+    'update_event',
+    'delete_event',
+    'quick_add_event',
+    'move_event',
+    'list_event_instances',
+    'search_events',
+    'list_calendars',
+    'get_calendar',
+    'create_calendar',
+    'update_calendar',
+    'delete_calendar',
+    'query_freebusy',
+    'list_settings',
+    'get_setting',
+    'get_colors',
   ],
 }
 
@@ -388,7 +458,8 @@ for (const id of packageIds) {
     ok(!/location\s*\.\s*href\s*=/.test(source), `${id}: no href assignment (${tool.name})`)
     ok(!/window\s*\.\s*open\s*\(/.test(source), `${id}: no window.open (${tool.name})`)
     // The session cookie must travel with the request, never be lifted out.
-    ok(source.includes("credentials: 'include'"), `${id}: sends credentials (${tool.name})`)
+    const credentialsMode = id === 'com.stackoverflow.main' ? "credentials: 'omit'" : "credentials: 'include'"
+    ok(source.includes(credentialsMode), `${id}: sends credentials (${tool.name})`)
   }
 }
 
@@ -451,6 +522,11 @@ function loadUpstreamSchemas() {
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
     'com.slack.main': 'slack',
+    'com.jira.main': 'jira',
+    'com.todoist.main': 'todoist',
+    'com.reddit.main': 'reddit',
+    'com.stackoverflow.main': 'stackoverflow',
+    'com.google-calendar.main': 'google-calendar',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -2464,6 +2540,1216 @@ section('urlRegex probe: app.todoist.com')
     for (const url of mustNotMatch)
       ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
   }
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// --- Reddit ------------------------------------------------------------------
+// The reddit runtime posts form bodies (plus the modhash), exchanges the CSRF
+// cookie for a bearer token on the /svc/shreddit/token endpoint, and reads the
+// nested Listing shape; these tests stub exactly those seams.
+
+function redditListing(children, after = null) {
+  return { kind: 'Listing', data: { after, before: null, children, dist: children.length } }
+}
+
+const REDDIT_POST = {
+  kind: 't3',
+  data: {
+    id: 'abc123',
+    name: 't3_abc123',
+    title: 'Zig 0.15 released',
+    author: 'andrewrk',
+    subreddit: 'programming',
+    score: 412,
+    upvote_ratio: 0.95,
+    num_comments: 88,
+    url: 'https://example.com/zig',
+    permalink: '/r/programming/comments/abc123/zig/',
+    selftext: '',
+    is_self: false,
+    created_utc: 1763500000,
+    over_18: false,
+    stickied: false,
+    link_flair_text: 'News',
+    thumbnail: '',
+  },
+}
+
+const REDDIT_SELF_POST = {
+  kind: 't3',
+  data: {
+    ...REDDIT_POST.data,
+    id: 'def456',
+    name: 't3_def456',
+    title: 'What editor do you use?',
+    url: 'https://www.reddit.com/r/programming/comments/def456/',
+    permalink: '/r/programming/comments/def456/editor/',
+    selftext: 'I switched to helix and I like it.',
+    is_self: true,
+    link_flair_text: null,
+  },
+}
+
+function redditComment(overrides = {}) {
+  return {
+    kind: 't1',
+    data: {
+      id: 'c1',
+      name: 't1_c1',
+      author: 'commenter',
+      body: 'Nice release.',
+      score: 12,
+      created_utc: 1763500100,
+      parent_id: 't3_abc123',
+      depth: 0,
+      is_submitter: false,
+      replies: '',
+      ...overrides,
+    },
+  }
+}
+
+function redditPage(handler, extra = {}) {
+  const calls = []
+  const page = {
+    hostname: 'www.reddit.com',
+    href: 'https://www.reddit.com/r/programming/',
+    origin: 'https://www.reddit.com',
+    cookie: 'csrf_token=csrf-test-token; reddit_session=session-cookie',
+    fetch: async (url, init = {}) => {
+      calls.push({ url: String(url), init })
+      return handler(String(url), init)
+    },
+    ...extra,
+  }
+  return { page, calls }
+}
+
+const REDDIT_MODHASH = { kind: 't2', data: { modhash: 'mh-test', name: 'tester' } }
+
+{
+  // Listing read: default hot listing, metadata only (url/selftext withheld).
+  const { page, calls } = redditPage(() =>
+    jsonResponse(redditListing([REDDIT_POST, REDDIT_SELF_POST], 't3_next')),
+  )
+  const result = await runTool('com.reddit.main', 'list_posts', {
+    input: { subreddit: 'programming' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit list_posts: status')
+  equal(result.data.posts.length, 2, 'reddit list_posts: maps every child')
+  equal(result.data.posts[0].title, 'Zig 0.15 released', 'reddit list_posts: title')
+  equal(result.data.posts[0].score, 412, 'reddit list_posts: score')
+  equal(result.data.posts[0].url, null, 'reddit list_posts: url withheld without include_body')
+  equal(result.data.posts[0].selftext, null, 'reddit list_posts: selftext withheld without include_body')
+  equal(result.data.posts[1].link_flair_text, null, 'reddit list_posts: absent flair is null')
+  equal(result.data.after, 't3_next', 'reddit list_posts: cursor returned')
+  equal(calls[0].url, 'https://www.reddit.com/r/programming/hot.json?limit=25', 'reddit list_posts: hot endpoint')
+}
+
+{
+  // Paginated read with a time filter and bodies: cursor and t both travel.
+  const { page, calls } = redditPage(() => jsonResponse(redditListing([REDDIT_SELF_POST])))
+  const result = await runTool('com.reddit.main', 'list_posts', {
+    input: {
+      subreddit: 'programming',
+      sort: 'top',
+      t: 'week',
+      limit: 2,
+      after: 't3_next',
+      include_body: true,
+    },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit list_posts page 2: status')
+  equal(
+    calls[0].url,
+    'https://www.reddit.com/r/programming/top.json?limit=2&t=week&after=t3_next',
+    'reddit list_posts page 2: cursor and t in query',
+  )
+  equal(result.data.posts[0].url, REDDIT_SELF_POST.data.url, 'reddit list_posts: include_body returns url')
+  equal(result.data.posts[0].selftext, 'I switched to helix and I like it.', 'reddit list_posts: include_body returns selftext')
+  equal(result.data.after, null, 'reddit list_posts: null cursor at the end')
+}
+
+{
+  // Post + flattened comment tree: depth caps the recursion.
+  const { page, calls } = redditPage(() =>
+    jsonResponse([
+      redditListing([REDDIT_POST]),
+      redditListing([
+        redditComment({
+          replies: { kind: 'Listing', data: { children: [redditComment({ id: 'c2', name: 't1_c2', depth: 1, parent_id: 't1_c1', replies: { kind: 'Listing', data: { children: [redditComment({ id: 'c3', depth: 2, parent_id: 't1_c2' })] } } })] } },
+        }),
+      ]),
+    ]),
+  )
+  const result = await runTool('com.reddit.main', 'get_post', {
+    input: { subreddit: 'programming', post_id: 'abc123', comment_limit: 10, comment_depth: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit get_post: status')
+  equal(result.data.post.id, 'abc123', 'reddit get_post: post id')
+  equal(result.data.post.selftext, '', 'reddit get_post: empty selftext stays a string')
+  equal(calls[0].url, 'https://www.reddit.com/r/programming/comments/abc123.json?limit=10&depth=1', 'reddit get_post: endpoint')
+  equal(result.data.comments.length, 2, 'reddit get_post: depth cap drops the grandchild')
+  equal(result.data.comments[1].depth, 1, 'reddit get_post: flattened reply keeps depth')
+  equal(result.data.comments[1].parent_id, 't1_c1', 'reddit get_post: reply keeps parent fullname')
+}
+
+{
+  // Vote write: modhash fetched once, form body carries uh + api_type.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/vote') return jsonResponse({})
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'vote', {
+    input: { id: 't3_abc123', dir: 1 },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit vote: status')
+  equal(result.data.success, true, 'reddit vote: success flag')
+  equal(calls.length, 2, 'reddit vote: modhash then vote')
+  equal(calls[1].url, 'https://www.reddit.com/api/vote', 'reddit vote: endpoint')
+  equal(calls[1].init.method, 'POST', 'reddit vote: POST')
+  equal(calls[1].init.headers['X-Modhash'], 'mh-test', 'reddit vote: X-Modhash header')
+  equal(calls[1].init.headers['Content-Type'], 'application/x-www-form-urlencoded', 'reddit vote: form content type')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('id'), 't3_abc123', 'reddit vote: id in form body')
+  equal(body.get('dir'), '1', 'reddit vote: dir as string in form body')
+  equal(body.get('uh'), 'mh-test', 'reddit vote: uh carries the modhash')
+  equal(body.get('api_type'), 'json', 'reddit vote: api_type=json')
+}
+
+{
+  // Comment POST: JSON-in-json response; optional fields are not invented.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/comment')
+      return jsonResponse({
+        json: { errors: [], data: { things: [{ kind: 't1', data: { id: 't1_new', parent: 't3_abc123', contentText: 'hello', link: '' } }] } },
+      })
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'submit_comment', {
+    input: { thing_id: 't3_abc123', text: 'hello **world**' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit submit_comment: status')
+  equal(result.data.id, 't1_new', 'reddit submit_comment: new comment id')
+  equal(result.data.parent, 't3_abc123', 'reddit submit_comment: parent fullname')
+  equal(result.data.body, 'hello **world**', 'reddit submit_comment: body as submitted')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('thing_id'), 't3_abc123', 'reddit submit_comment: thing_id in form body')
+  equal(body.get('text'), 'hello **world**', 'reddit submit_comment: markdown text in form body')
+  equal(body.has('nsfw'), false, 'reddit submit_comment: no stray fields')
+}
+
+{
+  // Submit post: text post omits unset optional fields, errors[] is surfaced.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    if (url === 'https://www.reddit.com/api/submit')
+      return jsonResponse({ json: { errors: [], data: { name: 't3_new', id: 'new', url: 'https://www.reddit.com/r/programming/comments/new/x/' } } })
+    return jsonResponse({}, 404)
+  })
+  const created = await runTool('com.reddit.main', 'submit_post', {
+    input: { subreddit: 'programming', title: 'Hello', kind: 'self', text: 'body' },
+    page,
+  })
+  equal(created.status, 'ok', 'reddit submit_post: status')
+  equal(created.data.name, 't3_new', 'reddit submit_post: fullname')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('sr'), 'programming', 'reddit submit_post: sr')
+  equal(body.get('kind'), 'self', 'reddit submit_post: kind')
+  equal(body.has('url'), false, 'reddit submit_post: unset url omitted')
+  equal(body.has('flair_id'), false, 'reddit submit_post: unset flair omitted')
+  equal(body.has('nsfw'), false, 'reddit submit_post: false nsfw omitted')
+
+  const rejectedPage = redditPage((url) => {
+    if (url === 'https://www.reddit.com/api/me.json') return jsonResponse(REDDIT_MODHASH)
+    return jsonResponse({ json: { errors: [['SUBREDDIT_NOTALLOWED', 'that community does not allow text posts', 'sr']] } })
+  })
+  const rejected = await runTool('com.reddit.main', 'submit_post', {
+    input: { subreddit: 'programming', title: 'Hello', kind: 'self' },
+    page: rejectedPage.page,
+  })
+  equal(rejected.status, 'error', 'reddit submit_post: errors[] is an error')
+  equal(rejected.error_code, 'VALIDATION', 'reddit submit_post: errors[] is VALIDATION')
+  ok(String(rejected.message).includes('does not allow'), 'reddit submit_post: upstream message surfaced')
+}
+
+{
+  // Private messages: CSRF cookie -> bearer token -> oauth.reddit.com form POST.
+  const { page, calls } = redditPage((url) => {
+    if (url === 'https://www.reddit.com/svc/shreddit/token')
+      return jsonResponse({ token: 'bearer-test', expires: new Date(Date.now() + 600000).toISOString() })
+    if (url === 'https://oauth.reddit.com/api/compose') return jsonResponse({ json: { errors: [] } })
+    return jsonResponse({}, 404)
+  })
+  const result = await runTool('com.reddit.main', 'send_message', {
+    input: { to: 'someuser', subject: 'Hi', text: 'Hello there' },
+    page,
+  })
+  equal(result.status, 'ok', 'reddit send_message: status')
+  equal(result.data.success, true, 'reddit send_message: success flag')
+  equal(calls[0].url, 'https://www.reddit.com/svc/shreddit/token', 'reddit send_message: token endpoint')
+  equal(JSON.parse(calls[0].init.body).csrf_token, 'csrf-test-token', 'reddit send_message: token body reads csrf cookie')
+  equal(calls[1].url, 'https://oauth.reddit.com/api/compose', 'reddit send_message: oauth endpoint')
+  equal(calls[1].init.headers.Authorization, 'Bearer bearer-test', 'reddit send_message: bearer auth header')
+  equal(calls[1].init.credentials, undefined, 'reddit send_message: bearer call sends no cookies')
+  const body = new URLSearchParams(calls[1].init.body)
+  equal(body.get('to'), 'someuser', 'reddit send_message: to')
+  equal(body.get('api_type'), 'json', 'reddit send_message: api_type=json')
+}
+
+{
+  // Inbox: listing mapping + cursor.
+  const message = {
+    kind: 't4',
+    data: {
+      id: 'm1',
+      name: 't4_m1',
+      author: 'reddit',
+      subject: 'Welcome',
+      body: 'Welcome to Reddit.',
+      dest: 'tester',
+      created_utc: 1763500000,
+      was_comment: false,
+      new: true,
+    },
+  }
+  const { page, calls } = redditPage(() => jsonResponse(redditListing([message], 't4_next')))
+  const result = await runTool('com.reddit.main', 'read_inbox', { input: { limit: 5, after: 't4_prev' }, page })
+  equal(result.status, 'ok', 'reddit read_inbox: status')
+  equal(result.data.messages[0].subject, 'Welcome', 'reddit read_inbox: subject')
+  equal(result.data.messages[0].new, true, 'reddit read_inbox: unread flag')
+  equal(result.data.after, 't4_next', 'reddit read_inbox: cursor returned')
+  equal(calls[0].url, 'https://www.reddit.com/message/inbox.json?limit=5&after=t4_prev', 'reddit read_inbox: endpoint with cursor')
+}
+
+{
+  // Auth failure paths: reads surface AUTH on 401; writes fail at the modhash.
+  const { page } = redditPage(() => jsonResponse({ message: 'Unauthorized' }, 401))
+  const read = await runTool('com.reddit.main', 'get_me', { input: {}, page })
+  equal(read.status, 'error', 'reddit auth: get_me 401 is an error')
+  equal(read.error_code, 'AUTH', 'reddit auth: get_me 401 is AUTH')
+
+  const { page: writePage } = redditPage((url) => jsonResponse({ message: 'Unauthorized' }, 401))
+  const write = await runTool('com.reddit.main', 'save', { input: { id: 't3_abc123' }, page: writePage })
+  equal(write.status, 'error', 'reddit auth: write without session is an error')
+  equal(write.error_code, 'AUTH', 'reddit auth: write without session is AUTH')
+  ok(String(write.message).includes('modhash'), 'reddit auth: write error names the modhash')
+}
+
+// --- Stack Overflow ----------------------------------------------------------
+//
+// The upstream plugin talks to the public Stack Exchange API
+// (api.stackexchange.com/2.3) with `site=stackoverflow` and `filter=withbody`
+// appended by its own helper, and reads the signed-in identity from the page
+// (`StackExchange.options.user`). These fixtures reproduce that envelope: paged
+// `{ items, has_more, quota_remaining }` bodies, the API's numeric `error_id`
+// failures, in-page identity for the authenticated tool, and a logged-out page.
+
+const SO_HOST = 'stackoverflow.com'
+
+/** The Stack Exchange question shape the port maps (unix dates, nested owner). */
+const SO_QUESTION = {
+  question_id: 11227809,
+  title: 'Why is processing a sorted array faster than processing an unsorted array?',
+  body: '<p>Here is a piece of C++ code…</p>',
+  tags: ['c++', 'performance', 'branch-prediction'],
+  score: 27341,
+  answer_count: 17,
+  view_count: 1980000,
+  is_answered: true,
+  accepted_answer_id: 11227902,
+  creation_date: 1340805096,
+  last_activity_date: 1749000000,
+  link: 'https://stackoverflow.com/questions/11227809',
+  owner: { display_name: 'GManNickG', reputation: 138000, user_id: 87234 },
+  bounty_amount: 500,
+  closed_reason: '',
+}
+
+const SO_ANSWER = {
+  answer_id: 11227902,
+  question_id: 11227809,
+  body: '<p>You are a victim of branch prediction fail.</p>',
+  score: 31000,
+  is_accepted: true,
+  creation_date: 1340808338,
+  last_activity_date: 1731000000,
+  owner: { display_name: 'Mysticial', reputation: 430000, user_id: 43421 },
+}
+
+const SO_USER = {
+  user_id: 22656,
+  display_name: 'Jon Skeet',
+  reputation: 1445000,
+  profile_image: 'https://i.sstatic.net/JonSkeet.jpg',
+  link: 'https://stackoverflow.com/users/22656/jon-skeet',
+  accept_rate: 87,
+  question_count: 40,
+  answer_count: 34000,
+  creation_date: 1222430705,
+  last_access_date: 1749100000,
+  location: 'Reading, United Kingdom',
+  website_url: 'https://codeblog.jonskeet.uk',
+  badge_counts: { gold: 900, silver: 9000, bronze: 90000 },
+}
+
+{
+  // stackoverflow: search_questions builds the advanced-search query exactly
+  // like the upstream helper — site, then the caller's params in declaration
+  // order, then the default withbody filter — and maps the whole question row.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'react hooks useEffect', tagged: 'javascript;react', pagesize: 2 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_QUESTION], has_more: true, quota_remaining: 297 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow search_questions: status')
+  const searchUrl = new URL(requests[0].url)
+  equal(searchUrl.origin + searchUrl.pathname, 'https://api.stackexchange.com/2.3/search/advanced', 'stackoverflow search_questions: API endpoint')
+  equal(searchUrl.searchParams.get('site'), 'stackoverflow', 'stackoverflow search_questions: site param')
+  equal(searchUrl.searchParams.get('q'), 'react hooks useEffect', 'stackoverflow search_questions: query text')
+  equal(searchUrl.searchParams.get('tagged'), 'javascript;react', 'stackoverflow search_questions: tagged filter')
+  equal(searchUrl.searchParams.get('order'), 'desc', 'stackoverflow search_questions: default order')
+  equal(searchUrl.searchParams.get('sort'), null, 'stackoverflow search_questions: no sort default, like upstream')
+  equal(searchUrl.searchParams.get('pagesize'), '2', 'stackoverflow search_questions: pagesize')
+  equal(searchUrl.searchParams.getAll('filter').join(','), 'withbody', 'stackoverflow search_questions: one withbody filter')
+  equal(requests[0].init.method, 'GET', 'stackoverflow search_questions: GET')
+  equal(requests[0].init.credentials, 'omit', 'stackoverflow search_questions: no cookies sent cross-origin')
+  equal(result.data.questions.length, 1, 'stackoverflow search_questions: question count')
+  const question = result.data.questions[0]
+  equal(question.question_id, 11227809, 'stackoverflow search_questions: question id is numeric')
+  equal(question.tags[1], 'performance', 'stackoverflow search_questions: tags')
+  equal(question.is_answered, true, 'stackoverflow search_questions: answered flag')
+  equal(question.accepted_answer_id, 11227902, 'stackoverflow search_questions: accepted answer id')
+  equal(question.creation_date, '2012-06-27T13:51:36.000Z', 'stackoverflow search_questions: unix date converted to ISO')
+  equal(question.owner_display_name, 'GManNickG', 'stackoverflow search_questions: owner display name')
+  equal(question.owner_reputation, 138000, 'stackoverflow search_questions: owner reputation')
+  equal(question.bounty_amount, 500, 'stackoverflow search_questions: bounty amount')
+  equal(result.data.has_more, true, 'stackoverflow search_questions: has_more')
+  equal(result.data.quota_remaining, 297, 'stackoverflow search_questions: quota')
+}
+
+{
+  // stackoverflow: get_question reads one question by id from the API and
+  // leaves every field absent from the payload at its documented default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [{ ...SO_QUESTION, bounty_amount: undefined, closed_reason: undefined }], has_more: false, quota_remaining: 300 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_question: status')
+  const questionUrl = new URL(requests[0].url)
+  equal(questionUrl.origin + questionUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809', 'stackoverflow get_question: question endpoint')
+  equal(questionUrl.searchParams.get('filter'), 'withbody', 'stackoverflow get_question: body filter')
+  equal(result.data.question.title.startsWith('Why is processing a sorted array'), true, 'stackoverflow get_question: title')
+  equal(result.data.question.body.includes('C++ code'), true, 'stackoverflow get_question: full body returned')
+  equal(result.data.question.bounty_amount, 0, 'stackoverflow get_question: absent bounty defaults to 0')
+  equal(result.data.question.closed_reason, '', 'stackoverflow get_question: absent close reason defaults to empty')
+  equal(result.data.question.owner_user_id, 87234, 'stackoverflow get_question: owner user id')
+
+  // An empty items array is a real answer from the API (deleted or bad id) and
+  // must surface as NOT_FOUND, not as a zero-filled question.
+  const missing = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 999999999 },
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [], has_more: false, quota_remaining: 300 }) },
+  })
+  equal(missing.status, 'error', 'stackoverflow get_question: empty items is an error')
+  equal(missing.error_code, 'NOT_FOUND', 'stackoverflow get_question: empty items classified as NOT_FOUND')
+}
+
+{
+  // stackoverflow: reading answers for a question defaults to votes/desc, and
+  // get_answer reads a single answer by id.
+  const requests = []
+  const answers = await runTool('com.stackoverflow.main', 'get_question_answers', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 299 })
+      },
+    },
+  })
+  equal(answers.status, 'ok', 'stackoverflow get_question_answers: status')
+  const answersUrl = new URL(requests[0].url)
+  equal(answersUrl.origin + answersUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809/answers', 'stackoverflow get_question_answers: endpoint')
+  equal(answersUrl.searchParams.get('sort'), 'votes', 'stackoverflow get_question_answers: default sort votes')
+  equal(answersUrl.searchParams.get('order'), 'desc', 'stackoverflow get_question_answers: default order desc')
+  equal(answers.data.answers[0].answer_id, 11227902, 'stackoverflow get_question_answers: answer id')
+  equal(answers.data.answers[0].is_accepted, true, 'stackoverflow get_question_answers: accepted flag')
+  equal(answers.data.answers[0].owner_display_name, 'Mysticial', 'stackoverflow get_question_answers: answer author')
+
+  const single = await runTool('com.stackoverflow.main', 'get_answer', {
+    input: { answer_id: 11227902 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 298 })
+      },
+    },
+  })
+  equal(single.status, 'ok', 'stackoverflow get_answer: status')
+  const answerUrl = new URL(requests[1].url)
+  equal(answerUrl.origin + answerUrl.pathname, 'https://api.stackexchange.com/2.3/answers/11227902', 'stackoverflow get_answer: answer endpoint')
+  equal(single.data.answer.score, 31000, 'stackoverflow get_answer: score')
+  equal(single.data.answer.creation_date, '2012-06-27T14:45:38.000Z', 'stackoverflow get_answer: ISO date')
+}
+
+{
+  // stackoverflow: get_user maps the public profile (nested badge_counts,
+  // accept_rate) and search_users sends inname with the reputation default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_user', {
+    input: { user_id: 22656 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 296 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_user: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_user: user endpoint')
+  equal(result.data.user.display_name, 'Jon Skeet', 'stackoverflow get_user: display name')
+  equal(result.data.user.reputation, 1445000, 'stackoverflow get_user: reputation')
+  equal(result.data.user.badge_gold, 900, 'stackoverflow get_user: gold badges from badge_counts')
+  equal(result.data.user.accept_rate, 87, 'stackoverflow get_user: accept rate')
+  equal(result.data.user.location, 'Reading, United Kingdom', 'stackoverflow get_user: location')
+
+  const found = await runTool('com.stackoverflow.main', 'search_users', {
+    input: { inname: 'skeet' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 295 })
+      },
+    },
+  })
+  equal(found.status, 'ok', 'stackoverflow search_users: status')
+  const usersUrl = new URL(requests[1].url)
+  equal(usersUrl.pathname, '/2.3/users', 'stackoverflow search_users: users endpoint')
+  equal(usersUrl.searchParams.get('inname'), 'skeet', 'stackoverflow search_users: inname')
+  equal(usersUrl.searchParams.get('sort'), 'reputation', 'stackoverflow search_users: default sort reputation')
+  equal(found.data.users[0].user_id, 22656, 'stackoverflow search_users: user id')
+}
+
+{
+  // stackoverflow: get_my_profile takes the user id from the page
+  // (StackExchange.options.user), never from the caller — and a logged-out page
+  // is a classified auth error, matching upstream getCurrentUserId().
+  const requests = []
+  const authed = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 294 })
+      },
+      globals: { StackExchange: { options: { user: { isRegistered: true, userId: 22656 } } } },
+    },
+  })
+  equal(authed.status, 'ok', 'stackoverflow get_my_profile: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_my_profile: page user id in the path')
+  equal(authed.data.user.display_name, 'Jon Skeet', 'stackoverflow get_my_profile: profile mapped')
+
+  const anonymous = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [] }) },
+  })
+  equal(anonymous.status, 'error', 'stackoverflow get_my_profile: logged-out page is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'stackoverflow get_my_profile: logged-out page classified as UNAUTHENTICATED')
+}
+
+{
+  // stackoverflow: get_tag_info makes the two upstream calls (info + wikis) and
+  // merges the wiki into the tag; search_excerpts maps question and answer hits.
+  const requests = []
+  const tag = await runTool('com.stackoverflow.main', 'get_tag_info', {
+    input: { tag: 'javascript' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (new URL(url).pathname.endsWith('/wikis')) {
+          return jsonResponse({
+            items: [{ tag_name: 'javascript', excerpt: 'For questions about programming in ECMAScript.', body: '<p>JavaScript wiki</p>' }],
+            has_more: false,
+            quota_remaining: 293,
+          })
+        }
+        return jsonResponse({
+          items: [{ name: 'javascript', count: 2400000, has_synonyms: true, is_moderator_only: false, is_required: false }],
+          has_more: false,
+          quota_remaining: 292,
+        })
+      },
+    },
+  })
+  equal(tag.status, 'ok', 'stackoverflow get_tag_info: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/tags/javascript/info', 'stackoverflow get_tag_info: tag info endpoint')
+  equal(new URL(requests[1].url).pathname, '/2.3/tags/javascript/wikis', 'stackoverflow get_tag_info: wiki endpoint')
+  equal(tag.data.tag.name, 'javascript', 'stackoverflow get_tag_info: tag name')
+  equal(tag.data.tag.count, 2400000, 'stackoverflow get_tag_info: tag count')
+  equal(tag.data.tag.has_synonyms, true, 'stackoverflow get_tag_info: synonyms flag')
+  equal(tag.data.tag.excerpt.includes('ECMAScript'), true, 'stackoverflow get_tag_info: wiki excerpt merged')
+  equal(tag.data.tag.wiki_body, '<p>JavaScript wiki</p>', 'stackoverflow get_tag_info: wiki body merged')
+
+  const excerpts = await runTool('com.stackoverflow.main', 'search_excerpts', {
+    input: { q: 'useEffect cleanup', accepted: true },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          items: [
+            {
+              question_id: 53331175,
+              answer_id: 0,
+              title: 'React useEffect cleanup',
+              excerpt: '…',
+              item_type: 'question',
+              tags: ['javascript', 'reactjs'],
+              score: 412,
+              is_answered: true,
+              creation_date: 1550000000,
+            },
+          ],
+          has_more: false,
+          quota_remaining: 291,
+        })
+      },
+    },
+  })
+  equal(excerpts.status, 'ok', 'stackoverflow search_excerpts: status')
+  const excerptsUrl = new URL(requests[2].url)
+  equal(excerptsUrl.pathname, '/2.3/search/excerpts', 'stackoverflow search_excerpts: endpoint')
+  equal(excerptsUrl.searchParams.get('accepted'), 'true', 'stackoverflow search_excerpts: boolean sent as true')
+  equal(excerptsUrl.searchParams.get('sort'), 'relevance', 'stackoverflow search_excerpts: default sort relevance')
+  equal(excerpts.data.results[0].item_type, 'question', 'stackoverflow search_excerpts: item type')
+  equal(excerpts.data.results[0].answer_id, 0, 'stackoverflow search_excerpts: question hit has answer_id 0')
+}
+
+{
+  // stackoverflow: the API's numeric error_id envelope is classified the way
+  // upstream does it (502 → rate limited), and a non-Stack-Overflow tab refuses
+  // to run instead of calling the API from the wrong site.
+  const limited = await runTool('com.stackoverflow.main', 'list_questions', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async () => jsonResponse({ error_id: 502, error_name: 'throttle_violation', error_message: 'too many requests from this IP' }),
+    },
+  })
+  equal(limited.status, 'error', 'stackoverflow error_id: 502 is an error')
+  equal(limited.error_code, 'RATE_LIMITED', 'stackoverflow error_id: 502 classified as RATE_LIMITED')
+
+  let requests = 0
+  const wrongHost = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'x' },
+    page: {
+      hostname: 'stackoverflow.com.evil.example',
+      fetch: async () => {
+        requests++
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(wrongHost.status, 'error', 'stackoverflow wrong host: is an error')
+  equal(wrongHost.error_code, 'UNSUPPORTED_PAGE', 'stackoverflow wrong host: classified as UNSUPPORTED_PAGE')
+  equal(requests, 0, 'stackoverflow wrong host: no API call is made')
+}
+
+section('urlRegex probe: stackoverflow.com')
+
+{
+  // Upstream scopes the plugin to `*://*.stackoverflow.com/*`, so the port keeps
+  // every subdomain (meta.*, www.*) while refusing lookalike hosts, plain HTTP
+  // and non-default ports.
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.stackoverflow.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://stackoverflow.com/',
+    'https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster',
+    'https://stackoverflow.com/questions?tab=Newest&pagesize=50',
+    'https://stackoverflow.com/users/22656/jon-skeet#answers',
+    'https://stackoverflow.com/search?q=react+hooks#top',
+    'https://stackoverflow.com/tags/javascript/info',
+    'https://meta.stackoverflow.com/questions/ask',
+    'https://www.stackoverflow.com/questions',
+  ]
+  const mustNotMatch = [
+    'http://stackoverflow.com/questions',
+    'https://stackoverflow.com.evil.example/questions',
+    'https://evil.example/stackoverflow.com/questions',
+    'https://stackoverflow.com:8443/questions',
+    'https://user@stackoverflow.com/questions',
+    'https://stackoverflow.co/questions',
+    'https://api.stackexchange.com/2.3/questions',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `stackoverflow urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `stackoverflow urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// --- urlRegex probe: calendar.google.com ------------------------------------
+
+section('urlRegex probe: calendar.google.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.google-calendar.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://calendar.google.com/',
+    'https://calendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com/calendar/u/0/r/day?src=cal&ctz=Asia%2FShanghai',
+    'https://calendar.google.com/calendar/u/0/r/eventedit/abc123#main',
+  ]
+  const mustNotMatch = [
+    'http://calendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com.evil.example/calendar/u/0/r/week',
+    'https://evilcalendar.google.com/calendar/u/0/r/week',
+    'https://calendar.google.com:8443/calendar/u/0/r/week',
+    'https://mail.google.com/calendar/u/0/r/week',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `google-calendar urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `google-calendar urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- Google Calendar execution ----------------------------------------------
+// The Calendar web app signs every API call through gapi.client.request, which
+// resolves with { status, result }. The stub records the request descriptors and
+// answers with realistic Calendar resources, so the ported transport parsing and
+// resource mapping really run.
+
+section('execution: Google Calendar tools against a stubbed page')
+
+function gcalPage(handler, extra = {}) {
+  const requests = []
+  const page = {
+    hostname: 'calendar.google.com',
+    globals: {
+      gapi: {
+        client: {
+          request: async (options) => {
+            requests.push(options)
+            return handler(options)
+          },
+        },
+      },
+    },
+    ...extra,
+  }
+  return { requests, page }
+}
+
+const GCAL_EVENT = {
+  kind: 'calendar#event',
+  id: 'evt_1',
+  status: 'confirmed',
+  htmlLink: 'https://www.google.com/calendar/event?eid=ZXZ0XzE',
+  summary: 'Weekly sync',
+  description: 'Roadmap checkpoint',
+  location: 'Room 4',
+  creator: { email: 'ada@example.com', self: true },
+  organizer: { email: 'ada@example.com', displayName: 'Ada Lovelace' },
+  start: { dateTime: '2026-11-20T10:00:00+08:00', timeZone: 'Asia/Shanghai' },
+  end: { dateTime: '2026-11-20T10:30:00+08:00', timeZone: 'Asia/Shanghai' },
+  created: '2026-11-01T09:00:00.000Z',
+  updated: '2026-11-18T09:00:00.000Z',
+  attendees: [
+    { email: 'grace@example.com', displayName: 'Grace Hopper', responseStatus: 'accepted', optional: true },
+    { email: 'ada@example.com', self: true, organizer: true, responseStatus: 'accepted' },
+  ],
+  reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 10 }] },
+  colorId: '7',
+  transparency: 'transparent',
+  visibility: 'private',
+  eventType: 'default',
+  hangoutLink: 'https://meet.google.com/abc-defg-hij',
+  conferenceData: {
+    entryPoints: [
+      { entryPointType: 'phone', uri: 'tel:+1-555-0100' },
+      { entryPointType: 'video', uri: 'https://meet.google.com/abc-defg-hij?hs=224' },
+    ],
+  },
+}
+
+{
+  // Calendar list: the primary calendar plus a subscribed holiday calendar.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      items: [
+        {
+          id: 'ada@example.com',
+          summary: 'Ada Lovelace',
+          timeZone: 'Asia/Shanghai',
+          backgroundColor: '#9fe1e7',
+          foregroundColor: '#1d1d1d',
+          selected: true,
+          accessRole: 'owner',
+          primary: true,
+        },
+        {
+          id: 'en.usa#holiday@group.v.calendar.google.com',
+          summary: 'Holidays in the United States',
+          accessRole: 'reader',
+          selected: false,
+        },
+      ],
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_calendars', {
+    input: { show_hidden: true },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_calendars: status')
+  equal(result.data.calendars.length, 2, 'google list_calendars: calendar count')
+  equal(result.data.calendars[0].is_primary, true, 'google list_calendars: primary flag')
+  equal(result.data.calendars[0].time_zone, 'Asia/Shanghai', 'google list_calendars: time zone')
+  equal(result.data.calendars[1].access_role, 'reader', 'google list_calendars: access role')
+  equal(requests[0].path, '/calendar/v3/users/me/calendarList', 'google list_calendars: endpoint')
+  equal(requests[0].params.showHidden, true, 'google list_calendars: showHidden param')
+  ok(!('showDeleted' in requests[0].params), 'google list_calendars: undefined params filtered')
+}
+
+{
+  // Event list for an explicit range: singleEvents expansion defaults to true and
+  // orderBy follows it.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { items: [GCAL_EVENT], nextPageToken: 'page-2' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_events', {
+    input: { time_min: '2026-11-19T00:00:00+08:00', time_max: '2026-11-26T00:00:00+08:00' },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_events: status')
+  equal(result.data.events[0].summary, 'Weekly sync', 'google list_events: summary')
+  equal(result.data.events[0].start.date_time, '2026-11-20T10:00:00+08:00', 'google list_events: start')
+  equal(result.data.events[0].organizer_email, 'ada@example.com', 'google list_events: organizer')
+  equal(result.data.next_page_token, 'page-2', 'google list_events: next page token')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events', 'google list_events: endpoint')
+  equal(requests[0].params.timeMin, '2026-11-19T00:00:00+08:00', 'google list_events: timeMin')
+  equal(requests[0].params.timeMax, '2026-11-26T00:00:00+08:00', 'google list_events: timeMax')
+  equal(requests[0].params.maxResults, 25, 'google list_events: default maxResults')
+  equal(requests[0].params.singleEvents, true, 'google list_events: singleEvents default')
+  equal(requests[0].params.orderBy, 'startTime', 'google list_events: orderBy default')
+}
+
+{
+  // Single event read: attendees, reminder overrides and the video conference
+  // entry point all map through upstream's defensive mappers.
+  const { requests, page } = gcalPage(() => ({ status: 200, result: GCAL_EVENT }))
+  const result = await runTool('com.google-calendar.main', 'get_event', {
+    input: { event_id: 'evt_1' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_event: status')
+  equal(result.data.event.id, 'evt_1', 'google get_event: id')
+  equal(result.data.event.attendees.length, 2, 'google get_event: attendee count')
+  equal(
+    result.data.event.attendees[0].response_status,
+    'accepted',
+    'google get_event: attendee response status',
+  )
+  equal(result.data.event.attendees[0].is_optional, true, 'google get_event: optional flag')
+  equal(result.data.event.uses_default_reminders, false, 'google get_event: custom reminders')
+  equal(result.data.event.reminders[0].method, 'popup', 'google get_event: reminder method')
+  equal(
+    result.data.event.conference_uri,
+    'https://meet.google.com/abc-defg-hij?hs=224',
+    'google get_event: video entry point',
+  )
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1', 'google get_event: endpoint')
+}
+
+{
+  // Create: timed event body mapping, attendees as { email }, explicit reminders,
+  // and sendUpdates defaulting to none.
+  const { requests, page } = gcalPage((options) => ({
+    status: 200,
+    result: {
+      ...GCAL_EVENT,
+      summary: JSON.parse(options.body).summary,
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'create_event', {
+    input: {
+      summary: 'Design review',
+      start_datetime: '2026-11-21T14:00:00+08:00',
+      time_zone: 'Asia/Shanghai',
+      attendees: ['grace@example.com'],
+      reminders: [{ method: 'email', minutes: 30 }],
+      color_id: '9',
+    },
+    page,
+  })
+  equal(result.status, 'ok', 'google create_event: status')
+  equal(result.data.event.summary, 'Design review', 'google create_event: summary round trip')
+  const body = JSON.parse(requests[0].body)
+  equal(requests[0].method, 'POST', 'google create_event: POST')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events', 'google create_event: endpoint')
+  equal(body.start.dateTime, '2026-11-21T14:00:00+08:00', 'google create_event: start dateTime')
+  equal(body.start.timeZone, 'Asia/Shanghai', 'google create_event: start time zone')
+  equal(body.end.dateTime, '2026-11-21T14:00:00+08:00', 'google create_event: end defaults to start')
+  equal(body.attendees[0].email, 'grace@example.com', 'google create_event: attendee mapping')
+  equal(body.reminders.useDefault, false, 'google create_event: reminders disabled default')
+  equal(body.reminders.overrides[0].minutes, 30, 'google create_event: reminder minutes')
+  equal(body.colorId, '9', 'google create_event: color id')
+  equal(requests[0].params.sendUpdates, 'none', 'google create_event: sendUpdates default')
+}
+
+{
+  // Update: PATCH semantics — only the fields the caller sent reach the body.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, summary: 'Weekly sync (moved)' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'update_event', {
+    input: { event_id: 'evt_1', summary: 'Weekly sync (moved)', start_datetime: '2026-11-20T11:00:00+08:00' },
+    page,
+  })
+  equal(result.status, 'ok', 'google update_event: status')
+  equal(result.data.event.summary, 'Weekly sync (moved)', 'google update_event: summary')
+  const body = JSON.parse(requests[0].body)
+  equal(requests[0].method, 'PATCH', 'google update_event: PATCH')
+  equal(body.summary, 'Weekly sync (moved)', 'google update_event: summary in body')
+  equal(body.start.dateTime, '2026-11-20T11:00:00+08:00', 'google update_event: start in body')
+  ok(!('description' in body), 'google update_event: omitted fields stay out of the body')
+  ok(!('end' in body), 'google update_event: untouched end stays out of the body')
+  equal(requests[0].params.sendUpdates, 'none', 'google update_event: sendUpdates default')
+}
+
+{
+  // Delete: DELETE on the instance id, and the gapi response without a result
+  // body still reports the deletion.
+  const { requests, page } = gcalPage(() => ({ status: 204 }))
+  const result = await runTool('com.google-calendar.main', 'delete_event', {
+    input: { event_id: 'evt_1', send_updates: 'all' },
+    page,
+  })
+  equal(result.status, 'ok', 'google delete_event: status')
+  equal(result.data.deleted, true, 'google delete_event: deleted flag')
+  equal(requests[0].method, 'DELETE', 'google delete_event: DELETE')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1', 'google delete_event: endpoint')
+  equal(requests[0].params.sendUpdates, 'all', 'google delete_event: sendUpdates passthrough')
+}
+
+{
+  // Free/busy: POST body built from calendar_ids, per-calendar busy slots and
+  // request errors mapped into strings.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      calendars: {
+        'ada@example.com': { busy: [{ start: '2026-11-20T10:00:00Z', end: '2026-11-20T10:30:00Z' }] },
+        'grace@example.com': { errors: [{ domain: 'global', reason: 'notFound' }] },
+      },
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'query_freebusy', {
+    input: { time_min: '2026-11-20T00:00:00Z', time_max: '2026-11-21T00:00:00Z' },
+    page,
+  })
+  equal(result.status, 'ok', 'google query_freebusy: status')
+  equal(result.data.calendars[0].busy[0].start, '2026-11-20T10:00:00Z', 'google query_freebusy: busy start')
+  equal(result.data.calendars[1].errors[0], 'global: notFound', 'google query_freebusy: error string')
+  equal(requests[0].path, '/calendar/v3/freeBusy', 'google query_freebusy: endpoint')
+  const body = JSON.parse(requests[0].body)
+  equal(body.items[0].id, 'primary', 'google query_freebusy: default calendar id')
+}
+
+{
+  // Colors: object maps become ordered arrays keyed by colour id.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      calendar: { '1': { background: '#ac725e', foreground: '#1d1d1d' } },
+      event: { '9': { background: '#5484ed', foreground: '#ffffff' } },
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_colors', { page })
+  equal(result.status, 'ok', 'google get_colors: status')
+  equal(result.data.calendar_colors[0].id, '1', 'google get_colors: calendar colour id')
+  equal(result.data.event_colors[0].background, '#5484ed', 'google get_colors: event colour')
+  equal(requests[0].path, '/calendar/v3/colors', 'google get_colors: endpoint')
+}
+
+{
+  // Quick add: natural-language text rides as a query param on quickAdd.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, summary: 'Lunch with Sarah' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'quick_add_event', {
+    input: { text: 'Lunch with Sarah tomorrow at noon' },
+    page,
+  })
+  equal(result.status, 'ok', 'google quick_add_event: status')
+  equal(result.data.event.summary, 'Lunch with Sarah', 'google quick_add_event: event summary')
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/quickAdd', 'google quick_add_event: endpoint')
+  equal(requests[0].method, 'POST', 'google quick_add_event: POST')
+  equal(requests[0].params.text, 'Lunch with Sarah tomorrow at noon', 'google quick_add_event: text param')
+}
+
+{
+  // Move: POST with the destination calendar id as a param.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { ...GCAL_EVENT, organizer: { email: 'team@group.calendar.google.com' } },
+  }))
+  const result = await runTool('com.google-calendar.main', 'move_event', {
+    input: { event_id: 'evt_1', destination: 'team@group.calendar.google.com' },
+    page,
+  })
+  equal(result.status, 'ok', 'google move_event: status')
+  equal(
+    result.data.event.organizer_email,
+    'team@group.calendar.google.com',
+    'google move_event: new organizer',
+  )
+  equal(requests[0].path, '/calendar/v3/calendars/primary/events/evt_1/move', 'google move_event: endpoint')
+  equal(requests[0].params.destination, 'team@group.calendar.google.com', 'google move_event: destination')
+}
+
+{
+  // Recurring instances: nested resource plus the recurring parent id.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: {
+      items: [{ ...GCAL_EVENT, id: 'evt_1_20261127', recurringEventId: 'evt_1' }],
+    },
+  }))
+  const result = await runTool('com.google-calendar.main', 'list_event_instances', {
+    input: { event_id: 'evt_1', max_results: 5 },
+    page,
+  })
+  equal(result.status, 'ok', 'google list_event_instances: status')
+  equal(result.data.events[0].recurring_event_id, 'evt_1', 'google list_event_instances: parent id')
+  equal(
+    requests[0].path,
+    '/calendar/v3/calendars/primary/events/evt_1/instances',
+    'google list_event_instances: endpoint',
+  )
+  equal(requests[0].params.maxResults, 5, 'google list_event_instances: maxResults passthrough')
+}
+
+{
+  // Search: reads the calendar list, keeps owner/writer calendars only, then
+  // queries each of them with q + singleEvents.
+  const { requests, page } = gcalPage((options) => {
+    if (options.path === '/calendar/v3/users/me/calendarList') {
+      return {
+        status: 200,
+        result: {
+          items: [
+            { id: 'ada@example.com', accessRole: 'owner', primary: true },
+            { id: 'old@group.calendar.google.com', accessRole: 'reader' },
+          ],
+        },
+      }
+    }
+    return { status: 200, result: { items: [GCAL_EVENT] } }
+  })
+  const result = await runTool('com.google-calendar.main', 'search_events', {
+    input: { q: 'sync' },
+    page,
+  })
+  equal(result.status, 'ok', 'google search_events: status')
+  equal(result.data.events.length, 1, 'google search_events: result count')
+  equal(requests.length, 2, 'google search_events: one list read plus one writable calendar')
+  equal(
+    requests[1].path,
+    '/calendar/v3/calendars/ada%40example.com/events',
+    'google search_events: queries the writable calendar',
+  )
+  equal(requests[1].params.q, 'sync', 'google search_events: query param')
+  equal(requests[1].params.singleEvents, true, 'google search_events: expands recurring events')
+}
+
+{
+  // Calendar metadata read: the id is URL-encoded into the path.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { id: 'team@group.calendar.google.com', summary: 'Team', timeZone: 'UTC' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_calendar', {
+    input: { calendar_id: 'team@group.calendar.google.com' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_calendar: status')
+  equal(result.data.calendar.summary, 'Team', 'google get_calendar: summary')
+  equal(
+    requests[0].path,
+    '/calendar/v3/calendars/team%40group.calendar.google.com',
+    'google get_calendar: encoded calendar id',
+  )
+}
+
+{
+  // Secondary calendar create / update / delete round trip.
+  const { requests, page } = gcalPage((options) => ({
+    status: options.method === 'DELETE' ? 204 : 200,
+    result: { id: 'new@group.calendar.google.com', summary: 'Projects', timeZone: 'Asia/Shanghai' },
+  }))
+  const created = await runTool('com.google-calendar.main', 'create_calendar', {
+    input: { summary: 'Projects', time_zone: 'Asia/Shanghai' },
+    page,
+  })
+  equal(created.status, 'ok', 'google create_calendar: status')
+  equal(created.data.calendar.id, 'new@group.calendar.google.com', 'google create_calendar: id')
+  equal(requests[0].path, '/calendar/v3/calendars', 'google create_calendar: endpoint')
+  equal(JSON.parse(requests[0].body).timeZone, 'Asia/Shanghai', 'google create_calendar: time zone body')
+
+  const updated = await runTool('com.google-calendar.main', 'update_calendar', {
+    input: { calendar_id: 'new@group.calendar.google.com', summary: 'Projects 2027' },
+    page,
+  })
+  equal(updated.status, 'ok', 'google update_calendar: status')
+  equal(requests[1].method, 'PATCH', 'google update_calendar: PATCH')
+  const updateBody = JSON.parse(requests[1].body)
+  equal(updateBody.summary, 'Projects 2027', 'google update_calendar: summary in body')
+  ok(!('timeZone' in updateBody), 'google update_calendar: omitted fields stay out of the body')
+
+  const deleted = await runTool('com.google-calendar.main', 'delete_calendar', {
+    input: { calendar_id: 'new@group.calendar.google.com' },
+    page,
+  })
+  equal(deleted.status, 'ok', 'google delete_calendar: status')
+  equal(deleted.data.deleted, true, 'google delete_calendar: deleted flag')
+  equal(requests[2].method, 'DELETE', 'google delete_calendar: DELETE')
+}
+
+{
+  // Single setting read: setting id is encoded into the nested path.
+  const { requests, page } = gcalPage(() => ({
+    status: 200,
+    result: { id: 'timezone', value: 'Asia/Shanghai' },
+  }))
+  const result = await runTool('com.google-calendar.main', 'get_setting', {
+    input: { setting_id: 'timezone' },
+    page,
+  })
+  equal(result.status, 'ok', 'google get_setting: status')
+  equal(result.data.setting.value, 'Asia/Shanghai', 'google get_setting: value')
+  equal(requests[0].path, '/calendar/v3/users/me/settings/timezone', 'google get_setting: endpoint')
+}
+
+{
+  // Auth failure, logged-out tab: no gapi on the page and the same-origin
+  // /calendar/v3 path answers with Google's marketing HTML instead of JSON.
+  const requests = []
+  const result = await runTool('com.google-calendar.main', 'list_events', {
+    input: {},
+    page: {
+      hostname: 'calendar.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse('<!doctype html><html><head><title>Google Calendar</title></head></html>')
+      },
+    },
+  })
+  equal(result.status, 'error', 'google logged-out: error status')
+  equal(result.error_code, 'AUTH', 'google logged-out: classified as AUTH')
+  ok(
+    String(result.message).includes('not ready'),
+    'google logged-out: explains the tab is not ready',
+  )
+  equal(requests[0].init.credentials, 'include', 'google logged-out: sends credentials')
+  ok(
+    String(requests[0].url).startsWith('https://calendar.google.com/calendar/v3/calendars/primary/events'),
+    'google logged-out: keeps the same-origin API path',
+  )
+}
+
+{
+  // A gapi call that rejects with a 401 is surfaced as an AUTH error result, not
+  // as a thrown adapter failure.
+  const { page } = gcalPage(() => {
+    const error = new Error('Invalid Credentials')
+    error.status = 401
+    error.result = { error: { code: 401, message: 'Invalid Credentials' } }
+    throw error
+  })
+  const result = await runTool('com.google-calendar.main', 'list_settings', { page })
+  equal(result.status, 'error', 'google gapi 401: error status')
+  equal(result.error_code, 'AUTH', 'google gapi 401: classified as AUTH')
+  equal(result.message, 'Invalid Credentials', 'google gapi 401: upstream error message')
+}
+
+{
+  // A gapi 404 keeps its own classification.
+  const { page } = gcalPage(() => {
+    const error = new Error('Not Found')
+    error.status = 404
+    error.result = { error: { code: 404, message: 'Not Found' } }
+    throw error
+  })
+  const result = await runTool('com.google-calendar.main', 'get_event', {
+    input: { event_id: 'missing' },
+    page,
+  })
+  equal(result.status, 'error', 'google gapi 404: error status')
+  equal(result.error_code, 'NOT_FOUND', 'google gapi 404: classified as NOT_FOUND')
+}
+
+{
+  // Fallback transport: the XSSI guard line Google may prepend is stripped before
+  // the JSON parse, so settings still map.
+  const requests = []
+  const result = await runTool('com.google-calendar.main', 'list_settings', {
+    page: {
+      hostname: 'calendar.google.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(")]}'\n{\"items\":[{\"id\":\"timezone\",\"value\":\"Asia/Shanghai\"},{\"id\":\"locale\",\"value\":\"en\"}]}")
+      },
+    },
+  })
+  equal(result.status, 'ok', 'google fallback settings: status')
+  equal(result.data.settings.length, 2, 'google fallback settings: setting count')
+  equal(result.data.settings[0].value, 'Asia/Shanghai', 'google fallback settings: value')
+  equal(
+    requests[0].url,
+    'https://calendar.google.com/calendar/v3/users/me/settings',
+    'google fallback settings: same-origin path',
+  )
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
