@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T03:19:52.735Z",
+  "generatedAt": "2026-11-19T03:24:47.676Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -670,6 +670,78 @@
         {
           "path": "packages/com.notion.main/workflows/update_page.js",
           "sha256": "18f692d79ef94fbd0415b7ca34b09a8c69d0bf48cea9adee8db5ca32ea8116e1"
+        }
+      ]
+    },
+    {
+      "id": "com.npm.main",
+      "version": "0.1.0",
+      "description": "Read npm package, version, dependency, download and dependent data, search the registry, and read user, organization and account settings (own packages, access tokens) on www.npmjs.com in your current tab. Uses your own logged-in npm session where authentication is required.",
+      "toolCount": 14,
+      "files": [
+        {
+          "path": "packages/com.npm.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.npm.main/manifest.json",
+          "sha256": "f4760614f1f030bc649c3beb4d819c17a90c04993593580fa68f8637ac729557"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_current_user.js",
+          "sha256": "892fc4cbf59192a4e7bf3be45dc5c3ead881f7209a80ca6dfb392a2672a453a2"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_organization.js",
+          "sha256": "db343f8f6a6fb255c6ee3b9a28f0d95cc665318799efb0ecf5a9d160d4fa6e03"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_dependencies.js",
+          "sha256": "e0517893be77463c045c924cc36452a42cc07d777d2e2e3509476d7a9d502671"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_dependents.js",
+          "sha256": "b394e08861018543a44e21ffff7beedaa4bb9b1c95900c7ad41bcb07ef71a332"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_downloads.js",
+          "sha256": "2cd132bd84ebece7ed68152dedc7a267d48bf78c9d5f44be8e02eb53835f5ba6"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_readme.js",
+          "sha256": "6041ff0475a03960dd17162e1938ade034a9f151a618d8caddc62723a72aeb57"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_version.js",
+          "sha256": "5e71a971374ba30b2bdabadf039bcc8d45fce83c85da3008ebc55d33c9e6572e"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package_versions.js",
+          "sha256": "9efdef679b10d1528161eb759ff4cd9140e90589766ae4fca50d40ba6422bf58"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_package.js",
+          "sha256": "297221693e24f3a85819086ae36f179b0677a29421cd9d3f41234efb6e9bb4f2"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_user_packages.js",
+          "sha256": "797599e94d4a01a9b837dcc000be2a87d927b72acb108b26c4136a6bbd3dd037"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/get_user_profile.js",
+          "sha256": "514000c1f68b5943cebcbb33689028e9bd75f3e6d22645513471c8a8248f50ce"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/list_tokens.js",
+          "sha256": "53113e03bb93bc71ae696eeaa0517ab6f554c28aa7cbca26b4835504d5eabd02"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/list_user_packages.js",
+          "sha256": "070a403dfff0dbcab23ceeade91d5f9cc3be1cefb5fbfe60a8537b40692658e9"
+        },
+        {
+          "path": "packages/com.npm.main/workflows/search_packages.js",
+          "sha256": "5bd127befc0e9b4d59d2415028d4ab45be81a85ad81b6f96a407ce102a638f11"
         }
       ]
     }

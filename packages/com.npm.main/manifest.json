@@ -1,0 +1,91 @@
+{
+  "id": "com.npm.main",
+  "version": "0.1.0",
+  "description": "Read npm package, version, dependency, download and dependent data, search the registry, and read user, organization and account settings (own packages, access tokens) on www.npmjs.com in your current tab. Uses your own logged-in npm session where authentication is required.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated npm user including username and avatar.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "search_packages",
+      "description": "Search for npm packages by keyword. Supports special qualifiers: author:name, maintainer:name, scope:name, keywords:term (use , for OR, + for AND), not:unstable, not:insecure, is:unstable, is:insecure. Returns packages with scores and metadata.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_packages.js"
+    },
+    {
+      "name": "get_package",
+      "description": "Get detailed information about an npm package including version, description, maintainers, dist-tags, download stats, dependencies, and star status. Use the exact package name including scope (e.g., \"@types/node\").",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package.js"
+    },
+    {
+      "name": "get_package_version",
+      "description": "Get detailed information about a specific version of an npm package, including dependencies and dev dependencies for that version.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_version.js"
+    },
+    {
+      "name": "get_package_readme",
+      "description": "Get the README content of an npm package. Returns the full README as rendered on the package page.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_readme.js"
+    },
+    {
+      "name": "get_package_downloads",
+      "description": "Get weekly download statistics for an npm package over the past year. Returns an array of weekly download counts.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_downloads.js"
+    },
+    {
+      "name": "get_package_dependents",
+      "description": "Get packages that depend on this package. Returns the total count and a sample list of dependent package names.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_dependents.js"
+    },
+    {
+      "name": "get_package_versions",
+      "description": "Get all published versions of an npm package with deprecation status and dist-tags. Uses the versions tab for full data.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_versions.js"
+    },
+    {
+      "name": "get_package_dependencies",
+      "description": "Get the runtime and development dependencies of the latest version of an npm package.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_package_dependencies.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a public npm user profile by username. Returns username, avatar, package count, and organizations.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "get_user_packages",
+      "description": "Get the public packages published by an npm user. Returns package names, versions, and descriptions with pagination.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_packages.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get information about an npm organization including name, description, creation date, packages, and 2FA enforcement.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_user_packages",
+      "description": "List the authenticated user's own packages from the settings page. Includes both public and private packages. Requires authentication.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_user_packages.js"
+    },
+    {
+      "name": "list_tokens",
+      "description": "List the authenticated user's access tokens. Shows token prefixes and read-only status. Requires authentication.",
+      "urlRegex": "^https://www\\.npmjs\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tokens.js"
+    }
+  ]
+}
