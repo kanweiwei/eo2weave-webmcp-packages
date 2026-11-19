@@ -1,0 +1,127 @@
+{
+  "id": "com.stackoverflow.main",
+  "version": "0.1.0",
+  "description": "Read Stack Overflow questions, answers, comments, users, tags and search results (including full-text search, similar/related/linked/featured/unanswered listings and the signed-in user profile) on stackoverflow.com in your current tab.",
+  "tools": [
+    {
+      "name": "search_questions",
+      "description": "Search Stack Overflow questions using advanced search. Supports full-text query, tag filtering, date ranges, and multiple sort options. Returns questions with body content. Use this as the primary way to find relevant questions.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_questions.js"
+    },
+    {
+      "name": "get_question",
+      "description": "Get a specific Stack Overflow question by its ID. Returns the full question body, tags, score, answer count, and metadata. Use this to read the full content of a question.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_question.js"
+    },
+    {
+      "name": "list_questions",
+      "description": "List Stack Overflow questions sorted by activity, creation date, votes, or trending periods (hot, week, month). Returns questions with body content. Use this to browse recent or popular questions.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_questions.js"
+    },
+    {
+      "name": "get_question_answers",
+      "description": "Get all answers for a specific Stack Overflow question. Returns answer body, score, acceptance status, and author information. Answers can be sorted by activity, creation date, or votes.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_question_answers.js"
+    },
+    {
+      "name": "get_question_comments",
+      "description": "Get comments on a specific Stack Overflow question. Returns comment body, score, and author information.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_question_comments.js"
+    },
+    {
+      "name": "list_related_questions",
+      "description": "Get questions related to a specific Stack Overflow question. Returns questions that the system considers similar based on content and tags.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_related_questions.js"
+    },
+    {
+      "name": "list_linked_questions",
+      "description": "Get questions that link to a specific Stack Overflow question. These are questions whose answers or body reference the given question.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_linked_questions.js"
+    },
+    {
+      "name": "list_featured_questions",
+      "description": "List Stack Overflow questions that currently have an active bounty. These are questions where users have offered reputation as a reward for a good answer.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_featured_questions.js"
+    },
+    {
+      "name": "list_unanswered_questions",
+      "description": "List Stack Overflow questions that have no upvoted or accepted answers. Useful for finding questions that need help.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_unanswered_questions.js"
+    },
+    {
+      "name": "get_similar_questions",
+      "description": "Find Stack Overflow questions similar to a given title. Uses title-based similarity matching to find potential duplicates or related content. Useful before asking a new question to check for existing answers.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_similar_questions.js"
+    },
+    {
+      "name": "get_answer",
+      "description": "Get a specific Stack Overflow answer by its ID. Returns the full answer body, score, acceptance status, and author information.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_answer.js"
+    },
+    {
+      "name": "get_answer_comments",
+      "description": "Get comments on a specific Stack Overflow answer. Returns comment body, score, and author information.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_answer_comments.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get a Stack Overflow user profile by their user ID. Returns reputation, badge counts, question/answer counts, and profile information.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "search_users",
+      "description": "Search Stack Overflow users by display name. Returns matching user profiles sorted by reputation, creation date, or name.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_users.js"
+    },
+    {
+      "name": "get_user_questions",
+      "description": "Get questions asked by a specific Stack Overflow user. Returns the user's questions sorted by activity, creation date, or votes.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_questions.js"
+    },
+    {
+      "name": "get_user_answers",
+      "description": "Get answers posted by a specific Stack Overflow user. Returns the user's answers sorted by activity, creation date, or votes.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_answers.js"
+    },
+    {
+      "name": "get_my_profile",
+      "description": "Get the currently authenticated Stack Overflow user's profile. Returns reputation, badge counts, question/answer counts, and profile information. Requires being logged in.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_my_profile.js"
+    },
+    {
+      "name": "list_tags",
+      "description": "List Stack Overflow tags sorted by popularity or name. Tags categorize questions by topic. Use this to discover popular technologies and topics.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tags.js"
+    },
+    {
+      "name": "get_tag_info",
+      "description": "Get detailed information about a Stack Overflow tag, including its description and wiki. Tags are the primary way questions are categorized.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tag_info.js"
+    },
+    {
+      "name": "search_excerpts",
+      "description": "Search Stack Overflow questions and answers and return results with text excerpts containing highlighted matches. Returns both question and answer results with their excerpts. Useful for getting a quick overview of search results.",
+      "urlRegex": "^https://(?:[a-z0-9-]+\\.)*stackoverflow\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_excerpts.js"
+    }
+  ]
+}

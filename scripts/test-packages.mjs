@@ -59,6 +59,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.stackoverflow.main': 20,
   'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
@@ -203,6 +204,28 @@ const OPENTABS_TOOL_NAMES = {
     'get_user',
     'send_message',
     'read_inbox',
+  ],
+  'com.stackoverflow.main': [
+    'search_questions',
+    'get_question',
+    'list_questions',
+    'get_question_answers',
+    'get_question_comments',
+    'list_related_questions',
+    'list_linked_questions',
+    'list_featured_questions',
+    'list_unanswered_questions',
+    'get_similar_questions',
+    'get_answer',
+    'get_answer_comments',
+    'get_user',
+    'search_users',
+    'get_user_questions',
+    'get_user_answers',
+    'get_my_profile',
+    'list_tags',
+    'get_tag_info',
+    'search_excerpts',
   ],
 }
 
@@ -414,7 +437,11 @@ for (const id of packageIds) {
     ok(!/location\s*\.\s*href\s*=/.test(source), `${id}: no href assignment (${tool.name})`)
     ok(!/window\s*\.\s*open\s*\(/.test(source), `${id}: no window.open (${tool.name})`)
     // The session cookie must travel with the request, never be lifted out.
-    ok(source.includes("credentials: 'include'"), `${id}: sends credentials (${tool.name})`)
+    // A cross-origin API that answers ACAO:* with ACAC:false cannot take
+    // credentialed requests; those packages must omit cookies instead.
+    const credentialsMode =
+      id === 'com.stackoverflow.main' ? "credentials: 'omit'" : "credentials: 'include'"
+    ok(source.includes(credentialsMode), `${id}: sends credentials (${tool.name})`)
   }
 }
 
@@ -2825,6 +2852,1507 @@ section('urlRegex probe: reddit.com')
     for (const url of mustMatch) ok(regex.test(url), `reddit urlRegex matches ${url} (${tool.name})`)
     for (const url of mustNotMatch)
       ok(!regex.test(url), `reddit urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// --- Stack Overflow ----------------------------------------------------------
+//
+// The upstream plugin talks to the public Stack Exchange API
+// (api.stackexchange.com/2.3) with `site=stackoverflow` and `filter=withbody`
+// appended by its own helper, and reads the signed-in identity from the page
+// (`StackExchange.options.user`). These fixtures reproduce that envelope: paged
+// `{ items, has_more, quota_remaining }` bodies, the API's numeric `error_id`
+// failures, in-page identity for the authenticated tool, and a logged-out page.
+
+const SO_HOST = 'stackoverflow.com'
+
+/** The Stack Exchange question shape the port maps (unix dates, nested owner). */
+const SO_QUESTION = {
+  question_id: 11227809,
+  title: 'Why is processing a sorted array faster than processing an unsorted array?',
+  body: '<p>Here is a piece of C++ code…</p>',
+  tags: ['c++', 'performance', 'branch-prediction'],
+  score: 27341,
+  answer_count: 17,
+  view_count: 1980000,
+  is_answered: true,
+  accepted_answer_id: 11227902,
+  creation_date: 1340805096,
+  last_activity_date: 1749000000,
+  link: 'https://stackoverflow.com/questions/11227809',
+  owner: { display_name: 'GManNickG', reputation: 138000, user_id: 87234 },
+  bounty_amount: 500,
+  closed_reason: '',
+}
+
+const SO_ANSWER = {
+  answer_id: 11227902,
+  question_id: 11227809,
+  body: '<p>You are a victim of branch prediction fail.</p>',
+  score: 31000,
+  is_accepted: true,
+  creation_date: 1340808338,
+  last_activity_date: 1731000000,
+  owner: { display_name: 'Mysticial', reputation: 430000, user_id: 43421 },
+}
+
+const SO_USER = {
+  user_id: 22656,
+  display_name: 'Jon Skeet',
+  reputation: 1445000,
+  profile_image: 'https://i.sstatic.net/JonSkeet.jpg',
+  link: 'https://stackoverflow.com/users/22656/jon-skeet',
+  accept_rate: 87,
+  question_count: 40,
+  answer_count: 34000,
+  creation_date: 1222430705,
+  last_access_date: 1749100000,
+  location: 'Reading, United Kingdom',
+  website_url: 'https://codeblog.jonskeet.uk',
+  badge_counts: { gold: 900, silver: 9000, bronze: 90000 },
+}
+
+{
+  // stackoverflow: search_questions builds the advanced-search query exactly
+  // like the upstream helper — site, then the caller's params in declaration
+  // order, then the default withbody filter — and maps the whole question row.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'react hooks useEffect', tagged: 'javascript;react', pagesize: 2 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_QUESTION], has_more: true, quota_remaining: 297 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow search_questions: status')
+  const searchUrl = new URL(requests[0].url)
+  equal(searchUrl.origin + searchUrl.pathname, 'https://api.stackexchange.com/2.3/search/advanced', 'stackoverflow search_questions: API endpoint')
+  equal(searchUrl.searchParams.get('site'), 'stackoverflow', 'stackoverflow search_questions: site param')
+  equal(searchUrl.searchParams.get('q'), 'react hooks useEffect', 'stackoverflow search_questions: query text')
+  equal(searchUrl.searchParams.get('tagged'), 'javascript;react', 'stackoverflow search_questions: tagged filter')
+  equal(searchUrl.searchParams.get('order'), 'desc', 'stackoverflow search_questions: default order')
+  equal(searchUrl.searchParams.get('sort'), null, 'stackoverflow search_questions: no sort default, like upstream')
+  equal(searchUrl.searchParams.get('pagesize'), '2', 'stackoverflow search_questions: pagesize')
+  equal(searchUrl.searchParams.getAll('filter').join(','), 'withbody', 'stackoverflow search_questions: one withbody filter')
+  equal(requests[0].init.method, 'GET', 'stackoverflow search_questions: GET')
+  equal(requests[0].init.credentials, 'omit', 'stackoverflow search_questions: no cookies sent cross-origin')
+  equal(result.data.questions.length, 1, 'stackoverflow search_questions: question count')
+  const question = result.data.questions[0]
+  equal(question.question_id, 11227809, 'stackoverflow search_questions: question id is numeric')
+  equal(question.tags[1], 'performance', 'stackoverflow search_questions: tags')
+  equal(question.is_answered, true, 'stackoverflow search_questions: answered flag')
+  equal(question.accepted_answer_id, 11227902, 'stackoverflow search_questions: accepted answer id')
+  equal(question.creation_date, '2012-06-27T13:51:36.000Z', 'stackoverflow search_questions: unix date converted to ISO')
+  equal(question.owner_display_name, 'GManNickG', 'stackoverflow search_questions: owner display name')
+  equal(question.owner_reputation, 138000, 'stackoverflow search_questions: owner reputation')
+  equal(question.bounty_amount, 500, 'stackoverflow search_questions: bounty amount')
+  equal(result.data.has_more, true, 'stackoverflow search_questions: has_more')
+  equal(result.data.quota_remaining, 297, 'stackoverflow search_questions: quota')
+}
+
+{
+  // stackoverflow: get_question reads one question by id from the API and
+  // leaves every field absent from the payload at its documented default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [{ ...SO_QUESTION, bounty_amount: undefined, closed_reason: undefined }], has_more: false, quota_remaining: 300 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_question: status')
+  const questionUrl = new URL(requests[0].url)
+  equal(questionUrl.origin + questionUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809', 'stackoverflow get_question: question endpoint')
+  equal(questionUrl.searchParams.get('filter'), 'withbody', 'stackoverflow get_question: body filter')
+  equal(result.data.question.title.startsWith('Why is processing a sorted array'), true, 'stackoverflow get_question: title')
+  equal(result.data.question.body.includes('C++ code'), true, 'stackoverflow get_question: full body returned')
+  equal(result.data.question.bounty_amount, 0, 'stackoverflow get_question: absent bounty defaults to 0')
+  equal(result.data.question.closed_reason, '', 'stackoverflow get_question: absent close reason defaults to empty')
+  equal(result.data.question.owner_user_id, 87234, 'stackoverflow get_question: owner user id')
+
+  // An empty items array is a real answer from the API (deleted or bad id) and
+  // must surface as NOT_FOUND, not as a zero-filled question.
+  const missing = await runTool('com.stackoverflow.main', 'get_question', {
+    input: { question_id: 999999999 },
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [], has_more: false, quota_remaining: 300 }) },
+  })
+  equal(missing.status, 'error', 'stackoverflow get_question: empty items is an error')
+  equal(missing.error_code, 'NOT_FOUND', 'stackoverflow get_question: empty items classified as NOT_FOUND')
+}
+
+{
+  // stackoverflow: reading answers for a question defaults to votes/desc, and
+  // get_answer reads a single answer by id.
+  const requests = []
+  const answers = await runTool('com.stackoverflow.main', 'get_question_answers', {
+    input: { question_id: 11227809 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 299 })
+      },
+    },
+  })
+  equal(answers.status, 'ok', 'stackoverflow get_question_answers: status')
+  const answersUrl = new URL(requests[0].url)
+  equal(answersUrl.origin + answersUrl.pathname, 'https://api.stackexchange.com/2.3/questions/11227809/answers', 'stackoverflow get_question_answers: endpoint')
+  equal(answersUrl.searchParams.get('sort'), 'votes', 'stackoverflow get_question_answers: default sort votes')
+  equal(answersUrl.searchParams.get('order'), 'desc', 'stackoverflow get_question_answers: default order desc')
+  equal(answers.data.answers[0].answer_id, 11227902, 'stackoverflow get_question_answers: answer id')
+  equal(answers.data.answers[0].is_accepted, true, 'stackoverflow get_question_answers: accepted flag')
+  equal(answers.data.answers[0].owner_display_name, 'Mysticial', 'stackoverflow get_question_answers: answer author')
+
+  const single = await runTool('com.stackoverflow.main', 'get_answer', {
+    input: { answer_id: 11227902 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_ANSWER], has_more: false, quota_remaining: 298 })
+      },
+    },
+  })
+  equal(single.status, 'ok', 'stackoverflow get_answer: status')
+  const answerUrl = new URL(requests[1].url)
+  equal(answerUrl.origin + answerUrl.pathname, 'https://api.stackexchange.com/2.3/answers/11227902', 'stackoverflow get_answer: answer endpoint')
+  equal(single.data.answer.score, 31000, 'stackoverflow get_answer: score')
+  equal(single.data.answer.creation_date, '2012-06-27T14:45:38.000Z', 'stackoverflow get_answer: ISO date')
+}
+
+{
+  // stackoverflow: get_user maps the public profile (nested badge_counts,
+  // accept_rate) and search_users sends inname with the reputation default.
+  const requests = []
+  const result = await runTool('com.stackoverflow.main', 'get_user', {
+    input: { user_id: 22656 },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 296 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'stackoverflow get_user: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_user: user endpoint')
+  equal(result.data.user.display_name, 'Jon Skeet', 'stackoverflow get_user: display name')
+  equal(result.data.user.reputation, 1445000, 'stackoverflow get_user: reputation')
+  equal(result.data.user.badge_gold, 900, 'stackoverflow get_user: gold badges from badge_counts')
+  equal(result.data.user.accept_rate, 87, 'stackoverflow get_user: accept rate')
+  equal(result.data.user.location, 'Reading, United Kingdom', 'stackoverflow get_user: location')
+
+  const found = await runTool('com.stackoverflow.main', 'search_users', {
+    input: { inname: 'skeet' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 295 })
+      },
+    },
+  })
+  equal(found.status, 'ok', 'stackoverflow search_users: status')
+  const usersUrl = new URL(requests[1].url)
+  equal(usersUrl.pathname, '/2.3/users', 'stackoverflow search_users: users endpoint')
+  equal(usersUrl.searchParams.get('inname'), 'skeet', 'stackoverflow search_users: inname')
+  equal(usersUrl.searchParams.get('sort'), 'reputation', 'stackoverflow search_users: default sort reputation')
+  equal(found.data.users[0].user_id, 22656, 'stackoverflow search_users: user id')
+}
+
+{
+  // stackoverflow: get_my_profile takes the user id from the page
+  // (StackExchange.options.user), never from the caller — and a logged-out page
+  // is a classified auth error, matching upstream getCurrentUserId().
+  const requests = []
+  const authed = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ items: [SO_USER], has_more: false, quota_remaining: 294 })
+      },
+      globals: { StackExchange: { options: { user: { isRegistered: true, userId: 22656 } } } },
+    },
+  })
+  equal(authed.status, 'ok', 'stackoverflow get_my_profile: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/users/22656', 'stackoverflow get_my_profile: page user id in the path')
+  equal(authed.data.user.display_name, 'Jon Skeet', 'stackoverflow get_my_profile: profile mapped')
+
+  const anonymous = await runTool('com.stackoverflow.main', 'get_my_profile', {
+    input: {},
+    page: { hostname: SO_HOST, fetch: async () => jsonResponse({ items: [] }) },
+  })
+  equal(anonymous.status, 'error', 'stackoverflow get_my_profile: logged-out page is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'stackoverflow get_my_profile: logged-out page classified as UNAUTHENTICATED')
+}
+
+{
+  // stackoverflow: get_tag_info makes the two upstream calls (info + wikis) and
+  // merges the wiki into the tag; search_excerpts maps question and answer hits.
+  const requests = []
+  const tag = await runTool('com.stackoverflow.main', 'get_tag_info', {
+    input: { tag: 'javascript' },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (new URL(url).pathname.endsWith('/wikis')) {
+          return jsonResponse({
+            items: [{ tag_name: 'javascript', excerpt: 'For questions about programming in ECMAScript.', body: '<p>JavaScript wiki</p>' }],
+            has_more: false,
+            quota_remaining: 293,
+          })
+        }
+        return jsonResponse({
+          items: [{ name: 'javascript', count: 2400000, has_synonyms: true, is_moderator_only: false, is_required: false }],
+          has_more: false,
+          quota_remaining: 292,
+        })
+      },
+    },
+  })
+  equal(tag.status, 'ok', 'stackoverflow get_tag_info: status')
+  equal(new URL(requests[0].url).pathname, '/2.3/tags/javascript/info', 'stackoverflow get_tag_info: tag info endpoint')
+  equal(new URL(requests[1].url).pathname, '/2.3/tags/javascript/wikis', 'stackoverflow get_tag_info: wiki endpoint')
+  equal(tag.data.tag.name, 'javascript', 'stackoverflow get_tag_info: tag name')
+  equal(tag.data.tag.count, 2400000, 'stackoverflow get_tag_info: tag count')
+  equal(tag.data.tag.has_synonyms, true, 'stackoverflow get_tag_info: synonyms flag')
+  equal(tag.data.tag.excerpt.includes('ECMAScript'), true, 'stackoverflow get_tag_info: wiki excerpt merged')
+  equal(tag.data.tag.wiki_body, '<p>JavaScript wiki</p>', 'stackoverflow get_tag_info: wiki body merged')
+
+  const excerpts = await runTool('com.stackoverflow.main', 'search_excerpts', {
+    input: { q: 'useEffect cleanup', accepted: true },
+    page: {
+      hostname: SO_HOST,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          items: [
+            {
+              question_id: 53331175,
+              answer_id: 0,
+              title: 'React useEffect cleanup',
+              excerpt: '…',
+              item_type: 'question',
+              tags: ['javascript', 'reactjs'],
+              score: 412,
+              is_answered: true,
+              creation_date: 1550000000,
+            },
+          ],
+          has_more: false,
+          quota_remaining: 291,
+        })
+      },
+    },
+  })
+  equal(excerpts.status, 'ok', 'stackoverflow search_excerpts: status')
+  const excerptsUrl = new URL(requests[2].url)
+  equal(excerptsUrl.pathname, '/2.3/search/excerpts', 'stackoverflow search_excerpts: endpoint')
+  equal(excerptsUrl.searchParams.get('accepted'), 'true', 'stackoverflow search_excerpts: boolean sent as true')
+  equal(excerptsUrl.searchParams.get('sort'), 'relevance', 'stackoverflow search_excerpts: default sort relevance')
+  equal(excerpts.data.results[0].item_type, 'question', 'stackoverflow search_excerpts: item type')
+  equal(excerpts.data.results[0].answer_id, 0, 'stackoverflow search_excerpts: question hit has answer_id 0')
+}
+
+{
+  // stackoverflow: the API's numeric error_id envelope is classified the way
+  // upstream does it (502 → rate limited), and a non-Stack-Overflow tab refuses
+  // to run instead of calling the API from the wrong site.
+  const limited = await runTool('com.stackoverflow.main', 'list_questions', {
+    input: {},
+    page: {
+      hostname: SO_HOST,
+      fetch: async () => jsonResponse({ error_id: 502, error_name: 'throttle_violation', error_message: 'too many requests from this IP' }),
+    },
+  })
+  equal(limited.status, 'error', 'stackoverflow error_id: 502 is an error')
+  equal(limited.error_code, 'RATE_LIMITED', 'stackoverflow error_id: 502 classified as RATE_LIMITED')
+
+  let requests = 0
+  const wrongHost = await runTool('com.stackoverflow.main', 'search_questions', {
+    input: { q: 'x' },
+    page: {
+      hostname: 'stackoverflow.com.evil.example',
+      fetch: async () => {
+        requests++
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(wrongHost.status, 'error', 'stackoverflow wrong host: is an error')
+  equal(wrongHost.error_code, 'UNSUPPORTED_PAGE', 'stackoverflow wrong host: classified as UNSUPPORTED_PAGE')
+  equal(requests, 0, 'stackoverflow wrong host: no API call is made')
+}
+
+// --- Slack -------------------------------------------------------------------
+//
+// Slack's web client authenticates every call with the `xoxc-` token its own
+// runtime exposes (localConfig_v2 in the legacy workspace client, boot_data
+// globals in the current one) and takes the API as a form-encoded POST to the
+// workspace host. These fixtures reproduce that: token read out of the page,
+// `application/x-www-form-urlencoded` body carrying the token plus the
+// client's `_x_*` metadata, and Slack's `{ ok, error }` envelope.
+
+const SLACK_WORKSPACE = 'acme.slack.com'
+
+function slackPage({ token = 'xoxc-test-token', fetch } = {}) {
+  return {
+    hostname: SLACK_WORKSPACE,
+    localStorage: {
+      localConfig_v2: JSON.stringify({
+        teams: { T0123: { token, url: 'https://acme.slack.com/', name: 'Acme' } },
+        lastActiveTeamId: 'T0123',
+      }),
+    },
+    fetch,
+  }
+}
+
+function slackForm(request) {
+  return new URLSearchParams(request.init.body)
+}
+
+{
+  // Slack: list_channels is a workspace listing — form-encoded POST, the page
+  // token and team id, channel mapping with defensive defaults.
+  const requests = []
+  const result = await runTool('com.slack.main', 'list_channels', {
+    input: {},
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          channels: [
+            {
+              id: 'C1',
+              name: 'general',
+              is_channel: true,
+              is_private: false,
+              num_members: 12,
+              topic: { value: 'Team news' },
+              purpose: { value: 'Chatter' },
+            },
+            { id: 'C2', name: 'random' },
+          ],
+          response_metadata: { next_cursor: 'cursor-2' },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack list_channels: status')
+  equal(result.data.channels.length, 2, 'slack list_channels: channel count')
+  equal(result.data.channels[0].name, 'general', 'slack list_channels: channel name')
+  equal(result.data.channels[0].num_members, 12, 'slack list_channels: member count is a number')
+  equal(result.data.channels[0].topic.value, 'Team news', 'slack list_channels: topic text')
+  equal(result.data.channels[1].num_members, 0, 'slack list_channels: missing fields default to 0')
+  equal(result.data.channels[1].is_private, false, 'slack list_channels: private flag defaults')
+  equal(result.data.response_metadata.next_cursor, 'cursor-2', 'slack list_channels: next cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.list', 'slack list_channels: workspace API endpoint')
+  equal(requests[0].init.method, 'POST', 'slack list_channels: uses POST')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    'application/x-www-form-urlencoded',
+    'slack list_channels: form-encoded body',
+  )
+  equal(requests[0].init.credentials, 'include', 'slack list_channels: sends credentials')
+  const form = slackForm(requests[0])
+  equal(form.get('token'), 'xoxc-test-token', 'slack list_channels: sends the page token')
+  equal(form.get('limit'), '100', 'slack list_channels: default limit')
+  equal(form.get('types'), 'public_channel', 'slack list_channels: default types')
+  equal(form.get('_x_team_id'), 'T0123', 'slack list_channels: sends the team id')
+  equal(form.get('_x_mode'), 'online', 'slack list_channels: sends the client metadata')
+}
+
+{
+  // Slack: the current app.slack.com client exposes auth as window.boot_data
+  // rather than localConfig — same call path, workspace URL from team_url.
+  const requests = []
+  const result = await runTool('com.slack.main', 'get_channel_info', {
+    input: { channel: 'C1' },
+    page: {
+      hostname: 'app.slack.com',
+      globals: {
+        boot_data: { api_token: 'xoxc-boot', team_id: 'T9', team_url: 'https://acme.slack.com' },
+      },
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          channel: { id: 'C1', name: 'general', is_channel: true, num_members: 3, topic: { value: 't' }, purpose: { value: 'p' } },
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'slack get_channel_info boot_data: status')
+  equal(result.data.channel.id, 'C1', 'slack get_channel_info boot_data: channel id')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.info', 'slack get_channel_info: workspace URL from boot_data')
+  equal(slackForm(requests[0]).get('token'), 'xoxc-boot', 'slack get_channel_info: token from boot_data')
+
+  // An Enterprise Grid tab belongs to the upstream slack-enterprise plugin: it
+  // must fail loudly instead of silently acting on the wrong workspace type.
+  const enterprise = await runTool('com.slack.main', 'get_channel_info', {
+    input: { channel: 'C1' },
+    page: {
+      hostname: 'app.slack.com',
+      globals: { boot_data: { api_token: 'xoxc-boot', is_enterprise_install: true } },
+      fetch: async () => jsonResponse({ ok: true }),
+    },
+  })
+  equal(enterprise.status, 'error', 'slack enterprise workspace: is an error')
+  equal(enterprise.error_code, 'ENTERPRISE_WORKSPACE', 'slack enterprise workspace: is classified')
+}
+
+{
+  // Slack: read_messages is cursor-paginated — the cursor travels as a form
+  // field, the limit stays numeric, and the next cursor comes back verbatim.
+  const requests = []
+  const result = await runTool('com.slack.main', 'read_messages', {
+    input: { channel: 'C1', limit: 50, cursor: 'dGVhbTpDMTIz' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: [
+            { type: 'message', user: 'U1', text: 'deploying now', ts: '1700000000.000100' },
+            { text: 'system note', ts: '1700000000.000200' },
+          ],
+          response_metadata: { next_cursor: 'bmV4dA' },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack read_messages: status')
+  equal(result.data.messages.length, 2, 'slack read_messages: message count')
+  equal(result.data.messages[0].user, 'U1', 'slack read_messages: author id')
+  equal(result.data.messages[0].type, 'message', 'slack read_messages: message type')
+  equal(result.data.messages[0].ts, '1700000000.000100', 'slack read_messages: timestamp is the id')
+  equal(result.data.messages[1].type, 'message', 'slack read_messages: type defaults')
+  equal(result.data.messages[1].user, undefined, 'slack read_messages: author omitted when absent')
+  equal(result.data.response_metadata.next_cursor, 'bmV4dA', 'slack read_messages: forwards the next cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.history', 'slack read_messages: history endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('channel'), 'C1', 'slack read_messages: channel')
+  equal(form.get('limit'), '50', 'slack read_messages: limit stays a number')
+  equal(form.get('cursor'), 'dGVhbTpDMTIz', 'slack read_messages: cursor')
+}
+
+{
+  // Slack: read_thread maps the reply shape and only reports pagination when
+  // Slack actually returned a next cursor.
+  const requests = []
+  const result = await runTool('com.slack.main', 'read_thread', {
+    input: { channel: 'C1', ts: '1700000000.000100' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: [
+            { type: 'message', user: 'U1', text: 'parent', ts: '1700000000.000100', thread_ts: '1700000000.000100' },
+            { type: 'message', user: 'U2', text: 'reply', ts: '1700000000.000300', thread_ts: '1700000000.000100' },
+          ],
+          has_more: false,
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack read_thread: status')
+  equal(result.data.messages.length, 2, 'slack read_thread: includes the parent')
+  equal(result.data.messages[1].thread_ts, '1700000000.000100', 'slack read_thread: reply thread timestamp')
+  equal(result.data.has_more, false, 'slack read_thread: has_more flag')
+  equal(result.data.response_metadata, undefined, 'slack read_thread: no pagination metadata without a cursor')
+  equal(requests[0].url, 'https://acme.slack.com/api/conversations.replies', 'slack read_thread: replies endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('ts'), '1700000000.000100', 'slack read_thread: parent ts')
+  equal(form.get('limit'), '20', 'slack read_thread: default limit')
+}
+
+{
+  // Slack: send_message is a write through the same form-encoded path; an
+  // optional thread_ts must reach the body and be omitted otherwise.
+  const requests = []
+  const result = await runTool('com.slack.main', 'send_message', {
+    input: { channel: 'C1', text: 'shipping v1', thread_ts: '1700000000.000100' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, channel: 'C1', ts: '1700000000.000900' })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack send_message: status')
+  equal(result.data.channel, 'C1', 'slack send_message: channel')
+  equal(result.data.ts, '1700000000.000900', 'slack send_message: posted ts')
+  equal(requests[0].url, 'https://acme.slack.com/api/chat.postMessage', 'slack send_message: postMessage endpoint')
+  const form = slackForm(requests[0])
+  equal(form.get('text'), 'shipping v1', 'slack send_message: message text')
+  equal(form.get('thread_ts'), '1700000000.000100', 'slack send_message: thread reply target')
+
+  const plain = await runTool('com.slack.main', 'send_message', {
+    input: { channel: 'C1', text: 'top level' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, channel: 'C1', ts: '1700000000.001000' })
+      },
+    }),
+  })
+  equal(plain.status, 'ok', 'slack send_message without thread: status')
+  equal(slackForm(requests[1]).get('thread_ts'), null, 'slack send_message: omits an absent thread_ts')
+}
+
+{
+  // Slack: create_channel creates and then sets the topic in a second call.
+  const requests = []
+  const result = await runTool('com.slack.main', 'create_channel', {
+    input: { name: 'project-updates', topic: 'Launch notes' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (String(url).endsWith('/api/conversations.create'))
+          return jsonResponse({ ok: true, channel: { id: 'C9', name: 'project-updates', is_private: false } })
+        return jsonResponse({ ok: true, channel: { id: 'C9', topic: { value: 'Launch notes' } } })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack create_channel: status')
+  equal(result.data.channel.id, 'C9', 'slack create_channel: new channel id')
+  equal(result.data.channel.is_private, false, 'slack create_channel: public by default')
+  equal(result.data.warning, undefined, 'slack create_channel: no warning when the topic is set')
+  equal(requests.length, 2, 'slack create_channel: create then setTopic')
+  const create = slackForm(requests[0])
+  equal(create.get('name'), 'project-updates', 'slack create_channel: channel name')
+  equal(create.get('is_private'), 'false', 'slack create_channel: private flag is sent')
+  const topic = slackForm(requests[1])
+  equal(requests[1].url, 'https://acme.slack.com/api/conversations.setTopic', 'slack create_channel: setTopic endpoint')
+  equal(topic.get('channel'), 'C9', 'slack create_channel: topic target')
+  equal(topic.get('topic'), 'Launch notes', 'slack create_channel: topic text')
+}
+
+{
+  // Slack: a failed topic update after a successful create is a warning, not a
+  // failed tool call — the channel exists, the caller must learn that.
+  const result = await runTool('com.slack.main', 'create_channel', {
+    input: { name: 'ops', topic: 'Runbooks' },
+    page: slackPage({
+      fetch: async (url) => {
+        if (String(url).endsWith('/api/conversations.create'))
+          return jsonResponse({ ok: true, channel: { id: 'C10', name: 'ops', is_private: true } })
+        return jsonResponse({ ok: false, error: 'cant_update_channel' })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack create_channel topic failure: still ok')
+  equal(result.data.channel.id, 'C10', 'slack create_channel topic failure: channel reported')
+  ok(
+    String(result.data.warning).startsWith('Channel created but failed to set topic'),
+    'slack create_channel topic failure: warning explains the partial success',
+  )
+}
+
+{
+  // Slack: upload_file posts multipart form data (V1 files.upload) — never a
+  // JSON body — and lets the browser set the multipart boundary.
+  const requests = []
+  const result = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'hello world', filename: 'note.txt', initial_comment: 'see attached' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, file: { id: 'F1', title: 'ignored by the port' } })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack upload_file: status')
+  equal(result.data.file.id, 'F1', 'slack upload_file: file id from the response')
+  equal(result.data.file.title, 'note.txt', 'slack upload_file: title falls back to the filename')
+  equal(requests[0].url, 'https://acme.slack.com/api/files.upload', 'slack upload_file: files.upload endpoint')
+  equal(requests[0].init.method, 'POST', 'slack upload_file: uses POST')
+  ok(requests[0].init.body instanceof FormData, 'slack upload_file: body is FormData')
+  equal(requests[0].init.headers, undefined, 'slack upload_file: lets the browser set the multipart boundary')
+  const body = requests[0].init.body
+  equal(body.get('channels'), 'C1', 'slack upload_file: target channel')
+  equal(body.get('filename'), 'note.txt', 'slack upload_file: filename')
+  equal(body.get('initial_comment'), 'see attached', 'slack upload_file: comment')
+  equal(body.get('file').name, 'note.txt', 'slack upload_file: file part carries the name')
+  equal(requests[0].init.credentials, 'include', 'slack upload_file: sends credentials')
+}
+
+{
+  // Slack: a base64 upload checks the claimed format's magic bytes before any
+  // request, and keeps the decoded byte length.
+  const requests = []
+  const png = await runTool('com.slack.main', 'upload_file', {
+    input: {
+      channel: 'C1',
+      content: 'iVBORw0KGgoAAAANSUhEUg==',
+      is_base64: true,
+      filename: 'chart.png',
+    },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ ok: true, file: { id: 'F2' } })
+      },
+    }),
+  })
+  equal(png.status, 'ok', 'slack upload_file base64 png: status')
+  equal(requests[0].init.body.get('file').size, 16, 'slack upload_file base64 png: decoded byte length')
+
+  const mismatch = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'aGVsbG8=', is_base64: true, filename: 'chart.pdf' },
+    page: slackPage({
+      fetch: async () => {
+        throw new Error('must not send a mismatched file')
+      },
+    }),
+  })
+  equal(mismatch.status, 'error', 'slack upload_file magic mismatch: is an error')
+  equal(mismatch.error_code, 'VALIDATION', 'slack upload_file magic mismatch: is VALIDATION')
+
+  const blocked = await runTool('com.slack.main', 'upload_file', {
+    input: { channel: 'C1', content: 'MZ', filename: 'setup.exe' },
+    page: slackPage({ fetch: async () => jsonResponse({ ok: true }) }),
+  })
+  equal(blocked.status, 'error', 'slack upload_file blocked extension: is an error')
+  equal(blocked.error_code, 'VALIDATION', 'slack upload_file blocked extension: is VALIDATION')
+}
+
+{
+  // Slack: search_messages passes the enum sort fields through untouched and
+  // unwraps the nested messages envelope.
+  const requests = []
+  const result = await runTool('com.slack.main', 'search_messages', {
+    input: { query: 'from:@ada in:#general', count: 5, page: 2, sort: 'timestamp', sort_dir: 'asc' },
+    page: slackPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          ok: true,
+          messages: {
+            total: 1,
+            matches: [
+              { channel: { id: 'C1', name: 'general' }, username: 'ada', text: 'hello', ts: '1700000000.000100', permalink: 'https://acme.slack.com/archives/C1/p1700000000000100' },
+            ],
+            paging: { count: 5, total: 1, page: 2, pages: 1 },
+          },
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'slack search_messages: status')
+  equal(result.data.messages.total, 1, 'slack search_messages: total')
+  equal(result.data.messages.matches[0].channel.name, 'general', 'slack search_messages: match channel')
+  equal(result.data.messages.matches[0].permalink.indexOf('https://acme.slack.com/archives/'), 0, 'slack search_messages: permalink')
+  equal(result.data.messages.paging.page, 2, 'slack search_messages: paging page')
+  const form = slackForm(requests[0])
+  equal(requests[0].url, 'https://acme.slack.com/api/search.messages', 'slack search_messages: search endpoint')
+  equal(form.get('sort'), 'timestamp', 'slack search_messages: sort enum')
+  equal(form.get('sort_dir'), 'asc', 'slack search_messages: sort direction enum')
+  equal(form.get('count'), '5', 'slack search_messages: count')
+  equal(form.get('page'), '2', 'slack search_messages: page')
+}
+
+{
+  // Slack: the auth-failure path. No token on the page is AUTH and makes no
+  // request; a rejected token (invalid_auth) is AUTH; a 429 is RATE_LIMITED.
+  const anonymousRequests = []
+  const anonymous = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: {
+      hostname: SLACK_WORKSPACE,
+      fetch: async (url, init) => {
+        anonymousRequests.push({ url, init })
+        return jsonResponse({ ok: true, members: [] })
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'slack list_users logged out: is an error')
+  equal(anonymous.error_code, 'AUTH', 'slack list_users logged out: is AUTH')
+  equal(anonymousRequests.length, 0, 'slack list_users logged out: makes no request')
+
+  const rejected = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: slackPage({ fetch: async () => jsonResponse({ ok: false, error: 'invalid_auth' }) }),
+  })
+  equal(rejected.status, 'error', 'slack list_users invalid token: is an error')
+  equal(rejected.error_code, 'AUTH', 'slack list_users invalid token: is AUTH')
+  ok(String(rejected.message).includes('invalid_auth'), 'slack list_users invalid token: keeps the Slack error')
+
+  const rateLimited = await runTool('com.slack.main', 'list_users', {
+    input: {},
+    page: slackPage({
+      fetch: async () => ({
+        ok: false,
+        status: 429,
+        headers: { get: (name) => (name === 'Retry-After' ? '30' : null) },
+        async text() {
+          return 'ratelimited'
+        },
+        async json() {
+          return {}
+        },
+      }),
+    }),
+  })
+  equal(rateLimited.status, 'error', 'slack list_users rate limited: is an error')
+  equal(rateLimited.error_code, 'RATE_LIMITED', 'slack list_users rate limited: is RATE_LIMITED')
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// Jira Cloud: the session identity is published on every page as meta tags
+// (`ajs-atlassian-account-id`, `ajs-cloud-id`), and every call is a same-origin
+// REST fetch under /rest/api/3 (Jira platform) or /rest/agile/1.0 (boards and
+// sprints). Descriptions and comment bodies travel as Atlassian Document Format.
+
+const JIRA_META = {
+  'ajs-atlassian-account-id': '5b10ac8d82e05b22cc7d4ef5',
+  'ajs-cloud-id': '2f1a2b3c-4d5e-6789-abcd-ef0123456789',
+}
+
+const JIRA_ISSUE = {
+  id: '10042',
+  key: 'KAN-42',
+  self: 'https://acme.atlassian.net/rest/api/3/issue/10042',
+  fields: {
+    summary: 'Rate limit the public export endpoint',
+    status: { name: 'In Progress', statusCategory: { name: 'In Progress' } },
+    issuetype: { name: 'Task' },
+    priority: { name: 'High' },
+    assignee: { accountId: '5b10ac8d82e05b22cc7d4ef5', displayName: 'Ada Lovelace' },
+    reporter: { accountId: '712020:1b2c3d4e-0000-1111-2222-333344445555', displayName: 'Grace Hopper' },
+    project: { key: 'KAN', name: 'Kanban' },
+    labels: ['backend', 'perf'],
+    created: '2026-02-03T09:15:00.000+0000',
+    updated: '2026-02-04T11:02:31.000+0000',
+    description: {
+      type: 'doc',
+      version: 1,
+      content: [
+        { type: 'paragraph', content: [{ type: 'text', text: 'Exports currently bypass the limiter.' }] },
+        { type: 'paragraph', content: [{ type: 'text', text: 'Add a per-token budget.' }] },
+      ],
+    },
+  },
+}
+
+{
+  // Jira: search_issues runs JQL against /rest/api/3/search/jql and maps the
+  // ADF description to plain text (paragraphs joined by a newline).
+  const requests = []
+  const result = await runTool('com.jira.main', 'search_issues', {
+    input: { jql: 'project = KAN AND status = "In Progress"' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ issues: [JIRA_ISSUE], total: 1, startAt: 0, maxResults: 20 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira search_issues: status')
+  equal(result.data.total, 1, 'jira search_issues: total')
+  equal(result.data.start_at, 0, 'jira search_issues: start_at')
+  equal(result.data.issues[0].key, 'KAN-42', 'jira search_issues: issue key')
+  equal(result.data.issues[0].summary, 'Rate limit the public export endpoint', 'jira search_issues: summary')
+  equal(result.data.issues[0].status, 'In Progress', 'jira search_issues: status')
+  equal(result.data.issues[0].status_category, 'In Progress', 'jira search_issues: status category')
+  equal(result.data.issues[0].issue_type, 'Task', 'jira search_issues: issue type')
+  equal(result.data.issues[0].priority, 'High', 'jira search_issues: priority')
+  equal(result.data.issues[0].assignee_name, 'Ada Lovelace', 'jira search_issues: assignee name')
+  equal(result.data.issues[0].project_key, 'KAN', 'jira search_issues: project key')
+  equal(result.data.issues[0].labels.join(','), 'backend,perf', 'jira search_issues: labels')
+  equal(
+    result.data.issues[0].description_text,
+    'Exports currently bypass the limiter.\nAdd a per-token budget.',
+    'jira search_issues: ADF description flattened per paragraph',
+  )
+  ok(String(requests[0].url).startsWith('/rest/api/3/search/jql?'), 'jira search_issues: uses the platform search endpoint')
+  ok(String(requests[0].url).includes('jql=project+%3D+KAN+AND+status+%3D+%22In+Progress%22'), 'jira search_issues: sends JQL')
+  ok(String(requests[0].url).includes('maxResults=20'), 'jira search_issues: defaults maxResults')
+  ok(String(requests[0].url).includes('fields=summary%2Cstatus'), 'jira search_issues: requests the standard field set')
+  equal(requests[0].init.method, 'GET', 'jira search_issues: GET')
+  equal(requests[0].init.headers['Content-Type'], undefined, 'jira search_issues: no JSON content type on a read')
+  equal(requests[0].init.credentials, 'include', 'jira search_issues: sends credentials')
+}
+
+{
+  // Jira: get_issue asks for the explicit field list and maps reporter too.
+  const requests = []
+  const result = await runTool('com.jira.main', 'get_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(JIRA_ISSUE)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira get_issue: status')
+  equal(result.data.issue.id, '10042', 'jira get_issue: id')
+  equal(result.data.issue.key, 'KAN-42', 'jira get_issue: key')
+  equal(result.data.issue.reporter_name, 'Grace Hopper', 'jira get_issue: reporter name')
+  equal(result.data.issue.project_name, 'Kanban', 'jira get_issue: project name')
+  equal(result.data.issue.assignee_id, '5b10ac8d82e05b22cc7d4ef5', 'jira get_issue: assignee id')
+  ok(String(requests[0].url).startsWith('/rest/api/3/issue/KAN-42?fields='), 'jira get_issue: issue endpoint with fields')
+}
+
+{
+  // Jira: create_issue posts a JSON body with the ADF description and only the
+  // optional fields that were supplied (no priority, no parent).
+  const requests = []
+  const result = await runTool('com.jira.main', 'create_issue', {
+    input: {
+      project_key: 'KAN',
+      summary: 'Rate limit the public export endpoint',
+      description: 'Exports currently bypass the limiter.',
+      labels: ['backend', 'perf'],
+      assignee_id: '5b10ac8d82e05b22cc7d4ef5',
+    },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ id: '10042', key: 'KAN-42', self: 'https://acme.atlassian.net/rest/api/3/issue/10042' }, 201)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira create_issue: status')
+  equal(result.data.id, '10042', 'jira create_issue: id')
+  equal(result.data.key, 'KAN-42', 'jira create_issue: key')
+  equal(requests[0].url, '/rest/api/3/issue', 'jira create_issue: creates through /issue')
+  equal(requests[0].init.method, 'POST', 'jira create_issue: uses POST')
+  equal(requests[0].init.headers['Content-Type'], 'application/json', 'jira create_issue: sends JSON')
+  equal(requests[0].init.credentials, 'include', 'jira create_issue: sends credentials')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.fields.project.key, 'KAN', 'jira create_issue: project key')
+  equal(body.fields.summary, 'Rate limit the public export endpoint', 'jira create_issue: summary')
+  equal(body.fields.issuetype.name, 'Task', 'jira create_issue: issue type defaults to Task')
+  equal(body.fields.description.type, 'doc', 'jira create_issue: description is ADF')
+  equal(
+    body.fields.description.content[0].content[0].text,
+    'Exports currently bypass the limiter.',
+    'jira create_issue: ADF text',
+  )
+  equal(body.fields.labels.join(','), 'backend,perf', 'jira create_issue: labels stay an array')
+  equal(body.fields.assignee.accountId, '5b10ac8d82e05b22cc7d4ef5', 'jira create_issue: assignee account id')
+  ok(!('priority' in body.fields), 'jira create_issue: omits an unspecified priority')
+  ok(!('parent' in body.fields), 'jira create_issue: omits an unspecified parent')
+}
+
+{
+  // Jira: update_issue PUTs only the supplied fields; an empty assignee_id
+  // unassigns with an explicit null instead of an accountId object.
+  const requests = []
+  const result = await runTool('com.jira.main', 'update_issue', {
+    input: { issue_key: 'KAN-42', summary: 'Rate limit the export endpoint', assignee_id: '' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira update_issue: status')
+  equal(result.data.success, true, 'jira update_issue: success flag')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42', 'jira update_issue: updates the issue endpoint')
+  equal(requests[0].init.method, 'PUT', 'jira update_issue: uses PUT')
+  const body = JSON.parse(requests[0].init.body)
+  equal(Object.keys(body.fields).sort().join(','), 'assignee,summary', 'jira update_issue: only supplied fields')
+  equal(body.fields.summary, 'Rate limit the export endpoint', 'jira update_issue: new summary')
+  equal(body.fields.assignee, null, 'jira update_issue: empty account id unassigns with null')
+}
+
+{
+  // Jira: transition_issue posts the transition id the caller got from
+  // get_transitions.
+  const requests = []
+  const result = await runTool('com.jira.main', 'transition_issue', {
+    input: { issue_key: 'KAN-42', transition_id: '31' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira transition_issue: status')
+  equal(result.data.success, true, 'jira transition_issue: success flag')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/transitions', 'jira transition_issue: transitions endpoint')
+  equal(requests[0].init.method, 'POST', 'jira transition_issue: uses POST')
+  equal(JSON.parse(requests[0].init.body).transition.id, '31', 'jira transition_issue: sends the transition id')
+}
+
+{
+  // Jira: add_comment wraps plain text in ADF and maps the created comment back.
+  const requests = []
+  const result = await runTool('com.jira.main', 'add_comment', {
+    input: { issue_key: 'KAN-42', body: 'On it — the limiter lands today.' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          id: '10077',
+          author: { accountId: '5b10ac8d82e05b22cc7d4ef5', displayName: 'Ada Lovelace' },
+          body: { type: 'doc', version: 1, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'On it — the limiter lands today.' }] }] },
+          created: '2026-02-04T12:00:00.000+0000',
+          updated: '2026-02-04T12:00:00.000+0000',
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira add_comment: status')
+  equal(result.data.comment.id, '10077', 'jira add_comment: comment id')
+  equal(result.data.comment.author_name, 'Ada Lovelace', 'jira add_comment: author')
+  equal(result.data.comment.body_text, 'On it — the limiter lands today.', 'jira add_comment: body text')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/comment', 'jira add_comment: comment endpoint')
+  equal(requests[0].init.method, 'POST', 'jira add_comment: uses POST')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.body.type, 'doc', 'jira add_comment: body is ADF')
+  equal(body.body.content[0].content[0].text, 'On it — the limiter lands today.', 'jira add_comment: ADF text')
+}
+
+{
+  // Jira: add_watcher posts a bare JSON string (not an object) — the endpoint
+  // takes the account id as the request body.
+  const requests = []
+  const result = await runTool('com.jira.main', 'add_watcher', {
+    input: { issue_key: 'KAN-42', account_id: '5b10ac8d82e05b22cc7d4ef5' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira add_watcher: status')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/watchers', 'jira add_watcher: watchers endpoint')
+  equal(requests[0].init.body, '"5b10ac8d82e05b22cc7d4ef5"', 'jira add_watcher: body is a bare JSON string')
+  equal(requests[0].init.headers['Content-Type'], 'application/json', 'jira add_watcher: JSON content type')
+}
+
+{
+  // Jira: list_boards uses the agile API base path, not /rest/api/3.
+  const requests = []
+  const result = await runTool('com.jira.main', 'list_boards', {
+    input: { project_key: 'KAN' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          maxResults: 50,
+          startAt: 0,
+          total: 1,
+          isLast: true,
+          values: [
+            {
+              id: 7,
+              self: 'https://acme.atlassian.net/rest/agile/1.0/board/7',
+              name: 'KAN board',
+              type: 'scrum',
+              location: { projectId: 10001, displayName: 'Kanban', projectKey: 'KAN', projectName: 'Kanban' },
+            },
+          ],
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira list_boards: status')
+  equal(result.data.total, 1, 'jira list_boards: total')
+  equal(result.data.boards[0].id, 7, 'jira list_boards: board id stays numeric')
+  equal(result.data.boards[0].name, 'KAN board', 'jira list_boards: board name')
+  equal(result.data.boards[0].type, 'scrum', 'jira list_boards: board type')
+  equal(result.data.boards[0].project_key, 'KAN', 'jira list_boards: project key from location')
+  ok(String(requests[0].url).startsWith('/rest/agile/1.0/board?'), 'jira list_boards: agile endpoint')
+  ok(String(requests[0].url).includes('projectKeyOrId=KAN'), 'jira list_boards: filters by project')
+  ok(String(requests[0].url).includes('maxResults=50'), 'jira list_boards: defaults maxResults')
+}
+
+{
+  // Jira: delete_issue sends deleteSubtasks and treats the 204 as success.
+  const requests = []
+  const result = await runTool('com.jira.main', 'delete_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira delete_issue: status')
+  equal(result.data.success, true, 'jira delete_issue: success flag')
+  equal(requests[0].init.method, 'DELETE', 'jira delete_issue: uses DELETE')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42?deleteSubtasks=false', 'jira delete_issue: sends deleteSubtasks')
+}
+
+{
+  // Jira: a 403 from the API is classified as AUTH (permission), not a crash.
+  const forbidden = await runTool('com.jira.main', 'search_issues', {
+    input: { jql: 'project = KAN' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async () =>
+        jsonResponse({ errorMessages: ['You do not have permission to search issues.'], errors: {} }, 403),
+    },
+  })
+  equal(forbidden.status, 'error', 'jira search_issues 403: is an error')
+  equal(forbidden.error_code, 'AUTH', 'jira search_issues 403: classified as AUTH')
+  ok(
+    String(forbidden.message).includes('You do not have permission'),
+    'jira search_issues 403: surfaces the API error message',
+  )
+
+  // Jira: a 401 is AUTH too, and no request is made on a logged-out page.
+  const unauthorized = await runTool('com.jira.main', 'get_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async () => jsonResponse({ errorMessages: ['Authentication required.'] }, 401),
+    },
+  })
+  equal(unauthorized.status, 'error', 'jira get_issue 401: is an error')
+  equal(unauthorized.error_code, 'AUTH', 'jira get_issue 401: classified as AUTH')
+
+  const requests = []
+  const anonymous = await runTool('com.jira.main', 'get_myself', {
+    input: {},
+    page: {
+      hostname: 'acme.atlassian.net',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'jira get_myself logged out: is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'jira get_myself logged out: classified as UNAUTHENTICATED')
+  equal(requests.length, 0, 'jira get_myself logged out: makes no request')
+}
+
+{
+  // Jira: get_myself maps the Atlassian account envelope.
+  const requests = []
+  const result = await runTool('com.jira.main', 'get_myself', {
+    input: {},
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          accountId: '5b10ac8d82e05b22cc7d4ef5',
+          displayName: 'Ada Lovelace',
+          emailAddress: 'ada@example.com',
+          active: true,
+          accountType: 'atlassian',
+          timeZone: 'Europe/London',
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira get_myself: status')
+  equal(result.data.user.account_id, '5b10ac8d82e05b22cc7d4ef5', 'jira get_myself: account id')
+  equal(result.data.user.display_name, 'Ada Lovelace', 'jira get_myself: display name')
+  equal(result.data.user.account_type, 'atlassian', 'jira get_myself: account type')
+  equal(requests[0].url, '/rest/api/3/myself', 'jira get_myself: myself endpoint')
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// Todoist: every tool reads the bearer token the web app keeps in
+// localStorage['User'] and calls the same-origin /api/v1 REST API with
+// credentials. List endpoints answer a { results, next_cursor } envelope;
+// close/reopen/delete/archive answer 204 No Content.
+
+function todoistPage(overrides = {}) {
+  return {
+    hostname: 'app.todoist.com',
+    localStorage: { User: JSON.stringify({ id: '42', token: 'todoist-token' }) },
+    ...overrides,
+  }
+}
+
+function noContentResponse(status = 204) {
+  return {
+    ok: true,
+    status,
+    headers: { get: () => null },
+    async text() {
+      return ''
+    },
+    async json() {
+      throw new SyntaxError('Unexpected end of JSON input')
+    },
+  }
+}
+
+const TODOIST_TASK = {
+  id: '8f9aB2cD',
+  content: 'Ship the Todoist port',
+  description: 'All 33 tools',
+  project_id: '6X7rM2fP',
+  section_id: null,
+  parent_id: null,
+  labels: ['infra', 'port'],
+  priority: 3,
+  due: {
+    string: 'tomorrow at 3pm',
+    date: '2026-11-20',
+    is_recurring: false,
+    datetime: null,
+    timezone: null,
+  },
+  deadline: { date: '2026-11-25' },
+  duration: { amount: 30, unit: 'minute' },
+  checked: false,
+  child_order: 7,
+  added_at: '2026-11-18T09:00:00Z',
+  user_id: '42',
+  responsible_uid: null,
+  note_count: 2,
+}
+
+{
+  // Todoist: list_tasks sends the optional filters as query parameters (never
+  // the string "undefined") and maps the results envelope into task objects.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'list_tasks', {
+    input: { project_id: '6X7rM2fP' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ results: [TODOIST_TASK], next_cursor: null })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist list_tasks: status')
+  equal(result.data.tasks.length, 1, 'todoist list_tasks: task count')
+  equal(result.data.tasks[0].id, '8f9aB2cD', 'todoist list_tasks: task id')
+  equal(result.data.tasks[0].section_id, null, 'todoist list_tasks: null section stays null')
+  equal(result.data.tasks[0].labels[1], 'port', 'todoist list_tasks: label names')
+  equal(result.data.tasks[0].priority, 3, 'todoist list_tasks: priority stays a number')
+  equal(result.data.tasks[0].due.string, 'tomorrow at 3pm', 'todoist list_tasks: due string')
+  equal(result.data.tasks[0].due.is_recurring, false, 'todoist list_tasks: due is_recurring flag')
+  equal(result.data.tasks[0].deadline.date, '2026-11-25', 'todoist list_tasks: deadline date')
+  equal(result.data.tasks[0].duration.unit, 'minute', 'todoist list_tasks: duration unit')
+  equal(result.data.tasks[0].is_completed, false, 'todoist list_tasks: checked maps to is_completed')
+  equal(result.data.tasks[0].order, 7, 'todoist list_tasks: child_order maps to order')
+  equal(result.data.tasks[0].creator_id, '42', 'todoist list_tasks: user_id maps to creator_id')
+  equal(result.data.tasks[0].comment_count, 2, 'todoist list_tasks: note_count maps to comment_count')
+  equal(result.data.tasks[0].url, 'https://app.todoist.com/app/task/8f9aB2cD', 'todoist list_tasks: task url')
+  equal(
+    requests[0].url,
+    'https://app.todoist.com/api/v1/tasks?project_id=6X7rM2fP',
+    'todoist list_tasks: same-origin /api/v1/tasks with only the supplied filter',
+  )
+  equal(requests[0].init.method, 'GET', 'todoist list_tasks: plain GET')
+  equal(requests[0].init.credentials, 'include', 'todoist list_tasks: sends credentials')
+  equal(
+    requests[0].init.headers.Authorization,
+    'Bearer todoist-token',
+    'todoist list_tasks: bearer token from localStorage',
+  )
+}
+
+{
+  // Todoist: the batch read path — a { results, next_cursor } envelope with
+  // several objects — maps every project, inbox and nested ones included.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          results: [
+            {
+              id: '6X7rM2fP',
+              name: 'Inbox',
+              color: 'grey',
+              description: '',
+              parent_id: null,
+              child_order: 0,
+              is_favorite: false,
+              is_archived: false,
+              is_shared: false,
+              view_style: 'list',
+              created_at: '2026-01-02T03:04:05Z',
+              updated_at: '2026-01-02T03:04:05Z',
+              inbox_project: true,
+            },
+            {
+              id: '7Y8sN3gQ',
+              name: 'Platform',
+              color: 'berry_red',
+              description: 'Shared roadmap',
+              parent_id: '6X7rM2fP',
+              child_order: 4,
+              is_favorite: true,
+              is_archived: false,
+              is_shared: true,
+              view_style: 'board',
+              created_at: '2026-02-03T04:05:06Z',
+              updated_at: '2026-03-04T05:06:07Z',
+            },
+          ],
+          next_cursor: 'cursor-2',
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist list_projects: status')
+  equal(result.data.projects.length, 2, 'todoist list_projects: whole batch returned')
+  equal(result.data.projects[0].inbox_project, true, 'todoist list_projects: inbox flag')
+  equal(result.data.projects[0].parent_id, null, 'todoist list_projects: null parent stays null')
+  equal(result.data.projects[1].parent_id, '6X7rM2fP', 'todoist list_projects: nested parent id')
+  equal(result.data.projects[1].view_style, 'board', 'todoist list_projects: view style')
+  equal(result.data.projects[1].is_favorite, true, 'todoist list_projects: favorite flag')
+  equal(result.data.projects[1].is_shared, true, 'todoist list_projects: shared flag')
+  equal(result.data.projects[1].description, 'Shared roadmap', 'todoist list_projects: description')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/projects', 'todoist list_projects: /api/v1/projects')
+}
+
+{
+  // Todoist: create_task POSTs a JSON body that carries only the supplied
+  // fields, and maps the created object back.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'create_task', {
+    input: {
+      content: 'Ship the Todoist port',
+      project_id: '6X7rM2fP',
+      labels: ['infra', 'port'],
+      priority: 3,
+      due_string: 'tomorrow at 3pm',
+    },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(TODOIST_TASK)
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist create_task: status')
+  equal(result.data.task.id, '8f9aB2cD', 'todoist create_task: created task id')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/tasks', 'todoist create_task: /api/v1/tasks')
+  equal(requests[0].init.method, 'POST', 'todoist create_task: uses POST')
+  equal(requests[0].init.credentials, 'include', 'todoist create_task: sends credentials')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    'application/json',
+    'todoist create_task: JSON content type',
+  )
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.content, 'Ship the Todoist port', 'todoist create_task: sends content')
+  equal(body.project_id, '6X7rM2fP', 'todoist create_task: sends project_id')
+  equal(body.labels.length, 2, 'todoist create_task: sends the label array')
+  equal(body.priority, 3, 'todoist create_task: sends priority as a number')
+  equal(body.due_string, 'tomorrow at 3pm', 'todoist create_task: sends due_string')
+  ok(!('due_date' in body), 'todoist create_task: omits an unset due_date')
+  ok(!('duration' in body), 'todoist create_task: omits an unset duration')
+  ok(!('assignee_id' in body), 'todoist create_task: omits an unset assignee_id')
+}
+
+{
+  // Todoist: close_task answers 204 No Content — the empty body must not be
+  // parsed as JSON and the tool still reports success.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'close_task', {
+    input: { task_id: '8f9aB2cD' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist close_task: status')
+  equal(result.data.success, true, 'todoist close_task: success flag')
+  equal(
+    requests[0].url,
+    'https://app.todoist.com/api/v1/tasks/8f9aB2cD/close',
+    'todoist close_task: /close endpoint',
+  )
+  equal(requests[0].init.method, 'POST', 'todoist close_task: uses POST')
+  equal(requests[0].init.body, undefined, 'todoist close_task: sends no body')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    undefined,
+    'todoist close_task: no content type without a body',
+  )
+  equal(
+    requests[0].init.headers.Authorization,
+    'Bearer todoist-token',
+    'todoist close_task: sends the bearer token',
+  )
+}
+
+{
+  // Todoist: delete_task is a DELETE that also answers 204.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'delete_task', {
+    input: { task_id: '8f9aB2cD' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist delete_task: status')
+  equal(result.data.success, true, 'todoist delete_task: success flag')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/tasks/8f9aB2cD', 'todoist delete_task: task endpoint')
+  equal(requests[0].init.method, 'DELETE', 'todoist delete_task: uses DELETE')
+}
+
+{
+  // Todoist: renewing a shared label goes through apiVoid's default POST with
+  // a JSON body — no method override, no response body.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'rename_shared_label', {
+    input: { name: 'infra', new_name: 'platform' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist rename_shared_label: status')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/labels/shared/rename', 'todoist rename_shared_label: endpoint')
+  equal(requests[0].init.method, 'POST', 'todoist rename_shared_label: defaults to POST')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.new_name, 'platform', 'todoist rename_shared_label: sends new_name')
+}
+
+{
+  // Todoist: a tab with no localStorage['User'] token fails before any request
+  // is made, and an HTTP 401 is classified as AUTH.
+  const requests = []
+  const anonymous = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: {
+      hostname: 'app.todoist.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'todoist auth: logged-out tab is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'todoist auth: logged-out tab is UNAUTHENTICATED')
+  equal(requests.length, 0, 'todoist auth: logged-out tab makes no request')
+
+  const rejected = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: todoistPage({
+      fetch: async () => jsonResponse({ error: 'unauthorized' }, 401),
+    }),
+  })
+  equal(rejected.status, 'error', 'todoist auth: 401 is an error')
+  equal(rejected.error_code, 'AUTH', 'todoist auth: 401 is classified as AUTH')
+  ok(String(rejected.message).includes('401'), 'todoist auth: 401 stays visible in the message')
+}
+
+// --- urlRegex probes ---------------------------------------------------------
+// The host toolbar only offers these tools on app.todoist.com; a lookalike host
+// or the plain-HTTP origin must not match, while any path, query or hash tail
+// on the real origin must.
+
+section('urlRegex probe: app.todoist.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.todoist.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://app.todoist.com/',
+    'https://app.todoist.com/app/today',
+    'https://app.todoist.com/app/project/6X7rM2fP/v2?view=board&lang=en',
+    'https://app.todoist.com/app/task/8f9aB2cD#comment-1234',
+  ]
+  const mustNotMatch = [
+    'https://todoist.com/app/today',
+    'http://app.todoist.com/app/today',
+    'https://app.todoist.com.evil.example/app/today',
+    'https://evilapp.todoist.com/app/today',
+    'https://user@app.todoist.com/app/today',
+    'https://app.todoist.com:8443/app/today',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `todoist urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
+  }
+}
+
+section('urlRegex probe: stackoverflow.com')
+
+{
+  // Upstream scopes the plugin to `*://*.stackoverflow.com/*`, so the port keeps
+  // every subdomain (meta.*, www.*) while refusing lookalike hosts, plain HTTP
+  // and non-default ports.
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.stackoverflow.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://stackoverflow.com/',
+    'https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster',
+    'https://stackoverflow.com/questions?tab=Newest&pagesize=50',
+    'https://stackoverflow.com/users/22656/jon-skeet#answers',
+    'https://stackoverflow.com/search?q=react+hooks#top',
+    'https://stackoverflow.com/tags/javascript/info',
+    'https://meta.stackoverflow.com/questions/ask',
+    'https://www.stackoverflow.com/questions',
+  ]
+  const mustNotMatch = [
+    'http://stackoverflow.com/questions',
+    'https://stackoverflow.com.evil.example/questions',
+    'https://evil.example/stackoverflow.com/questions',
+    'https://stackoverflow.com:8443/questions',
+    'https://user@stackoverflow.com/questions',
+    'https://stackoverflow.co/questions',
+    'https://api.stackexchange.com/2.3/questions',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `stackoverflow urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `stackoverflow urlRegex rejects ${url} (${tool.name})`)
   }
 }
 

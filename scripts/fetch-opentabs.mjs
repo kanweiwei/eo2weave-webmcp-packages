@@ -24,8 +24,9 @@ const PLUGINS = {
   npm: '@opentabs-dev/opentabs-plugin-npm',
   jira: '@opentabs-dev/opentabs-plugin-jira',
   slack: '@opentabs-dev/opentabs-plugin-slack',
-  todoist: '@opentabs-dev/opentabs-plugin-todoist',
   reddit: '@opentabs-dev/opentabs-plugin-reddit',
+  todoist: '@opentabs-dev/opentabs-plugin-todoist',
+  stackoverflow: '@opentabs-dev/opentabs-plugin-stackoverflow',
 }
 
 async function fetchWithRetry(url, attempts = 3) {

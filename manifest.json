@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "generatedAt": "2026-11-19T05:27:03.510Z",
+=======
+  "generatedAt": "2026-11-19T05:28:19.014Z",
+>>>>>>> feat/stackoverflow-port
   "packages": [
     {
       "id": "com.discord.main",
@@ -1050,6 +1054,102 @@
         {
           "path": "packages/com.slack.main/workflows/upload_file.js",
           "sha256": "fa2b43c4749c136b2a4abd798b2b2896df2d4b3b03c9e086ecf4e4180010970e"
+        }
+      ]
+    },
+    {
+      "id": "com.stackoverflow.main",
+      "version": "0.1.0",
+      "description": "Read Stack Overflow questions, answers, comments, users, tags and search results (including full-text search, similar/related/linked/featured/unanswered listings and the signed-in user profile) on stackoverflow.com in your current tab.",
+      "toolCount": 20,
+      "files": [
+        {
+          "path": "packages/com.stackoverflow.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/manifest.json",
+          "sha256": "f40da9bfb44129844b135589d218fb91abc3159699281892b4e2d9dac28d5f3e"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_answer_comments.js",
+          "sha256": "a7821fb51c17eaa1acb97eb862f6958d85bb79c3ae8ea84dfe49c5eaa1602178"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_answer.js",
+          "sha256": "6c36e9d090df36f3c670329c4739c7bebc2c4d62708754890b3a2491d76fcf28"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_my_profile.js",
+          "sha256": "769db7049cb7f4a06c6c3f1b667c0c2cd1f72e69c8e8ce6b137b949df83b02cc"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_question_answers.js",
+          "sha256": "c5a364aaf33657f2c6f5124f8395498792f98409000115e995ab8b0f9d70f0bb"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_question_comments.js",
+          "sha256": "478e9202320ce3a114b84c7e0339ac64bf7e09b9cfb13d48b101d36ac6cec94a"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_question.js",
+          "sha256": "b6e60b6ebd566a75e5deeee492d6948b165b9036160dcb5fb8105affcac9a83b"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_similar_questions.js",
+          "sha256": "10a6670564815059a1164f5f26aba49306d3a53c585a2ccbb8f9b73403eca61b"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_tag_info.js",
+          "sha256": "456f8c92798add2537ccfd7fb40ca1a54b9c9c5d2bc6c7f366af2a65758a6569"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_user_answers.js",
+          "sha256": "462875481b168ccef583ed07264bd2085cc70498817eb2f8512a9f409fa67b15"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_user_questions.js",
+          "sha256": "ed2a080639a48c7fa18927203263e851bdc273e292c0936b0d14b81585368b10"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/get_user.js",
+          "sha256": "ee3b9b1faad84da8fd3bb05b02f1dcf7d1fd11ced5c6b9e8bfe7ba70e33cb407"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_featured_questions.js",
+          "sha256": "3862371c7d434b28cc0e913e5d6de1f893dbd6b06bc672e50a1f10546db01b3e"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_linked_questions.js",
+          "sha256": "2baf604b444967b9efededbd71448cbbe28316246a3ab646dd2aebb5c95882d8"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_questions.js",
+          "sha256": "2382e1422cf5e32dddaa5c39a574b1f6d77cbe67187f8cb1a56df2fe72a30381"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_related_questions.js",
+          "sha256": "ee528e800078561fb429c741e5b225ca95c78f3b200c58ea850ef06e53307241"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_tags.js",
+          "sha256": "5a7105ba29136e13c5a2437d02ad95408848ffbeecd8c8e48620cf91e0e7a089"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/list_unanswered_questions.js",
+          "sha256": "5ea3e5345c507e3712599628d6ae64c074fef06c581bff5eaebe40e9f3d85853"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/search_excerpts.js",
+          "sha256": "46899ff7fe5316174d32a3efbc67bf06f98c41079ef906f904cc106ab62aff4c"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/search_questions.js",
+          "sha256": "6657e38033beb420d8eaab4ec46ad0abaeb37c53a88a23c3fd780eb1671f1e75"
+        },
+        {
+          "path": "packages/com.stackoverflow.main/workflows/search_users.js",
+          "sha256": "2f157d9a7000ab2219af4b7fb5ca3343c675498d605b29e1dff7394a7f722350"
         }
       ]
     },
