@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T04:03:15.883Z",
+  "generatedAt": "2026-11-19T04:11:40.839Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -942,6 +942,154 @@
         {
           "path": "packages/com.slack.main/workflows/upload_file.js",
           "sha256": "fa2b43c4749c136b2a4abd798b2b2896df2d4b3b03c9e086ecf4e4180010970e"
+        }
+      ]
+    },
+    {
+      "id": "com.todoist.main",
+      "version": "0.1.0",
+      "description": "Read and write Todoist tasks, projects, sections, labels and comments on app.todoist.com in your current tab. List, create, update, complete, reopen and delete items, manage project archiving and shared labels, and list project collaborators. Uses your own logged-in Todoist session.",
+      "toolCount": 33,
+      "files": [
+        {
+          "path": "packages/com.todoist.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.todoist.main/manifest.json",
+          "sha256": "02204035ac39f6aa0269547bf475099036bcbd73f11d928569d9c7094095e70b"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/archive_project.js",
+          "sha256": "10188031565002b22dc447a5a7e4b475162bf041bb6b59e8cecdb5f5c736f87d"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/close_task.js",
+          "sha256": "fa5f80aff26d796b48fdee8c80709bb1313d094a22452cb3bff6cff31dfcd1dd"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/create_comment.js",
+          "sha256": "f9071fbd13c8c0e9ae5cc2353ed7290c8190e2767f6ec4d0ba0bb5051f893b6a"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/create_label.js",
+          "sha256": "b416ea48b989522f37b4c5ab0eb82a5f14f1dfc2092126613d375882e05687fe"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/create_project.js",
+          "sha256": "56eac2294dfd960d3b805d751f48e4aff00ff215ddb25260c5e5050fd9724bcd"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/create_section.js",
+          "sha256": "ed57b5a1bb5e43da632e718237ccdea8c5ae93fd414340a223b276c10c860156"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/create_task.js",
+          "sha256": "f2776d853034eb75cc9b8cf0d1b3c7a8ff6b06064a7d2be1bfdef645c9ca3ede"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/delete_comment.js",
+          "sha256": "9be9ade2e07e6d7937b985f4e8c1ad81e14d1db1566646c3d83b739994fe1197"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/delete_label.js",
+          "sha256": "40ad7f63f4fdb7a9d71cbe51523b585e62ca9307b838fa8936a07714bcb29e33"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/delete_project.js",
+          "sha256": "ec586d5cb8514085811bccbd89980a6615406c55291e80447ec4d4d8322eae96"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/delete_section.js",
+          "sha256": "8917869067c38161370d115cd12ada292a7497cefbf7841bce2063e2ad8ac50f"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/delete_task.js",
+          "sha256": "148c85c7b016cdb6f83c7c727b9b012b1d64c08f10d335835312a296b8855ed3"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/get_comment.js",
+          "sha256": "4dfc19a4308802f6efd155b6b029b8d1a8fd48fc02cffb2fdb9b74f55cefcc57"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/get_label.js",
+          "sha256": "c1a5aef3a9f125e2a2eeb4909548ddcd3e0e4dc457d050cc76bc895fa8b52ac2"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/get_project.js",
+          "sha256": "00ec6d796a756d717dbf01f91d46c24d0572a1a9f6911ead18bce440399a85b3"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/get_section.js",
+          "sha256": "a6d77f1185c84ca5b844b122588962e6f430a0c6437f353fbc3eb3ae5e3994dd"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/get_task.js",
+          "sha256": "daa22fe1d966208ec2187a9359443ef1cde81e781056efea077cbd68b9694312"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_collaborators.js",
+          "sha256": "a80bae35a1740a5adda1e956d638453b2df9dec665dedc6d09f19231dd69ea68"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_comments.js",
+          "sha256": "5a30d2cea3aee1ce745b6ecac72c2a8a942329a0a2e718e929a785df3ac49e6a"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_labels.js",
+          "sha256": "64112f3283fe08d45d584cde6f8950d9d495f9dccd3ad327904c72916997b83f"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_projects.js",
+          "sha256": "fd1f23ee1140b77af10af1f4825eee0d688c67af90d6a1b5112e88d7b7e46ae6"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_sections.js",
+          "sha256": "c492c61090f591d73cfa169292db4487948a274e09d5fea984a00d40db534ffc"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_shared_labels.js",
+          "sha256": "4eda38b169aaad1a5ff218c8958f24b0b598f1b9e6d8b0412092fd2bc16a0261"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/list_tasks.js",
+          "sha256": "1dc3cc491eb93738e9365d4bf0bce7c15a89e6e4bebd9078a28368cdd9ab9a07"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/remove_shared_label.js",
+          "sha256": "597b1e41d6a7d9ea2b8d4522a51693119e4de329aaa8a75a9f4294f7880ef199"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/rename_shared_label.js",
+          "sha256": "d49bb6926278d6a6527c46634886c0e6cf4b547d39ebbddeee8dce45626d5f51"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/reopen_task.js",
+          "sha256": "b34647cd4cdb99100bf87b125e9c7bef6864d71d8c2896bebe2cf95e458c2932"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/unarchive_project.js",
+          "sha256": "020083bb301b324ded50e86c60a441cb3df17e010becb68052cd43990ee7deab"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/update_comment.js",
+          "sha256": "46ba5dcb18fb255bd8cb8e672860028b441965d9f4810ab80a5115b9377f86d3"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/update_label.js",
+          "sha256": "f2a7acdfa051695bcd2923cb984d8de0075f4c11480c76d93d7818adbe07ef1c"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/update_project.js",
+          "sha256": "a56e3c653d7d3567b8e1bed62482842d67f3de73d70547f852a77ba33a4c9aa4"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/update_section.js",
+          "sha256": "6c1eaa99dda43dee2b2c68ebe146b27abeb5b5779cb0c196921058bb47b242d5"
+        },
+        {
+          "path": "packages/com.todoist.main/workflows/update_task.js",
+          "sha256": "92851ed65ad4d17ad09357d2693aa7fee9a5e3f1bb29d95668d1391689b4b0c2"
         }
       ]
     }

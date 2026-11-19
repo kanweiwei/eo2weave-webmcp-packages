@@ -59,6 +59,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.todoist.main': 33,
   'com.jira.main': 20,
   'com.slack.main': 22,
 }
@@ -141,6 +142,41 @@ const OPENTABS_TOOL_NAMES = {
     'list_sprints',
     'search_users',
     'get_myself',
+  ],
+  'com.todoist.main': [
+    'list_projects',
+    'get_project',
+    'create_project',
+    'update_project',
+    'delete_project',
+    'archive_project',
+    'unarchive_project',
+    'list_collaborators',
+    'list_tasks',
+    'get_task',
+    'create_task',
+    'update_task',
+    'close_task',
+    'reopen_task',
+    'delete_task',
+    'list_sections',
+    'get_section',
+    'create_section',
+    'update_section',
+    'delete_section',
+    'list_comments',
+    'get_comment',
+    'create_comment',
+    'update_comment',
+    'delete_comment',
+    'list_labels',
+    'get_label',
+    'create_label',
+    'update_label',
+    'delete_label',
+    'list_shared_labels',
+    'rename_shared_label',
+    'remove_shared_label',
   ],
 }
 
@@ -2099,6 +2135,335 @@ const JIRA_ISSUE = {
   equal(result.data.user.display_name, 'Ada Lovelace', 'jira get_myself: display name')
   equal(result.data.user.account_type, 'atlassian', 'jira get_myself: account type')
   equal(requests[0].url, '/rest/api/3/myself', 'jira get_myself: myself endpoint')
+}
+
+// --- 4. Registry manifest ----------------------------------------------------
+
+// Todoist: every tool reads the bearer token the web app keeps in
+// localStorage['User'] and calls the same-origin /api/v1 REST API with
+// credentials. List endpoints answer a { results, next_cursor } envelope;
+// close/reopen/delete/archive answer 204 No Content.
+
+function todoistPage(overrides = {}) {
+  return {
+    hostname: 'app.todoist.com',
+    localStorage: { User: JSON.stringify({ id: '42', token: 'todoist-token' }) },
+    ...overrides,
+  }
+}
+
+function noContentResponse(status = 204) {
+  return {
+    ok: true,
+    status,
+    headers: { get: () => null },
+    async text() {
+      return ''
+    },
+    async json() {
+      throw new SyntaxError('Unexpected end of JSON input')
+    },
+  }
+}
+
+const TODOIST_TASK = {
+  id: '8f9aB2cD',
+  content: 'Ship the Todoist port',
+  description: 'All 33 tools',
+  project_id: '6X7rM2fP',
+  section_id: null,
+  parent_id: null,
+  labels: ['infra', 'port'],
+  priority: 3,
+  due: {
+    string: 'tomorrow at 3pm',
+    date: '2026-11-20',
+    is_recurring: false,
+    datetime: null,
+    timezone: null,
+  },
+  deadline: { date: '2026-11-25' },
+  duration: { amount: 30, unit: 'minute' },
+  checked: false,
+  child_order: 7,
+  added_at: '2026-11-18T09:00:00Z',
+  user_id: '42',
+  responsible_uid: null,
+  note_count: 2,
+}
+
+{
+  // Todoist: list_tasks sends the optional filters as query parameters (never
+  // the string "undefined") and maps the results envelope into task objects.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'list_tasks', {
+    input: { project_id: '6X7rM2fP' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ results: [TODOIST_TASK], next_cursor: null })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist list_tasks: status')
+  equal(result.data.tasks.length, 1, 'todoist list_tasks: task count')
+  equal(result.data.tasks[0].id, '8f9aB2cD', 'todoist list_tasks: task id')
+  equal(result.data.tasks[0].section_id, null, 'todoist list_tasks: null section stays null')
+  equal(result.data.tasks[0].labels[1], 'port', 'todoist list_tasks: label names')
+  equal(result.data.tasks[0].priority, 3, 'todoist list_tasks: priority stays a number')
+  equal(result.data.tasks[0].due.string, 'tomorrow at 3pm', 'todoist list_tasks: due string')
+  equal(result.data.tasks[0].due.is_recurring, false, 'todoist list_tasks: due is_recurring flag')
+  equal(result.data.tasks[0].deadline.date, '2026-11-25', 'todoist list_tasks: deadline date')
+  equal(result.data.tasks[0].duration.unit, 'minute', 'todoist list_tasks: duration unit')
+  equal(result.data.tasks[0].is_completed, false, 'todoist list_tasks: checked maps to is_completed')
+  equal(result.data.tasks[0].order, 7, 'todoist list_tasks: child_order maps to order')
+  equal(result.data.tasks[0].creator_id, '42', 'todoist list_tasks: user_id maps to creator_id')
+  equal(result.data.tasks[0].comment_count, 2, 'todoist list_tasks: note_count maps to comment_count')
+  equal(result.data.tasks[0].url, 'https://app.todoist.com/app/task/8f9aB2cD', 'todoist list_tasks: task url')
+  equal(
+    requests[0].url,
+    'https://app.todoist.com/api/v1/tasks?project_id=6X7rM2fP',
+    'todoist list_tasks: same-origin /api/v1/tasks with only the supplied filter',
+  )
+  equal(requests[0].init.method, 'GET', 'todoist list_tasks: plain GET')
+  equal(requests[0].init.credentials, 'include', 'todoist list_tasks: sends credentials')
+  equal(
+    requests[0].init.headers.Authorization,
+    'Bearer todoist-token',
+    'todoist list_tasks: bearer token from localStorage',
+  )
+}
+
+{
+  // Todoist: the batch read path — a { results, next_cursor } envelope with
+  // several objects — maps every project, inbox and nested ones included.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          results: [
+            {
+              id: '6X7rM2fP',
+              name: 'Inbox',
+              color: 'grey',
+              description: '',
+              parent_id: null,
+              child_order: 0,
+              is_favorite: false,
+              is_archived: false,
+              is_shared: false,
+              view_style: 'list',
+              created_at: '2026-01-02T03:04:05Z',
+              updated_at: '2026-01-02T03:04:05Z',
+              inbox_project: true,
+            },
+            {
+              id: '7Y8sN3gQ',
+              name: 'Platform',
+              color: 'berry_red',
+              description: 'Shared roadmap',
+              parent_id: '6X7rM2fP',
+              child_order: 4,
+              is_favorite: true,
+              is_archived: false,
+              is_shared: true,
+              view_style: 'board',
+              created_at: '2026-02-03T04:05:06Z',
+              updated_at: '2026-03-04T05:06:07Z',
+            },
+          ],
+          next_cursor: 'cursor-2',
+        })
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist list_projects: status')
+  equal(result.data.projects.length, 2, 'todoist list_projects: whole batch returned')
+  equal(result.data.projects[0].inbox_project, true, 'todoist list_projects: inbox flag')
+  equal(result.data.projects[0].parent_id, null, 'todoist list_projects: null parent stays null')
+  equal(result.data.projects[1].parent_id, '6X7rM2fP', 'todoist list_projects: nested parent id')
+  equal(result.data.projects[1].view_style, 'board', 'todoist list_projects: view style')
+  equal(result.data.projects[1].is_favorite, true, 'todoist list_projects: favorite flag')
+  equal(result.data.projects[1].is_shared, true, 'todoist list_projects: shared flag')
+  equal(result.data.projects[1].description, 'Shared roadmap', 'todoist list_projects: description')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/projects', 'todoist list_projects: /api/v1/projects')
+}
+
+{
+  // Todoist: create_task POSTs a JSON body that carries only the supplied
+  // fields, and maps the created object back.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'create_task', {
+    input: {
+      content: 'Ship the Todoist port',
+      project_id: '6X7rM2fP',
+      labels: ['infra', 'port'],
+      priority: 3,
+      due_string: 'tomorrow at 3pm',
+    },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(TODOIST_TASK)
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist create_task: status')
+  equal(result.data.task.id, '8f9aB2cD', 'todoist create_task: created task id')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/tasks', 'todoist create_task: /api/v1/tasks')
+  equal(requests[0].init.method, 'POST', 'todoist create_task: uses POST')
+  equal(requests[0].init.credentials, 'include', 'todoist create_task: sends credentials')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    'application/json',
+    'todoist create_task: JSON content type',
+  )
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.content, 'Ship the Todoist port', 'todoist create_task: sends content')
+  equal(body.project_id, '6X7rM2fP', 'todoist create_task: sends project_id')
+  equal(body.labels.length, 2, 'todoist create_task: sends the label array')
+  equal(body.priority, 3, 'todoist create_task: sends priority as a number')
+  equal(body.due_string, 'tomorrow at 3pm', 'todoist create_task: sends due_string')
+  ok(!('due_date' in body), 'todoist create_task: omits an unset due_date')
+  ok(!('duration' in body), 'todoist create_task: omits an unset duration')
+  ok(!('assignee_id' in body), 'todoist create_task: omits an unset assignee_id')
+}
+
+{
+  // Todoist: close_task answers 204 No Content — the empty body must not be
+  // parsed as JSON and the tool still reports success.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'close_task', {
+    input: { task_id: '8f9aB2cD' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist close_task: status')
+  equal(result.data.success, true, 'todoist close_task: success flag')
+  equal(
+    requests[0].url,
+    'https://app.todoist.com/api/v1/tasks/8f9aB2cD/close',
+    'todoist close_task: /close endpoint',
+  )
+  equal(requests[0].init.method, 'POST', 'todoist close_task: uses POST')
+  equal(requests[0].init.body, undefined, 'todoist close_task: sends no body')
+  equal(
+    requests[0].init.headers['Content-Type'],
+    undefined,
+    'todoist close_task: no content type without a body',
+  )
+  equal(
+    requests[0].init.headers.Authorization,
+    'Bearer todoist-token',
+    'todoist close_task: sends the bearer token',
+  )
+}
+
+{
+  // Todoist: delete_task is a DELETE that also answers 204.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'delete_task', {
+    input: { task_id: '8f9aB2cD' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist delete_task: status')
+  equal(result.data.success, true, 'todoist delete_task: success flag')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/tasks/8f9aB2cD', 'todoist delete_task: task endpoint')
+  equal(requests[0].init.method, 'DELETE', 'todoist delete_task: uses DELETE')
+}
+
+{
+  // Todoist: renewing a shared label goes through apiVoid's default POST with
+  // a JSON body — no method override, no response body.
+  const requests = []
+  const result = await runTool('com.todoist.main', 'rename_shared_label', {
+    input: { name: 'infra', new_name: 'platform' },
+    page: todoistPage({
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return noContentResponse()
+      },
+    }),
+  })
+  equal(result.status, 'ok', 'todoist rename_shared_label: status')
+  equal(requests[0].url, 'https://app.todoist.com/api/v1/labels/shared/rename', 'todoist rename_shared_label: endpoint')
+  equal(requests[0].init.method, 'POST', 'todoist rename_shared_label: defaults to POST')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.new_name, 'platform', 'todoist rename_shared_label: sends new_name')
+}
+
+{
+  // Todoist: a tab with no localStorage['User'] token fails before any request
+  // is made, and an HTTP 401 is classified as AUTH.
+  const requests = []
+  const anonymous = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: {
+      hostname: 'app.todoist.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'todoist auth: logged-out tab is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'todoist auth: logged-out tab is UNAUTHENTICATED')
+  equal(requests.length, 0, 'todoist auth: logged-out tab makes no request')
+
+  const rejected = await runTool('com.todoist.main', 'list_projects', {
+    input: {},
+    page: todoistPage({
+      fetch: async () => jsonResponse({ error: 'unauthorized' }, 401),
+    }),
+  })
+  equal(rejected.status, 'error', 'todoist auth: 401 is an error')
+  equal(rejected.error_code, 'AUTH', 'todoist auth: 401 is classified as AUTH')
+  ok(String(rejected.message).includes('401'), 'todoist auth: 401 stays visible in the message')
+}
+
+// --- urlRegex probes ---------------------------------------------------------
+// The host toolbar only offers these tools on app.todoist.com; a lookalike host
+// or the plain-HTTP origin must not match, while any path, query or hash tail
+// on the real origin must.
+
+section('urlRegex probe: app.todoist.com')
+
+{
+  const manifest = JSON.parse(
+    readFileSync(path.join(packagesDir, 'com.todoist.main', 'manifest.json'), 'utf8'),
+  )
+  const mustMatch = [
+    'https://app.todoist.com/',
+    'https://app.todoist.com/app/today',
+    'https://app.todoist.com/app/project/6X7rM2fP/v2?view=board&lang=en',
+    'https://app.todoist.com/app/task/8f9aB2cD#comment-1234',
+  ]
+  const mustNotMatch = [
+    'https://todoist.com/app/today',
+    'http://app.todoist.com/app/today',
+    'https://app.todoist.com.evil.example/app/today',
+    'https://evilapp.todoist.com/app/today',
+    'https://user@app.todoist.com/app/today',
+    'https://app.todoist.com:8443/app/today',
+  ]
+  for (const tool of manifest.tools) {
+    const regex = new RegExp(tool.urlRegex)
+    for (const url of mustMatch) ok(regex.test(url), `todoist urlRegex matches ${url} (${tool.name})`)
+    for (const url of mustNotMatch)
+      ok(!regex.test(url), `todoist urlRegex rejects ${url} (${tool.name})`)
+  }
 }
 
 // --- 4. Registry manifest ----------------------------------------------------

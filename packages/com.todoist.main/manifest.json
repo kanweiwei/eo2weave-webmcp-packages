@@ -1,0 +1,205 @@
+{
+  "id": "com.todoist.main",
+  "version": "0.1.0",
+  "description": "Read and write Todoist tasks, projects, sections, labels and comments on app.todoist.com in your current tab. List, create, update, complete, reopen and delete items, manage project archiving and shared labels, and list project collaborators. Uses your own logged-in Todoist session.",
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all projects in the Todoist workspace. Returns every project including inbox, personal, and shared projects with their metadata.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific Todoist project by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project in Todoist. Only the name is required — all other fields are optional.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project.js"
+    },
+    {
+      "name": "update_project",
+      "description": "Update an existing Todoist project. Only the fields provided will be changed.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_project.js"
+    },
+    {
+      "name": "delete_project",
+      "description": "Permanently delete a Todoist project and all of its tasks. This action cannot be undone.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_project.js"
+    },
+    {
+      "name": "archive_project",
+      "description": "Archive a Todoist project. Archived projects are hidden from the default view but can be restored later.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/archive_project.js"
+    },
+    {
+      "name": "unarchive_project",
+      "description": "Restore an archived Todoist project. The project and its tasks become visible again.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unarchive_project.js"
+    },
+    {
+      "name": "list_collaborators",
+      "description": "List all collaborators on a shared project.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_collaborators.js"
+    },
+    {
+      "name": "list_tasks",
+      "description": "List tasks from Todoist. Optionally filter by project, section, or label.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tasks.js"
+    },
+    {
+      "name": "get_task",
+      "description": "Get detailed information about a specific Todoist task by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_task.js"
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task in Todoist. Requires content (title) at minimum. Optionally set project, section, parent, labels, priority, due date, assignee, and duration.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_task.js"
+    },
+    {
+      "name": "update_task",
+      "description": "Update an existing Todoist task. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_task.js"
+    },
+    {
+      "name": "close_task",
+      "description": "Close (complete) a Todoist task by its ID. The task is marked as done.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/close_task.js"
+    },
+    {
+      "name": "reopen_task",
+      "description": "Reopen a previously completed Todoist task by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reopen_task.js"
+    },
+    {
+      "name": "delete_task",
+      "description": "Permanently delete a Todoist task by its ID. This action cannot be undone.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_task.js"
+    },
+    {
+      "name": "list_sections",
+      "description": "List sections in a Todoist project. If no project ID is provided, returns sections across all projects.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sections.js"
+    },
+    {
+      "name": "get_section",
+      "description": "Get detailed information about a specific section by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_section.js"
+    },
+    {
+      "name": "create_section",
+      "description": "Create a new section in a Todoist project. Sections help organize tasks within a project.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_section.js"
+    },
+    {
+      "name": "update_section",
+      "description": "Update the name of an existing section.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_section.js"
+    },
+    {
+      "name": "delete_section",
+      "description": "Permanently delete a section by its ID. Tasks in the section are moved to the parent project.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_section.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments on a task or project. Provide either task_id or project_id.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "get_comment",
+      "description": "Get a specific comment by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_comment.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a comment to a task or project. Provide either task_id or project_id.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "update_comment",
+      "description": "Update the content of an existing comment.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_comment.js"
+    },
+    {
+      "name": "delete_comment",
+      "description": "Permanently delete a comment. This action cannot be undone.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_comment.js"
+    },
+    {
+      "name": "list_labels",
+      "description": "List all personal labels in the Todoist workspace.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_labels.js"
+    },
+    {
+      "name": "get_label",
+      "description": "Get a specific label by its ID.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_label.js"
+    },
+    {
+      "name": "create_label",
+      "description": "Create a new personal label. Only the name is required.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_label.js"
+    },
+    {
+      "name": "update_label",
+      "description": "Update an existing label. Only the fields provided will be changed.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_label.js"
+    },
+    {
+      "name": "delete_label",
+      "description": "Permanently delete a label. This action cannot be undone.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_label.js"
+    },
+    {
+      "name": "list_shared_labels",
+      "description": "List all shared label names across collaborative projects.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_shared_labels.js"
+    },
+    {
+      "name": "rename_shared_label",
+      "description": "Rename a shared label across all projects that use it.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/rename_shared_label.js"
+    },
+    {
+      "name": "remove_shared_label",
+      "description": "Remove a shared label from all tasks across collaborative projects.",
+      "urlRegex": "^https://app\\.todoist\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_shared_label.js"
+    }
+  ]
+}
