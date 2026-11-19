@@ -20,6 +20,8 @@ const PLUGINS = {
   github: '@opentabs-dev/opentabs-plugin-github',
   notion: '@opentabs-dev/opentabs-plugin-notion',
   linear: '@opentabs-dev/opentabs-plugin-linear',
+  hackernews: '@opentabs-dev/opentabs-plugin-hackernews',
+  npm: '@opentabs-dev/opentabs-plugin-npm',
 }
 
 async function fetchWithRetry(url, attempts = 3) {
