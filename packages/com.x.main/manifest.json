@@ -1,0 +1,193 @@
+{
+  "id": "com.x.main",
+  "version": "0.1.0",
+  "description": "Read and write X (Twitter): home and Following timelines, user tweets, single tweets and reply threads, search, trending, profiles and follows, likes, bookmarks and likers/retweeters, plus posting, replying, quoting, liking, reposting, bookmarking, deleting, pinning and full list management on x.com in your current tab. Uses your own logged-in X session.",
+  "tools": [
+    {
+      "name": "get_home_timeline",
+      "description": "Get tweets from the authenticated user's home timeline (For You feed). Returns the most recent tweets. Use cursor for pagination.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_home_timeline.js"
+    },
+    {
+      "name": "get_latest_timeline",
+      "description": "Get tweets from the \"Following\" tab — chronological timeline of accounts the user follows.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_latest_timeline.js"
+    },
+    {
+      "name": "get_user_tweets",
+      "description": "Get tweets posted by a specific user. Requires the user's numeric ID (use get_user_profile to find it from a screen name).",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_tweets.js"
+    },
+    {
+      "name": "get_tweet",
+      "description": "Get detailed information about a specific tweet by its ID. Returns the tweet with full engagement metrics, author details, and reply thread context.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tweet.js"
+    },
+    {
+      "name": "create_tweet",
+      "description": "Post a new tweet. Supports plain text and replies. To reply to a tweet, provide the reply_to_tweet_id parameter.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_tweet.js"
+    },
+    {
+      "name": "quote_tweet",
+      "description": "Post a quote tweet — a top-level post that embeds and comments on another tweet. Unlike a reply (which lives inside the original thread) or a plain retweet (which adds no commentary), a quote tweet appears on your own profile with your text plus the referenced tweet.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/quote_tweet.js"
+    },
+    {
+      "name": "delete_tweet",
+      "description": "Delete a tweet. Only works for tweets authored by the authenticated user.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_tweet.js"
+    },
+    {
+      "name": "get_tweet_replies",
+      "description": "Get the reply thread for a tweet. Returns the original tweet and its replies.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tweet_replies.js"
+    },
+    {
+      "name": "pin_tweet",
+      "description": "Pin a tweet to your profile.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pin_tweet.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a user's profile by their screen name (username). Returns profile details including bio, follower counts, and verification status.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "get_user_by_id",
+      "description": "Get a user's profile by their numeric user ID. Use get_user_profile for lookup by screen name.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_by_id.js"
+    },
+    {
+      "name": "get_following",
+      "description": "Get accounts that a user follows by their numeric user ID. Returns a paginated list of users.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_following.js"
+    },
+    {
+      "name": "get_user_likes",
+      "description": "Get tweets liked by a specific user. Requires the user's numeric ID.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_likes.js"
+    },
+    {
+      "name": "like_tweet",
+      "description": "Like (favorite) a tweet.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/like_tweet.js"
+    },
+    {
+      "name": "unlike_tweet",
+      "description": "Remove a like from a tweet.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unlike_tweet.js"
+    },
+    {
+      "name": "retweet",
+      "description": "Retweet (repost) a tweet.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/retweet.js"
+    },
+    {
+      "name": "unretweet",
+      "description": "Remove a retweet.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unretweet.js"
+    },
+    {
+      "name": "bookmark_tweet",
+      "description": "Add a tweet to your bookmarks.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/bookmark_tweet.js"
+    },
+    {
+      "name": "remove_bookmark",
+      "description": "Remove a tweet from your bookmarks.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_bookmark.js"
+    },
+    {
+      "name": "get_likers",
+      "description": "Get the users who liked a tweet, by tweet ID. Returns a paginated list of users. Useful for engagement-fanout discovery — finding accounts that engaged with a given post.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_likers.js"
+    },
+    {
+      "name": "get_retweeters",
+      "description": "Get the users who retweeted a tweet, by tweet ID. Returns a paginated list of users. Useful for engagement-fanout discovery — finding accounts that amplified a given post.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_retweeters.js"
+    },
+    {
+      "name": "get_bookmarks",
+      "description": "Get the authenticated user's bookmarked tweets.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_bookmarks.js"
+    },
+    {
+      "name": "get_trending",
+      "description": "Get current trending topics and hashtags.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_trending.js"
+    },
+    {
+      "name": "search_tweets",
+      "description": "Search for tweets matching a query. Supports standard X/Twitter search operators: exact phrases (\"hello world\"), OR (cats OR dogs), negation (-spam), from/to a user (from:username), mentions (@username), hashtags (#topic), min engagement (min_faves:100, min_retweets:10), filters (filter:links, filter:media, -filter:replies), language (lang:en), date range (since:2024-01-01 until:2024-12-31). Results can be sorted by relevance (\"Top\") or chronologically (\"Latest\").",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_tweets.js"
+    },
+    {
+      "name": "get_list",
+      "description": "Get details about a list by its ID.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_list.js"
+    },
+    {
+      "name": "create_list",
+      "description": "Create a new list.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_list.js"
+    },
+    {
+      "name": "update_list",
+      "description": "Update a list's name, description, or privacy setting.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_list.js"
+    },
+    {
+      "name": "delete_list",
+      "description": "Delete a list. Only works for lists you own.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_list.js"
+    },
+    {
+      "name": "get_list_tweets",
+      "description": "Get tweets from a list's timeline.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_list_tweets.js"
+    },
+    {
+      "name": "add_list_member",
+      "description": "Add a user to a list.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_list_member.js"
+    },
+    {
+      "name": "remove_list_member",
+      "description": "Remove a user from a list.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*x\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_list_member.js"
+    }
+  ]
+}

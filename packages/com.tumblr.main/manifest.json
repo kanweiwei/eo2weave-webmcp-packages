@@ -1,0 +1,199 @@
+{
+  "id": "com.tumblr.main",
+  "version": "0.1.0",
+  "description": "Read and write Tumblr: dashboard, blog posts, likes, queues, drafts, submissions, notes, followers, notifications and tags, plus create, edit, reblog, delete, like, follow, block and tag-filter actions on tumblr.com in your current tab. Uses your own logged-in Tumblr session.",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated Tumblr user profile including username, following count, likes count, and owned blogs.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_limits",
+      "description": "Get the current rate limits for the authenticated user including daily posting, photo, video, audio, and follow limits.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_limits.js"
+    },
+    {
+      "name": "get_dashboard",
+      "description": "Get posts from the authenticated user's Tumblr dashboard. Returns posts from followed blogs in reverse chronological order.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_dashboard.js"
+    },
+    {
+      "name": "get_user_likes",
+      "description": "Get posts liked by the authenticated Tumblr user. Returns liked posts with the total like count.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_likes.js"
+    },
+    {
+      "name": "get_user_following",
+      "description": "Get blogs followed by the authenticated Tumblr user with the total count.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_following.js"
+    },
+    {
+      "name": "follow_blog",
+      "description": "Follow a Tumblr blog by URL.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/follow_blog.js"
+    },
+    {
+      "name": "unfollow_blog",
+      "description": "Unfollow a Tumblr blog by URL.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unfollow_blog.js"
+    },
+    {
+      "name": "get_filtered_tags",
+      "description": "Get the list of tags the authenticated user has filtered out of their dashboard. Posts with these tags are hidden.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_filtered_tags.js"
+    },
+    {
+      "name": "add_filtered_tag",
+      "description": "Add a tag to the filter list. Posts with this tag will be hidden from your dashboard.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_filtered_tag.js"
+    },
+    {
+      "name": "remove_filtered_tag",
+      "description": "Remove a tag from the filter list. Posts with this tag will appear on your dashboard again.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_filtered_tag.js"
+    },
+    {
+      "name": "get_post",
+      "description": "Get detailed information about a specific Tumblr post by blog name and post ID.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_post.js"
+    },
+    {
+      "name": "create_post",
+      "description": "Create a new text post on a Tumblr blog using NPF format. Defaults to published state.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_post.js"
+    },
+    {
+      "name": "edit_post",
+      "description": "Edit an existing Tumblr post. Only provided fields are updated.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_post.js"
+    },
+    {
+      "name": "delete_post",
+      "description": "Permanently delete a post from a Tumblr blog. This action cannot be undone.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_post.js"
+    },
+    {
+      "name": "reblog_post",
+      "description": "Reblog a post to your Tumblr blog, optionally adding a comment.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reblog_post.js"
+    },
+    {
+      "name": "like_post",
+      "description": "Like a Tumblr post. Requires the post ID and reblog key.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/like_post.js"
+    },
+    {
+      "name": "unlike_post",
+      "description": "Remove a like from a Tumblr post. Requires the post ID and reblog key.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unlike_post.js"
+    },
+    {
+      "name": "get_post_notes",
+      "description": "Get notes (likes, reblogs, replies) on a Tumblr post. Filter by mode to see specific note types.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_post_notes.js"
+    },
+    {
+      "name": "get_draft_posts",
+      "description": "List draft posts for a Tumblr blog. Use before_id for pagination.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_draft_posts.js"
+    },
+    {
+      "name": "get_queued_posts",
+      "description": "Get posts in the queue for a blog. Queued posts are scheduled to be published automatically.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_queued_posts.js"
+    },
+    {
+      "name": "get_submissions",
+      "description": "Get posts submitted to a blog by other users. Only available for blogs you own.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_submissions.js"
+    },
+    {
+      "name": "get_blog_info",
+      "description": "Get information about a Tumblr blog including title, description, post count, and avatar.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_info.js"
+    },
+    {
+      "name": "get_blog_posts",
+      "description": "Get posts from a Tumblr blog. Optionally filter by post type or tag.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_posts.js"
+    },
+    {
+      "name": "get_blog_followers",
+      "description": "Get the list of followers for a Tumblr blog.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_followers.js"
+    },
+    {
+      "name": "get_blog_following",
+      "description": "Get the list of blogs that a Tumblr blog is following.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_following.js"
+    },
+    {
+      "name": "get_blog_likes",
+      "description": "Get the posts liked by a Tumblr blog.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_likes.js"
+    },
+    {
+      "name": "get_blog_notifications",
+      "description": "Get recent notifications for a Tumblr blog including likes, reblogs, follows, and mentions.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blog_notifications.js"
+    },
+    {
+      "name": "search_tagged",
+      "description": "Search for Tumblr posts with a specific tag. Returns posts in reverse chronological order.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_tagged.js"
+    },
+    {
+      "name": "get_recommended_blogs",
+      "description": "Get recommended Tumblr blogs to follow.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_recommended_blogs.js"
+    },
+    {
+      "name": "get_blocks",
+      "description": "Get the list of blogs blocked by a Tumblr blog.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blocks.js"
+    },
+    {
+      "name": "block_blog",
+      "description": "Block a Tumblr blog. The blocked blog will no longer be able to interact with your blog.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/block_blog.js"
+    },
+    {
+      "name": "unblock_blog",
+      "description": "Unblock a previously blocked Tumblr blog.",
+      "urlRegex": "^https?://(?:[^/?#]+\\.)?tumblr\\.com/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unblock_blog.js"
+    }
+  ]
+}
