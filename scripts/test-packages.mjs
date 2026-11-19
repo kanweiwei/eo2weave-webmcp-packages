@@ -59,6 +59,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.discord.main': 26,
   'com.hackernews.main': 10,
   'com.npm.main': 14,
+  'com.jira.main': 20,
 }
 
 /**
@@ -94,6 +95,28 @@ const OPENTABS_TOOL_NAMES = {
     'list_user_packages',
     'list_tokens',
   ],
+  'com.jira.main': [
+    'search_issues',
+    'get_issue',
+    'create_issue',
+    'update_issue',
+    'delete_issue',
+    'transition_issue',
+    'get_transitions',
+    'assign_issue',
+    'link_issues',
+    'add_watcher',
+    'list_issue_types',
+    'list_priorities',
+    'add_comment',
+    'list_comments',
+    'list_projects',
+    'get_project',
+    'list_boards',
+    'list_sprints',
+    'search_users',
+    'get_myself',
+  ],
 }
 
 /**
@@ -108,7 +131,7 @@ const OPENTABS_TOOL_NAMES = {
  * Runtimes that parse fetched HTML use a real DOM (happy-dom's DOMParser, see
  * `runTool`) instead of this stub.
  */
-function makeDocument({ cookie = '', login = null, csrf = 'csrf-token', loggedIn = false } = {}) {
+function makeDocument({ cookie = '', login = null, csrf = 'csrf-token', loggedIn = false, meta = {} } = {}) {
   return {
     cookie,
     querySelector(selector) {
@@ -117,6 +140,12 @@ function makeDocument({ cookie = '', login = null, csrf = 'csrf-token', loggedIn
       }
       if (selector === 'a#logout') {
         return loggedIn ? { getAttribute: () => 'logout' } : null
+      }
+      // Jira Cloud publishes the session identity as meta tags
+      // (ajs-atlassian-account-id, ajs-cloud-id); any test can supply them.
+      const metaMatch = /^meta\[name="(.+)"\]$/.exec(selector)
+      if (metaMatch && meta[metaMatch[1]] !== undefined) {
+        return { getAttribute: () => meta[metaMatch[1]] }
       }
       if (selector.includes('authenticity_token') && csrf) {
         return { value: csrf }
@@ -360,6 +389,7 @@ function loadUpstreamSchemas() {
     'com.linear.main': 'linear',
     'com.hackernews.main': 'hackernews',
     'com.npm.main': 'npm',
+    'com.jira.main': 'jira',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
@@ -1249,6 +1279,382 @@ const HN_REPLY_PAGE = `<html><head><title>Reply | Hacker News</title></head><bod
   })
   equal(anonymous.status, 'error', 'npm list_tokens: logged-out page is an error')
   equal(anonymous.error_code, 'UNAUTHENTICATED', 'npm list_tokens: logged-out page is classified as UNAUTHENTICATED')
+}
+
+// Jira Cloud: the session identity is published on every page as meta tags
+// (`ajs-atlassian-account-id`, `ajs-cloud-id`), and every call is a same-origin
+// REST fetch under /rest/api/3 (Jira platform) or /rest/agile/1.0 (boards and
+// sprints). Descriptions and comment bodies travel as Atlassian Document Format.
+
+const JIRA_META = {
+  'ajs-atlassian-account-id': '5b10ac8d82e05b22cc7d4ef5',
+  'ajs-cloud-id': '2f1a2b3c-4d5e-6789-abcd-ef0123456789',
+}
+
+const JIRA_ISSUE = {
+  id: '10042',
+  key: 'KAN-42',
+  self: 'https://acme.atlassian.net/rest/api/3/issue/10042',
+  fields: {
+    summary: 'Rate limit the public export endpoint',
+    status: { name: 'In Progress', statusCategory: { name: 'In Progress' } },
+    issuetype: { name: 'Task' },
+    priority: { name: 'High' },
+    assignee: { accountId: '5b10ac8d82e05b22cc7d4ef5', displayName: 'Ada Lovelace' },
+    reporter: { accountId: '712020:1b2c3d4e-0000-1111-2222-333344445555', displayName: 'Grace Hopper' },
+    project: { key: 'KAN', name: 'Kanban' },
+    labels: ['backend', 'perf'],
+    created: '2026-02-03T09:15:00.000+0000',
+    updated: '2026-02-04T11:02:31.000+0000',
+    description: {
+      type: 'doc',
+      version: 1,
+      content: [
+        { type: 'paragraph', content: [{ type: 'text', text: 'Exports currently bypass the limiter.' }] },
+        { type: 'paragraph', content: [{ type: 'text', text: 'Add a per-token budget.' }] },
+      ],
+    },
+  },
+}
+
+{
+  // Jira: search_issues runs JQL against /rest/api/3/search/jql and maps the
+  // ADF description to plain text (paragraphs joined by a newline).
+  const requests = []
+  const result = await runTool('com.jira.main', 'search_issues', {
+    input: { jql: 'project = KAN AND status = "In Progress"' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ issues: [JIRA_ISSUE], total: 1, startAt: 0, maxResults: 20 })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira search_issues: status')
+  equal(result.data.total, 1, 'jira search_issues: total')
+  equal(result.data.start_at, 0, 'jira search_issues: start_at')
+  equal(result.data.issues[0].key, 'KAN-42', 'jira search_issues: issue key')
+  equal(result.data.issues[0].summary, 'Rate limit the public export endpoint', 'jira search_issues: summary')
+  equal(result.data.issues[0].status, 'In Progress', 'jira search_issues: status')
+  equal(result.data.issues[0].status_category, 'In Progress', 'jira search_issues: status category')
+  equal(result.data.issues[0].issue_type, 'Task', 'jira search_issues: issue type')
+  equal(result.data.issues[0].priority, 'High', 'jira search_issues: priority')
+  equal(result.data.issues[0].assignee_name, 'Ada Lovelace', 'jira search_issues: assignee name')
+  equal(result.data.issues[0].project_key, 'KAN', 'jira search_issues: project key')
+  equal(result.data.issues[0].labels.join(','), 'backend,perf', 'jira search_issues: labels')
+  equal(
+    result.data.issues[0].description_text,
+    'Exports currently bypass the limiter.\nAdd a per-token budget.',
+    'jira search_issues: ADF description flattened per paragraph',
+  )
+  ok(String(requests[0].url).startsWith('/rest/api/3/search/jql?'), 'jira search_issues: uses the platform search endpoint')
+  ok(String(requests[0].url).includes('jql=project+%3D+KAN+AND+status+%3D+%22In+Progress%22'), 'jira search_issues: sends JQL')
+  ok(String(requests[0].url).includes('maxResults=20'), 'jira search_issues: defaults maxResults')
+  ok(String(requests[0].url).includes('fields=summary%2Cstatus'), 'jira search_issues: requests the standard field set')
+  equal(requests[0].init.method, 'GET', 'jira search_issues: GET')
+  equal(requests[0].init.headers['Content-Type'], undefined, 'jira search_issues: no JSON content type on a read')
+  equal(requests[0].init.credentials, 'include', 'jira search_issues: sends credentials')
+}
+
+{
+  // Jira: get_issue asks for the explicit field list and maps reporter too.
+  const requests = []
+  const result = await runTool('com.jira.main', 'get_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse(JIRA_ISSUE)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira get_issue: status')
+  equal(result.data.issue.id, '10042', 'jira get_issue: id')
+  equal(result.data.issue.key, 'KAN-42', 'jira get_issue: key')
+  equal(result.data.issue.reporter_name, 'Grace Hopper', 'jira get_issue: reporter name')
+  equal(result.data.issue.project_name, 'Kanban', 'jira get_issue: project name')
+  equal(result.data.issue.assignee_id, '5b10ac8d82e05b22cc7d4ef5', 'jira get_issue: assignee id')
+  ok(String(requests[0].url).startsWith('/rest/api/3/issue/KAN-42?fields='), 'jira get_issue: issue endpoint with fields')
+}
+
+{
+  // Jira: create_issue posts a JSON body with the ADF description and only the
+  // optional fields that were supplied (no priority, no parent).
+  const requests = []
+  const result = await runTool('com.jira.main', 'create_issue', {
+    input: {
+      project_key: 'KAN',
+      summary: 'Rate limit the public export endpoint',
+      description: 'Exports currently bypass the limiter.',
+      labels: ['backend', 'perf'],
+      assignee_id: '5b10ac8d82e05b22cc7d4ef5',
+    },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({ id: '10042', key: 'KAN-42', self: 'https://acme.atlassian.net/rest/api/3/issue/10042' }, 201)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira create_issue: status')
+  equal(result.data.id, '10042', 'jira create_issue: id')
+  equal(result.data.key, 'KAN-42', 'jira create_issue: key')
+  equal(requests[0].url, '/rest/api/3/issue', 'jira create_issue: creates through /issue')
+  equal(requests[0].init.method, 'POST', 'jira create_issue: uses POST')
+  equal(requests[0].init.headers['Content-Type'], 'application/json', 'jira create_issue: sends JSON')
+  equal(requests[0].init.credentials, 'include', 'jira create_issue: sends credentials')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.fields.project.key, 'KAN', 'jira create_issue: project key')
+  equal(body.fields.summary, 'Rate limit the public export endpoint', 'jira create_issue: summary')
+  equal(body.fields.issuetype.name, 'Task', 'jira create_issue: issue type defaults to Task')
+  equal(body.fields.description.type, 'doc', 'jira create_issue: description is ADF')
+  equal(
+    body.fields.description.content[0].content[0].text,
+    'Exports currently bypass the limiter.',
+    'jira create_issue: ADF text',
+  )
+  equal(body.fields.labels.join(','), 'backend,perf', 'jira create_issue: labels stay an array')
+  equal(body.fields.assignee.accountId, '5b10ac8d82e05b22cc7d4ef5', 'jira create_issue: assignee account id')
+  ok(!('priority' in body.fields), 'jira create_issue: omits an unspecified priority')
+  ok(!('parent' in body.fields), 'jira create_issue: omits an unspecified parent')
+}
+
+{
+  // Jira: update_issue PUTs only the supplied fields; an empty assignee_id
+  // unassigns with an explicit null instead of an accountId object.
+  const requests = []
+  const result = await runTool('com.jira.main', 'update_issue', {
+    input: { issue_key: 'KAN-42', summary: 'Rate limit the export endpoint', assignee_id: '' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira update_issue: status')
+  equal(result.data.success, true, 'jira update_issue: success flag')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42', 'jira update_issue: updates the issue endpoint')
+  equal(requests[0].init.method, 'PUT', 'jira update_issue: uses PUT')
+  const body = JSON.parse(requests[0].init.body)
+  equal(Object.keys(body.fields).sort().join(','), 'assignee,summary', 'jira update_issue: only supplied fields')
+  equal(body.fields.summary, 'Rate limit the export endpoint', 'jira update_issue: new summary')
+  equal(body.fields.assignee, null, 'jira update_issue: empty account id unassigns with null')
+}
+
+{
+  // Jira: transition_issue posts the transition id the caller got from
+  // get_transitions.
+  const requests = []
+  const result = await runTool('com.jira.main', 'transition_issue', {
+    input: { issue_key: 'KAN-42', transition_id: '31' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira transition_issue: status')
+  equal(result.data.success, true, 'jira transition_issue: success flag')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/transitions', 'jira transition_issue: transitions endpoint')
+  equal(requests[0].init.method, 'POST', 'jira transition_issue: uses POST')
+  equal(JSON.parse(requests[0].init.body).transition.id, '31', 'jira transition_issue: sends the transition id')
+}
+
+{
+  // Jira: add_comment wraps plain text in ADF and maps the created comment back.
+  const requests = []
+  const result = await runTool('com.jira.main', 'add_comment', {
+    input: { issue_key: 'KAN-42', body: 'On it — the limiter lands today.' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          id: '10077',
+          author: { accountId: '5b10ac8d82e05b22cc7d4ef5', displayName: 'Ada Lovelace' },
+          body: { type: 'doc', version: 1, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'On it — the limiter lands today.' }] }] },
+          created: '2026-02-04T12:00:00.000+0000',
+          updated: '2026-02-04T12:00:00.000+0000',
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira add_comment: status')
+  equal(result.data.comment.id, '10077', 'jira add_comment: comment id')
+  equal(result.data.comment.author_name, 'Ada Lovelace', 'jira add_comment: author')
+  equal(result.data.comment.body_text, 'On it — the limiter lands today.', 'jira add_comment: body text')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/comment', 'jira add_comment: comment endpoint')
+  equal(requests[0].init.method, 'POST', 'jira add_comment: uses POST')
+  const body = JSON.parse(requests[0].init.body)
+  equal(body.body.type, 'doc', 'jira add_comment: body is ADF')
+  equal(body.body.content[0].content[0].text, 'On it — the limiter lands today.', 'jira add_comment: ADF text')
+}
+
+{
+  // Jira: add_watcher posts a bare JSON string (not an object) — the endpoint
+  // takes the account id as the request body.
+  const requests = []
+  const result = await runTool('com.jira.main', 'add_watcher', {
+    input: { issue_key: 'KAN-42', account_id: '5b10ac8d82e05b22cc7d4ef5' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira add_watcher: status')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42/watchers', 'jira add_watcher: watchers endpoint')
+  equal(requests[0].init.body, '"5b10ac8d82e05b22cc7d4ef5"', 'jira add_watcher: body is a bare JSON string')
+  equal(requests[0].init.headers['Content-Type'], 'application/json', 'jira add_watcher: JSON content type')
+}
+
+{
+  // Jira: list_boards uses the agile API base path, not /rest/api/3.
+  const requests = []
+  const result = await runTool('com.jira.main', 'list_boards', {
+    input: { project_key: 'KAN' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          maxResults: 50,
+          startAt: 0,
+          total: 1,
+          isLast: true,
+          values: [
+            {
+              id: 7,
+              self: 'https://acme.atlassian.net/rest/agile/1.0/board/7',
+              name: 'KAN board',
+              type: 'scrum',
+              location: { projectId: 10001, displayName: 'Kanban', projectKey: 'KAN', projectName: 'Kanban' },
+            },
+          ],
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira list_boards: status')
+  equal(result.data.total, 1, 'jira list_boards: total')
+  equal(result.data.boards[0].id, 7, 'jira list_boards: board id stays numeric')
+  equal(result.data.boards[0].name, 'KAN board', 'jira list_boards: board name')
+  equal(result.data.boards[0].type, 'scrum', 'jira list_boards: board type')
+  equal(result.data.boards[0].project_key, 'KAN', 'jira list_boards: project key from location')
+  ok(String(requests[0].url).startsWith('/rest/agile/1.0/board?'), 'jira list_boards: agile endpoint')
+  ok(String(requests[0].url).includes('projectKeyOrId=KAN'), 'jira list_boards: filters by project')
+  ok(String(requests[0].url).includes('maxResults=50'), 'jira list_boards: defaults maxResults')
+}
+
+{
+  // Jira: delete_issue sends deleteSubtasks and treats the 204 as success.
+  const requests = []
+  const result = await runTool('com.jira.main', 'delete_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return { ok: true, status: 204, headers: { get: () => null }, async text() { return '' }, async json() { return {} } }
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira delete_issue: status')
+  equal(result.data.success, true, 'jira delete_issue: success flag')
+  equal(requests[0].init.method, 'DELETE', 'jira delete_issue: uses DELETE')
+  equal(requests[0].url, '/rest/api/3/issue/KAN-42?deleteSubtasks=false', 'jira delete_issue: sends deleteSubtasks')
+}
+
+{
+  // Jira: a 403 from the API is classified as AUTH (permission), not a crash.
+  const forbidden = await runTool('com.jira.main', 'search_issues', {
+    input: { jql: 'project = KAN' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async () =>
+        jsonResponse({ errorMessages: ['You do not have permission to search issues.'], errors: {} }, 403),
+    },
+  })
+  equal(forbidden.status, 'error', 'jira search_issues 403: is an error')
+  equal(forbidden.error_code, 'AUTH', 'jira search_issues 403: classified as AUTH')
+  ok(
+    String(forbidden.message).includes('You do not have permission'),
+    'jira search_issues 403: surfaces the API error message',
+  )
+
+  // Jira: a 401 is AUTH too, and no request is made on a logged-out page.
+  const unauthorized = await runTool('com.jira.main', 'get_issue', {
+    input: { issue_key: 'KAN-42' },
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async () => jsonResponse({ errorMessages: ['Authentication required.'] }, 401),
+    },
+  })
+  equal(unauthorized.status, 'error', 'jira get_issue 401: is an error')
+  equal(unauthorized.error_code, 'AUTH', 'jira get_issue 401: classified as AUTH')
+
+  const requests = []
+  const anonymous = await runTool('com.jira.main', 'get_myself', {
+    input: {},
+    page: {
+      hostname: 'acme.atlassian.net',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(anonymous.status, 'error', 'jira get_myself logged out: is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'jira get_myself logged out: classified as UNAUTHENTICATED')
+  equal(requests.length, 0, 'jira get_myself logged out: makes no request')
+}
+
+{
+  // Jira: get_myself maps the Atlassian account envelope.
+  const requests = []
+  const result = await runTool('com.jira.main', 'get_myself', {
+    input: {},
+    page: {
+      hostname: 'acme.atlassian.net',
+      meta: JIRA_META,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          accountId: '5b10ac8d82e05b22cc7d4ef5',
+          displayName: 'Ada Lovelace',
+          emailAddress: 'ada@example.com',
+          active: true,
+          accountType: 'atlassian',
+          timeZone: 'Europe/London',
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'jira get_myself: status')
+  equal(result.data.user.account_id, '5b10ac8d82e05b22cc7d4ef5', 'jira get_myself: account id')
+  equal(result.data.user.display_name, 'Ada Lovelace', 'jira get_myself: display name')
+  equal(result.data.user.account_type, 'atlassian', 'jira get_myself: account type')
+  equal(requests[0].url, '/rest/api/3/myself', 'jira get_myself: myself endpoint')
 }
 
 // --- 4. Registry manifest ----------------------------------------------------

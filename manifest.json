@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T03:24:47.676Z",
+  "generatedAt": "2026-11-19T04:03:15.883Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -330,6 +330,102 @@
         {
           "path": "packages/com.hackernews.main/workflows/submit_comment.js",
           "sha256": "6069c2d6b4a6df0602096dd4dc4f504b61bafc1f0ed1ab28422f90578e6945f0"
+        }
+      ]
+    },
+    {
+      "id": "com.jira.main",
+      "version": "0.1.0",
+      "description": "Search, read, create, update, transition, assign, link and comment on Jira issues, and read projects, agile boards, sprints, issue types, priorities and users on your *.atlassian.net site in your current tab. Uses your own logged-in Jira session.",
+      "toolCount": 20,
+      "files": [
+        {
+          "path": "packages/com.jira.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.jira.main/manifest.json",
+          "sha256": "27b8914e0f01e9b5807b651d2ea3edb84d6351ef27b1b2e6a2bc758b44bae4dc"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/add_comment.js",
+          "sha256": "9c9e1ef3301e4e9b53ba2d5a468d167714eb2fbbee3c72d9019fe54b9aa4063b"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/add_watcher.js",
+          "sha256": "d3ce82b0d3e71b6eda775f14b571e764e9d812fa4638e1d915bfe7966dd6298f"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/assign_issue.js",
+          "sha256": "5589f6683fff196599d3e72f974196b35dd0da1f6a79bd3f829454b15e0e1a1f"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/create_issue.js",
+          "sha256": "1a30b373da49b620c06e6fc6c7e43127290dd12eb2e4816cf83a4f3fde684492"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/delete_issue.js",
+          "sha256": "f01354ceed462d63d83b16376f0637c06dd2f0d2d87be30a2556531cc30a1d1b"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/get_issue.js",
+          "sha256": "20a02a4073665b18002dc5d254cd94d46059b0b47aadebc8cac84b450c9e7d5f"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/get_myself.js",
+          "sha256": "3f9844e8b52f9e89542bbfac317021818848a5228af5df16cc89a47bd8cbcc0b"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/get_project.js",
+          "sha256": "cc4d8864ffd6c62da2d1374c4f7812759f98b984dd398b5244acf7c2be0edfb2"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/get_transitions.js",
+          "sha256": "bef8a2a69843f8fd400b206b114ac58a65f5fff047b9d729271061d9dd6bcc6e"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/link_issues.js",
+          "sha256": "0679089dbdee47226f6be3c9e6e2468d64e6f0de6c4d2b8e06acae0bf786d42a"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_boards.js",
+          "sha256": "a9d735b90747f615f67050a7459adde41a322e082c5ce3bc85fcb701108a72d7"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_comments.js",
+          "sha256": "4327e2ae48b1504b58c51435a8dd062d011c99fe072e572845a2e017ee0630dd"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_issue_types.js",
+          "sha256": "c962691c6a618ad17fc131ec542a0548ca8880448704cf8a160da7674586998e"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_priorities.js",
+          "sha256": "b8aae9493066344fcd50f868c71829964f5635bb8d578000a4056695f7acc4bd"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_projects.js",
+          "sha256": "ecba7a27540dd11f887b0a3e634eec5e48e3424b1b35ab0623050cbceb17d586"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/list_sprints.js",
+          "sha256": "bd50c1b7fc22d2eeda5cadbf50e5fe77e1375f4de41fb17a20994b7bc697e5a2"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/search_issues.js",
+          "sha256": "b5cc76ee24f0f701dd9f174da058a9211237928e7b0145bbd026b46e30aa1ea1"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/search_users.js",
+          "sha256": "02322e6235a65202c2d17e6819e2b09f2f3ed0735b58b3b611ff66a651bb419d"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/transition_issue.js",
+          "sha256": "cb71a852d6fa3d1d271c1d9b65e9c2850ac84258e7ba1cdb92701fe7aa7e7fd8"
+        },
+        {
+          "path": "packages/com.jira.main/workflows/update_issue.js",
+          "sha256": "373f4fb53fa98190bf491cbe97f7819423cccb9cf03e66bf55cc1374f72b9cb4"
         }
       ]
     },
