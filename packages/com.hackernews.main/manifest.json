@@ -1,0 +1,67 @@
+{
+  "id": "com.hackernews.main",
+  "version": "0.1.0",
+  "description": "Read Hacker News items (stories, comments, jobs), user profiles, the top/new/best/Ask/Show/job story listings and a story's comments, and post comments or replies on news.ycombinator.com in your current tab. Every tool parses Hacker News' own server-rendered pages from that tab (its CSP allows no cross-origin API), using your own logged-in session.",
+  "tools": [
+    {
+      "name": "get_item",
+      "description": "Get a Hacker News item (story, comment, or job) by its numeric ID with title, URL, HTML text, score, author, timestamp and comment count.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_item.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get a Hacker News user profile by username (case-sensitive): karma, account creation date and bio.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "list_top_stories",
+      "description": "Get the current top stories from the Hacker News front page, 30 per page, ranked by the HN algorithm. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_top_stories.js"
+    },
+    {
+      "name": "list_new_stories",
+      "description": "Get the newest Hacker News stories, most recent first, 30 per page. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_new_stories.js"
+    },
+    {
+      "name": "list_best_stories",
+      "description": "Get the best (historically high-performing) Hacker News stories, 30 per page. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_best_stories.js"
+    },
+    {
+      "name": "list_ask_stories",
+      "description": "Get the latest Ask HN stories — questions posted by the community for discussion — 30 per page. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_ask_stories.js"
+    },
+    {
+      "name": "list_show_stories",
+      "description": "Get the latest Show HN stories — projects and products shared by the community — 30 per page. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_show_stories.js"
+    },
+    {
+      "name": "list_job_stories",
+      "description": "Get the latest Hacker News job postings, 30 per page. Use page for pagination.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_job_stories.js"
+    },
+    {
+      "name": "get_story_comments",
+      "description": "Get a Hacker News story's comments in ranked display order with nesting depth (indent 0 = top-level), plus the total comment count and whether more comment pages exist.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_story_comments.js"
+    },
+    {
+      "name": "submit_comment",
+      "description": "Post a comment on a Hacker News story or reply to an existing comment. Requires being logged in; parent_id is a story ID for a top-level comment or a comment ID for a reply. Submits the site's own multipart comment form with the page's HMAC token.",
+      "urlRegex": "^https://news\\.ycombinator\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/submit_comment.js"
+    }
+  ]
+}

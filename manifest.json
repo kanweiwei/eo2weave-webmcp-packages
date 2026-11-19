@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T05:24:05.691Z",
+  "generatedAt": "2026-11-19T03:19:52.735Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -274,6 +274,62 @@
         {
           "path": "packages/com.github.main/workflows/update_pull_request.js",
           "sha256": "e7d231b6bfd713f083a8a2e5d05106535ae9eeea47a9114472ed3e3427fef4b1"
+        }
+      ]
+    },
+    {
+      "id": "com.hackernews.main",
+      "version": "0.1.0",
+      "description": "Read Hacker News items (stories, comments, jobs), user profiles, the top/new/best/Ask/Show/job story listings and a story's comments, and post comments or replies on news.ycombinator.com in your current tab. Every tool parses Hacker News' own server-rendered pages from that tab (its CSP allows no cross-origin API), using your own logged-in session.",
+      "toolCount": 10,
+      "files": [
+        {
+          "path": "packages/com.hackernews.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.hackernews.main/manifest.json",
+          "sha256": "0d4a00b40631f53945c55f033d4e8d5cff0b2d3865c44f7f359b64a5e2ebbe8e"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/get_item.js",
+          "sha256": "fb89e16236a05fb8b677b62b287744f71a11d233452659d56a675dac02786d44"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/get_story_comments.js",
+          "sha256": "50a331aad0f705cab9f09c42a798fc0835fbc5085031ab7b1bb6a7fb7fc31c07"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/get_user.js",
+          "sha256": "d6d0f1657ee9be5864479df4f02a7801da5216585d9a825b9939f0e30ed98246"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_ask_stories.js",
+          "sha256": "41e41bb8be1b96f737a060ea66d2618846ea26577d5201e1dec5cbae6c003804"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_best_stories.js",
+          "sha256": "3913d7287c954bd2687b0ba590f3d6e12c0a49278c684e5d80994e618000c725"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_job_stories.js",
+          "sha256": "31b45331070b60c5b29f8ccf022844fd01821efcf8a075005e8dcf09631b44f2"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_new_stories.js",
+          "sha256": "99bdd1533caf78b5e3507994bf3c3f05cfb97a7cc2214e7cb77641f9d7a523d9"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_show_stories.js",
+          "sha256": "09afc5cc31f10e32cc85bdb4ec4d061f9a5b4233e1454b606ea2d82ee6d5b389"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/list_top_stories.js",
+          "sha256": "78e6dfafcddf065470d40e00c0d7f8cdab082727a3b505797360d29e33b05340"
+        },
+        {
+          "path": "packages/com.hackernews.main/workflows/submit_comment.js",
+          "sha256": "6069c2d6b4a6df0602096dd4dc4f504b61bafc1f0ed1ab28422f90578e6945f0"
         }
       ]
     },

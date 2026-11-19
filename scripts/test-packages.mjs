@@ -19,6 +19,7 @@ import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import vm from 'node:vm'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { Window } from 'happy-dom'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const packagesDir = path.join(root, 'packages')
@@ -56,6 +57,26 @@ const OPENTABS_TOOL_COUNTS = {
   'com.notion.main': 18,
   'com.linear.main': 59,
   'com.discord.main': 26,
+  'com.hackernews.main': 10,
+}
+
+/**
+ * Tool sets (not just counts) of the upstream plugins: a swapped tool keeps the
+ * count equal and still leaves a mechanic unported.
+ */
+const OPENTABS_TOOL_NAMES = {
+  'com.hackernews.main': [
+    'get_item',
+    'get_user',
+    'list_top_stories',
+    'list_new_stories',
+    'list_best_stories',
+    'list_ask_stories',
+    'list_show_stories',
+    'list_job_stories',
+    'get_story_comments',
+    'submit_comment',
+  ],
 }
 
 /**
@@ -64,13 +85,21 @@ const OPENTABS_TOOL_COUNTS = {
  * - `meta[name="user-login"]` carries the logged-in GitHub login.
  * - `input[name="authenticity_token"]` carries the CSRF token the GitHub
  *   runtime reads before a mutation.
+ * - `a#logout` is the only login signal Hacker News offers; its comment tool
+ *   refuses to submit without it.
+ *
+ * Runtimes that parse fetched HTML use a real DOM (happy-dom's DOMParser, see
+ * `runTool`) instead of this stub.
  */
-function makeDocument({ cookie = '', login = null, csrf = 'csrf-token' } = {}) {
+function makeDocument({ cookie = '', login = null, csrf = 'csrf-token', loggedIn = false } = {}) {
   return {
     cookie,
     querySelector(selector) {
       if (selector === 'meta[name="user-login"]' && login) {
         return { getAttribute: () => login }
+      }
+      if (selector === 'a#logout') {
+        return loggedIn ? { getAttribute: () => 'logout' } : null
       }
       if (selector.includes('authenticity_token') && csrf) {
         return { value: csrf }
@@ -106,6 +135,10 @@ function makeStorage(initial = {}) {
 async function runTool(packageId, toolName, { input = {}, page } = {}) {
   const workflowPath = path.join(packagesDir, packageId, 'workflows', `${toolName}.js`)
   const module = await import(pathToFileURL(workflowPath).href)
+  // Ported runtimes that parse fetched HTML (Hacker News) call
+  // `new DOMParser().parseFromString(...)`: hand them a real DOM parser so the
+  // page-side code runs unchanged, exactly as in the tab.
+  const domParser = page.DOMParser ?? new Window().DOMParser
   const sandbox = {
     location: {
       hostname: page.hostname,
@@ -124,7 +157,7 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
     Blob: globalThis.Blob,
     atob: (value) => Buffer.from(String(value), 'base64').toString('binary'),
     AbortController,
-    DOMParser: page.DOMParser,
+    DOMParser: domParser,
     setTimeout,
     clearTimeout,
     Date,
@@ -258,6 +291,15 @@ for (const [id, expectedCount] of Object.entries(OPENTABS_TOOL_COUNTS)) {
   equal(manifest.tools.length, expectedCount, `${id}: tool count matches OpenTabs (${expectedCount})`)
 }
 
+for (const [id, expectedNames] of Object.entries(OPENTABS_TOOL_NAMES)) {
+  const manifest = JSON.parse(readFileSync(path.join(packagesDir, id, 'manifest.json'), 'utf8'))
+  equal(
+    manifest.tools.map((tool) => tool.name).sort().join(','),
+    [...expectedNames].sort().join(','),
+    `${id}: tool set matches OpenTabs`,
+  )
+}
+
 /**
  * Read the inputSchema a workflow declares (the manifest carries only the tool
  * metadata; the schema lives in the workflow file).
@@ -296,15 +338,21 @@ function loadUpstreamSchemas() {
     'com.github.main': 'github',
     'com.notion.main': 'notion',
     'com.linear.main': 'linear',
+    'com.hackernews.main': 'hackernews',
   }
   const schemas = {}
   for (const [id, plugin] of Object.entries(packages)) {
     const file = path.join(cacheDir, `${plugin}-tools.json`)
-    if (!existsSync(file)) return null
+    // A missing cache file skips that one plugin: an unfetched plugin must not
+    // silently disable schema parity for every other package.
+    if (!existsSync(file)) {
+      console.log(`  (${plugin} manifest not cached — ${id} schema parity skipped)`)
+      continue
+    }
     const parsed = JSON.parse(readFileSync(file, 'utf8'))
     schemas[id] = Object.fromEntries(parsed.tools.map((tool) => [tool.name, tool.input_schema ?? {}]))
   }
-  return schemas
+  return Object.keys(schemas).length > 0 ? schemas : null
 }
 
 const upstreamSchemas = loadUpstreamSchemas()
@@ -680,6 +728,280 @@ section('execution: ported tools run against a stubbed page')
   ok(requests[0].init.body instanceof FormData, 'discord upload_file: body is FormData')
   equal(requests[0].init.headers['Content-Type'], undefined, 'discord upload_file: lets the browser set the boundary')
   equal(JSON.parse(requests[0].init.body.get('payload_json')).content, 'see attached', 'discord upload_file: sends the comment')
+}
+
+// Hacker News: every tool parses HN's own server-rendered HTML (its CSP blocks
+// all cross-origin APIs), so the fixtures below reproduce the real page shapes:
+// `tr.athing` rows paired with a `.subtext` row, `.titleline > a` for the link,
+// `.sitestr` for the domain, `a.morelink` for pagination, comment rows carrying
+// `.ind img width` for nesting, and the reply/comment form with its HMAC field.
+
+function hnStoryRow({ id, title, href, site = '', score = null, by = null, time, comments = null }) {
+  const siteBit = site
+    ? ` <span class="sitebit comhead">(<a href="from?site=${site}"><span class="sitestr">${site}</span></a>)</span>`
+    : ''
+  const scoreBit =
+    score === null
+      ? ''
+      : `<span class="score" id="score_${id}">${score} points</span> by <a href="user?id=${by}" class="hnuser">${by}</a> `
+  const commentsBit = comments === null ? '' : `| <a href="item?id=${id}">${comments}&nbsp;comments</a>`
+  return `<tr class="athing" id="${id}">
+  <td align="right" valign="top" class="title"><span class="rank"></span></td>
+  <td valign="top" class="votelinks"><center><a id="up_${id}" href="vote?id=${id}&amp;how=up&amp;goto=news"><div class="votearrow" title="upvote"></div></a></center></td>
+  <td class="title"><span class="titleline"><a href="${href}">${title}</a>${siteBit}</span></td>
+</tr>
+<tr><td colspan="2"></td><td class="subtext"><span class="subline">${scoreBit}<span class="age" title="${time} 1738391564"><a href="item?id=${id}">3 hours ago</a></span> ${commentsBit}</span></td></tr>
+<tr class="spacer" style="height:5px"></tr>`
+}
+
+function hnCommentRow({ id, by, html, width, time }) {
+  return `<tr class="athing comtr" id="${id}"><td><table border="0"><tbody><tr>
+  <td class="ind"><img src="s.gif" height="1" width="${width}"></td>
+  <td valign="top" class="votelinks"><center><a id="up_${id}" href="vote?id=${id}&amp;how=up"><div class="votearrow" title="upvote"></div></a></center></td>
+  <td class="default"><div style="margin-top:2px"><span class="comhead"><a href="user?id=${by}" class="hnuser">${by}</a> <span class="age" title="${time} 1738394531"><a href="item?id=${id}">2 hours ago</a></span></span></div><br><div class="comment"><div class="commtext c00">${html}</div></div></td>
+</tr></tbody></table></td></tr>`
+}
+
+const HN_FRONT_PAGE = `<html><head><title>Hacker News</title></head><body><center>
+<table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef"><tbody>
+<tr><td bgcolor="#ff6600"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+<td><a href="/"><img src="y18.svg" width="18" height="18"></a></td>
+<td><span class="pagetop"><b class="hnname"><a href="news">Hacker News</a></b> <a id="login" href="login?goto=news">login</a></span></td>
+</tr></tbody></table></td></tr>
+<tr><td><table border="0" cellpadding="0" cellspacing="0" class="itemlist"><tbody>
+${hnStoryRow({ id: 43120001, title: 'Writing a kernel in Zig', href: 'https://ziglang.example/kernel', site: 'ziglang.example', score: 412, by: 'patio11', time: '2025-02-01T09:12:44', comments: 188 })}
+${hnStoryRow({ id: 43120002, title: 'Ask HN: How do you keep a research log?', href: 'item?id=43120002', score: 96, by: 'tptacek', time: '2025-02-01T10:04:00', comments: 54 })}
+${hnStoryRow({ id: 43120003, title: 'Example Corp is hiring engineers', href: 'https://jobs.example.org/hn', site: 'jobs.example.org', time: '2025-02-01T08:00:00' })}
+<tr class="morespace" style="height:10px"></tr>
+<tr><td colspan="2"></td><td class="title"><a href="news?p=2" class="morelink" rel="nofollow">More</a></td></tr>
+</tbody></table></td></tr>
+</tbody></table></center></body></html>`
+
+const HN_ITEM_PAGE = `<html><head><title>Writing a kernel in Zig | Hacker News</title></head><body><center>
+<table id="hnmain"><tbody><tr><td><table class="fatitem" border="0"><tbody>
+${hnStoryRow({ id: 43120001, title: 'Writing a kernel in Zig', href: 'https://ziglang.example/kernel', site: 'ziglang.example', score: 412, by: 'patio11', time: '2025-02-01T09:12:44', comments: 188 })}
+<tr><td colspan="2"></td><td><div class="toptext">A writeup of the port.<p>With benchmarks.</p></div></td></tr>
+</tbody></table></td></tr></tbody></table></center></body></html>`
+
+const HN_JOB_ITEM_PAGE = `<html><head><title>Example Corp is hiring engineers | Hacker News</title></head><body><center>
+<table id="hnmain"><tbody><tr><td><table class="fatitem" border="0"><tbody>
+${hnStoryRow({ id: 43120003, title: 'Example Corp is hiring engineers', href: 'https://jobs.example.org/hn', site: 'jobs.example.org', time: '2025-02-01T08:00:00' })}
+</tbody></table></td></tr></tbody></table></center></body></html>`
+
+const HN_USER_PAGE = `<html><head><title>Profile: patio11 | Hacker News</title></head><body><center>
+<table id="hnmain"><tbody><tr><td><table class="fatitem"><tbody><tr><td>
+<table border="0"><tbody>
+<tr><td>user:</td><td><a href="user?id=patio11" class="hnuser">patio11</a></td></tr>
+<tr><td>created:</td><td><a href="user?id=patio11">February 1, 2008</a></td></tr>
+<tr><td>karma:</td><td>31204</td></tr>
+<tr><td>about:</td><td>Founding partner of Kalzumeus Software.</td></tr>
+</tbody></table>
+</td></tr></tbody></table></td></tr></tbody></table></center></body></html>`
+
+const HN_COMMENTS_PAGE = `<html><head><title>Writing a kernel in Zig | Hacker News</title></head><body><center>
+<table id="hnmain"><tbody><tr><td><table class="fatitem" border="0"><tbody>
+${hnStoryRow({ id: 43120001, title: 'Writing a kernel in Zig', href: 'https://ziglang.example/kernel', site: 'ziglang.example', score: 412, by: 'patio11', time: '2025-02-01T09:12:44', comments: 188 })}
+</tbody></table></td></tr></tbody></table>
+<table border="0" class="comment-tree"><tbody>
+${hnCommentRow({ id: 43120500, by: 'dfgd', html: 'Top level take.', width: 0, time: '2025-02-01T10:02:11' })}
+${hnCommentRow({ id: 43120501, by: 'tptacek', html: 'A <i>reply</i> to it.', width: 40, time: '2025-02-01T10:09:00' })}
+</tbody></table></center></body></html>`
+
+const HN_REPLY_PAGE = `<html><head><title>Reply | Hacker News</title></head><body><center>
+<table id="hnmain"><tbody><tr><td>
+<form method="post" action="comment"><input type="hidden" name="parent" value="43120001"><input type="hidden" name="goto" value="item?id=43120001"><input type="hidden" name="hmac" value="a1b2c3d4e5f6"><textarea name="text" rows="6" cols="60"></textarea><br><br><input type="submit" value="reply"></form>
+<img src="s.gif" height="1" width="0">
+</td></tr></tbody></table></center></body></html>`
+
+{
+  // Hacker News: list_top_stories parses the front page (no API call) and keeps
+  // numeric fields numeric; page 2 goes through `?p=2`.
+  const requests = []
+  const page = {
+    hostname: 'news.ycombinator.com',
+    fetch: async (url, init) => {
+      requests.push({ url, init })
+      return htmlResponse(HN_FRONT_PAGE)
+    },
+  }
+  const result = await runTool('com.hackernews.main', 'list_top_stories', { input: {}, page })
+  equal(result.status, 'ok', 'hackernews list_top_stories: status')
+  equal(result.data.stories.length, 3, 'hackernews list_top_stories: story count')
+  equal(result.data.stories[0].id, 43120001, 'hackernews list_top_stories: item id')
+  equal(result.data.stories[0].title, 'Writing a kernel in Zig', 'hackernews list_top_stories: title')
+  equal(result.data.stories[0].url, 'https://ziglang.example/kernel', 'hackernews list_top_stories: link url')
+  equal(result.data.stories[0].site, 'ziglang.example', 'hackernews list_top_stories: domain')
+  equal(result.data.stories[0].score, 412, 'hackernews list_top_stories: score is a number')
+  equal(result.data.stories[0].by, 'patio11', 'hackernews list_top_stories: author')
+  equal(result.data.stories[0].time, '2025-02-01T09:12:44', 'hackernews list_top_stories: exact timestamp')
+  equal(result.data.stories[0].descendants, 188, 'hackernews list_top_stories: comment count is a number')
+  equal(result.data.stories[1].url, '', 'hackernews list_top_stories: text post has no url')
+  equal(result.data.stories[2].score, 0, 'hackernews list_top_stories: job row has no score')
+  equal(result.data.has_more, true, 'hackernews list_top_stories: has_more from a.morelink')
+  equal(requests[0].url, 'https://news.ycombinator.com/news', 'hackernews list_top_stories: fetches /news same-origin')
+  equal(requests[0].init.credentials, 'include', 'hackernews list_top_stories: sends credentials')
+
+  const paged = await runTool('com.hackernews.main', 'list_top_stories', { input: { page: 2 }, page })
+  equal(paged.status, 'ok', 'hackernews list_top_stories page 2: status')
+  equal(requests[1].url, 'https://news.ycombinator.com/news?p=2', 'hackernews list_top_stories: paginates with ?p=2')
+}
+
+{
+  // Hacker News: a listing page without any story rows is a parse failure, not
+  // an empty successful result.
+  const result = await runTool('com.hackernews.main', 'list_new_stories', {
+    input: {},
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async () => htmlResponse('<html><body><table><tbody></tbody></table></body></html>'),
+    },
+  })
+  equal(result.status, 'error', 'hackernews list_new_stories: empty page is an error')
+  equal(result.error_code, 'PARSE', 'hackernews list_new_stories: empty page is PARSE')
+}
+
+{
+  // Hacker News: get_item reads the item page for a story (with its toptext)
+  // and for a job (no author, no score).
+  const story = await runTool('com.hackernews.main', 'get_item', {
+    input: { id: 43120001 },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async (url) => {
+        equal(url, 'https://news.ycombinator.com/item?id=43120001', 'hackernews get_item: fetches /item?id=')
+        return htmlResponse(HN_ITEM_PAGE)
+      },
+    },
+  })
+  equal(story.status, 'ok', 'hackernews get_item: status')
+  equal(story.data.item.id, 43120001, 'hackernews get_item: id')
+  equal(story.data.item.type, 'story', 'hackernews get_item: type')
+  equal(story.data.item.title, 'Writing a kernel in Zig', 'hackernews get_item: title')
+  equal(story.data.item.score, 412, 'hackernews get_item: score')
+  equal(story.data.item.descendants, 188, 'hackernews get_item: comment count')
+  ok(story.data.item.text.includes('benchmarks'), 'hackernews get_item: keeps the HTML text')
+
+  const job = await runTool('com.hackernews.main', 'get_item', {
+    input: { id: 43120003 },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async () => htmlResponse(HN_JOB_ITEM_PAGE),
+    },
+  })
+  equal(job.status, 'ok', 'hackernews get_item job: status')
+  equal(job.data.item.type, 'job', 'hackernews get_item job: type')
+  equal(job.data.item.by, '', 'hackernews get_item job: no author')
+
+  const missing = await runTool('com.hackernews.main', 'get_item', {
+    input: { id: 999 },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async () => htmlResponse('<html><body><center>No such item.</center></body></html>'),
+    },
+  })
+  equal(missing.status, 'error', 'hackernews get_item: missing item is an error')
+  equal(missing.error_code, 'NOT_FOUND', 'hackernews get_item: missing item is NOT_FOUND')
+}
+
+{
+  // Hacker News: get_user reads the profile table (karma as a number, HTML bio).
+  let requested = null
+  const result = await runTool('com.hackernews.main', 'get_user', {
+    input: { username: 'patio11' },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async (url) => {
+        requested = url
+        return htmlResponse(HN_USER_PAGE)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'hackernews get_user: status')
+  equal(result.data.user.username, 'patio11', 'hackernews get_user: username')
+  equal(result.data.user.karma, 31204, 'hackernews get_user: karma is a number')
+  equal(result.data.user.created, 'February 1, 2008', 'hackernews get_user: creation date')
+  equal(result.data.user.about, 'Founding partner of Kalzumeus Software.', 'hackernews get_user: bio')
+  equal(requested, 'https://news.ycombinator.com/user?id=patio11', 'hackernews get_user: fetches /user?id=')
+}
+
+{
+  // Hacker News: get_story_comments reads comment rows, their nesting depth
+  // (40px of indent per level) and the story's total comment count.
+  let requested = null
+  const result = await runTool('com.hackernews.main', 'get_story_comments', {
+    input: { story_id: 43120001 },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async (url) => {
+        requested = url
+        return htmlResponse(HN_COMMENTS_PAGE)
+      },
+    },
+  })
+  equal(result.status, 'ok', 'hackernews get_story_comments: status')
+  equal(result.data.comments.length, 2, 'hackernews get_story_comments: comment count')
+  equal(result.data.comments[0].id, 43120500, 'hackernews get_story_comments: comment id is a number')
+  equal(result.data.comments[0].by, 'dfgd', 'hackernews get_story_comments: author')
+  equal(result.data.comments[0].indent, 0, 'hackernews get_story_comments: top-level indent')
+  equal(result.data.comments[1].indent, 1, 'hackernews get_story_comments: reply indent')
+  equal(result.data.comments[1].text, 'A <i>reply</i> to it.', 'hackernews get_story_comments: keeps comment HTML')
+  equal(result.data.total, 188, 'hackernews get_story_comments: total from the story subtext')
+  equal(result.data.has_more, false, 'hackernews get_story_comments: no more link')
+  equal(requested, 'https://news.ycombinator.com/item?id=43120001', 'hackernews get_story_comments: fetches the item page')
+}
+
+{
+  // Hacker News: submit_comment reads the HMAC token from the reply form and
+  // POSTs the site's own multipart form: never a JSON body, no content type
+  // (the browser must set the multipart boundary).
+  const requests = []
+  const result = await runTool('com.hackernews.main', 'submit_comment', {
+    input: { parent_id: 43120001, text: 'Great writeup.' },
+    page: {
+      hostname: 'news.ycombinator.com',
+      loggedIn: true,
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        if (String(url).includes('/reply?id=43120001')) return htmlResponse(HN_REPLY_PAGE)
+        return htmlResponse('<html><body>comment posted</body></html>')
+      },
+    },
+  })
+  equal(result.status, 'ok', 'hackernews submit_comment: status')
+  equal(result.data.success, true, 'hackernews submit_comment: success flag')
+  equal(
+    requests[0].url,
+    'https://news.ycombinator.com/reply?id=43120001&goto=item%3Fid%3D43120001%2343120001',
+    'hackernews submit_comment: reads the reply form first',
+  )
+  const post = requests.find((request) => String(request.url) === 'https://news.ycombinator.com/comment')
+  ok(Boolean(post), 'hackernews submit_comment: posts to /comment')
+  equal(post.init.method, 'POST', 'hackernews submit_comment: uses POST')
+  ok(post.init.body instanceof FormData, 'hackernews submit_comment: body is FormData')
+  equal(post.init.headers['Content-Type'], undefined, 'hackernews submit_comment: lets the browser set the boundary')
+  equal(post.init.body.get('parent'), '43120001', 'hackernews submit_comment: sends the parent id')
+  equal(post.init.body.get('goto'), 'item?id=43120001', 'hackernews submit_comment: sends the goto target')
+  equal(post.init.body.get('hmac'), 'a1b2c3d4e5f6', 'hackernews submit_comment: sends the page HMAC token')
+  equal(post.init.body.get('text'), 'Great writeup.', 'hackernews submit_comment: sends the comment text')
+  equal(post.init.credentials, 'include', 'hackernews submit_comment: sends credentials')
+}
+
+{
+  // Hacker News: submitting while logged out fails before any form is read.
+  const requests = []
+  const result = await runTool('com.hackernews.main', 'submit_comment', {
+    input: { parent_id: 43120001, text: 'nope' },
+    page: {
+      hostname: 'news.ycombinator.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse(HN_REPLY_PAGE)
+      },
+    },
+  })
+  equal(result.status, 'error', 'hackernews submit_comment logged out: is an error')
+  equal(result.error_code, 'AUTH', 'hackernews submit_comment logged out: is AUTH')
+  equal(requests.length, 0, 'hackernews submit_comment logged out: makes no request')
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
