@@ -56,6 +56,7 @@ const OPENTABS_TOOL_COUNTS = {
   'com.notion.main': 18,
   'com.linear.main': 59,
   'com.discord.main': 26,
+  'com.npm.main': 14,
 }
 
 /**
@@ -143,6 +144,9 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
   }
   sandbox.window = sandbox
   sandbox.globalThis = sandbox
+  // Page globals the runtime reads directly off the window (npm exposes its
+  // logged-in session as window.__context__).
+  Object.assign(sandbox, page.globals ?? {})
   vm.createContext(sandbox)
 
   const previousBrowser = globalThis.browser
@@ -680,6 +684,230 @@ section('execution: ported tools run against a stubbed page')
   ok(requests[0].init.body instanceof FormData, 'discord upload_file: body is FormData')
   equal(requests[0].init.headers['Content-Type'], undefined, 'discord upload_file: lets the browser set the boundary')
   equal(JSON.parse(requests[0].init.body.get('payload_json')).content, 'see attached', 'discord upload_file: sends the comment')
+}
+
+{
+  // npm: get_package reads the package page as JSON through x-spiferack and
+  // maps the capsule/packageVersion pair into the flat package shape.
+  const requests = []
+  const result = await runTool('com.npm.main', 'get_package', {
+    input: { name: 'react' },
+    page: {
+      hostname: 'www.npmjs.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          packageVersion: {
+            name: 'react',
+            version: '19.1.0',
+            description: 'React is a JavaScript library for building user interfaces.',
+            license: 'MIT',
+            homepage: 'https://react.dev/',
+            repository: { url: 'git+https://github.com/facebook/react.git' },
+            keywords: ['react'],
+            author: { name: 'Meta' },
+            maintainers: [{ name: 'react-bot' }],
+            funding: { url: 'https://github.com/sponsors/react' },
+          },
+          capsule: {
+            name: 'react',
+            'dist-tags': { latest: '19.1.0', canary: '19.2.0-canary' },
+            lastPublish: { maintainer: 'react-bot', time: '2025-03-28T00:00:00.000Z' },
+            types: { typescript: { package: '@types/react' } },
+          },
+          isStarred: false,
+          dependents: { dependentsCount: '123456' },
+          provenance: { enabled: true },
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'npm get_package: status')
+  equal(result.data.package.name, 'react', 'npm get_package: name')
+  equal(result.data.package.version, '19.1.0', 'npm get_package: version')
+  equal(result.data.package.license, 'MIT', 'npm get_package: license')
+  equal(result.data.package.repository_url, 'git+https://github.com/facebook/react.git', 'npm get_package: repository url')
+  equal(result.data.package.maintainers[0].name, 'react-bot', 'npm get_package: maintainers')
+  equal(result.data.package.dist_tags.canary, '19.2.0-canary', 'npm get_package: dist-tags')
+  equal(result.data.package.typescript_support, '@types/react', 'npm get_package: typescript support')
+  equal(result.data.package.dependents_count, '123456', 'npm get_package: dependents count stays a string')
+  equal(result.data.package.has_provenance, true, 'npm get_package: provenance flag')
+  equal(requests[0].url, 'https://www.npmjs.com/package/react', 'npm get_package: package page endpoint')
+  equal(requests[0].init.headers['x-spiferack'], '1', 'npm get_package: asks for the JSON (spiferack) body')
+  equal(requests[0].init.credentials, 'include', 'npm get_package: sends credentials')
+  equal(requests[0].init.method, 'GET', 'npm get_package: plain GET needs no csrf token')
+  equal(requests[0].init.headers['x-csrf-token'], undefined, 'npm get_package: no csrf header on reads')
+}
+
+{
+  // npm: get_package_downloads keeps the weekly counts numeric.
+  const requests = []
+  const result = await runTool('com.npm.main', 'get_package_downloads', {
+    input: { name: 'express' },
+    page: {
+      hostname: 'www.npmjs.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          downloads: [
+            { downloads: 29000000, label: '2025-03-10 to 2025-03-16' },
+            { downloads: 28400000, label: '2025-03-17 to 2025-03-23' },
+          ],
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'npm get_package_downloads: status')
+  equal(result.data.name, 'express', 'npm get_package_downloads: name')
+  equal(result.data.downloads.length, 2, 'npm get_package_downloads: weekly points')
+  equal(typeof result.data.downloads[0].downloads, 'number', 'npm get_package_downloads: download count is a number')
+  equal(result.data.downloads[0].downloads, 29000000, 'npm get_package_downloads: download count')
+  equal(result.data.downloads[1].label, '2025-03-17 to 2025-03-23', 'npm get_package_downloads: label')
+  equal(requests[0].url, 'https://www.npmjs.com/package/express', 'npm get_package_downloads: package page endpoint')
+  equal(requests[0].init.headers['x-spiferack'], '1', 'npm get_package_downloads: asks for the JSON body')
+}
+
+{
+  // npm: search_packages sends q/page and maps the registry search envelope,
+  // including the numeric scores.
+  const requests = []
+  const result = await runTool('com.npm.main', 'search_packages', {
+    input: { query: 'express' },
+    page: {
+      hostname: 'www.npmjs.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          total: 1,
+          objects: [
+            {
+              package: {
+                name: 'express',
+                version: '4.21.2',
+                description: 'Fast, unopinionated, minimalist web framework',
+                keywords: ['express', 'framework'],
+                date: '2024-12-03T10:00:00.000Z',
+                publisher: { username: 'dougwilson' },
+                maintainers: [{ username: 'dougwilson' }],
+                links: {
+                  npm: 'https://www.npmjs.com/package/express',
+                  homepage: 'https://expressjs.com/',
+                  repository: 'https://github.com/expressjs/express',
+                },
+              },
+              score: { final: 0.95, detail: { quality: 0.9, popularity: 0.98, maintenance: 0.94 } },
+              searchScore: 100000,
+            },
+          ],
+        })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'npm search_packages: status')
+  equal(result.data.total, 1, 'npm search_packages: total')
+  equal(result.data.packages[0].name, 'express', 'npm search_packages: package name')
+  equal(result.data.packages[0].publisher, 'dougwilson', 'npm search_packages: publisher')
+  equal(result.data.packages[0].maintainers[0], 'dougwilson', 'npm search_packages: maintainers')
+  equal(typeof result.data.packages[0].score_final, 'number', 'npm search_packages: score is a number')
+  equal(result.data.packages[0].score_popularity, 0.98, 'npm search_packages: popularity score')
+  equal(result.data.packages[0].search_score, 100000, 'npm search_packages: search score')
+  equal(result.data.packages[0].date, '2024-12-03T10:00:00.000Z', 'npm search_packages: publish date')
+  equal(requests[0].url, 'https://www.npmjs.com/search?q=express&page=0', 'npm search_packages: search endpoint with q/page')
+}
+
+{
+  // npm: list_user_packages is authenticated — the username comes from the
+  // page context (window.__context__), never from the caller.
+  const requests = []
+  const result = await runTool('com.npm.main', 'list_user_packages', {
+    input: {},
+    page: {
+      hostname: 'www.npmjs.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          packages: {
+            total: 1,
+            objects: [{ name: '@ada/tool', version: '1.0.0', description: 'demo', date: { rel: '2 days ago' } }],
+          },
+          packagesCounts: { all: 1, linked: 1, unlinked: 0 },
+        })
+      },
+      globals: {
+        __context__: {
+          context: {
+            user: { name: 'ada', avatars: { large: '/avatars/ada.png' } },
+            csrftoken: 'csrf-npm',
+          },
+        },
+      },
+    },
+  })
+  equal(result.status, 'ok', 'npm list_user_packages: status')
+  equal(result.data.total, 1, 'npm list_user_packages: total')
+  equal(result.data.packages[0].name, '@ada/tool', 'npm list_user_packages: package name')
+  equal(result.data.packages[0].date, '2 days ago', 'npm list_user_packages: relative date')
+  equal(requests[0].url, 'https://www.npmjs.com/settings/ada/packages?page=0', 'npm list_user_packages: settings endpoint for the page user')
+  equal(requests[0].init.headers['x-spiferack'], '1', 'npm list_user_packages: asks for the JSON body')
+  equal(requests[0].init.credentials, 'include', 'npm list_user_packages: sends credentials')
+}
+
+{
+  // npm: get_current_user reads the logged-in identity straight off the page.
+  const result = await runTool('com.npm.main', 'get_current_user', {
+    input: {},
+    page: {
+      hostname: 'www.npmjs.com',
+      globals: {
+        __context__: {
+          context: {
+            user: { name: 'ada', avatars: { large: '/avatars/ada.png' } },
+            csrftoken: 'csrf-npm',
+            userEmailVerified: true,
+          },
+        },
+      },
+      fetch: async () => jsonResponse({}),
+    },
+  })
+  equal(result.status, 'ok', 'npm get_current_user: status')
+  equal(result.data.username, 'ada', 'npm get_current_user: username from the page context')
+  equal(result.data.avatar_url, 'https://www.npmjs.com/avatars/ada.png', 'npm get_current_user: absolute avatar url')
+  equal(result.data.email_verified, true, 'npm get_current_user: verified email flag')
+}
+
+{
+  // npm: list_tokens is authenticated, and a logged-out page is a classified
+  // error instead of an empty token list.
+  const requests = []
+  const authed = await runTool('com.npm.main', 'list_tokens', {
+    input: {},
+    page: {
+      hostname: 'www.npmjs.com',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return jsonResponse({
+          list: {
+            objects: [
+              { token: 'npm_52ab......TJGu', readonly: true, created: '2024-01-02T03:04:05.000Z', updated: '2024-06-01T00:00:00.000Z' },
+            ],
+          },
+        })
+      },
+      globals: { __context__: { context: { user: { name: 'ada' }, csrftoken: 'csrf-npm' } } },
+    },
+  })
+  equal(authed.status, 'ok', 'npm list_tokens: status')
+  equal(authed.data.tokens[0].token, 'npm_52ab......TJGu', 'npm list_tokens: token prefix')
+  equal(authed.data.tokens[0].readonly, true, 'npm list_tokens: read-only flag is a boolean')
+  equal(requests[0].url, 'https://www.npmjs.com/settings/ada/tokens', 'npm list_tokens: settings tokens endpoint')
+
+  const anonymous = await runTool('com.npm.main', 'list_tokens', {
+    input: {},
+    page: { hostname: 'www.npmjs.com', fetch: async () => jsonResponse({}) },
+  })
+  equal(anonymous.status, 'error', 'npm list_tokens: logged-out page is an error')
+  equal(anonymous.error_code, 'UNAUTHENTICATED', 'npm list_tokens: logged-out page is classified as UNAUTHENTICATED')
 }
 
 // --- 4. Registry manifest ----------------------------------------------------
