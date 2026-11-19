@@ -1,0 +1,235 @@
+{
+  "id": "com.bluesky.main",
+  "version": "0.1.0",
+  "description": "Read and write Bluesky: home, custom, list and author feeds, post threads, search, profiles and follower graphs, notifications and direct messages, and create/delete posts, like, repost, follow, block-list, mute and chat actions on bsky.app in your current tab. Uses your own logged-in Bluesky session.",
+  "tools": [
+    {
+      "name": "get_timeline",
+      "description": "Get the authenticated user's home timeline. Returns posts from followed accounts, sorted chronologically. Supports cursor-based pagination.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_timeline.js"
+    },
+    {
+      "name": "get_feed",
+      "description": "Get posts from a custom feed generator (e.g., Discover, What's Hot). Requires the feed AT URI.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_feed.js"
+    },
+    {
+      "name": "get_author_feed",
+      "description": "Get posts by a specific user. Filter by post type: posts_with_replies (default), posts_no_replies, posts_with_media, or posts_and_author_threads.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_author_feed.js"
+    },
+    {
+      "name": "get_post_thread",
+      "description": "Get a post and its reply thread. Returns the root post and nested replies. Use depth to control how many levels of replies to fetch.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_post_thread.js"
+    },
+    {
+      "name": "get_posts",
+      "description": "Get multiple posts by their AT URIs. Returns up to 25 posts in a single request.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_posts.js"
+    },
+    {
+      "name": "get_list_feed",
+      "description": "Get posts from a user list. Requires the list AT URI.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_list_feed.js"
+    },
+    {
+      "name": "create_post",
+      "description": "Create a new Bluesky post. Supports plain text. For replies, provide the parent and root post URIs and CIDs.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_post.js"
+    },
+    {
+      "name": "delete_post",
+      "description": "Delete a post by its AT URI. Only the post author can delete their own posts. The rkey is extracted from the URI.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_post.js"
+    },
+    {
+      "name": "search_posts",
+      "description": "Search for posts matching a query. Supports filtering by author, mentions, language, URL, domain, and tags. Results can be sorted by latest or top.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_posts.js"
+    },
+    {
+      "name": "like_post",
+      "description": "Like a post. Requires the post's AT URI and CID. Returns the URI of the like record (needed for unliking).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/like_post.js"
+    },
+    {
+      "name": "unlike_post",
+      "description": "Remove a like from a post. Requires the AT URI of the like record (returned by like_post).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unlike_post.js"
+    },
+    {
+      "name": "repost",
+      "description": "Repost a post. Requires the post's AT URI and CID. Returns the URI of the repost record (needed for unreposting).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/repost.js"
+    },
+    {
+      "name": "unrepost",
+      "description": "Remove a repost. Requires the AT URI of the repost record (returned by repost).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unrepost.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated user's profile including name, handle, bio, follower counts, and avatar.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a user's profile by their DID or handle. Returns detailed profile information including bio, follower counts, and viewer relationship.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "get_user_profiles",
+      "description": "Get multiple user profiles in a single request. Accepts up to 25 DIDs or handles.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profiles.js"
+    },
+    {
+      "name": "search_users",
+      "description": "Search for users by keyword. Returns paginated results matching the query against handles and display names.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_users.js"
+    },
+    {
+      "name": "search_users_typeahead",
+      "description": "Typeahead search for users. Returns a quick list of matching users for autocomplete. Faster than full search but returns fewer results.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_users_typeahead.js"
+    },
+    {
+      "name": "get_followers",
+      "description": "Get a user's followers list. Supports cursor-based pagination.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_followers.js"
+    },
+    {
+      "name": "get_follows",
+      "description": "Get the list of accounts a user follows. Supports cursor-based pagination.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_follows.js"
+    },
+    {
+      "name": "follow_user",
+      "description": "Follow a user. Requires the target user's DID. Returns the follow record URI (needed for unfollowing).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/follow_user.js"
+    },
+    {
+      "name": "unfollow_user",
+      "description": "Unfollow a user. Requires the AT URI of the follow record (returned by follow_user or found in the viewer relationship).",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unfollow_user.js"
+    },
+    {
+      "name": "get_blocks",
+      "description": "Get the list of accounts blocked by the authenticated user. Supports cursor-based pagination.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_blocks.js"
+    },
+    {
+      "name": "mute_actor",
+      "description": "Mute a user. Their posts will no longer appear in your feed.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mute_actor.js"
+    },
+    {
+      "name": "unmute_actor",
+      "description": "Unmute a user.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unmute_actor.js"
+    },
+    {
+      "name": "mute_thread",
+      "description": "Mute a thread. Notifications from this thread will be suppressed.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mute_thread.js"
+    },
+    {
+      "name": "unmute_thread",
+      "description": "Unmute a thread.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unmute_thread.js"
+    },
+    {
+      "name": "list_notifications",
+      "description": "List the authenticated user's notifications including likes, reposts, follows, mentions, replies, and quotes. Supports cursor-based pagination.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_notifications.js"
+    },
+    {
+      "name": "get_unread_count",
+      "description": "Get the count of unread notifications.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_unread_count.js"
+    },
+    {
+      "name": "mark_notifications_seen",
+      "description": "Mark all notifications as seen up to the current timestamp.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mark_notifications_seen.js"
+    },
+    {
+      "name": "list_conversations",
+      "description": "List the authenticated user's direct message conversations. Returns conversations sorted by most recent activity.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_conversations.js"
+    },
+    {
+      "name": "get_conversation",
+      "description": "Get details about a specific conversation by its ID.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_conversation.js"
+    },
+    {
+      "name": "get_messages",
+      "description": "Get messages in a conversation. Returns messages sorted by most recent first.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_messages.js"
+    },
+    {
+      "name": "send_message",
+      "description": "Send a direct message in a conversation.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a message for yourself in a conversation.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "mute_conversation",
+      "description": "Mute a conversation to stop receiving notifications from it.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mute_conversation.js"
+    },
+    {
+      "name": "unmute_conversation",
+      "description": "Unmute a conversation.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/unmute_conversation.js"
+    },
+    {
+      "name": "mark_conversation_read",
+      "description": "Mark a conversation as read.",
+      "urlRegex": "^https?://(?:www\\.)?bsky\\.app/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/mark_conversation_read.js"
+    }
+  ]
+}

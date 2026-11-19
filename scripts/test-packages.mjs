@@ -522,7 +522,8 @@ for (const id of packageIds) {
     ok(!/location\s*\.\s*href\s*=/.test(source), `${id}: no href assignment (${tool.name})`)
     ok(!/window\s*\.\s*open\s*\(/.test(source), `${id}: no window.open (${tool.name})`)
     // The session cookie must travel with the request, never be lifted out.
-    const credentialsMode = id === 'com.stackoverflow.main' ? "credentials: 'omit'" : "credentials: 'include'"
+    const omitCredentials = id === 'com.stackoverflow.main' || id === 'com.bluesky.main'
+    const credentialsMode = omitCredentials ? "credentials: 'omit'" : "credentials: 'include'"
     ok(source.includes(credentialsMode), `${id}: sends credentials (${tool.name})`)
   }
 }
