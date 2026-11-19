@@ -1,0 +1,133 @@
+{
+  "id": "com.confluence.main",
+  "version": "0.1.0",
+  "description": "Search, read, create, update, delete and comment on Confluence pages, browse spaces, page trees, attachments, versions, labels and user profiles on your *.atlassian.net/wiki site in your current tab. Uses your own logged-in Confluence session.",
+  "tools": [
+    {
+      "name": "list_spaces",
+      "description": "List Confluence spaces with optional pagination",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_spaces.js"
+    },
+    {
+      "name": "get_space",
+      "description": "Get detailed information about a specific Confluence space by its ID",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_space.js"
+    },
+    {
+      "name": "list_pages",
+      "description": "List Confluence pages. Optionally filter by space ID and sort by modified date. Returns paginated results.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_pages.js"
+    },
+    {
+      "name": "get_page",
+      "description": "Get a Confluence page by its ID, including title, metadata, and optionally the page body content in storage format (HTML)",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_page.js"
+    },
+    {
+      "name": "create_page",
+      "description": "Create a new Confluence page in a space. The body content uses Confluence storage format (HTML).",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_page.js"
+    },
+    {
+      "name": "update_page",
+      "description": "Update an existing Confluence page. Requires the current version number (get it from get_page). The body uses Confluence storage format (HTML).",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_page.js"
+    },
+    {
+      "name": "delete_page",
+      "description": "Delete a Confluence page by its ID. The page is moved to trash and can be restored.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_page.js"
+    },
+    {
+      "name": "get_page_children",
+      "description": "List the child pages of a Confluence page. Useful for navigating the page tree.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_page_children.js"
+    },
+    {
+      "name": "list_page_attachments",
+      "description": "List attachments on a Confluence page. Returns file names, sizes, and download URLs.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_page_attachments.js"
+    },
+    {
+      "name": "list_page_versions",
+      "description": "List version history of a Confluence page. Shows who edited the page and when.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_page_versions.js"
+    },
+    {
+      "name": "search",
+      "description": "Search Confluence content using CQL (Confluence Query Language). Examples: 'type=page AND text~\"meeting\"', 'type=page AND space=\"SD\" ORDER BY lastmodified DESC', 'type=page AND title~\"design\"'. See https://developer.atlassian.com/cloud/confluence/cql-fields/ for full CQL reference.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List footer comments on a Confluence page with optional pagination",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "list_inline_comments",
+      "description": "List inline comments on a Confluence page. Inline comments are anchored to specific text in the page body. Filter by resolution status to see open, resolved, or dangling comments.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_inline_comments.js"
+    },
+    {
+      "name": "list_comment_replies",
+      "description": "List replies (child comments) on a Confluence comment. Works for both inline and footer comments. Specify the comment type to use the correct API endpoint.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comment_replies.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a footer comment to a Confluence page, or reply to an existing comment. To create a new top-level comment, provide page_id. To reply to an existing footer comment, provide parent_comment_id instead. The comment body uses storage format (HTML).",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "create_inline_comment",
+      "description": "Create an inline comment on specific text in a Confluence page. The comment is anchored to the selected text and appears as a margin note. Provide the exact text to anchor to, the total number of matches of that text on the page, and which match (0-based index) to anchor to.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_inline_comment.js"
+    },
+    {
+      "name": "delete_comment",
+      "description": "Delete a footer comment from a Confluence page. The comment is permanently removed.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_comment.js"
+    },
+    {
+      "name": "list_labels",
+      "description": "List labels attached to a Confluence page",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_labels.js"
+    },
+    {
+      "name": "add_label",
+      "description": "Add a label to a Confluence page",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_label.js"
+    },
+    {
+      "name": "remove_label",
+      "description": "Remove a label from a Confluence page by label name. Use list_labels to see which labels are on the page.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_label.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a Confluence user profile by account ID. If no account ID is provided, returns the current user profile.",
+      "urlRegex": "^https?://[^/:?#]+\\.atlassian\\.net/wiki/(?:[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    }
+  ]
+}

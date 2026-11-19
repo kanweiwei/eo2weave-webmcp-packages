@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T06:11:46.281Z",
+  "generatedAt": "2026-11-19T06:27:23.747Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -162,6 +162,130 @@
       ]
     },
     {
+      "id": "com.bitbucket.main",
+      "version": "0.1.0",
+      "description": "Read and write Bitbucket Cloud repositories, pull requests, branches, tags, commits, pipelines, source files, workspaces and members on bitbucket.org in your current tab. Uses your own logged-in Bitbucket session.",
+      "toolCount": 27,
+      "files": [
+        {
+          "path": "packages/com.bitbucket.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.bitbucket.main/manifest.json",
+          "sha256": "4fa8cfbe11fe3327830de16c134874d056155b87e59e315372754dbd1cc6f70f"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/approve_pull_request.js",
+          "sha256": "2c2abe0cd4e44fb741e5b93a8207308d5bdfde12cd9ad5fd5fa431fe3233499d"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/create_branch.js",
+          "sha256": "2de65b6073d8b88cd724a86ef76e024448104b892859c74a027d75e8026d8f2b"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/create_pr_comment.js",
+          "sha256": "af68a9335822e48f8d652e36e44589d94a5f144cd17d22e5058625bff7e05b03"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/create_pull_request.js",
+          "sha256": "8ad9d6ce2de8ad621225c9e815980489311c1f5705765c6064eb7c0ba64bc52d"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/create_repository.js",
+          "sha256": "7f25edb1704b9cabee8b891f7598d29d9743becaafa3e1f7f379d7ced8ee6841"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/decline_pull_request.js",
+          "sha256": "5f259bca379b6f2fbf1994714fdd11c10672cc2eb7797bcf3650ff034f7cbd32"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/delete_branch.js",
+          "sha256": "e391bb73e74857032e6c7e3493b388d6662ca3fa8b4d2c18cf219fc1a806d7f0"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_commit.js",
+          "sha256": "404c392ede7a5d6936fc96e28c4808355873dae84a51a4f572e8e14dd1ae7684"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_file_content.js",
+          "sha256": "9f105322d9d2395aae9503c90dca357f68abbd4aca7e357babce6f43c5d5c4e9"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_pipeline.js",
+          "sha256": "cb718a9637df0a9e4d578bb18cdbf964496b553b8530f146ead669fc09a6cafd"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_pull_request_diff.js",
+          "sha256": "cabd289fed55880308b02daed28b981f785f6395201a1e3eddfabc43b88333ca"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_pull_request.js",
+          "sha256": "ad8f425c613ccea9d34502f2b32ef31d1b72366440dfe02448a9bf58aab504ef"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_repository.js",
+          "sha256": "ea32c22675136fa9b01aa7cacc1ea267ee6bd00da004aaf498d297cc4ffd103f"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/get_user_profile.js",
+          "sha256": "7ec11668b7f6bdaa62149228ce8780785fd08894f099150f966f48e68725f90f"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_branches.js",
+          "sha256": "67890a4bba1341d9166c012e890a2c5139fa6eff4bc7782e8396c040ddd94f93"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_commits.js",
+          "sha256": "6a5d5e14cf332fb8d17872a5f672e23da439e0e7f58a233e52af0d33866a1b3c"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_pipeline_steps.js",
+          "sha256": "5cf06a2cee3bb68db96e8f767fafa1e4388f89df4f7415f3ef8c9252ac5b8443"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_pipelines.js",
+          "sha256": "3ee069a2373541ca0643e6f193d3f9f59df79f51a0c0b74af32cb5d0f4d8651c"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_pr_comments.js",
+          "sha256": "929b2c70dd492f784e39c92b7c360dd23682ebee355f25143b9d8b5372801118"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_pull_requests.js",
+          "sha256": "8c25deffb10bb1c138c9e4bdcb95506741d2366328c255f970d2d20feb9c816b"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_repositories.js",
+          "sha256": "f65b782e36dc79c7cfbe6438cb4a0d684f2051d3e7adc92451a3cb3690bcc3ee"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_tags.js",
+          "sha256": "e7729b2b0a1d4c7cb1de1d894387b33d1bc48f299dce1ec8f70cecb983b516f5"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_workspace_members.js",
+          "sha256": "b05ef5f1b89c3a04b424ba37e9fc8a51801ffeb11429d71128bc8c9fd77533bb"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/list_workspaces.js",
+          "sha256": "d032db25606f77b56510c76864a610dae11774b4d6d8ed28acce7e93a2c3f330"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/merge_pull_request.js",
+          "sha256": "2b12a3b61ecd98e1dfa9df2d93edce8c5ebd6b7b35bf69704b3ca63c22432f54"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/search_code.js",
+          "sha256": "6b61ab913ac2c985530b9f13ea6c9958c2ba93b0a5e36e7bc8dcbe8c5f94b29f"
+        },
+        {
+          "path": "packages/com.bitbucket.main/workflows/update_pull_request.js",
+          "sha256": "2e114fd710aea7e6406726ba7250e50f5cb7b7e7ad8c68d3c8b82e8f6f36bf96"
+        }
+      ]
+    },
+    {
       "id": "com.clickup.main",
       "version": "0.1.0",
       "description": "Read your ClickUp workspace from the current app.clickup.com tab: the signed-in user, workspaces and members, spaces, folders, lists, goals and custom fields. Uses your own logged-in ClickUp session.",
@@ -218,6 +342,106 @@
         {
           "path": "packages/com.clickup.main/workflows/get_workspace.js",
           "sha256": "5de3491899586df58d87f83ec1384283a6625b97f022fb521ba1ac357e0611df"
+        }
+      ]
+    },
+    {
+      "id": "com.confluence.main",
+      "version": "0.1.0",
+      "description": "Search, read, create, update, delete and comment on Confluence pages, browse spaces, page trees, attachments, versions, labels and user profiles on your *.atlassian.net/wiki site in your current tab. Uses your own logged-in Confluence session.",
+      "toolCount": 21,
+      "files": [
+        {
+          "path": "packages/com.confluence.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.confluence.main/manifest.json",
+          "sha256": "642f626a13592c503d3587062676a0f6badb2fddfc451b68be94d3c5c5276640"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/add_label.js",
+          "sha256": "deb3086ad230aabb2d30dd2d89a0de9d18cdb1a4b1fbac333c44f3c5c752704a"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/create_comment.js",
+          "sha256": "82788a7bbc50e1cbb15a29acb30ff1e7faf8a22f05b98e279bfcf78e8dfbd7dc"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/create_inline_comment.js",
+          "sha256": "5e6d0654764409596e1d4f740429f8f179b799b3fd15312812e7b882f8dd3979"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/create_page.js",
+          "sha256": "b978063d6003e65d13ad09a5608e7a41c4482559bb6e6084ac209c24cc9a87f2"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/delete_comment.js",
+          "sha256": "c9bddc3afe5aa1fb0e5fd53bb43fe3b488433c9e19162fba7de74a4b6147aecc"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/delete_page.js",
+          "sha256": "1dbc3770db84fdb08aea6185d79046f887f85d06952227e42401f5eab0ba2456"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/get_page_children.js",
+          "sha256": "22f278bd0f5f5a4f36e8f5aaa6e878f90dd4bc071aaaa8a3784569ca0dcb5d39"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/get_page.js",
+          "sha256": "f209b46510d5cdc819e4f102e88d00a37f7ad43d75304f3f71e1041312cdca60"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/get_space.js",
+          "sha256": "f642047714ea8f76ebf23c2c9ad7d8ad888d3aad1dd0c1e5a4a36d9d359f6756"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/get_user_profile.js",
+          "sha256": "fa1882ac24f8771b0f5b061ad7dbc4afdd1ecb467dfe9f4f086597d577d0a9f9"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_comment_replies.js",
+          "sha256": "d5c700cabfe4064cdf2bfc29aa8ebd0b389ccc89094eb71841891c12dedfc98b"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_comments.js",
+          "sha256": "d3c81ac207c243e517fb6889da0a6f09dfe78cc13f7fd583e42fdd8c97a7a76a"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_inline_comments.js",
+          "sha256": "e8317cd03ca4ea0dcad0c93d28f89787f717aacd1d51376794ae4f84c2c9fadf"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_labels.js",
+          "sha256": "c0618680535abda8cf4a7244081cb927e8e4ad351f133cceb52fd00072c6d8d9"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_page_attachments.js",
+          "sha256": "8be5f52ed0a4bccc21da3278c40bfa45108f64d460909c7a8043f58418bdcfe7"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_page_versions.js",
+          "sha256": "9a12454c5eb009978f39c38ed2f02b842a8d1dff456f2751962e2846e60fa9f0"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_pages.js",
+          "sha256": "65dad71780f5370eed364632a274d1302291a7a9f7fd52534429cf27093977ad"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/list_spaces.js",
+          "sha256": "d5149c565559338ae8bd1c8cbd0097d6323bfddfc8eb64a26ebcf215e0c182e2"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/remove_label.js",
+          "sha256": "d51571e028136c2b43abff39203d935faf7f36e8dab9f38c6fc9197a096ca833"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/search.js",
+          "sha256": "42e166fe30916eda9582e9e4d1a87cde37e83bc345b24295d9345dca418e7ce9"
+        },
+        {
+          "path": "packages/com.confluence.main/workflows/update_page.js",
+          "sha256": "cbd4aaa0dd4f969cde7622fb437f2e00a644b6f05a11959594777dac2d2596ff"
         }
       ]
     },
@@ -494,6 +718,110 @@
         {
           "path": "packages/com.github.main/workflows/update_pull_request.js",
           "sha256": "e7d231b6bfd713f083a8a2e5d05106535ae9eeea47a9114472ed3e3427fef4b1"
+        }
+      ]
+    },
+    {
+      "id": "com.gitlab.main",
+      "version": "0.1.0",
+      "description": "List and read GitLab projects, issues, merge requests, notes, branches, commits, files and CI/CD pipelines and jobs, and create, update and merge issues and merge requests, on gitlab.com or your self-hosted instance in your current tab. Uses your own logged-in GitLab session.",
+      "toolCount": 22,
+      "files": [
+        {
+          "path": "packages/com.gitlab.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.gitlab.main/manifest.json",
+          "sha256": "b5d2836d9aecd462c9b52812ec1abb2ea32df07165bd45b2c78417a7e7381067"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/create_issue.js",
+          "sha256": "2df75744f6e0313d990832bfffac5cd5499d47082311132b17829900d2ebb700"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/create_merge_request.js",
+          "sha256": "df10b0a46b95f441067176c6a66e696efa87ceb5ef35c7033e2fc7b060afe6ea"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/create_note.js",
+          "sha256": "e693148a469d80636b5e653b6f995e85d7144f485e2dbe87291a4c604f018d77"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_file_content.js",
+          "sha256": "59a96d9dbcc06ed105db22ad13cc0c9a2d326ba5021fb6bb19be0c231a7f3194"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_issue.js",
+          "sha256": "e2a5cd63ee39c08c56a903d0e5b4171b07e10b4cf90c2815dbaab7da184c7c47"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_job_log.js",
+          "sha256": "58473a8c1ffdea175b5f4732ff544306eabd09aa4c41ac686950aba642128301"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_merge_request_diff.js",
+          "sha256": "05fa3731ec162ad668de39515a42b5ff49fbb781666dcf1b5860713f7ea304a1"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_merge_request.js",
+          "sha256": "2c5c2bfe10c0f5bcf36e7ff4d983bd1b65d3a54c8280dd6e9f964b35e5cf7de1"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_project.js",
+          "sha256": "be7cc1167e3d76438b153a6633f6db38f280ff140edb4344deb447d329d07fe3"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/get_user_profile.js",
+          "sha256": "9dfe066c3adacda721c412dd4aaef2dd69a028a158ada74954f0f31d7b095a12"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_branches.js",
+          "sha256": "2fc3e327516d0622a9d8a0a3de27c875fa45300b53faf739570141f91c348b50"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_commits.js",
+          "sha256": "c2eb7648b83b44fb04257cfe8f456001b1e1e76e221f3da7129da223e893dc39"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_issues.js",
+          "sha256": "3a03f9366840c7a14e1a131aba85bcc86018cda6fcb2f63a174cc5f3abb802d6"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_merge_requests.js",
+          "sha256": "9c17e9bad9f058524f2be517d9a9d8c41ae4d6580d7e06c1db90c1a6f32a4612"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_notes.js",
+          "sha256": "759ce8455729f6d361e72e5249b4a8c41a2365236151d7b65da915d8f864c797"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_pipeline_jobs.js",
+          "sha256": "43e2ea903f97e364d19263223b501db777d8761e021dd8e8600416b73188975c"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_pipelines.js",
+          "sha256": "72d452cc455f59eb593e2cf0e473d2a5af9e7725e2b95c532e1c33f911e5eee6"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/list_projects.js",
+          "sha256": "0f8c05d69fb49d7a6189058e32dec1917ab0265d93795137e556ab3b66db50fe"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/merge_merge_request.js",
+          "sha256": "b73268a4c4c7122b89ba13cd650b89771a3552a84e4bf0f6b22717e7773f64fd"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/search_projects.js",
+          "sha256": "31cf2a45c615a252e83b1814a7ac6e9ddca7ba851ca7ee0432db39e8ae7d3a34"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/update_issue.js",
+          "sha256": "4d16dddb0678b33d4d6ea73312ac6da258beca33bf1dc982f77d9a00fbf1dcc8"
+        },
+        {
+          "path": "packages/com.gitlab.main/workflows/update_merge_request.js",
+          "sha256": "ef572059a4b1a18b6584129a658ecdd62db0e4d3d59c71413a53533270245740"
         }
       ]
     },
