@@ -27,6 +27,7 @@ const PLUGINS = {
   reddit: '@opentabs-dev/opentabs-plugin-reddit',
   todoist: '@opentabs-dev/opentabs-plugin-todoist',
   stackoverflow: '@opentabs-dev/opentabs-plugin-stackoverflow',
+  'google-calendar': '@opentabs-dev/opentabs-plugin-google-calendar',
 }
 
 async function fetchWithRetry(url, attempts = 3) {

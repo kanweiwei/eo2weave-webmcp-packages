@@ -1,0 +1,115 @@
+{
+  "id": "com.google-calendar.main",
+  "version": "0.1.0",
+  "description": "Read and search events, list and manage calendars, query free/busy, and read colors and user settings on calendar.google.com in your current tab. Uses your own logged-in Google Calendar session through the page's gapi client.",
+  "tools": [
+    {
+      "name": "list_events",
+      "description": "List events on a calendar. Returns upcoming events by default. Use timeMin/timeMax to specify a date range. Use q to search event text. Results are ordered by start time when singleEvents is true.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_events.js"
+    },
+    {
+      "name": "get_event",
+      "description": "Get detailed information about a specific event by its ID. Returns the full event resource including attendees, reminders, and conference data.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event.js"
+    },
+    {
+      "name": "create_event",
+      "description": "Create a new calendar event. For timed events, provide start_datetime and end_datetime in ISO 8601 format with timezone offset (e.g., \"2024-01-15T10:00:00-08:00\"). For all-day events, provide start_date and end_date in YYYY-MM-DD format (end_date is exclusive). At least one of (start_datetime or start_date) must be provided.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_event.js"
+    },
+    {
+      "name": "update_event",
+      "description": "Update an existing event. Only the fields you provide will be changed; omitted fields remain unchanged. Uses PATCH semantics.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_event.js"
+    },
+    {
+      "name": "delete_event",
+      "description": "Delete an event from a calendar. For recurring events, this deletes the entire series. To delete a single instance, use the instance event ID.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_event.js"
+    },
+    {
+      "name": "quick_add_event",
+      "description": "Create an event using natural language text. Google Calendar parses the text to extract event details like title, date, time, and location. Examples: \"Meeting with Bob tomorrow at 3pm\", \"Dinner at Olive Garden on Friday 7pm-9pm\".",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/quick_add_event.js"
+    },
+    {
+      "name": "move_event",
+      "description": "Move an event to another calendar. This changes the event organizer. Only default events can be moved \u2014 birthday, focusTime, fromGmail, outOfOffice, and workingLocation events cannot be moved.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/move_event.js"
+    },
+    {
+      "name": "list_event_instances",
+      "description": "List individual instances of a recurring event. Use timeMin/timeMax to scope the range of instances returned.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_event_instances.js"
+    },
+    {
+      "name": "search_events",
+      "description": "Search for events across all writable calendars by text query. Searches event summary, description, location, and attendee names. Returns matching events from all calendars the user has write access to.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_events.js"
+    },
+    {
+      "name": "list_calendars",
+      "description": "List all calendars on the user's calendar list. Returns primary and secondary calendars, subscribed calendars, and holiday calendars with their display settings.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_calendars.js"
+    },
+    {
+      "name": "get_calendar",
+      "description": "Get metadata for a specific calendar by its ID. Returns the calendar title, description, location, and time zone.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_calendar.js"
+    },
+    {
+      "name": "create_calendar",
+      "description": "Create a new secondary calendar. The authenticated user becomes the owner of the new calendar.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_calendar.js"
+    },
+    {
+      "name": "update_calendar",
+      "description": "Update metadata for a calendar. Only the fields you provide will be changed. Uses PATCH semantics.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_calendar.js"
+    },
+    {
+      "name": "delete_calendar",
+      "description": "Delete a secondary calendar. Use calendars.clear for clearing all events on primary calendars. The primary calendar cannot be deleted.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_calendar.js"
+    },
+    {
+      "name": "query_freebusy",
+      "description": "Query free/busy information for one or more calendars within a time range. Returns time slots where events are scheduled. Useful for finding available meeting times.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/query_freebusy.js"
+    },
+    {
+      "name": "list_settings",
+      "description": "List all user settings for the authenticated user. Returns settings like timezone, locale, date format, week start day, etc.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_settings.js"
+    },
+    {
+      "name": "get_setting",
+      "description": "Get a specific user setting by ID. Common settings: \"timezone\", \"locale\", \"dateFieldOrder\", \"format24HourTime\", \"weekStart\", \"showDeclinedEvents\", \"autoAddHangouts\".",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_setting.js"
+    },
+    {
+      "name": "get_colors",
+      "description": "Get the color definitions available for calendars and events. Returns color IDs with their background and foreground hex codes. Use these IDs when setting colors on events or calendars.",
+      "urlRegex": "^https://calendar\\.google\\.com/[^?#]*(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_colors.js"
+    }
+  ]
+}

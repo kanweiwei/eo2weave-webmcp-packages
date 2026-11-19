@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "generatedAt": "2026-11-19T05:27:03.510Z",
-=======
-  "generatedAt": "2026-11-19T05:28:19.014Z",
->>>>>>> feat/stackoverflow-port
+  "generatedAt": "2026-11-19T05:32:12.940Z",
   "packages": [
     {
       "id": "com.discord.main",
@@ -278,6 +274,94 @@
         {
           "path": "packages/com.github.main/workflows/update_pull_request.js",
           "sha256": "e7d231b6bfd713f083a8a2e5d05106535ae9eeea47a9114472ed3e3427fef4b1"
+        }
+      ]
+    },
+    {
+      "id": "com.google-calendar.main",
+      "version": "0.1.0",
+      "description": "Read and search events, list and manage calendars, query free/busy, and read colors and user settings on calendar.google.com in your current tab. Uses your own logged-in Google Calendar session through the page's gapi client.",
+      "toolCount": 18,
+      "files": [
+        {
+          "path": "packages/com.google-calendar.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-calendar.main/manifest.json",
+          "sha256": "708708c5629bfa00f88b28ded25af85ff9ac20546639f98f4d2aa298553a6d69"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/create_calendar.js",
+          "sha256": "e3e32c199b6a80aba0570cc453dd8304926bdd993b63dc831a0883b4a7cac212"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/create_event.js",
+          "sha256": "fd933bbe7414355dc42f77f1ded27647f490a44b8116f81bca8682281f72342c"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/delete_calendar.js",
+          "sha256": "0186fe8e86db54839309462e3fca4e55823484bca291b878ccf92d3a942187fa"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/delete_event.js",
+          "sha256": "1301d6ce0dc70141b9c0dab9b9f68a27b6b574447565e2ca6fbca92837819c7c"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/get_calendar.js",
+          "sha256": "6815f5adebde292cc99a5002245688725cc85cb556e6864c43d5fa2b64c83695"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/get_colors.js",
+          "sha256": "eb781228d41627b2582bc0dd5381a03cda054a16a6820651d4715b25b7d10ab8"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/get_event.js",
+          "sha256": "52503d678dc3a1238f8db45f6f7255b89e04e4fdbb99653d1c2cf845e871d727"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/get_setting.js",
+          "sha256": "679be76c5c849da7f9cca4d6c847d5f42c2f6ad474342c242132bb150546e70c"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/list_calendars.js",
+          "sha256": "171541ec63b0f3dcc137dc8f72bc75da9eacff1c66d0748eec41284af483d5ad"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/list_event_instances.js",
+          "sha256": "1c55b60a9004442b6883c5e42005c2a93604d248798f8b16bc81f97e4eaa96f8"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/list_events.js",
+          "sha256": "c7c072ba439843de4f4b4a8c9612c4dec938516a980b59fcbf9350b170b08e68"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/list_settings.js",
+          "sha256": "c3fc4478929553c200901bdeb204d04a21a568f7ac5006468c34acfa737b7f53"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/move_event.js",
+          "sha256": "d0d983c5e1e89b746054ed8dca4e3469226c7e3436ae524686818e2b46a56a08"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/query_freebusy.js",
+          "sha256": "1fe1c2f9bfd99abc2c2a0b69b144e522e1d9b4d2d0bd699ed5f56311b9eeba70"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/quick_add_event.js",
+          "sha256": "21e56ddbc909457ea442203376a6fb793e2fc8613829d6ff1fe660ee22bfd063"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/search_events.js",
+          "sha256": "27bdb5b7d9f11a7ca73083d7bce72dcdc954c4759a81e5479c43b800b207a203"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/update_calendar.js",
+          "sha256": "7ff9ffe5e0cf882bb5ed94ed42d68c112ffcaac1bd607dd4fae3e89a25cd40a9"
+        },
+        {
+          "path": "packages/com.google-calendar.main/workflows/update_event.js",
+          "sha256": "59ab608061e2518eb1eaa964fdb0a3fb48aea59b4023607a6143576fd0a24619"
         }
       ]
     },
