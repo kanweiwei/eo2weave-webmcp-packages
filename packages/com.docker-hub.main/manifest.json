@@ -1,0 +1,79 @@
+{
+  "id": "com.docker-hub.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Docker Hub",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Docker Hub user including username, full name, location, company, and account creation date.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a Docker Hub user profile by username. Returns username, full name, location, company, account type, and join date.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "list_organizations",
+      "description": "List Docker Hub organizations the current user belongs to. Returns organization names, locations, and join dates.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organizations.js"
+    },
+    {
+      "name": "list_repositories",
+      "description": "List Docker Hub repositories in a namespace (user or organization). Defaults to the current user. Supports filtering by name and sorting.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_repositories.js"
+    },
+    {
+      "name": "get_repository",
+      "description": "Get detailed information about a Docker Hub repository including description, pull count, star count, permissions, categories, and full README.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_repository.js"
+    },
+    {
+      "name": "create_repository",
+      "description": "Create a new Docker Hub repository in a namespace. The repository is created as a public image repository by default.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_repository.js"
+    },
+    {
+      "name": "update_repository",
+      "description": "Update a Docker Hub repository. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_repository.js"
+    },
+    {
+      "name": "delete_repository",
+      "description": "Permanently delete a Docker Hub repository. This action cannot be undone. All tags and images in the repository will be deleted.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_repository.js"
+    },
+    {
+      "name": "list_tags",
+      "description": "List tags for a Docker Hub repository. Returns tag names, digests, sizes, platform support, and last update times. Use namespace \"library\" for official images (e.g., library/nginx).",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tags.js"
+    },
+    {
+      "name": "get_tag",
+      "description": "Get detailed information about a specific tag in a Docker Hub repository, including its digest, size, and platform-specific images.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_tag.js"
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search Docker Hub repositories by keyword. Returns matching repositories with pull counts, star counts, and official/automated status.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_repositories.js"
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search the Docker Hub catalog for images, extensions, and models. Returns rich metadata including categories, source type (official, verified publisher, community), and content types. This is the newer, more comprehensive search API.",
+      "urlRegex": "^https?://hub\\.docker\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_catalog.js"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "id": "com.zendesk.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Zendesk",
+  "tools": [
+    {
+      "name": "list_tickets",
+      "description": "List support tickets from Zendesk. Returns tickets with full details including subject, status, priority, assignee, requester, and timestamps. Supports pagination and sorting by created/updated date.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tickets.js"
+    },
+    {
+      "name": "get_ticket",
+      "description": "Get detailed information about a specific support ticket by its ID. Returns the full ticket object including subject, description, status, priority, assignee, requester, tags, and all timestamps.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_ticket.js"
+    },
+    {
+      "name": "create_ticket",
+      "description": "Create a new support ticket in Zendesk. Requires a subject and initial comment body. Optionally set priority, type, tags, assignee, group, and requester. Returns the newly created ticket with its assigned ID.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_ticket.js"
+    },
+    {
+      "name": "update_ticket",
+      "description": "Update an existing support ticket. Change the subject, status, priority, type, tags, assignee, or group. Only specified fields are updated; omitted fields remain unchanged. Returns the updated ticket.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_ticket.js"
+    },
+    {
+      "name": "delete_ticket",
+      "description": "Permanently delete a support ticket by its ID. This action cannot be undone. The ticket and all its comments will be removed from Zendesk.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_ticket.js"
+    },
+    {
+      "name": "list_ticket_comments",
+      "description": "List all comments on a support ticket. Returns comments with author information, body text, creation timestamp, and public/private status. Supports pagination for tickets with many comments.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_ticket_comments.js"
+    },
+    {
+      "name": "add_ticket_comment",
+      "description": "Add a comment to an existing support ticket. Comments can be public (visible to the requester) or private (internal notes for agents only). Returns the updated ticket with the new comment.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_ticket_comment.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Zendesk user.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get detailed information about a specific Zendesk user by their ID.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List users in the Zendesk account. Optionally filter by role and paginate results.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "list_organizations",
+      "description": "List all organizations in the Zendesk account with optional pagination.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organizations.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get detailed information about a specific Zendesk organization by its ID.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_groups",
+      "description": "List all agent groups in the Zendesk account.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_groups.js"
+    },
+    {
+      "name": "search",
+      "description": "Search across tickets, users, and organizations using Zendesk search syntax. Examples: 'type:ticket status:open', 'type:user role:agent', 'type:organization name:Acme', 'assignee:me priority:high'",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search.js"
+    },
+    {
+      "name": "list_views",
+      "description": "List all shared and personal views in the Zendesk account.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_views.js"
+    },
+    {
+      "name": "get_view_tickets",
+      "description": "Get the list of tickets in a specific Zendesk view. Use list_views to discover available views.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_view_tickets.js"
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags in the Zendesk account with their usage counts.",
+      "urlRegex": "^https?://[a-z0-9-]+\\.zendesk\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tags.js"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T15:10:55.296Z",
+  "generatedAt": "2026-11-20T09:44:14.942Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -450,6 +450,82 @@
         {
           "path": "packages/com.bluesky.main/workflows/unrepost.js",
           "sha256": "8fed4415ece784a8ad37206c328d5f3b9cc47e66939b33745f206a75cd1472fb"
+        }
+      ]
+    },
+    {
+      "id": "com.calendly.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Calendly",
+      "toolCount": 15,
+      "files": [
+        {
+          "path": "packages/com.calendly.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.calendly.main/manifest.json",
+          "sha256": "25b2afb500edaaa16f702c3b5a2340ed009f245fff02b346192fcb7c88da56b1"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/activate_event_type.js",
+          "sha256": "f11caf48244a4330ff7d024803437da66772bb0d12db9755e047701315596b84"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/clone_event_type.js",
+          "sha256": "c79f938b642f360d43f2660d3336a645418490183a1ed0de760fd428693b0676"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/create_event_type.js",
+          "sha256": "80fb0d8e823723ed303663e4abbadcf2c20a467c1954bff573b47a628b8aedf1"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/deactivate_event_type.js",
+          "sha256": "486bfbd8db77a52ec0b576df06b6c0f7d44d165eb461fa14d606740759e12967"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/delete_event_type.js",
+          "sha256": "f386b9ae45825f0be38714f8fa02a9b4490f1977b4e7bf928b3cf5a1a7c53281"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_current_user.js",
+          "sha256": "84f6d7f6f467f77998501554e0f46c43613a39cf064a8c31f39ea2647f940bc0"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_event_type.js",
+          "sha256": "be972caf6db48a0625c9924661e84d4fdc3409f436eacb93909de0e66ace9c86"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_organization_statistics.js",
+          "sha256": "979ad5555480b81a89e7c4276f96b6ad483b96581041ff6336bcfe945f8f60bc"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_organization.js",
+          "sha256": "245773ef9eb106f3e8f471c64b9e45796d1f9b61bdc0a330bd747f11d85ff4f2"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_user_busy_times.js",
+          "sha256": "dc24b6876cca09aa1e5bb73d237fe735e4b49e702bb26ebaab79a1031a461391"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/get_user_permissions.js",
+          "sha256": "06b9b346a479464aa8ab0bb09d6a410905090a53fc1a45be03a76f7081e48aef"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/list_calendar_accounts.js",
+          "sha256": "dd405bb9b5f9188ade3f0eb004b2bfb41ff46d3d0c922c764e91e368aaf433b1"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/list_event_types.js",
+          "sha256": "b3d94bb73b42a2f8321ae47f86128a174ec317e996e684b23b8a5676c18cc23a"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/list_scheduled_events.js",
+          "sha256": "a08e75a85b411ff49650af07647f1397e3f5de565d89d2a922b42d1d9239e930"
+        },
+        {
+          "path": "packages/com.calendly.main/workflows/update_event_type.js",
+          "sha256": "b608259c93edff65d69607e1bbf293a72af429f76af0161cf60e2f84bf2a2830"
         }
       ]
     },
@@ -1330,6 +1406,70 @@
         {
           "path": "packages/com.discord.main/workflows/upload_file.js",
           "sha256": "314f7475a141a42dd1e74d85e9180d443e078d37c65a1cf495d0fd6e4ef2284e"
+        }
+      ]
+    },
+    {
+      "id": "com.docker-hub.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Docker Hub",
+      "toolCount": 12,
+      "files": [
+        {
+          "path": "packages/com.docker-hub.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.docker-hub.main/manifest.json",
+          "sha256": "964cc86056293eee7e7557072098c3a5f42179225501e773f42009a74bc7a9d6"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/create_repository.js",
+          "sha256": "d5f5a9df7e196ab3d8287fb3b1072d2cf611f601fe7e1b7f4728dfcf7b5a9052"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/delete_repository.js",
+          "sha256": "655064306c2f8086a29551ea49f8958f2458289842299469c208c4a1c9fa3638"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/get_current_user.js",
+          "sha256": "126d92238e2fa90f94925804960d0f617c92ac71d45b88ef806e8c458bf2c116"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/get_repository.js",
+          "sha256": "fa29956af9014ff7f7570eba1b1ca9c73e58f6df1e5e6d733839671ef6834fc6"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/get_tag.js",
+          "sha256": "a98e05e1f5ba898ee067edbe364c61ac389b874ad2209ad977efa8b90e5127a1"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/get_user_profile.js",
+          "sha256": "d3ab82a72dc7ac0182faca7efd0933d9c56e15898696a0fef8637c085b03e74f"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/list_organizations.js",
+          "sha256": "531c025d648c8193a29d4f64c7568f51f67a251ece60667617bdd0233c5ed005"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/list_repositories.js",
+          "sha256": "172451245b62b6c93fa365ec51519d07b858314d44688a2e5df834bd9b7c2db2"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/list_tags.js",
+          "sha256": "f5c83ba8478949272c9ea3e5af94ee72c346d1f2f71414ac999401c0c43942f7"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/search_catalog.js",
+          "sha256": "3b0317f9c3d240be299e22ca27d723a2e198c60daedb4eba065a68a33ac630fa"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/search_repositories.js",
+          "sha256": "cc779133c0bf4bf9fc977d1b8ce10313da2cb1e3afa76f4677bd630420db3b73"
+        },
+        {
+          "path": "packages/com.docker-hub.main/workflows/update_repository.js",
+          "sha256": "c539cf94694800d99d9343cc5d2e992650b926f0eab76ee8d108048d11816cd0"
         }
       ]
     },
@@ -4806,6 +4946,90 @@
         {
           "path": "packages/com.x.main/workflows/update_list.js",
           "sha256": "1156140c5f1c24d2bc7c956fd14b6abd76401d30700cdd92cd6985a1efeeb98a"
+        }
+      ]
+    },
+    {
+      "id": "com.zendesk.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Zendesk",
+      "toolCount": 17,
+      "files": [
+        {
+          "path": "packages/com.zendesk.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.zendesk.main/manifest.json",
+          "sha256": "f0754f67313972514f368048665ee753040b737249db445a0e2f280dec801bf0"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/add_ticket_comment.js",
+          "sha256": "c738f31677e45752f440149e3f5e2393f75c5f4739dc17a03fca525db85baa92"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/create_ticket.js",
+          "sha256": "1966fdf92e71c219509aaf640fcb7e0e1c4c3577f3db13f2717de93111048e7a"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/delete_ticket.js",
+          "sha256": "ebccb1e66f822b2f4a7bd1f5d997024aad588d482cf6ca46a32fdf2ba3504afc"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/get_current_user.js",
+          "sha256": "cb69a0452b0c986c10d6b9bf6d09f9808f9165d3e5b9d51494462468b6f7e67f"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/get_organization.js",
+          "sha256": "364075a44fa0afe99198f55f5ca5d92bf6f55600a093857b6726d92479fa5935"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/get_ticket.js",
+          "sha256": "a4bba5af42744f2e5f49cbb46b4951de51df2366a9472f3de8e6284157189efc"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/get_user.js",
+          "sha256": "e34fcfcc397194e961ab58b63bf77acca7d443ed43bc1d317efb73733ccada78"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/get_view_tickets.js",
+          "sha256": "9736b19348a3e9da399450dccd6cfe3ae819c176a9d169dc72667d6eb1d41f11"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_groups.js",
+          "sha256": "07fdae7f4f887fcf1986c1956e14951581aad6aa8edad005e8b9135067aa0d8d"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_organizations.js",
+          "sha256": "2629191647ce506256b6f5561d6a1685bca413e9d4e3e3251f3e6c38879eb6c3"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_tags.js",
+          "sha256": "3b2823a9da6ce7568417fb56c12472cca0872f98564b928a8b2d70f6439459d7"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_ticket_comments.js",
+          "sha256": "323dc1bce59a9fa95adfc196c69157f49decc38082d56fa4cf0922419cb56c32"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_tickets.js",
+          "sha256": "f2534e74df466bb15eba77ecc768765275d2de5cd234eb248eb68ebd0ca4c1ef"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_users.js",
+          "sha256": "370c4efce40f1d4cac0aa43383d3ade1778a882c36105c076c487c216ab119d5"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/list_views.js",
+          "sha256": "8733f6e0efe2500e89b2197e2315e964bc9891ddebfeeb1fb04db8fcbcbebd48"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/search.js",
+          "sha256": "d9503ab87e5d01c4be8d7016e3b0668f6fa1b204c06591738abde94f9f0ef264"
+        },
+        {
+          "path": "packages/com.zendesk.main/workflows/update_ticket.js",
+          "sha256": "23002e775637f17cf1e0ef125c6cc5f9f2ea92880a0b45b0729f1511dd6d5422"
         }
       ]
     }
