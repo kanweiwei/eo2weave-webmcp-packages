@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-36 packages, 1058 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+39 packages, 1102 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -105,6 +105,9 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.clickup.main` | 11 | OpenTabs plugin (MIT) |
 | `com.hackernews.main` | 10 | OpenTabs plugin (MIT) |
 | `com.airtable.main` | 8 | OpenTabs plugin (MIT) |
+| `com.calendly.main` | 15 | OpenTabs plugin (MIT) |
+| `com.zendesk.main` | 17 | OpenTabs plugin (MIT) |
+| `com.docker-hub.main` | 12 | OpenTabs plugin (MIT) |
 
 ## Migration notes
 
