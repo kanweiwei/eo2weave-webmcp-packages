@@ -1,0 +1,97 @@
+{
+  "id": "com.calendly.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Calendly",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Calendly user including name, email, booking URL, timezone, and event count.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_permissions",
+      "description": "Get the permission policy for the current user, showing what actions they can perform in the organization (create event types, manage teams, configure workflows, etc.).",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_permissions.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get details about the current Calendly organization including name, tier, trial status, and owner information.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "get_organization_statistics",
+      "description": "Get seat usage statistics for the current Calendly organization including available seats, active users, pending invitations, and occupancy ratio.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization_statistics.js"
+    },
+    {
+      "name": "list_event_types",
+      "description": "List all event types for the current user. Event types define the scheduling templates (e.g. \"30 Minute Meeting\", \"Discovery Call\"). Returns paginated results with up to 10 event types per page.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_event_types.js"
+    },
+    {
+      "name": "get_event_type",
+      "description": "Get detailed information about a specific event type by its numeric ID. Returns full configuration including duration, location settings, custom intake fields, and availability.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event_type.js"
+    },
+    {
+      "name": "create_event_type",
+      "description": "Create a new event type (scheduling template). Requires a name and a URL-safe slug. Returns the new event type ID and edit path.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_event_type.js"
+    },
+    {
+      "name": "update_event_type",
+      "description": "Update an existing event type. Only specified fields are changed; omitted fields remain unchanged. Returns the updated event type.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_event_type.js"
+    },
+    {
+      "name": "delete_event_type",
+      "description": "Permanently delete an event type by its numeric ID. This action cannot be undone. Active events scheduled through this event type are not affected.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_event_type.js"
+    },
+    {
+      "name": "clone_event_type",
+      "description": "Create a copy of an existing event type with all its settings. The clone is created with \" (clone)\" appended to the name and a generated slug. Returns the new event type ID and edit path.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/clone_event_type.js"
+    },
+    {
+      "name": "activate_event_type",
+      "description": "Activate a previously deactivated event type, making it available for booking again.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/activate_event_type.js"
+    },
+    {
+      "name": "deactivate_event_type",
+      "description": "Deactivate an event type so it is no longer available for booking. The event type is preserved and can be reactivated later. Existing scheduled events are not affected.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/deactivate_event_type.js"
+    },
+    {
+      "name": "list_scheduled_events",
+      "description": "List scheduled events (meetings) with optional status filter. Defaults to showing all events. Supports pagination with 20 events per page.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_scheduled_events.js"
+    },
+    {
+      "name": "list_calendar_accounts",
+      "description": "List all connected calendar accounts (Google Calendar, Outlook, etc.) with their conflict checking and push settings.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_calendar_accounts.js"
+    },
+    {
+      "name": "get_user_busy_times",
+      "description": "Get busy time slots for the current user within a date range. Returns both Calendly events and external calendar events that block availability. Requires start_time and end_time in ISO 8601 format.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)?calendly\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_busy_times.js"
+    }
+  ]
+}
