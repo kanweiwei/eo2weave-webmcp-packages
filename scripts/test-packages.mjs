@@ -406,6 +406,17 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
     console,
     URLSearchParams,
     Intl,
+    // Node 20's SubtleCrypto rejects ArrayBuffer instances from another vm
+    // realm (instanceof check); aliasing the host realm's typed-array
+    // constructors into the sandbox keeps SigV4 signing realm-consistent.
+    ArrayBuffer: globalThis.ArrayBuffer,
+    Uint8Array: globalThis.Uint8Array,
+    Uint16Array: globalThis.Uint16Array,
+    Uint32Array: globalThis.Uint32Array,
+    Int8Array: globalThis.Int8Array,
+    Int16Array: globalThis.Int16Array,
+    Int32Array: globalThis.Int32Array,
+    DataView: globalThis.DataView,
     crypto: globalThis.crypto,
     // SigV4 request signing (AWS Console port) encodes strings as bytes; the
     // sandbox must expose the same encoder the browser gives page code.
