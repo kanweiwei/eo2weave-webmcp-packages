@@ -1,0 +1,97 @@
+{
+  "id": "com.amplitude.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Amplitude analytics",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Amplitude user including name, email, organization role, and account details.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_org_data",
+      "description": "Get organization overview including apps/projects, current user info, plan details, and usage status. This is the bootstrap data for the Amplitude organization.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_org_data.js"
+    },
+    {
+      "name": "list_orgs",
+      "description": "List all Amplitude organizations the current user belongs to. Returns organization IDs and names.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_orgs.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List all members of the current Amplitude organization with their roles, email, and profile details.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "get_personal_space",
+      "description": "Get the current user's personal space with its contents, permissions, and folder structure.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_personal_space.js"
+    },
+    {
+      "name": "list_spaces",
+      "description": "List all team spaces in the organization. Spaces are the top-level containers for organizing charts, dashboards, cohorts, and notebooks.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_spaces.js"
+    },
+    {
+      "name": "search_content",
+      "description": "Search across all Amplitude content including charts, dashboards, cohorts, notebooks, and nudges. Filter by content type, owner, space, and more. Results are sorted by relevance by default.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_content.js"
+    },
+    {
+      "name": "list_events",
+      "description": "List event properties for a specific event type in a project/app. Use get_org_data first to find the app ID, then provide the event type name (e.g., '[Amplitude] Element Clicked').",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_events.js"
+    },
+    {
+      "name": "get_color_palettes",
+      "description": "Get all color palettes available in the organization for chart visualization. Includes built-in Amplitude palettes and custom user-created palettes.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_color_palettes.js"
+    },
+    {
+      "name": "get_event_volumes",
+      "description": "Get monthly event ingestion volumes for the organization within a date range. Shows total, ingested, and billed event counts per month.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event_volumes.js"
+    },
+    {
+      "name": "get_mtu_volumes",
+      "description": "Get monthly tracked user (MTU) volumes for the organization within a date range. Shows total and billed MTU counts per month.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_mtu_volumes.js"
+    },
+    {
+      "name": "get_session_replay_volumes",
+      "description": "Get monthly session replay volumes for the organization within a date range.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_session_replay_volumes.js"
+    },
+    {
+      "name": "get_entitlements",
+      "description": "Get active entitlements for the organization including analytics, experiment, and session replay quotas with their limits and time ranges.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_entitlements.js"
+    },
+    {
+      "name": "get_report_quota",
+      "description": "Get the current report quota usage and limits for the organization. Shows how many charts, dashboards, and spaces exist relative to plan limits.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_report_quota.js"
+    },
+    {
+      "name": "check_permissions",
+      "description": "Check whether the current user has specific RBAC permissions. Common actions include: INVITE_NEW_USERS, VIEW_PROJECT_LIST, UPDATE_COHORT, CREATE_FEATURE_EXPERIMENT, AI_VIEW_GLOBAL_AGENT, AI_CREATE_GLOBAL_AGENT, UPDATE_BILLING_METHOD, READ_ACCESS_EXPERIMENT.",
+      "urlRegex": "^https?://(?:app|analytics)\\.amplitude\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/check_permissions.js"
+    }
+  ]
+}

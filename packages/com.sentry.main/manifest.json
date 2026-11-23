@@ -1,0 +1,133 @@
+{
+  "id": "com.sentry.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Sentry",
+  "tools": [
+    {
+      "name": "search_issues",
+      "description": "Search and list issues for a Sentry organization. Supports Sentry search syntax in the query parameter (e.g., \"is:unresolved\", \"assigned:me\", \"level:error\", \"first-seen:-24h\"). Filter by project IDs, environment, and time range. Results are paginated with a cursor.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_issues.js"
+    },
+    {
+      "name": "get_issue",
+      "description": "Get detailed information about a specific Sentry issue by its ID. Returns title, status, priority, event count, user count, assigned user, and more.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_issue.js"
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an issue's attributes. Supports changing status (resolve, unresolve, ignore), assigning to a user or team, bookmarking, and marking as seen. Only specified fields are modified.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_issue.js"
+    },
+    {
+      "name": "list_issue_events",
+      "description": "List the events (occurrences) for a specific Sentry issue. Each event represents a single occurrence of the issue with its own stack trace, tags, and context.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issue_events.js"
+    },
+    {
+      "name": "get_event",
+      "description": "Get full details of a specific event including stack trace, breadcrumbs, tags, context, and more. Requires the project slug and event ID.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event.js"
+    },
+    {
+      "name": "list_issue_tags",
+      "description": "List tag distributions for a Sentry issue. Shows which browsers, operating systems, releases, environments, and other tags are associated with the issue, along with the top values and their counts.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_issue_tags.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments (notes) on a Sentry issue. Returns the activity feed filtered to user-posted comments. Use create_comment to add a new comment.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "create_comment",
+      "description": "Add a comment (note) to a Sentry issue. The comment is posted as the authenticated user.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_comment.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List all projects for the current Sentry organization. Returns project name, slug, platform, and access status. Use the project slug for filtering issues or retrieving events.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific Sentry project by its slug. Returns platform, status, date created, and access information.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "get_project_keys",
+      "description": "List client keys (DSNs) for a Sentry project. The DSN is needed to initialize the Sentry SDK in your application. Returns the public DSN, key name, and active status.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project_keys.js"
+    },
+    {
+      "name": "list_project_environments",
+      "description": "List environments for a Sentry project. Returns environment names and visibility status. Use the project slug from list_projects.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_project_environments.js"
+    },
+    {
+      "name": "list_organizations",
+      "description": "List all Sentry organizations the current user belongs to. Returns org name, slug, and status.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organizations.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get detailed information about the current Sentry organization including name, slug, and status.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_members",
+      "description": "List all members of the current Sentry organization. Returns name, email, role, and join date for each member.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_members.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all teams in the current Sentry organization. Returns team name, slug, member count, and creation date.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "list_releases",
+      "description": "List releases for the current Sentry organization. Optionally filter by project ID(s). Returns version, release date, new issue count, commit count, and deploy count.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_releases.js"
+    },
+    {
+      "name": "get_release",
+      "description": "Get detailed information about a specific release, including commit count, deploy count, authors, and first/last event timestamps.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_release.js"
+    },
+    {
+      "name": "list_alerts",
+      "description": "List alert rules for the current Sentry organization. Returns alert name, status, type, and associated project.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alerts.js"
+    },
+    {
+      "name": "list_monitors",
+      "description": "List cron monitors for the current Sentry organization. Monitors track scheduled jobs (crons) and alert when check-ins are missed or fail.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_monitors.js"
+    },
+    {
+      "name": "list_replays",
+      "description": "List session replays for the current Sentry organization. Replays capture user browser sessions including DOM interactions, console logs, and network requests.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*sentry\\.io(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_replays.js"
+    }
+  ]
+}

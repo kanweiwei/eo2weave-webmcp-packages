@@ -385,6 +385,16 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
       hostname: page.hostname,
       href: page.href ?? `https://${page.hostname}/`,
       origin: page.origin ?? `https://${page.hostname}`,
+      // Runtimes parse the URL path/hash straight off window.location
+      // (Amplitude's org slug, Google Analytics' #/p<propertyId>); derive both
+      // from href so the stub matches a real location.
+      pathname: (() => {
+        const derived = (page.href ?? `https://${page.hostname}/`)
+          .replace(/^https?:\/\/[^/]+/, '')
+          .split(/[?#]/)[0]
+        return page.pathname ?? (derived === '' ? '/' : derived)
+      })(),
+      hash: page.hash ?? ((page.href ?? '').includes('#') ? '#' + (page.href ?? '').split('#')[1] : ''),
     },
     document: makeDocument(page),
     fetch: page.fetch,
