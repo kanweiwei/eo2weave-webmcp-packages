@@ -103,6 +103,7 @@ export default async function register({ ok, equal, section, runTool }) {
       input: { region: 'eu-west-1' },
       page,
     })
+    if (result.status !== 'ok') console.log('AWS LIST', JSON.stringify(result).slice(0, 400))
 
     equal(result.status, 'ok', 'aws list_instances: ok')
     ok(result.data.instances.length >= 1, 'aws list_instances: instance returned')
