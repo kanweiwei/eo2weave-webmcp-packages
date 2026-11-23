@@ -1,0 +1,79 @@
+{
+  "id": "com.onenote.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Microsoft OneNote",
+  "tools": [
+    {
+      "name": "list_notebooks",
+      "description": "List all OneNote notebooks for the current user. Returns notebook names, IDs, creation dates, and sharing status. Results are sorted by last modified date (newest first).",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_notebooks.js"
+    },
+    {
+      "name": "get_notebook",
+      "description": "Get detailed information about a specific OneNote notebook by its ID. Returns notebook metadata including name, creation date, sharing status, and web URL.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_notebook.js"
+    },
+    {
+      "name": "create_notebook",
+      "description": "Create a new OneNote notebook. The notebook name must be unique across the user's notebooks. Returns the created notebook with its ID and web URL.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_notebook.js"
+    },
+    {
+      "name": "get_recent_notebooks",
+      "description": "Get recently accessed OneNote notebooks. Returns notebooks sorted by last access time, including notebooks from personal OneDrive and OneDrive for Business.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_recent_notebooks.js"
+    },
+    {
+      "name": "list_sections",
+      "description": "List OneNote sections. When a notebook_id is provided, returns only sections in that notebook. Otherwise returns all sections across all notebooks.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sections.js"
+    },
+    {
+      "name": "get_section",
+      "description": "Get detailed information about a specific OneNote section by its ID. Returns section metadata including name, parent notebook, and creation date.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_section.js"
+    },
+    {
+      "name": "create_section",
+      "description": "Create a new section in a OneNote notebook. Sections contain pages and are the primary organizational unit within a notebook.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_section.js"
+    },
+    {
+      "name": "list_section_groups",
+      "description": "List OneNote section groups. When a notebook_id is provided, returns section groups in that notebook. Otherwise returns all section groups across all notebooks. Section groups are folders that organize sections within a notebook.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_section_groups.js"
+    },
+    {
+      "name": "get_section_group",
+      "description": "Get detailed information about a specific OneNote section group by its ID. Section groups are folders that organize sections within a notebook.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_section_group.js"
+    },
+    {
+      "name": "create_section_group",
+      "description": "Create a new section group in a OneNote notebook. Section groups act as folders to organize sections within a notebook.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_section_group.js"
+    },
+    {
+      "name": "create_page",
+      "description": "Create a new page in a OneNote section. The page content is specified as HTML. The HTML must include a <title> element inside <head> for the page title. Supports standard HTML elements: headings (h1-h6), paragraphs (p), lists (ul/ol/li), tables (table/tr/td), images (img with src), links (a), and text formatting (b, i, u, strike). Example: <!DOCTYPE html><html><head><title>My Page</title></head><body><h1>Hello</h1><p>Content here</p></body></html>",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_page.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Microsoft user including name, email, and language preference.",
+      "urlRegex": "^https?://(?:www\\.)?onenote\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    }
+  ]
+}

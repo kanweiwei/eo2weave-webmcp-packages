@@ -1,0 +1,175 @@
+{
+  "id": "com.microsoft-word.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Microsoft Word Online",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Microsoft 365 user including name and email.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "reauthenticate",
+      "description": "Clear cached MSAL state and reload the SharePoint/OneDrive tab to force a fresh Microsoft Graph token. Use this when another Word tool returns an authentication error pointing at this tool. After invoking, wait ~5 seconds for the tab to finish reloading, then retry the original operation.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reauthenticate.js"
+    },
+    {
+      "name": "get_drive",
+      "description": "Get the current user's OneDrive information including storage quota and drive type.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_drive.js"
+    },
+    {
+      "name": "get_active_document",
+      "description": "Get information about the document currently open in the Word Online editor. Returns the document ID, name, and metadata. The document ID can then be used with get_document_text, update_document, append_to_document, replace_text_in_document, and other tools. This is the recommended first step — call this to discover the active document before reading or editing it.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_active_document.js"
+    },
+    {
+      "name": "get_document_text",
+      "description": "Extract plain text content from a Word document (.docx). Downloads the binary file, decompresses the OOXML archive, and extracts text from all paragraphs. Returns paragraphs as an array of strings.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_document_text.js"
+    },
+    {
+      "name": "create_document",
+      "description": "Create a new Word document (.docx) with the given text content. Each string in the paragraphs array becomes a separate paragraph in the document. The file is created at the specified path in OneDrive.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_document.js"
+    },
+    {
+      "name": "update_document",
+      "description": "Replace the entire text content of an existing Word document (.docx). Downloads the document, replaces all body content with the new paragraphs, and re-uploads. WARNING: This removes all existing formatting (bold, italic, headings, etc.) — use replace_text_in_document for formatting-safe edits.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_document.js"
+    },
+    {
+      "name": "append_to_document",
+      "description": "Append paragraphs to the end of an existing Word document (.docx). Downloads the document, adds the new paragraphs after all existing content, and re-uploads. Existing content is preserved.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/append_to_document.js"
+    },
+    {
+      "name": "replace_text_in_document",
+      "description": "Find and replace text in an existing Word document (.docx). This is the recommended way to edit documents because it preserves all formatting (bold, italic, headings, styles). Replaces all occurrences of the search text with the replacement text within existing paragraph runs. The search is case-sensitive and matches exact strings.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/replace_text_in_document.js"
+    },
+    {
+      "name": "get_file_content",
+      "description": "Read text content of a file by its ID. Works with text-based files (.txt, .md, .csv, .html, .json, .xml, .yaml, .log, etc.). For Word documents (.docx), use get_document_text instead.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file_content.js"
+    },
+    {
+      "name": "list_recent_documents",
+      "description": "List recently accessed documents from OneDrive.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recent_documents.js"
+    },
+    {
+      "name": "list_children",
+      "description": "List files and folders in a directory. Use item_id to specify the folder, or omit for root.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_children.js"
+    },
+    {
+      "name": "get_item",
+      "description": "Get metadata for a file or folder by its ID.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_item.js"
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files and folders by name in OneDrive.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_files.js"
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a new folder. Specify parent_id for nested folders, omit for root.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_folder.js"
+    },
+    {
+      "name": "upload_file",
+      "description": "Upload a text file to OneDrive. Creates a new file or overwrites existing. Specify the full path relative to drive root (e.g., \"Documents/report.txt\").",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/upload_file.js"
+    },
+    {
+      "name": "update_file_content",
+      "description": "Update the content of an existing file by its ID.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_file_content.js"
+    },
+    {
+      "name": "rename_item",
+      "description": "Rename a file or folder.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/rename_item.js"
+    },
+    {
+      "name": "move_item",
+      "description": "Move a file or folder to a new parent folder.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/move_item.js"
+    },
+    {
+      "name": "copy_item",
+      "description": "Copy a file or folder. The copy operation is asynchronous — returns success immediately. The new copy appears in the destination folder shortly after.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/copy_item.js"
+    },
+    {
+      "name": "delete_item",
+      "description": "Permanently delete a file or folder. This action cannot be undone.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_item.js"
+    },
+    {
+      "name": "list_shared_with_me",
+      "description": "List files and folders shared with the current user.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_shared_with_me.js"
+    },
+    {
+      "name": "get_preview_url",
+      "description": "Get an embeddable preview URL for a document. Useful for generating view-only links.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_preview_url.js"
+    },
+    {
+      "name": "create_sharing_link",
+      "description": "Create a sharing link for a file or folder. Returns a URL that can be shared with others.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_sharing_link.js"
+    },
+    {
+      "name": "list_permissions",
+      "description": "List sharing permissions on a file or folder.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_permissions.js"
+    },
+    {
+      "name": "delete_permission",
+      "description": "Remove a sharing permission from a file or folder.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_permission.js"
+    },
+    {
+      "name": "list_versions",
+      "description": "List version history of a file.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_versions.js"
+    },
+    {
+      "name": "restore_version",
+      "description": "Restore a file to a previous version.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/restore_version.js"
+    }
+  ]
+}
