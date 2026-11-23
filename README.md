@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-43 packages, 1168 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+47 packages, 1260 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -111,6 +111,14 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.hackernews.main` | 10 | OpenTabs plugin (MIT) |
 | `com.google-analytics.main` | 8 | OpenTabs plugin (MIT) |
 | `com.airtable.main` | 8 | OpenTabs plugin (MIT) |
+| `com.mongodb-atlas.main` | 20 | OpenTabs plugin (MIT) |
+| `com.azure.main` | 26 | OpenTabs plugin (MIT) |
+| `com.aws-console.main` | 16 | OpenTabs plugin (MIT) |
+| `com.google-cloud.main` | 30 | OpenTabs plugin (MIT) |
+| `com.newrelic.main` | 22 | OpenTabs plugin (MIT) |
+| `com.sentry.main` | 21 | OpenTabs plugin (MIT) |
+| `com.amplitude.main` | 15 | OpenTabs plugin (MIT) |
+| `com.google-analytics.main` | 8 | OpenTabs plugin (MIT) |
 | `com.calendly.main` | 15 | OpenTabs plugin (MIT) |
 
 ## Migration notes
