@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T09:44:14.942Z",
+  "generatedAt": "2026-11-23T01:37:11.779Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -46,6 +46,82 @@
         {
           "path": "packages/com.airtable.main/workflows/update_cell.js",
           "sha256": "01aa4dbf2d78ce300d4074ecb91e4f0d23414bd1ef3ab4d336c4477b62f416c3"
+        }
+      ]
+    },
+    {
+      "id": "com.amplitude.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Amplitude analytics",
+      "toolCount": 15,
+      "files": [
+        {
+          "path": "packages/com.amplitude.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.amplitude.main/manifest.json",
+          "sha256": "900026cdcf54ca30ca38b19780d4c4ba182ba31566704d87d22c701ee857140d"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/check_permissions.js",
+          "sha256": "211f2539c343bd202c327600dee7815199811d32e57f2655b3171b6eb4b927bc"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_color_palettes.js",
+          "sha256": "e6207c86ab854b1d275a34aef1c829630dda72952e5e1ccd2fb410d10a150d8c"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_current_user.js",
+          "sha256": "c54717264ec4dd7d37c0a41a1a493f6cacaa9f4cdf8fd4bffc7787c49a0236f1"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_entitlements.js",
+          "sha256": "70bcaf769b5ff88c43db0b9275e19ba673567da4f61df6207cf26776cf25c12c"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_event_volumes.js",
+          "sha256": "3c3292c75b1c87273220845a1036791108b0976a658c43eba153da0a529c1c9d"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_mtu_volumes.js",
+          "sha256": "9f1c90d86ea8e08a1f32f92cbbde548c06f48193ce99bf9c424da9320d9d7866"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_org_data.js",
+          "sha256": "48a512846c27efe852b5a1318a64f3e76595639e710c2811f049f118b1c890a5"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_personal_space.js",
+          "sha256": "a7b7874b8a33f00428fcf98060ce095865f0daaad1128986eea16670d5b8bf56"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_report_quota.js",
+          "sha256": "e3272781dc3f269410c495168555bbac0ddda1c830aa3c39743c5f61040958b0"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/get_session_replay_volumes.js",
+          "sha256": "e28d408d105a9c1d7fddfad3818c696b6e5d5120e03d52696c0eb20f9548fb98"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/list_events.js",
+          "sha256": "f06b6efbe90f842f72c5d944c0439b3b121f8ab924e20b9da706d6c5b100741d"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/list_orgs.js",
+          "sha256": "d7d94017d00e7f03364eca2d5e063058cac9d8609aa576d39e15425d4fba2d27"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/list_spaces.js",
+          "sha256": "8c487bc1b42aaa612d4a96a01241d8797e5e042180c0311ff90fef05688e7b77"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/list_users.js",
+          "sha256": "ea5153a6b1bd7654135521ef7eb7ddb13048badbbea30fdc277301759c468cab"
+        },
+        {
+          "path": "packages/com.amplitude.main/workflows/search_content.js",
+          "sha256": "a1cada8ffbb1f4766f44a03cb688ff30f4523dc4c97e654c6d05ebcfe37a818b"
         }
       ]
     },
@@ -1734,6 +1810,54 @@
       ]
     },
     {
+      "id": "com.google-analytics.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Google Analytics",
+      "toolCount": 8,
+      "files": [
+        {
+          "path": "packages/com.google-analytics.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-analytics.main/manifest.json",
+          "sha256": "99558f9e588759cf2e844d3b8b3679650e26b4886cded7770adf8105d50e17f6"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/check_compatibility.js",
+          "sha256": "f08f543d23b1ad83110b7bd66183d61dbc9c2f9718e8e127f82424d08edf605f"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/get_active_property.js",
+          "sha256": "015ce6fab2fc1e9a88174bc0405f0174cdcc327fd1fa5cc3d47eabf93b2f2a7e"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/get_current_user.js",
+          "sha256": "c84b4a8b2e5111a31aedacd96f149dd442fe2731a54e76be66b585dafe701ce5"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/get_metadata.js",
+          "sha256": "0acd50e2569ebca9a339f56b07ab2080244a57af0b1c141fb0b0ce499943e5f2"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/list_accounts.js",
+          "sha256": "79e2ba1b176fb8af07bb1feaeba1f2a4a5b221c9bc76d9fd17e1763d197ec7c7"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/run_batch_report.js",
+          "sha256": "5a79813c5fa78aa276f5bdebc10ab74302b010271283b403364bc361d9fde8f5"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/run_realtime_report.js",
+          "sha256": "4fd83030f42c3032064ce3136b48df60a20c541694bcdbef8ee262eb5633979b"
+        },
+        {
+          "path": "packages/com.google-analytics.main/workflows/run_report.js",
+          "sha256": "2b9e729f23d0c7701bdd48ea59e11be7a0de055c7c6fa33aa1a3898082291356"
+        }
+      ]
+    },
+    {
       "id": "com.google-calendar.main",
       "version": "0.1.0",
       "description": "Read and search events, list and manage calendars, query free/busy, and read colors and user settings on calendar.google.com in your current tab. Uses your own logged-in Google Calendar session through the page's gapi client.",
@@ -2710,6 +2834,110 @@
       ]
     },
     {
+      "id": "com.newrelic.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for New Relic",
+      "toolCount": 22,
+      "files": [
+        {
+          "path": "packages/com.newrelic.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.newrelic.main/manifest.json",
+          "sha256": "ede76e00fc4e71deff72b541c76bb65a54fb8602090a102bff858fb2a2b73cfe"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/add_entity_tags.js",
+          "sha256": "20fbfad92ca165324542c75b2f8de16145c4e174e4473bc5c49c090757e801a5"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/create_alert_policy.js",
+          "sha256": "77128fb347d449da67520dc25f4398bc7c647777d29d8e42b80ed46ed11c0358"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/create_dashboard.js",
+          "sha256": "52c73ca494c6f7828ba0f77dda1c93b6b27418a3dd941eeaf065fd75e1522be9"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/create_nrql_condition.js",
+          "sha256": "fd08e3bd3a38796793335a0ae056cae6bce6605b68f3a1590d9743114606511f"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/delete_alert_policy.js",
+          "sha256": "5be79580ccb92648c7b73d37f6d2b3b077b1d30452cb3b6afe641f41e2e842fc"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/delete_dashboard.js",
+          "sha256": "49982819f8dbe6dd17fab104cc72e78170885a599f93c5147de824680bd4801b"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/delete_entity_tags.js",
+          "sha256": "67da4f79fc608156b50db193cc20b9d82cc31b6f5695c4d558cd7553768309cf"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/delete_nrql_condition.js",
+          "sha256": "b254f6f5a3b88a5602451583cb740d14f6926f1f2049b11b93dd3de1f2364e88"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/get_current_user.js",
+          "sha256": "9b5f8558a67fe71fe303f6c46de6a6dd96d4d108f079f01fbd73048e113a08dd"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/get_dashboard.js",
+          "sha256": "307825004e2ffaadffff03ad44a4ddd6ade6c875ae7d6f03b958d7f10108e1f0"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/get_entity.js",
+          "sha256": "176f83acd0a0a2ef1e2a7808faa8123e5f51eb31bc5b989e13d9a0e118ff2e57"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/get_organization.js",
+          "sha256": "c28d3836e32a9a65fbb74683b8c7a985a9aa1ed7539e50d2ab1305c9f6d7e55f"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_accounts.js",
+          "sha256": "fe1d8ffc7f24663c09c5566f651a905e7985193db3e1e79712791b091f3f7469"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_alert_policies.js",
+          "sha256": "1472ac7095608d61d81f3566b651ed2099699346a3c0656782bd70e1b239b625"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_dashboards.js",
+          "sha256": "ecfe3d09fcd3d9b23ad81e8e3459b1571a93f7ff72ccc34876ef9d274d1508d2"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_entity_tags.js",
+          "sha256": "69631e9fc4dc585b3784abe53bd317f7150dd247bb9315dbde03c6c5dd997282"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_event_types.js",
+          "sha256": "b17923687b8ffc8bc791393ec16d21ac51b72b8d4e9b4a48b5530e40726a5f9a"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/list_nrql_conditions.js",
+          "sha256": "b11dc06b69ee13fc6f4649a577f67f1fe7cbd8a967d79db8dcef9e669b86843c"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/run_nrql_query.js",
+          "sha256": "06143366e485c43c47b10c2d1031ae53053eba096b7d78dee818f95eae2cb8c3"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/search_entities.js",
+          "sha256": "c200f85c2131d6252959ef5531ecb39ba7fc83218afda28d36308974a889e28b"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/update_dashboard.js",
+          "sha256": "0b26adcdbea54cb171b45295369bf99558bb27a812a92415b932abf823d800f7"
+        },
+        {
+          "path": "packages/com.newrelic.main/workflows/update_nrql_condition.js",
+          "sha256": "d2d0bb1d44bf61f39e26e3fe06f14ad313ef9d1dac522c327ceb0f3ca67b12af"
+        }
+      ]
+    },
+    {
       "id": "com.notion.main",
       "version": "0.2.0",
       "description": "Search and read Notion pages, blocks and databases, and create or update pages, blocks, database rows and schemas in your current tab. Uses your own logged-in Notion session.",
@@ -3530,6 +3758,106 @@
         {
           "path": "packages/com.retool.main/workflows/update_app_from_toolscript_archive.js",
           "sha256": "5bca0a16fe61028cf2213952f230204b33efba09438f001a3c8a2af0a174e35e"
+        }
+      ]
+    },
+    {
+      "id": "com.sentry.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Sentry",
+      "toolCount": 21,
+      "files": [
+        {
+          "path": "packages/com.sentry.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.sentry.main/manifest.json",
+          "sha256": "37ecf988fc74ee1a4c1098168bb91837d2c54c47a16aae54e8cfcd82da5f6082"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/create_comment.js",
+          "sha256": "d60a8b8838a9dd14d2c33a251038c9043c0001aeb2091dd824379d2490a7f036"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_event.js",
+          "sha256": "d9882870f1f79d9d00700e6944de7ca6b9531e5403d2e080fecc622525a4f757"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_issue.js",
+          "sha256": "3037fdff215c02381b11a4a66d25be2a004d7cbfa5db59ea6e650fddffd8f27b"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_organization.js",
+          "sha256": "e4ada66d1ceec059a93020e698f81489af3f69225f53b644270184c06fdf7860"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_project_keys.js",
+          "sha256": "ed2ae639d3d4e1b0a3cc290a00bb2f9456972490a8cb48c909597cf226ecbc3f"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_project.js",
+          "sha256": "2682242a8b61e65a5f693b4669685180ca39f8c50d0c041879826724ab25a00a"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/get_release.js",
+          "sha256": "3ae87e34b8cac863113b15450724f032bf9b5948bf08f681d100f667cf5cdda9"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_alerts.js",
+          "sha256": "282781aa73e8d3197178e923565ef242587b9339e17780c02c325e68f05cd40c"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_comments.js",
+          "sha256": "0212b22d29ff90341910204ff5d80fbe777b5b293cd2a71ee6c1c49038910b79"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_issue_events.js",
+          "sha256": "621c7d4653c8d5eff1e873c9caf5f75de72792785a3993c03374aaa81dc5619d"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_issue_tags.js",
+          "sha256": "e194d563ac09793831f7269f4ab99a43992fbbf30758295b184852c1c9d083da"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_members.js",
+          "sha256": "33f86a6397b686db1bb0d7f51f6b6850dd8cfb63b9c85fad07286eba44402107"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_monitors.js",
+          "sha256": "a6d12795ca1fb52da55af6d8349a82dc40bebf9eb12a745b9b342e60fe216cc5"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_organizations.js",
+          "sha256": "d383472a4e40754315afdaa6b56fada51bf8f2957f2785ab00a52b1e7c7c91b3"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_project_environments.js",
+          "sha256": "e6210f11b4f7dd3422af61615bf1f881fa34981d15af48da724bc91dabda1132"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_projects.js",
+          "sha256": "b91cce61be93a4c41c285f948b9cd1ee2dcd88dfda4bc75be137a9a705b0a3df"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_releases.js",
+          "sha256": "7705d6389c5396515c1a49b499905ccdd5d998c09dab0594cc1d083417f82376"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_replays.js",
+          "sha256": "2165b4474b2c14585513d26d040268246de81b9d0916bec2eacfb89c242af3d9"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/list_teams.js",
+          "sha256": "a217596b2d32438b6ed7410d534d2e2e7bf1112a466b25d501022dd00ca41eab"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/search_issues.js",
+          "sha256": "1c962d44568681bee6fd542389cbc80a138e75d5ea6d8bea72e06a80bdc0cac1"
+        },
+        {
+          "path": "packages/com.sentry.main/workflows/update_issue.js",
+          "sha256": "aa91526a9aea61115643245cd8742cee9cffaa2cb9d7e9134164a76cdc76038b"
         }
       ]
     },
