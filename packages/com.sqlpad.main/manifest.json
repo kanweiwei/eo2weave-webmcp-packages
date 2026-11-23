@@ -1,0 +1,79 @@
+{
+  "id": "com.sqlpad.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for SQLPad — run SQL queries, browse database schemas, and manage saved queries",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the currently authenticated user profile including ID, email, and role. Also returns the SQLPad version.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_users",
+      "description": "List all users in the SQLPad instance with their roles and email addresses.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_users.js"
+    },
+    {
+      "name": "list_connections",
+      "description": "List all available database connections. Returns connection IDs, names, drivers, and configuration. Use the connection ID when running queries or fetching schemas.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_connections.js"
+    },
+    {
+      "name": "get_schema",
+      "description": "Get the database schema for a connection, including all schemas, tables, and columns. Useful for discovering table structures before writing queries. Filter by schema or table name to reduce output.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_schema.js"
+    },
+    {
+      "name": "run_query",
+      "description": "Execute a SQL query on a database connection and return the results. Only read-only SQL statements (SELECT, SHOW, DESCRIBE, EXPLAIN) are recommended. The query is submitted as a batch, polled for completion, and results are returned as objects keyed by column name. Queries have a 5-minute timeout.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_query.js"
+    },
+    {
+      "name": "list_saved_queries",
+      "description": "List saved SQL queries in the workspace. Returns query names, IDs, connection IDs, and permissions. Use get_saved_query to retrieve the full SQL text.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_saved_queries.js"
+    },
+    {
+      "name": "get_saved_query",
+      "description": "Get the full details of a saved query by ID, including the SQL text.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_saved_query.js"
+    },
+    {
+      "name": "create_saved_query",
+      "description": "Save a new SQL query with a name, connection, and optional tags. The query can be retrieved later by ID.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_saved_query.js"
+    },
+    {
+      "name": "update_saved_query",
+      "description": "Update an existing saved query. Only the provided fields are changed.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_saved_query.js"
+    },
+    {
+      "name": "delete_saved_query",
+      "description": "Permanently delete a saved query by ID. This action cannot be undone.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_saved_query.js"
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags used across saved queries. Tags help organize and categorize queries.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tags.js"
+    },
+    {
+      "name": "list_query_history",
+      "description": "List query execution history with optional filtering by connection. Returns recent queries with their execution status, duration, and row counts. Results are ordered by most recent first.",
+      "urlRegex": "^https?://[^/?#]+(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_query_history.js"
+    }
+  ]
+}

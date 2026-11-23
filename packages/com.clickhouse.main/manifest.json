@@ -1,0 +1,61 @@
+{
+  "id": "com.clickhouse.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for ClickHouse Cloud",
+  "tools": [
+    {
+      "name": "get_organization",
+      "description": "Get details about the current ClickHouse Cloud organization including billing status, tier, and trial info.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_organization_members",
+      "description": "List all members of the current ClickHouse Cloud organization with their roles and email addresses.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_members.js"
+    },
+    {
+      "name": "list_services",
+      "description": "List all ClickHouse Cloud services in the current organization. Returns service details including state, endpoints, scaling configuration, and version.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_services.js"
+    },
+    {
+      "name": "get_service",
+      "description": "Get detailed information about a specific ClickHouse Cloud service including state, endpoints, scaling, and IP access list.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_service.js"
+    },
+    {
+      "name": "get_scaling_limits",
+      "description": "Get the minimum and maximum memory and replica scaling limits for a cloud region. Useful for understanding what scaling options are available before adjusting service resources.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_scaling_limits.js"
+    },
+    {
+      "name": "get_private_endpoint_config",
+      "description": "Get the private endpoint configuration for a ClickHouse Cloud service. Returns the cloud provider endpoint service ID and private DNS hostname needed to set up private connectivity.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_private_endpoint_config.js"
+    },
+    {
+      "name": "query_metrics",
+      "description": "Query health and performance metrics for a ClickHouse Cloud service. Available metric types: ALLOCATED_MEMORY (bytes), CPU_USAGE (percentage), MEMORY_USAGE (bytes), QUERIES_PER_SECOND. Time periods: LAST_HOUR, LAST_DAY, LAST_WEEK, LAST_MONTH.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/query_metrics.js"
+    },
+    {
+      "name": "get_status",
+      "description": "Get the current ClickHouse Cloud platform status from the status page, including active incidents and maintenances.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_status.js"
+    },
+    {
+      "name": "list_backups",
+      "description": "List available backups for a ClickHouse Cloud service.",
+      "urlRegex": "^https?://console\\.clickhouse\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_backups.js"
+    }
+  ]
+}

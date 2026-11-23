@@ -1,0 +1,115 @@
+{
+  "id": "com.cockroachdb.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for CockroachDB Cloud",
+  "tools": [
+    {
+      "name": "get_organization",
+      "description": "Get details about the current CockroachDB Cloud organization including name, label, billing plan, and creation date.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_org_users",
+      "description": "List all members of the current CockroachDB Cloud organization with their email addresses and names.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_org_users.js"
+    },
+    {
+      "name": "get_resource_count",
+      "description": "Get a count of clusters and folders in the organization, broken down by serverless vs dedicated and authorized vs total.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_resource_count.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get the profile and preferences of the currently authenticated CockroachDB Cloud user.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "list_clusters",
+      "description": "List all CockroachDB clusters in the organization. Returns cluster name, state, version, cloud provider, regions, and connection endpoints.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_clusters.js"
+    },
+    {
+      "name": "get_cluster",
+      "description": "Get detailed information about a specific CockroachDB cluster including regions, usage limits, billing plan, and connection endpoints.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cluster.js"
+    },
+    {
+      "name": "get_cluster_usage",
+      "description": "Get current usage metrics for a cluster including consumed request units and storage usage in GiB.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cluster_usage.js"
+    },
+    {
+      "name": "list_cluster_nodes",
+      "description": "List all nodes in a CockroachDB cluster with their status, region, and liveness information.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_cluster_nodes.js"
+    },
+    {
+      "name": "delete_cluster",
+      "description": "Delete a CockroachDB cluster. This action is irreversible. The cluster must not have delete protection enabled.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_cluster.js"
+    },
+    {
+      "name": "set_delete_protection",
+      "description": "Enable or disable delete protection on a CockroachDB cluster. When enabled, the cluster cannot be deleted until protection is removed.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_delete_protection.js"
+    },
+    {
+      "name": "list_database_names",
+      "description": "List all database names in a CockroachDB cluster.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_database_names.js"
+    },
+    {
+      "name": "list_database_users",
+      "description": "List all SQL database users in a CockroachDB cluster. Shows username and whether the user is system-internal.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_database_users.js"
+    },
+    {
+      "name": "create_database_user",
+      "description": "Create a new SQL database user in a CockroachDB cluster with the specified password.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_database_user.js"
+    },
+    {
+      "name": "delete_database_user",
+      "description": "Delete a SQL database user from a CockroachDB cluster.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_database_user.js"
+    },
+    {
+      "name": "execute_sql",
+      "description": "Execute one or more SQL statements against a CockroachDB cluster. Returns column names and row data for each statement. The cluster must be in CREATED state and have available capacity.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/execute_sql.js"
+    },
+    {
+      "name": "get_networking_config",
+      "description": "Get the networking configuration for a cluster including IP allowlist entries and private endpoint settings.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_networking_config.js"
+    },
+    {
+      "name": "list_invoices",
+      "description": "List all invoices for the organization. Returns invoice period, amounts due and paid.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_invoices.js"
+    },
+    {
+      "name": "get_credit_trial_status",
+      "description": "Get the credit trial status for the current organization, including remaining credits and trial expiration.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*cockroachlabs\\.cloud(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_credit_trial_status.js"
+    }
+  ]
+}

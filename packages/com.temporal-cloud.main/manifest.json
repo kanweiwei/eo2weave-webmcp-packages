@@ -1,0 +1,55 @@
+{
+  "id": "com.temporal-cloud.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Temporal Cloud",
+  "tools": [
+    {
+      "name": "list_workflows",
+      "description": "List workflow executions in a namespace. Supports Temporal visibility query syntax for filtering (e.g., WorkflowType=\"MyWorkflow\", ExecutionStatus=\"Running\"). Defaults to the namespace in the current browser tab if not specified.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workflows.js"
+    },
+    {
+      "name": "get_workflow",
+      "description": "Get detailed information about a specific workflow execution including configuration, status, history length, search attributes, and memo fields. Useful for debugging workflow state.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workflow.js"
+    },
+    {
+      "name": "get_workflow_history",
+      "description": "Get the event history for a workflow execution. Events include workflow started, activity scheduled/started/completed/failed, timer fired, signals received, and more. Essential for debugging workflow behavior and understanding failures.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workflow_history.js"
+    },
+    {
+      "name": "count_workflows",
+      "description": "Count workflow executions matching an optional visibility query. Useful for getting a quick overview of workflow states without fetching full execution data.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/count_workflows.js"
+    },
+    {
+      "name": "list_schedules",
+      "description": "List all schedules in a namespace. Shows schedule IDs, workflow types, intervals/crons, recent action counts, and next scheduled times.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_schedules.js"
+    },
+    {
+      "name": "get_schedule",
+      "description": "Get detailed information about a specific schedule including its spec (interval/cron), action configuration, policies, pause state, and recent execution history.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_schedule.js"
+    },
+    {
+      "name": "get_task_queue",
+      "description": "Get information about a task queue including active pollers (workers), their identities, last access times, build IDs, and rate limits. Useful for debugging worker connectivity issues.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_task_queue.js"
+    },
+    {
+      "name": "get_settings",
+      "description": "Get the Temporal UI settings for a namespace. Shows which actions are enabled/disabled (terminate, cancel, signal, reset, etc.), the server version, and codec configuration.",
+      "urlRegex": "^https?://(?:cloud\\.temporal\\.io|(?:[a-z0-9-]+\\.)*web\\.tmprl\\.cloud)(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_settings.js"
+    }
+  ]
+}
