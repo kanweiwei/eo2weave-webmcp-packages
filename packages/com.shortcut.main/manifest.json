@@ -1,0 +1,169 @@
+{
+  "id": "com.shortcut.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Shortcut",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Shortcut user including name, role, and workspace info.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "search_stories",
+      "description": "Search for stories by text query. Uses Shortcut search operators (e.g., \"is:started\", \"type:bug\", \"label:backend\"). Returns paginated results.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_stories.js"
+    },
+    {
+      "name": "get_story",
+      "description": "Get detailed information about a specific story by its numeric ID. Returns full story data including labels, story links, comment IDs, and task IDs.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_story.js"
+    },
+    {
+      "name": "create_story",
+      "description": "Create a new story in Shortcut. Requires a name and story type. Optionally set description, workflow state, epic, iteration, owners, labels, estimate, and deadline.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_story.js"
+    },
+    {
+      "name": "update_story",
+      "description": "Update an existing story. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_story.js"
+    },
+    {
+      "name": "delete_story",
+      "description": "Permanently delete a story by its numeric ID. This action cannot be undone.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_story.js"
+    },
+    {
+      "name": "list_story_comments",
+      "description": "List all comments on a story, ordered by creation date.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_story_comments.js"
+    },
+    {
+      "name": "create_story_comment",
+      "description": "Add a comment to a story. Supports Markdown formatting.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_story_comment.js"
+    },
+    {
+      "name": "create_story_link",
+      "description": "Create a relationship between two stories. Types: \"blocks\" (subject blocks object), \"duplicates\" (subject duplicates object), \"relates to\" (bidirectional).",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_story_link.js"
+    },
+    {
+      "name": "list_epics",
+      "description": "List all epics in the workspace. Returns epics with name, state, and associated labels.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_epics.js"
+    },
+    {
+      "name": "get_epic",
+      "description": "Get detailed information about a specific epic by its numeric ID.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_epic.js"
+    },
+    {
+      "name": "create_epic",
+      "description": "Create a new epic. Requires a name. Optionally set description, state, deadline, owners, and labels.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_epic.js"
+    },
+    {
+      "name": "update_epic",
+      "description": "Update an existing epic. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_epic.js"
+    },
+    {
+      "name": "delete_epic",
+      "description": "Permanently delete an epic by its numeric ID. This action cannot be undone.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_epic.js"
+    },
+    {
+      "name": "list_epic_stories",
+      "description": "List all stories that belong to a specific epic.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_epic_stories.js"
+    },
+    {
+      "name": "search_epics",
+      "description": "Search for epics by text query. Returns matching epics with pagination.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_epics.js"
+    },
+    {
+      "name": "list_labels",
+      "description": "List all labels in the workspace. Labels are used to categorize stories and epics.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_labels.js"
+    },
+    {
+      "name": "create_label",
+      "description": "Create a new label in the workspace.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_label.js"
+    },
+    {
+      "name": "list_workflows",
+      "description": "List all workflows and their states. Each workflow contains ordered states (e.g., Unstarted, In Progress, Done). Use state IDs when creating or updating stories.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workflows.js"
+    },
+    {
+      "name": "list_members",
+      "description": "List all members in the workspace including their name, role, email, and mention handle.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_members.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all teams (groups) in the workspace. Teams organize members and are associated with workflows.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "list_iterations",
+      "description": "List all iterations (sprints) in the workspace. Returns iteration name, date range, and status.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_iterations.js"
+    },
+    {
+      "name": "get_iteration",
+      "description": "Get detailed information about a specific iteration (sprint) by its numeric ID.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_iteration.js"
+    },
+    {
+      "name": "create_iteration",
+      "description": "Create a new iteration (sprint). Requires name, start date, and end date.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_iteration.js"
+    },
+    {
+      "name": "update_iteration",
+      "description": "Update an existing iteration. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_iteration.js"
+    },
+    {
+      "name": "list_iteration_stories",
+      "description": "List all stories that belong to a specific iteration (sprint).",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_iteration_stories.js"
+    },
+    {
+      "name": "list_objectives",
+      "description": "List all objectives in the workspace. Objectives are high-level goals that epics work toward.",
+      "urlRegex": "^https?://app\\.shortcut\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_objectives.js"
+    }
+  ]
+}

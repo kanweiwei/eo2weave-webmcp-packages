@@ -1,0 +1,163 @@
+{
+  "id": "com.leetcode.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for LeetCode",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated LeetCode user profile including username, premium status, and notification count.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a LeetCode user public profile by username. Returns real name, bio, ranking, company, school, and skill tags.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_profile.js"
+    },
+    {
+      "name": "get_user_progress",
+      "description": "Get question solving progress for a user broken down by difficulty (Easy, Medium, Hard). Shows accepted, failed, and untouched counts.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_progress.js"
+    },
+    {
+      "name": "get_user_calendar",
+      "description": "Get a user submission calendar (heatmap data), current streak, total active days, and active years. Optionally filter by year.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_calendar.js"
+    },
+    {
+      "name": "get_user_submit_stats",
+      "description": "Get detailed submission statistics for a user including total submissions, accepted count, and acceptance rate broken down by difficulty.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_submit_stats.js"
+    },
+    {
+      "name": "get_user_badges",
+      "description": "Get badges earned by a user. Returns badge name, icon URL, and creation date.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_badges.js"
+    },
+    {
+      "name": "get_user_language_stats",
+      "description": "Get the programming languages a user has used for solving problems, with the number of problems solved in each language.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_language_stats.js"
+    },
+    {
+      "name": "get_user_skill_stats",
+      "description": "Get a user skill/topic tag statistics showing how many problems they have solved in each topic area, split by advanced, intermediate, and fundamental levels.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_skill_stats.js"
+    },
+    {
+      "name": "list_problems",
+      "description": "List LeetCode problems with pagination. Optionally filter by category, difficulty, tags, status, and search keyword. Returns problem number, title, difficulty, acceptance rate, and topic tags.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_problems.js"
+    },
+    {
+      "name": "get_problem",
+      "description": "Get full details for a LeetCode problem including description (HTML), difficulty, hints, starter code snippets for all languages, similar questions, and example test cases.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_problem.js"
+    },
+    {
+      "name": "get_daily_challenge",
+      "description": "Get today daily coding challenge question including the date, link, and full problem metadata.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_daily_challenge.js"
+    },
+    {
+      "name": "get_problem_hints",
+      "description": "Get hints for a LeetCode problem. Returns an array of hint strings that progressively reveal the approach.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_problem_hints.js"
+    },
+    {
+      "name": "get_problem_solution",
+      "description": "Get the official editorial/solution article for a problem. Returns the solution content in HTML format. Not all problems have official solutions.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_problem_solution.js"
+    },
+    {
+      "name": "get_problem_stats",
+      "description": "Get statistics for a problem including total accepted/submitted counts, acceptance rate, and likes/dislikes. The stats field is a JSON string with totalAccepted, totalSubmission, totalAcceptedRaw, totalSubmissionRaw, and acRate.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_problem_stats.js"
+    },
+    {
+      "name": "get_similar_problems",
+      "description": "Get problems similar to a given problem. Returns a list of related problems with their difficulty and paid-only status.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_similar_problems.js"
+    },
+    {
+      "name": "get_code_snippets",
+      "description": "Get starter code templates for all available languages for a given problem. Returns the function signature and boilerplate for each language.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_code_snippets.js"
+    },
+    {
+      "name": "list_topic_tags",
+      "description": "List all available topic tags (e.g., Array, Dynamic Programming, Graph). Use tag slugs with list_problems to filter problems by topic.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_topic_tags.js"
+    },
+    {
+      "name": "list_submissions",
+      "description": "List your submissions with pagination. Optionally filter by problem slug. Returns submission ID, status, language, runtime, memory, and timestamp.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_submissions.js"
+    },
+    {
+      "name": "list_recent_submissions",
+      "description": "List a user recent accepted submissions. Returns the most recent accepted solutions with problem title, language, and timestamp.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recent_submissions.js"
+    },
+    {
+      "name": "get_submission",
+      "description": "Get full details of a submission including source code, runtime/memory stats with percentiles, language, and any errors.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_submission.js"
+    },
+    {
+      "name": "run_code",
+      "description": "Run code against test cases for a LeetCode problem without submitting. Returns the output, expected output, runtime, memory, and whether the answer is correct. Use this to test solutions before submitting.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_code.js"
+    },
+    {
+      "name": "submit_code",
+      "description": "Submit a solution for a LeetCode problem. Runs against all test cases and returns the verdict including status, runtime/memory percentiles, and any errors. Use run_code first to test your solution.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/submit_code.js"
+    },
+    {
+      "name": "list_discussions",
+      "description": "List discussion topics for a problem. Sorted by most votes by default. Returns topic title, view count, vote count, and creation date.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_discussions.js"
+    },
+    {
+      "name": "get_contest_ranking",
+      "description": "Get a user contest rating, global ranking, number of contests attended, and top percentage.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_contest_ranking.js"
+    },
+    {
+      "name": "get_contest_history",
+      "description": "Get a user contest participation history. Returns each contest with the rating change, ranking, and whether the user attended.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_contest_history.js"
+    },
+    {
+      "name": "list_favorites",
+      "description": "List your LeetCode favorite/problem lists. Each list has a name, visibility, and a list of problem slugs saved in it.",
+      "urlRegex": "^https?://leetcode\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_favorites.js"
+    }
+  ]
+}

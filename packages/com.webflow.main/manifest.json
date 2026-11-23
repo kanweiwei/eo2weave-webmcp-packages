@@ -1,0 +1,97 @@
+{
+  "id": "com.webflow.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Webflow",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated Webflow user profile including name, email, plan, and account details.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List all Webflow workspaces the current user belongs to. Returns workspace names, slugs, roles, and site counts.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspaces.js"
+    },
+    {
+      "name": "get_workspace",
+      "description": "Get detailed information about a specific Webflow workspace by its URL slug. Returns workspace name, seat usage, and billing details.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace.js"
+    },
+    {
+      "name": "get_workspace_permissions",
+      "description": "Get the current user permissions for a Webflow workspace. Returns which actions the user can perform on workspace resources like sites, billing, members, and integrations.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace_permissions.js"
+    },
+    {
+      "name": "list_workspace_members",
+      "description": "List all members and pending invites for a Webflow workspace. Returns member details including name, email, role, and 2FA status.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_workspace_members.js"
+    },
+    {
+      "name": "get_workspace_billing",
+      "description": "Get the billing plan details for a Webflow workspace including plan name, price, and billing period. Returns empty fields for free-tier workspaces.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace_billing.js"
+    },
+    {
+      "name": "get_workspace_entitlements",
+      "description": "Get the feature entitlements for a Webflow workspace. Shows which features are available on the current plan with usage limits and current consumption (e.g., max sites, max pages, logic flows).",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workspace_entitlements.js"
+    },
+    {
+      "name": "list_folders",
+      "description": "List all folders in a Webflow workspace. Folders are used to organize sites into groups.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_folders.js"
+    },
+    {
+      "name": "list_sites",
+      "description": "List all sites in a Webflow workspace. Returns site names, slugs, publish status, and timestamps. Supports pagination.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sites.js"
+    },
+    {
+      "name": "get_site",
+      "description": "Get detailed information about a specific Webflow site by its short name. Returns site metadata, publish status, timezone, SSL, and asset information.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site.js"
+    },
+    {
+      "name": "get_site_domains",
+      "description": "Get all domains and the default subdomain for a Webflow site. Returns custom domains with SSL status and the webflow.io staging subdomain.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site_domains.js"
+    },
+    {
+      "name": "get_site_hosting",
+      "description": "Get hosting information for a Webflow site including pages and redirects. Returns the list of pages and any configured URL redirects.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site_hosting.js"
+    },
+    {
+      "name": "get_site_pages",
+      "description": "Get all pages for a Webflow site. Returns page titles, slugs, types, and draft/archive status. Use get_site_hosting for hosting-specific page details.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site_pages.js"
+    },
+    {
+      "name": "get_site_permissions",
+      "description": "Get the current user permissions for a specific Webflow site. Returns which actions the user can perform on the site.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_site_permissions.js"
+    },
+    {
+      "name": "list_site_forms",
+      "description": "List all forms for a Webflow site including form names and submission counts.",
+      "urlRegex": "^https?://webflow\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_site_forms.js"
+    }
+  ]
+}

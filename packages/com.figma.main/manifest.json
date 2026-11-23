@@ -1,0 +1,91 @@
+{
+  "id": "com.figma.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Figma",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Figma user",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all Figma teams the current user belongs to",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    },
+    {
+      "name": "get_team_info",
+      "description": "Get detailed information about a specific Figma team",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_team_info.js"
+    },
+    {
+      "name": "list_team_projects",
+      "description": "List all projects in a Figma team. Projects are containers for files within a team.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_team_projects.js"
+    },
+    {
+      "name": "list_files",
+      "description": "List files in a Figma folder or project. Use the folder_id from team roles or project info.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_files.js"
+    },
+    {
+      "name": "get_file",
+      "description": "Get detailed metadata for a specific Figma file by its file key",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file.js"
+    },
+    {
+      "name": "get_file_components",
+      "description": "List all published components in a Figma file. Returns component names, descriptions, and keys for use in design systems.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_file_components.js"
+    },
+    {
+      "name": "list_file_versions",
+      "description": "List version history of a Figma file. Returns version labels, timestamps, and authors.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_file_versions.js"
+    },
+    {
+      "name": "create_file",
+      "description": "Create a new Figma design file in a specified folder",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_file.js"
+    },
+    {
+      "name": "update_file",
+      "description": "Update a Figma file — currently supports renaming and updating the description",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_file.js"
+    },
+    {
+      "name": "trash_file",
+      "description": "Move a Figma file to the trash. Trashed files can be restored.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/trash_file.js"
+    },
+    {
+      "name": "list_comments",
+      "description": "List all comments on a Figma file",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_comments.js"
+    },
+    {
+      "name": "post_comment",
+      "description": "Add a comment to a Figma file. Comments are visible to all collaborators.",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/post_comment.js"
+    },
+    {
+      "name": "list_recent_files",
+      "description": "List recently accessed Figma files and prototypes",
+      "urlRegex": "^https?://(?:www\\.)?figma\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recent_files.js"
+    }
+  ]
+}
