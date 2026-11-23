@@ -1,8 +1,8 @@
 # OpenTabs → WebMCP porting status
 
 Upstream: 118 `@opentabs-dev/opentabs-plugin-*` packages on npm.
-**Done: 47 packages / 1260 tools (main `7120745`, harness 34194/34194 green).**
-Remaining: 71.
+**Done: 60 packages / 1480 tools (main `e91cd91`, harness 39436/39436 green).**
+Remaining: 58.
 
 ## Completed
 
@@ -16,12 +16,14 @@ google-analytics (8).
 Batch B (PR #28): google-cloud (30), azure (26), aws-console (16),
 mongodb-atlas (20).
 
+Batch B remainder (PR #30): snowflake (14), supabase (26), clickhouse (9),
+cockroachdb (18), temporal-cloud (8), sqlpad (12).
+
+Batch C (PR #31): figma (14), vercel (8), webflow (15), leetcode (26),
+shortcut (27), hex (27), google-maps (16).
+
 ## Next up
 
-Batch B remainder: snowflake, supabase, clickhouse, cockroachdb,
-temporal-cloud, sqlpad.
-Then C (dev/design): figma, vercel, webflow, leetcode, shortcut, hex,
-google-maps.
 D (office): outlook, onenote, teams, excel-online, microsoft-word.
 E (finance): coinbase, robinhood, fidelity, carta, ynab.
 F (social/content): youtube, youtube-music, spotify, twitch, medium, pinterest,
