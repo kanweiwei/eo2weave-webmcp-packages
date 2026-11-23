@@ -28,6 +28,21 @@ URL_REGEX = {
     'azure': r'^https?://portal\.azure\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
     'aws-console': r'^https?://(?:[a-z0-9-]+\.)*console\.aws\.amazon\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
     'mongodb-atlas': r'^https?://cloud\.mongodb\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'snowflake': r'^https?://app\.snowflake\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'supabase': r'^https?://supabase\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'clickhouse': r'^https?://console\.clickhouse\.cloud(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'cockroachdb': r'^https?://(?:[a-z0-9-]+\.)*cockroachlabs\.cloud(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'temporal-cloud': r'^https?://(?:cloud\.temporal\.io|(?:[a-z0-9-]+\.)*web\.tmprl\.cloud)(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    # SQLPad is self-hosted (upstream urlPatterns: [] + instanceUrl config): pin
+    # no host, enforce the product at call time (assertPage in the workflow).
+    'sqlpad': r'^https?://[^/?#]+(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'figma': r'^https?://(?:www\.)?figma\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'vercel': r'^https?://vercel\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'webflow': r'^https?://webflow\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'leetcode': r'^https?://leetcode\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'shortcut': r'^https?://app\.shortcut\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'hex': r'^https?://app\.hex\.tech(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'google-maps': r'^https?://(?:www\.)?google\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
 }[NAME]
 
 HOST_REGEX = {
@@ -42,6 +57,19 @@ HOST_REGEX = {
     'azure': r'(^|\.)portal\.azure\.com$',
     'aws-console': r'(^|\.)console\.aws\.amazon\.com$',
     'mongodb-atlas': r'(^|\.)cloud\.mongodb\.com$',
+    'snowflake': r'(^|\.)app\.snowflake\.com$',
+    'supabase': r'(^|\.)supabase\.com$',
+    'clickhouse': r'(^|\.)console\.clickhouse\.cloud$',
+    'cockroachdb': r'(^|\.)cockroachlabs\.cloud$',
+    'temporal-cloud': r'(^|\.)((cloud\.temporal\.io)|(web\.tmprl\.cloud))$',
+    'sqlpad': r'',
+    'figma': r'(^|\.)figma\.com$',
+    'vercel': r'(^|\.)vercel\.com$',
+    'webflow': r'(^|\.)webflow\.com$',
+    'leetcode': r'(^|\.)leetcode\.com$',
+    'shortcut': r'(^|\.)app\.shortcut\.com$',
+    'hex': r'(^|\.)app\.hex\.tech$',
+    'google-maps': r'(^|\.)google\.com$',
 }[NAME]
 
 ENVELOPE = {
@@ -145,6 +173,23 @@ SDK_LAYER = r'''
             }
           }
 
+          // Upstream SDK export (temporal-cloud): scan localStorage keys with a
+          // predicate and return the first hit as { key, value }.
+          function findLocalStorageEntry(predicate) {
+            try {
+              var count = localStorage.length
+              for (var i = 0; i < count; i++) {
+                var key = localStorage.key(i)
+                if (key === null) continue
+                if (!predicate(key)) continue
+                var value = localStorage.getItem(key)
+                if (value === null) continue
+                return { key: key, value: value }
+              }
+            } catch (e) {}
+            return null
+          }
+
           function getCurrentUrl() {
             return typeof location !== 'undefined' ? location.href : ''
           }
@@ -209,6 +254,11 @@ SDK_LAYER = r'''
 
           function sleep(ms) {
             return new Promise(function (resolve) { setTimeout(resolve, ms) })
+          }
+
+          // Upstream SDK export (sqlpad): plain sleep with progress reporting.
+          async function delay(ms) {
+            return sleep(ms)
           }
 
           async function waitUntil(predicate, options) {
@@ -296,6 +346,16 @@ SDK_LAYER = r'''
             }
             return data
           }
+
+          // Upstream SDK export (sqlpad): same transport, raw text body.
+          async function fetchText(url, init) {
+            var response = await fetchFromPage(url, init)
+            try {
+              return await response.text()
+            } catch (e) {
+              throw ToolError.validation('failed to read text from ' + url)
+            }
+          }
 '''
 
 DISPATCHER = r'''
@@ -324,11 +384,23 @@ DISPATCHER = r'''
           }
 
           function assertPage() {
+            var PRODUCT_HOSTS = {
+              'sqlpad': /(^|\.)(sqlpad\.[a-z0-9.-]+|localhost|127\.0\.0\.1)$/,
+            }
+            var productProbe = PRODUCT_HOSTS['__PLUGIN_NAME__'] || null
             if (typeof location === 'undefined' || !location.hostname) {
               return errorEnvelope('UNSUPPORTED_PAGE', 'Not on a {DISPLAY} page.')
             }
-            if (!/{HOST_REGEX}/.test(location.hostname)) {
-              return errorEnvelope('UNSUPPORTED_PAGE', 'Not on a {DISPLAY} page.')
+            if (__HOST_REGEX_LITERAL__) {
+              if (!__HOST_REGEX_VALUE__.test(location.hostname)) {
+                return errorEnvelope('UNSUPPORTED_PAGE', 'Not on a {DISPLAY} page.')
+              }
+            } else if (productProbe) {
+              // Self-hosted product (upstream urlPatterns: []): no host to pin,
+              // enforce the product's own host shape at call time.
+              if (!productProbe.test(location.hostname)) {
+                return errorEnvelope('UNSUPPORTED_PAGE', 'Not on a {DISPLAY} page.')
+              }
             }
             return null
           }
@@ -460,10 +532,26 @@ def schema_literal(schema):
 
 def strip_module(text):
     """Drop imports / sourceMappingURL and inline the module: `export ` prefixes
-    are illegal inside a function body, so they are removed."""
+    are illegal inside a function body, so they are removed. Named imports are
+    rewritten to local const bindings so aliased symbols keep working
+    (`import { runQuery as executeQuery } from '…'` →
+    `const executeQuery = runQuery`)."""
     out = []
     for line in text.split('\n'):
         if line.startswith('import '):
+            # `import { a, b as c } from '…'` → alias bindings against the
+            # inlined modules (single-quoted, possibly multi-line lists).
+            m = re.match(r"import\s*\{(.*)\}\s*from\s*['\"][^'\"]+['\"];?\s*$", line, re.S)
+            if m:
+                specs = [s.strip() for s in m.group(1).split(',') if s.strip()]
+                for spec in specs:
+                    parts = spec.split()
+                    if len(parts) >= 3 and parts[1].lower() == 'as':
+                        out.append(f'const {parts[2]} = {parts[0]};')
+                    # unaliased named imports resolve to the inlined module's
+                    # own binding — nothing to emit.
+            continue
+        if line.startswith('import ') or line.startswith('} from '):
             continue
         if line.startswith('//# sourceMappingURL'):
             continue
@@ -511,7 +599,9 @@ def main():
         dispatcher = (
             DISPATCHER.replace('__TOOL_BINDING__', binding)
             .replace('{DISPLAY}', display)
-            .replace('{HOST_REGEX}', HOST_REGEX)
+            .replace('__PLUGIN_NAME__', NAME)
+            .replace('__HOST_REGEX_LITERAL__', 'true' if HOST_REGEX else 'false')
+            .replace('__HOST_REGEX_VALUE__', ('new RegExp(' + repr(HOST_REGEX) + ')') if HOST_REGEX else 'null')
         )
         source = TOOL_TEMPLATE.format(
             DISPLAY=display,

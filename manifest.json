@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T01:59:06.125Z",
+  "generatedAt": "2026-11-23T04:38:01.942Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -253,67 +253,67 @@
         },
         {
           "path": "packages/com.aws-console.main/workflows/describe_instance.js",
-          "sha256": "66b8b065c92ff62eb7ae50d548502abd87f202ef9c2abd14d1ec063518cbe25a"
+          "sha256": "608b7cbfe8c4620bc63513251549b89956f93424e3b3be3051bc9b1494af6e73"
         },
         {
           "path": "packages/com.aws-console.main/workflows/get_current_user.js",
-          "sha256": "ee81fcecddc5e2c8b05006e546a79294b1174a642a8b10ae09eba4d7af5dfcba"
+          "sha256": "d1161867b4919ba01a592cdd49ebf378ec8fd90132c2e246670d8384ee49adde"
         },
         {
           "path": "packages/com.aws-console.main/workflows/get_function.js",
-          "sha256": "3c82124ffb97fbd84de4901f251e916201aa23c42779897c07f019cf9b76ced4"
+          "sha256": "b3334436678bf480e9df29a92969adcb0cbe026475c0df0df19b5201826a2598"
         },
         {
           "path": "packages/com.aws-console.main/workflows/invoke_function.js",
-          "sha256": "a1a5c8b308645c56fce49fbd0456168799d89adc802beacb7bfbb0e8e74b2421"
+          "sha256": "5ea8aa6c779f230d423f3a9495b4e3d6b92aa0ffb086a1642d0643a0b7c07663"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_alarms.js",
-          "sha256": "2f0e4c0af725ab59a41dfaabadd93811a800919eea63a50eb5db40194013f188"
+          "sha256": "7ee41a6cf19fb02482a8059d9fa885ae21a4ae1fe2a0a6a10e6ec0be4649ed49"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_functions.js",
-          "sha256": "3bcdfc5c6941f6a60daac2937f9f303b2715ce1ff2c6edeb865cdcf187239744"
+          "sha256": "12af4ceeae4accaa88ec60267fbb11357e2e83a4e9f8f4a6aa08645fd8045b7d"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_iam_roles.js",
-          "sha256": "cb2f7107b923a5b23b01d637e27e520d00ca0593b7ad50531890711208b1961f"
+          "sha256": "93d8420158ea7b95700e5f277d7092dc63a76f0c657e917948dad777dbacaa27"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_iam_users.js",
-          "sha256": "6f23df852a40a49b9c9b03730953ad0134d769b058de2b2bc66b08dfe0ae73e3"
+          "sha256": "3c32c7c7d46459e37729ea3ec53bac4f75a4eb4a789b3135bc6c7d12e4aa36ea"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_instances.js",
-          "sha256": "2fe5d8667cabbdb040ff449c77df8a11d9af01de0887fda9e3350b6c6bb78e38"
+          "sha256": "a5cf81e895e1917dfd8dc8ab167a16da51e0f578dc378955b14e22a0c5895253"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_log_groups.js",
-          "sha256": "8c0568dabda3b2e02cd9b3d6fc6bf4bbf420815da5a3516c7e84b1fe7b8e8374"
+          "sha256": "e1f3495b87c5a25fb8feddb7587ab45267e47870f7951b217811e34a33ecc6de"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_regions.js",
-          "sha256": "ec0797f695de0eace602735b5e954e10f366ea4bc4eeddff4dae68c4f7fda111"
+          "sha256": "5095c5638723a99d007139293c5809f6605ad924034c2631dc985ad3d56d0cc6"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_security_groups.js",
-          "sha256": "36a71246f51344147289f76871793a48801c6f9432c60febafd0da5742a25a78"
+          "sha256": "142a288824c1726c40c254b066a796f06593a898bbe169fe78ff34dd84e2aee4"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_subnets.js",
-          "sha256": "af66e8509301d84c37233b629331b67f02008345eda4dd25f15a8c35ec1ee2a6"
+          "sha256": "729498eb9ceeee455bd2ba19e5e0fb601c9bbcb6db48140575d0920b8a1763a9"
         },
         {
           "path": "packages/com.aws-console.main/workflows/list_vpcs.js",
-          "sha256": "88451ef77c873f079dfd33b33afb5e249f396fbea6752f2891cf915f851fab64"
+          "sha256": "b911bb5aa6aeedb8aaaa65ec417e89b0d5606a39b19d6a06853ceb2a03eec14d"
         },
         {
           "path": "packages/com.aws-console.main/workflows/start_instance.js",
-          "sha256": "20a9452bd87725defad3e104d3725295948902aaef8ae27e8a5eb38b1ef39dbf"
+          "sha256": "52252295c4eaf2f8f556dad95714b7c86a9debd254163d8d6aac50a5c31f3b8e"
         },
         {
           "path": "packages/com.aws-console.main/workflows/stop_instance.js",
-          "sha256": "72f1187761055a8c750d5b6ca39ceee47cd1eb1e6dbb69e52acf2096ba011196"
+          "sha256": "69d0126cccad5bf11999cf6fee548b189f02cc0c1c10d6d61fc8f8ba126d734a"
         }
       ]
     },
@@ -333,107 +333,107 @@
         },
         {
           "path": "packages/com.azure.main/workflows/create_deployment.js",
-          "sha256": "00a9b3521ef74f47ef1df0ced17d0a1dbcebf937b689338baa01e71dfc318f8d"
+          "sha256": "55c2e0b0163dbea2b6f979ce2e0c3dcd0597812f92fa7bb1ae794179a48de595"
         },
         {
           "path": "packages/com.azure.main/workflows/create_lock.js",
-          "sha256": "19ffc924c70c03f0f2c2f3a1e95b8cd4142cb6c080711c4878db6984287e4c7a"
+          "sha256": "953b5745c4d103667bf8e65e69f765bb4df792a5240b82d709f6bbcf1088dda8"
         },
         {
           "path": "packages/com.azure.main/workflows/create_resource_group.js",
-          "sha256": "5cebbfab1a2430d769fa15db55855a3f12492b2955160463f81bd495a44ae2ac"
+          "sha256": "1988c1a180f48f40f64f4a49f4e35535ed7dc0a23023dbe05c0c2725b1b11519"
         },
         {
           "path": "packages/com.azure.main/workflows/delete_deployment.js",
-          "sha256": "e53a36402466cb1b77df4702aedd1e2d518ed39065d548c08d3382f014abebb9"
+          "sha256": "c91e13d444588c01bdc0aaa6e259c6b48b49a28bdacd7b77cf17b4e5f6d1e37a"
         },
         {
           "path": "packages/com.azure.main/workflows/delete_lock.js",
-          "sha256": "7ef40542f158478a9d14dcb780b1edc2ae1c685e17936d8e806e5f512a5f97d8"
+          "sha256": "af610960a393a4494f3d861303f8b9d5f661125eb2d381dd6ce96d658a85477f"
         },
         {
           "path": "packages/com.azure.main/workflows/delete_resource_group.js",
-          "sha256": "62b66a14e1fa36b73e4e0384b919fb3a675efd76ce84cb663bbc47cbaa23250c"
+          "sha256": "fb83a298df31f438c842c0599124d130c420db157e7bb679bd8aa60e81e960bf"
         },
         {
           "path": "packages/com.azure.main/workflows/delete_resource.js",
-          "sha256": "1b5e2a1d1be9d04dfccdbed57bf9e6eae318897c16bdc95dd2bea0e740d65390"
+          "sha256": "5842d57d1649629ac63f28f8cd0fcaffad1eb6a57ec666d5d615bf7c8acd39cc"
         },
         {
           "path": "packages/com.azure.main/workflows/get_current_user.js",
-          "sha256": "7bec602b933fadd0283a4d13ab82744c3b7a8c6211658f6f35d309b9d325a3f5"
+          "sha256": "0d14ea35794d3a5f5bb9e034ed6f8a4a0c9d0680e742a9c71f96cac6fe2ea81f"
         },
         {
           "path": "packages/com.azure.main/workflows/get_deployment.js",
-          "sha256": "44f99570098d92801b06704849f0f1600a1f894a6c4fb3221e0aad368f1641d1"
+          "sha256": "f85c468e6ed56e8281fd35a9897d664ea85bf32df6aed8f5f2f060175e79cadb"
         },
         {
           "path": "packages/com.azure.main/workflows/get_policy_assignment.js",
-          "sha256": "857e1d9eca26ea9f807d44f2c3de62a01d4f46486ef2c92c40bd0e91251fe4cf"
+          "sha256": "b7180a53d83ef710f6779e4987ab17f80e0c405b96781fd8686a0b957025c374"
         },
         {
           "path": "packages/com.azure.main/workflows/get_resource_group.js",
-          "sha256": "c70d5114f490dfb436be609924de57ea1edbc0f903ca5fab3832dfd9d056b8af"
+          "sha256": "7638bccbd58f67d4c22fe173d63ed00ea6fadb1523a06521c99639c597974448"
         },
         {
           "path": "packages/com.azure.main/workflows/get_resource.js",
-          "sha256": "9516646f2ef18cc14725088dc7e9edc736825884ff8d9964ec9de77b518b4ef2"
+          "sha256": "b41fabdd79efec77d3febf888d99b0b443294a68ea5777e95a676bbda1d979ea"
         },
         {
           "path": "packages/com.azure.main/workflows/get_subscription.js",
-          "sha256": "d6e438bcbacbb125ee928b79d44cf500177f5f183d13333adb5a41d3864103c2"
+          "sha256": "8ce950ba804dde512527952c6c83277a2636ef7124c82945f94ef5ecb77d5f66"
         },
         {
           "path": "packages/com.azure.main/workflows/list_activity_logs.js",
-          "sha256": "836593896177dd8432a2520602082ec6f83548f2dd95ce84b1a94fe3e4fc89c3"
+          "sha256": "36314703f37efe793f09a9ae4f9ac4da25aa57ebe76351b376701d0b3336b071"
         },
         {
           "path": "packages/com.azure.main/workflows/list_deployments.js",
-          "sha256": "22428514dfc1e06335652bb824184696e25f4b038a5a2d6d311704760c5bef5b"
+          "sha256": "1cf8be1dda2129dadada1b93e57432ba5e16a4f34f48ed7132e91aaaceb9b4c1"
         },
         {
           "path": "packages/com.azure.main/workflows/list_locations.js",
-          "sha256": "270245d472a017f94865fa7490cb798b07c6f1b9dfebdfdfdda939670b1415ca"
+          "sha256": "254a9d304154e0b2f94d2dc09d44b67c6010d587beab7ef74e43f12a576a557e"
         },
         {
           "path": "packages/com.azure.main/workflows/list_locks.js",
-          "sha256": "efe4f8b6abeafb7bf1d74c3d617e19bb1ca7918f4c91a59538511a0976717dbd"
+          "sha256": "d56f39e7f73bde48c6a3008fcf47c664e9ab2f01b51fe718367935043277ef84"
         },
         {
           "path": "packages/com.azure.main/workflows/list_policy_assignments.js",
-          "sha256": "4832fa054acad1dfaf7f724dec4333348bb97f62998488c4ab613f00cd590c31"
+          "sha256": "75d9627a369fb1df2d59ea6943641565061e45aa3ee48e781d09ae9dd871cf93"
         },
         {
           "path": "packages/com.azure.main/workflows/list_resource_groups.js",
-          "sha256": "73f851e8a0195fd00f097fd18bb7d62f6d6bab8deded047d6cce38512022439e"
+          "sha256": "6cc6547ca329e1fcc9dfcee85ab2b79c698a557663f19cd370a9d1abef0d8bd0"
         },
         {
           "path": "packages/com.azure.main/workflows/list_resource_providers.js",
-          "sha256": "161830e4a49dc2955e402971fb43a279965b22e0dfc29d5ddd82761e8826a506"
+          "sha256": "901ddfbc040d15fa27cf289473ea7541dd254e2350f78e9dfd57aad6bf20b84b"
         },
         {
           "path": "packages/com.azure.main/workflows/list_resources.js",
-          "sha256": "3af2f9c3a0fc101cbe28cd398737aa0e0dcc06000013ef7b1c10bc1b92a70731"
+          "sha256": "fa69b52b1378166efdd8312101c5ecd668ea6f9154facab090a4556d6d14f02c"
         },
         {
           "path": "packages/com.azure.main/workflows/list_role_assignments.js",
-          "sha256": "e11fc98de7672dbe08572ddb1f14faf6ea1eabcb405b9aebcbc29564ca6c7761"
+          "sha256": "95f6e13bec792934537efe78d57764ea5744dd161aa7f39fb870cc30b9759058"
         },
         {
           "path": "packages/com.azure.main/workflows/list_subscription_locations.js",
-          "sha256": "30d0efc0e29439fc9f1e409959d66d3fadf7823340f38e4b66b8b419fa194ebf"
+          "sha256": "2350620174a6d467419ffabb9d2cfc8ae4dd018390f14a7b34e8efb53b7c3f97"
         },
         {
           "path": "packages/com.azure.main/workflows/list_subscriptions.js",
-          "sha256": "0e70226cb4809b2132d7243ca04c9edb9dceb33d24d5a8f5d2923e75ea92af2f"
+          "sha256": "66083357ec81bef1372ca1ce11500bce1d7829d07807ba7e8e3d55afd4fd26d5"
         },
         {
           "path": "packages/com.azure.main/workflows/list_tags.js",
-          "sha256": "2314343983541e7521699c66f338c6176e96d2764245d25a8dac89d87b766736"
+          "sha256": "6bef713949b32adffc6483d155b7ee2f1993b3bf736719e60f9e3aa427422e4d"
         },
         {
           "path": "packages/com.azure.main/workflows/list_tenants.js",
-          "sha256": "803409b288235f7551e4afc83c73b19926b60c85c5270b2d0f5bc4e4afceb79b"
+          "sha256": "5d81247a1db4a33ad2e94ff582d454341c5bae9659844f3584a3b3efdf0cc068"
         }
       ]
     },
@@ -954,6 +954,58 @@
       ]
     },
     {
+      "id": "com.clickhouse.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for ClickHouse Cloud",
+      "toolCount": 9,
+      "files": [
+        {
+          "path": "packages/com.clickhouse.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.clickhouse.main/manifest.json",
+          "sha256": "169a57f0b2e739ebb2013dd0ba8ef495dacaf0251b5322d8032a348ff0f128fd"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/get_organization.js",
+          "sha256": "a186302cabb252355e1fd4ebbbb24d5dfb8f03584bffd72a79927fd58ea80ab8"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/get_private_endpoint_config.js",
+          "sha256": "9222fce3cc3076ab6634d7523a27c40168e14efc68ef548e952305dc031874b9"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/get_scaling_limits.js",
+          "sha256": "5b2effe962d4c60974f9339f2a8fa6847a2797f8c1b8761a795bbe3e77393dde"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/get_service.js",
+          "sha256": "04ada429c4b17b8359c44850c35ec9323b70d752dbb985930b737d2ce1f01671"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/get_status.js",
+          "sha256": "fcb4d8ddd7e7e623d0fb82a2d5ab4a94aa29f387800562afa4f0d26e093e5e32"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/list_backups.js",
+          "sha256": "78ce8ae17ee5c640214a7b588e5105628639061ebadee61bc4fd1c3538394e80"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/list_organization_members.js",
+          "sha256": "c3450ac6ce695ed62a6ebf07d07629bf3c13679744dbfac8bdcb629767e43746"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/list_services.js",
+          "sha256": "86fb36aa2817de62459e56b70d63001a1c60495912204c4715cfc2193ec2dff7"
+        },
+        {
+          "path": "packages/com.clickhouse.main/workflows/query_metrics.js",
+          "sha256": "cf7be996b009ce0478628242ae73afb31829f1e91089a40438567a03200275ad"
+        }
+      ]
+    },
+    {
       "id": "com.clickup.main",
       "version": "0.1.0",
       "description": "Read your ClickUp workspace from the current app.clickup.com tab: the signed-in user, workspaces and members, spaces, folders, lists, goals and custom fields. Uses your own logged-in ClickUp session.",
@@ -1146,6 +1198,94 @@
         {
           "path": "packages/com.cloudflare.main/workflows/update_zone_setting.js",
           "sha256": "f553e9d2e4e6ba7b609f126d52c00693a962e26af63fa88f6b869085a83a6d59"
+        }
+      ]
+    },
+    {
+      "id": "com.cockroachdb.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for CockroachDB Cloud",
+      "toolCount": 18,
+      "files": [
+        {
+          "path": "packages/com.cockroachdb.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/manifest.json",
+          "sha256": "b727f04eed614e970d82e0602e81f4d4e59f5329a06ce856ce321ab4bf7d0462"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/create_database_user.js",
+          "sha256": "bf073aa834c74ca1e5e69d0856778e811851713a32b9dd4155097bc5aca67445"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/delete_cluster.js",
+          "sha256": "05c357169d9706db712682a81b5b7943925adade7780074b3de5da6466320f19"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/delete_database_user.js",
+          "sha256": "c217a78606dbcec404a54e08a3cceed2476c6375d413500261e57cb0c45def40"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/execute_sql.js",
+          "sha256": "e6a2426fd16974d6a988a62b916d480f5c9a46375203bf57cabe53fe82025155"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_cluster_usage.js",
+          "sha256": "c34142df3c287c08306d76051aee800213f2743d010cc3a4163c4b9dda80866d"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_cluster.js",
+          "sha256": "508fc9cc7ed795a3440ca7944c63c46d1e52fb6fec5d95c566459f3a11f88db6"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_credit_trial_status.js",
+          "sha256": "8532ec5e5e037e7e0839b50e301215219a877d909080a70930fe41cb931d266f"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_networking_config.js",
+          "sha256": "edd6b3750d46e9943c8eb21fcfb2e69d915056073dc6c7f21ad3de6dc5caae75"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_organization.js",
+          "sha256": "69dd6fe816d21958fdd5ad41d5511d4e66d500a636fe1c08853d9c603402f15c"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_resource_count.js",
+          "sha256": "0acb4db36fe9ee82007508a0f4109f9a5e8121902f51d743518fd9fe0eb34899"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/get_user_profile.js",
+          "sha256": "040a72104ad0277a6ec77fe2401d23e3200c28a76a51b7651db84d081f959d44"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_cluster_nodes.js",
+          "sha256": "ea6ebec2ae7b91448b0b8c6f04a27e7166c9581360ffde7ab45afda80b93d8db"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_clusters.js",
+          "sha256": "ff0af9e6eba80768498a77b4a8687feed04d79f3fa2d082004c9e54cab818781"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_database_names.js",
+          "sha256": "836ad205d82f48edae9a6a440510470e58a3ae8ccf5dca04a395d68a2ad3daf5"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_database_users.js",
+          "sha256": "3ba6a9f2765478b15221b2354a04a51f94c5892e5863833e6284bab12ba645f1"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_invoices.js",
+          "sha256": "f1f94fa72aa42f801385194f39c18c60ab3f25e3cfa8b0942137ef58588371bf"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/list_org_users.js",
+          "sha256": "ac824d1f6eb03fc2c076e32aa00927c8e5e2b7c84a3d77bacd340ffd98fc4988"
+        },
+        {
+          "path": "packages/com.cockroachdb.main/workflows/set_delete_protection.js",
+          "sha256": "dc052f0719588f2c2c78560b1b4168af856aac4955054204e3bb67fe311bd9db"
         }
       ]
     },
@@ -2161,123 +2301,123 @@
         },
         {
           "path": "packages/com.google-cloud.main/workflows/disable_service.js",
-          "sha256": "9b7707407247baf45f565368fd18a93920cfb2d19640ec3101742d1daf30dc08"
+          "sha256": "a3a02c5fc2296991f9166f86e3082c6a4fe7c9ff9c55bd7a559f1554ddd30a80"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/enable_service.js",
-          "sha256": "7b9a9e7d345759b65d76545a6f0b85c1ba7a646362f945197afca89587646ab7"
+          "sha256": "3ce220e8a170cf43d84e3f8f8521aac98717775378c0e3a1e3516d0a1b0aad0c"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_billing_info.js",
-          "sha256": "9fe7aad4ba27a5889e43770675f42a4ab434523c2aa94f953b3f826ab81456f1"
+          "sha256": "9009f0954dd40bd4feb222bc6609ebd13424dd04f99bf55fcd0e9e27c4a1cb9f"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_bucket.js",
-          "sha256": "1bdd262f2b0eb3107dd68ed866e5f0d8975f3de83918b4fbc96489306f5810b3"
+          "sha256": "6cfff1685dd221a80a262f86ba64ef186a9b0ecbc8a86a9136c112a6324a798c"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_cloud_run_service.js",
-          "sha256": "bc4c3140b8064f1e46e717548782c7ba8aa8580d956b42a785a3f79a63329703"
+          "sha256": "4d6f7c7c7d2b84e3f05ec44d6c6a8554f64457c18993d395d41426d139859f6b"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_cluster.js",
-          "sha256": "9995c60ac865fa03906ce74a2808672407ed1f9508dd5e75fa3138a643714ed3"
+          "sha256": "89734870ae20a45ca4a23e36c8d62d619f43e25650597a857e93b5510fc6309a"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_current_project.js",
-          "sha256": "83ba8e5cc9df1a1705f1394465a7bfce25987f669100172615f4f469354f9100"
+          "sha256": "257624ade93e64a3574aa7594f306011238511875e4d317fc633395ef7209e75"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_function.js",
-          "sha256": "1adbf2b6bb207e9bdf44b15928f7b1d297cdd581bb1f1dd82db2c5199dc2d83a"
+          "sha256": "b3254375fce5a6ba048b25d465b70dad0f85293e5ecb21d6e015abd45d14dd8a"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_iam_policy.js",
-          "sha256": "29adfc25df0ac213a63ef5b22ce65253696f6efd02dcf15678f463601d1f7b3e"
+          "sha256": "cbf1a8a9a87a41028be664596885de848d729f164fcea29e8c72b7bac973f552"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_instance.js",
-          "sha256": "a01a1f91d0e12bfe927f401a772cbb80580ee13cdc04736a822a8a995f2433dc"
+          "sha256": "5065f11b6c8004dce550034c6cc5ea0185adf4aa5ee6901683f1570c279917f0"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_project.js",
-          "sha256": "a7766e7634b250194a634f64517fadeb169e8ae5bef0505ac96b02a752f3893d"
+          "sha256": "c761d04cb17b730fc79f0b984582174e5d692fd9f0623a886e01d683c347d436"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/get_sql_instance.js",
-          "sha256": "64555f62c225bb100ecab24cd3f31673a4b05d959e565fd4fc30a2215fb88ec2"
+          "sha256": "5514e8ccd776205b9468bb8d7b7e6da5c9db9599eb11ab1166f89971405f0dbd"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_billing_accounts.js",
-          "sha256": "c3ba1632069a41462eb0b029b1dae63e14105d967b14c57642a0bf1bfa8467d5"
+          "sha256": "b49e3777af243f288593a1b7d4300027551985d93b967ada8ad20830a369dffc"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_buckets.js",
-          "sha256": "890c93ae05146b28da46e54c83592f3432a96d40f4f9150c5c04c76d529c9ebd"
+          "sha256": "b6ecd0d43ff41cc4a17f46393365657d97048cc78d83a8d63fb3c14ae4d9298e"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_cloud_run_services.js",
-          "sha256": "ab7ce9a49c39ebe09c2b698dc96079598bd7ac10b98f9d5bbcb5d0a5bbe28757"
+          "sha256": "d144783deb5a1cecac21eb2a14b60fe900eb5c49a6e8cd93b0bc9410a8385452"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_clusters.js",
-          "sha256": "0b40bc7cbf7660e8d01d4836531bf0a6e5d71122a9a6b857ddd5e9739db309e9"
+          "sha256": "34be6d3ba7a76014cb83439e76bf12ff3e5dc5b2e9c792c0f771eddff8625d1d"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_disks.js",
-          "sha256": "7f1fa199d8623e1506779c351fc2c919ec87bfbca9d710f135550d6083a459ee"
+          "sha256": "00accd7fe4c33dad34c0bc746e9fbdde91a72166a57496277146c353da741544"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_enabled_services.js",
-          "sha256": "e243bb1c5a7ddd4cbb9e98f8edfba4be84e78248c3232430eaa941aaba2129dc"
+          "sha256": "369b48af5a43f50d09c4dd2e0ab6ec401448c33edc2a66e45911deeac89d1e98"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_firewalls.js",
-          "sha256": "9119ff36316ab28b590e9aee06d25dec93bd773d721edab5125693e38601a0d5"
+          "sha256": "901d05a4c0a9d5b0af2e9091b1b747017f2e76f69fc92ecd81c8f91a89fe4e03"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_functions.js",
-          "sha256": "b8a22b2b41eb233c06bf52867f4bcd172e030452a0e9cb52b3c91b92826ea057"
+          "sha256": "fbdf72de8d1859358c7fbeaded210b2ebb05c7a1a9c00693107b7f88d0d6da3a"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_iam_roles.js",
-          "sha256": "947681cca030319d694e0ed84ade362e8b4d02e99ed5a3f2a0e001b05e568e5e"
+          "sha256": "974d00e3c83f0e6425cd44e9f3f67278ccf12d87f828783a78f7ada4f31894b0"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_instances.js",
-          "sha256": "94975a6153a5d4c5377507aa70c573a050e58ed3ec98d8c679ce9e9a5206b19e"
+          "sha256": "30940adeda29ca614ab7318d1b2eacfa944b7de429324ad5b89c0f8684427aaf"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_log_entries.js",
-          "sha256": "21c24073191fd2376a3cfae593c8562875e62d3b7562d314f0690c23900535d8"
+          "sha256": "5e03e669f3fd0d7840cadaa95208ab047f3c24840129a306750a9b0c331114ab"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_networks.js",
-          "sha256": "bd248f51e9dc3cfd485af066edfcef64b7a70aac83ab5b96155fa275b883b42c"
+          "sha256": "abc74975ac04ee1282036de94c7e7405943e3f5f432c1b3695aebe368e8af77f"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_objects.js",
-          "sha256": "67cebbde233ac68354636ed44176b7f21fe83b2b128598caecea8b52897e9794"
+          "sha256": "cf45f6335d9b5d52aa44559f35731bcdc84b752d7bc11bd8be7634a0e9e83b26"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_projects.js",
-          "sha256": "4c146c125ed0cd03c06f923631240b75ef22700f9cb473854f3d30d3ffd6308d"
+          "sha256": "807563e11d1aa0324b1917713b34507a2d03d1cb8ed84793a354e72a5d6b21f5"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_service_accounts.js",
-          "sha256": "f5b0735d6a5a0d878de63967884bc67f5dcc752dec807a3a519544656318d77c"
+          "sha256": "49dae89f887f5c690995bd9275bfe6216105e5c0739764f7e6426fdf8fbe7f55"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/list_sql_instances.js",
-          "sha256": "5daf4e7ac2f829b5e1b823477c5a708a59a56fd6923a18b0531f5e9283808db1"
+          "sha256": "bc73a221a8cc26dc59caa419d53a12feb6d62b406c10758a3f7505c4fae1c42c"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/start_instance.js",
-          "sha256": "4e58de5ff30faa7e41a568c4ec5eae6fa69c87516c1146f02216ff4fb8bbcd45"
+          "sha256": "63a5c06aac9ef1e057837191b8f79be682127bfc8f8b922892368fa21ab0cf66"
         },
         {
           "path": "packages/com.google-cloud.main/workflows/stop_instance.js",
-          "sha256": "8932a328048537818ad48d63792c28ac37f17c644db06fda46eb955454ed4218"
+          "sha256": "ee446e5ddb8b2f17709b2d915b43587f96768ec3c7f05d74f64a387c1b7b8984"
         }
       ]
     },
@@ -3009,83 +3149,83 @@
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/add_ip_access_entry.js",
-          "sha256": "177ab27ddf3cba58a502ebb43b6be834e7eab8b833abb122136ca9147d956239"
+          "sha256": "c5bfbc3eddbc0283d744dd9a3755909b3b9d573d96e5552a085031603639d4de"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/create_database_user.js",
-          "sha256": "73b7808be79c34d07bd658ed8bdb36d619f50b9793ef4640d84e617be4a03b1c"
+          "sha256": "ebfaae9ff52a0611b0443748b87ae97e40bd5bdff9b56a6d4b247e99d30b3968"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/delete_database_user.js",
-          "sha256": "86755ecd97dcfb2bf3bbd9edf33054f423d13931ba5ee44628c8bfa101fda395"
+          "sha256": "256edddb2f57d25a64b69663804401edff38a28915250282df17b86b00b86fb1"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/delete_ip_access_entry.js",
-          "sha256": "87622cb10946c36f6c3803a320687e8903de7fbca66c78b70f9604a06c1f39c9"
+          "sha256": "a87a2e69d6c4609d9333bf2321b2f2e7d712488e663b63b018432cd5815cd75a"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_billing_plan.js",
-          "sha256": "6708cb2b40dba53c50f9ed1f2ab9697df4d9f40a8a564456a8c06110c8c75970"
+          "sha256": "2e05d81775c6119652d9c8cffb22ed0c13c976bc3b6bd5102fa842d99246775e"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_cluster.js",
-          "sha256": "1ed40d241c2cf210c4a1817a34143574d3d48c7f2f72930f8452a4a09fa6ae0b"
+          "sha256": "7333516fbeb866b9122b67788d6a1f4a0f4e41a8847efa9586a163222a5ac862"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_current_user.js",
-          "sha256": "73ef03a1d38889ae23bf6e4a03449f9a415a728382c4edfcdd22af90757f5ddf"
+          "sha256": "0c36824191d20748cefed97c110497a7df430314cd7c9b07502b1dfce462ab8f"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_deployment_status.js",
-          "sha256": "ec28389a99645851114828d17d5f69c9264b62a16bd12a7fd86a67633663c70f"
+          "sha256": "e4cbb6478aa15097173c6979da8fb6ce84447b4a5790e626f6d14b8bba1677e4"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_organization.js",
-          "sha256": "e31d327302a55414558e06b83c8ffcc4344883aa98fd7824db163612f0eff618"
+          "sha256": "4439be41240a252b2558f895a7133dbab347574d93d9eb4125979c444d28436e"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_project.js",
-          "sha256": "409a2cfb520732b9025d8c29a2ab1869db0c44b7c3ddeec9f38788ec8fe01975"
+          "sha256": "52c67db3fc0c7cc75448d0f7d383ec03cbd987a1b7dbddf2f7b9b130d967470d"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/get_user_security.js",
-          "sha256": "1b7415ed8ccabe3a4bbdd7add2f857319797c5306b5aad1a7fda07b78bb5c7e8"
+          "sha256": "59de41e10ee51fbfc36eb3d59b23b852d7e8d144c852d83f2bcc340e265654fe"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_alert_configs.js",
-          "sha256": "ba9f8a33c20b7437e4973d8a0892ade5d8141159e6a074f8733e365297592b3c"
+          "sha256": "cbfbb8c1a89efdf930ca631955f36d4af39ecdfc05b1713794351af0643ffb83"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_alerts.js",
-          "sha256": "3dcdbc6af4e3037946f06159ae561c62cb723eb69aeb16dd19dfae13f44f6640"
+          "sha256": "406fcf86fe256b9d3b57024a8f3ad36bd21b2ca6e202281790b714e2b7534749"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_clusters.js",
-          "sha256": "78b1037f6995cbc188905bb8ee0ccfdd301aedb26c7a97eccd738976290ac70c"
+          "sha256": "446b909b8a7bf7e19f840430e73d1d4372d85597acc650c9f27f82eca868c737"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_database_users.js",
-          "sha256": "69409d4ffd49f2d14ca3d5ac0baae9f301cbe117b105f70b96877c73da3ad02a"
+          "sha256": "ebb5f3007de85c78592adb2115329bbd9fd7645bace3c92dc8d309a13439ca83"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_ip_access_list.js",
-          "sha256": "30e3ef0e38be2abcb2c7eac9ca05ed240b6b0cabd5f36b2833375fffe3cbbe47"
+          "sha256": "580595e0c49120069f4b42d22d7e26dc0f0835e771fb30f994ca63e8018cbd07"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_network_peering.js",
-          "sha256": "50712652b1785c02e57636901a0a3da411114a020f1eaf4e6fffbf245e752352"
+          "sha256": "bb1f633fdff2ef8b0590611d7d5398749d72a4bc047c3bdf3a3d94afe2356bf8"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_organization_members.js",
-          "sha256": "35176b5f78d3fc06861d37134b6708e689268ec8780e46f3809dfce9b9cf96e3"
+          "sha256": "f7944a3bd8b2c82470c4b2dbb99cef0e022ec2fc5b827ddece291cac7086e291"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_organization_projects.js",
-          "sha256": "fa704a4aa51069b497812b0f9c87cbb0bf88ea4458b6ab0c43092e7715960a08"
+          "sha256": "476815c2f21390a34de430e4576db90ec16b0df5648f52b9ce1052910726753c"
         },
         {
           "path": "packages/com.mongodb-atlas.main/workflows/list_organization_teams.js",
-          "sha256": "6a9d929fd0ae4dcb2a1f1ac1d838f6cccf687f59a1aaecea8f70fa37506b6980"
+          "sha256": "c953ecaeaadb70a39ebb5dee05e09cfb3b4e6c5caec0537596f5dc7f7be743c0"
         }
       ]
     },
@@ -4630,6 +4770,142 @@
       ]
     },
     {
+      "id": "com.snowflake.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Snowflake — run SQL queries, browse database schemas, and manage worksheets",
+      "toolCount": 14,
+      "files": [
+        {
+          "path": "packages/com.snowflake.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.snowflake.main/manifest.json",
+          "sha256": "cedcb5c07ca64b9ce8ad87ecd45fde1727079d008ebd4b10137f18c2b9cee0b2"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/browse_data.js",
+          "sha256": "79217cb07f9eabeb78c590882860eaaae7a3a88d376fd79c743a24bd17ec792a"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/diagnose.js",
+          "sha256": "4dd111853d700eb9c5f5925d076b269b7f202285ef8b757731c844f1c95df052"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/get_object_details.js",
+          "sha256": "8db34dcaaa28a77da6d07b6c663c7b453bc09d38f0b9400df770da42f7d96966"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/get_query.js",
+          "sha256": "d353f54a50394c1c5189b07202b34d9e1a2465f9187d302e7909c8ee6a594501"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/get_session.js",
+          "sha256": "b725802d8d9dd9f81a5a41fedef79b65b45b905ff275e0b6fee249938fdfc55c"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_dashboards.js",
+          "sha256": "491531422737138456123078a1ac8f158fbdf8ef26b6bf019549526f699fe2e2"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_folders.js",
+          "sha256": "d0c1a31e6f58480bf5b4d55e31b86a63ec3b4e5f5c0bfac7f28dc753c3862f45"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_schemas.js",
+          "sha256": "b85f82958cbcab0c6cf03c89cf8cb261a17237605c369a5b6375cde8fcddbaac"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_shared_objects.js",
+          "sha256": "f9cf2c3dfadd799d74b68431c1afd1e23178eb9d099ceff2418fc6d0b5b71cb2"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_tables.js",
+          "sha256": "c6f38da6e08b3d2b7f993cceec58279b697369762a4f5ceb4f28270ad8c72382"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_warehouses.js",
+          "sha256": "34ed45f100d8b78d95366285fd37289653f03adcc7c9bbe359e53b5d47125400"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/list_worksheets.js",
+          "sha256": "8501997fcbdc650fa36a436b7d6627085c23e49251e286756a8d96e090b6b4e3"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/run_query.js",
+          "sha256": "f0d4544738e6902fb86310c7aa1da0e4afd41a0631bf7026007775e9db69ff85"
+        },
+        {
+          "path": "packages/com.snowflake.main/workflows/search_data.js",
+          "sha256": "233fde428812be5570158700ef8e0ff17e583839ca62347ee06d03a550deb9da"
+        }
+      ]
+    },
+    {
+      "id": "com.sqlpad.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for SQLPad — run SQL queries, browse database schemas, and manage saved queries",
+      "toolCount": 12,
+      "files": [
+        {
+          "path": "packages/com.sqlpad.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.sqlpad.main/manifest.json",
+          "sha256": "cb78ad533e43a81fa57d714c9f69ef767ae10ff65240bd9e22e1b0321edf52b1"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/create_saved_query.js",
+          "sha256": "aa53a874da000e49b2dc7a9e2eed676ef42385ed7185fae70d22380843b52495"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/delete_saved_query.js",
+          "sha256": "238e98275e38abf71ec2cdd924567c8362f8833835ee66b98c9a587017c699ff"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/get_current_user.js",
+          "sha256": "b5fd2830c72e0c7ea6a53617d09060432e9f90fcc054b969599caab6f5c57886"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/get_saved_query.js",
+          "sha256": "c0213c75c0792b78a32de1a6d57116c85381d5a806e8824ab212850ebd77357d"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/get_schema.js",
+          "sha256": "0af930a6e78ba54159f805784acbeb632f7f1b9afec378eb46d2e020e934eeb5"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/list_connections.js",
+          "sha256": "e59ff86b673f13972a67acb8ae7eb2bea30fc4a4446747edc2a9502705427039"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/list_query_history.js",
+          "sha256": "a3d22ba31b34c602447bd93ae37dca475ad663e89ef26014e1fc6a2141a2e346"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/list_saved_queries.js",
+          "sha256": "9a342a986645b9cb80f44478811a911a2ff8afc0ea69840aa6f89149942ba4e3"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/list_tags.js",
+          "sha256": "163446bc5041c567d88f1680636a2650fc2ff44ff3af722fd570e59b523cd149"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/list_users.js",
+          "sha256": "89fc23454d53c60ce1ba780f08ace1b9ef944196f12185cde9ece386528b6435"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/run_query.js",
+          "sha256": "fcfc0ab68981f2fb6aa96a72e7f9064343a3a37b693e7cebacbbb15ddeedfae2"
+        },
+        {
+          "path": "packages/com.sqlpad.main/workflows/update_saved_query.js",
+          "sha256": "a149976ae670ec901df17e692ead736e89d6ae2d2ac41288b0430e92ebdef94f"
+        }
+      ]
+    },
+    {
       "id": "com.stackoverflow.main",
       "version": "0.1.0",
       "description": "Read Stack Overflow questions, answers, comments, users, tags and search results (including full-text search, similar/related/linked/featured/unanswered listings and the signed-in user profile) on stackoverflow.com in your current tab.",
@@ -4858,6 +5134,174 @@
         {
           "path": "packages/com.stripe.main/workflows/void_invoice.js",
           "sha256": "3da655fa6c9b545eb685b20ee1b293274f4d5bbe72559dc3042875e8620d7cc4"
+        }
+      ]
+    },
+    {
+      "id": "com.supabase.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Supabase",
+      "toolCount": 26,
+      "files": [
+        {
+          "path": "packages/com.supabase.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.supabase.main/manifest.json",
+          "sha256": "e70a6e347b04a6a0dfaced26781f6860e47f0c8ea542a8a9a70d3aab512d9f67"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/create_secrets.js",
+          "sha256": "f8c9e45a136ccf688152b3d5924b99764bf8cb4c8953cc11a8ee5e99ed608efa"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/delete_function.js",
+          "sha256": "16db8ed4886bef229f711e6b429843b39666e3f2684332b17a9062582494a907"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/delete_secrets.js",
+          "sha256": "2a33621e8cbe4994b18bb2dda45141e2bda6f24256d78eda6b5235f242903664"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/generate_types.js",
+          "sha256": "d722c4312c29b7ad5b76d9c8dcb10fd936b5f631b0d4fb7a9f0af64e54cb502e"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_api_keys.js",
+          "sha256": "c57f805007e185724f6090fe045f07c7abe8a066474729d0c73dd84cd8593034"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_function.js",
+          "sha256": "d09c00c1c9d73522472f324cc873c9a538e896af255be2ee1b090421479bd794"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_organization.js",
+          "sha256": "f97d4b8f291d8c316d7b2f935d55cc1cf38481770a77f05c9b023dd922fd07c9"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_performance_advisors.js",
+          "sha256": "60e61f29f6cd9e85a7d66b1c573c4e137d0045e99c55be6bd42f22fd0af7d097"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_postgrest_config.js",
+          "sha256": "cd2a677de56618730f99b33eabfe667891948065cf3dac430312af6867dc2c87"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_project_health.js",
+          "sha256": "bd2870f24cc1389f8c5c8443b55c998a2bcb7eca68c9982971df010223f6d480"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_project_logs.js",
+          "sha256": "bd9906e69c7d543e7f84d0c2ca9d50e412307556f4f2233b07aa41aa098a1278"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_project.js",
+          "sha256": "5ed7c9ce1dabb19d75c67165c9f0e4f30b0b0d0653febff12fc73f79b60e56bb"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/get_security_advisors.js",
+          "sha256": "489b7bf65f06600bd47dae3375dbf9a8dca31a40b7db8e5eaa06f34c9b835879"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_backups.js",
+          "sha256": "2d6b8004d4808aab638bee9af2258ad1e4f8893ce09718381ed170234415cd46"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_buckets.js",
+          "sha256": "76b90a86b0044a4e7441c182a0a54b4d3eb1b238aedb082df0972acb4b2db9cf"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_functions.js",
+          "sha256": "ff9967f2d742abef21451cec5d48430fe5f538c63c9bebb8b56b07633e4f7553"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_migrations.js",
+          "sha256": "630071a805c08265d451f4b4321a0b401c41d0c941a925e2027c911b883de92d"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_organization_members.js",
+          "sha256": "81db4e55608ea2fb862a99d8eb03ee63d0dddc0e88a4e3949c5b57c6c3eedf21"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_organizations.js",
+          "sha256": "5c514048f2827bf5b9d070215c8fb068fcc7e5811971ff1a96ae7fa8b827cd07"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_projects.js",
+          "sha256": "867e3f927fe588eb34533c4ac9de1f2a90fc14f489cf761c98f14a0fd8fdd2c8"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_secrets.js",
+          "sha256": "5f75ac3bfe5c0208de32c7bb489aff21962b69090f492e6170fef45c54cc3eff"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/list_sql_snippets.js",
+          "sha256": "e2f5010e9ea3d30ce5af34a21c2e4a1abb2ea4fb2b7763f83a491a01e0406471"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/pause_project.js",
+          "sha256": "fda7e918362f4125946080fba84c2526a0ec56cd29c0185328f38816c756b405"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/restore_project.js",
+          "sha256": "8694c8d47a6d26db0bbfdf85f5eefcfea3c1ebe86e1c4139bd9be6b7cdbdbb75"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/run_query.js",
+          "sha256": "38a26ca5d2795ef9b2f5eb08a22b8d13e9306dbef83f235af5bcf1cf770a2368"
+        },
+        {
+          "path": "packages/com.supabase.main/workflows/run_read_only_query.js",
+          "sha256": "a78c1eea6d3618024cc7671382808a29dace035cac1b3a721642153184ab1f80"
+        }
+      ]
+    },
+    {
+      "id": "com.temporal-cloud.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Temporal Cloud",
+      "toolCount": 8,
+      "files": [
+        {
+          "path": "packages/com.temporal-cloud.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/manifest.json",
+          "sha256": "af5e9c04c6648148c996e8a4719217db8bec90d8e471a55788dc6e0eb4c7aaed"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/count_workflows.js",
+          "sha256": "b1641102a660bac0c0e97a117dceb2993e7cab21c0f6f16e5aa6ec7e203b42e1"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/get_schedule.js",
+          "sha256": "6fa76de6b694ad35a98c9388fda28916ddf7c7921a9ee49651f789d089a2202d"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/get_settings.js",
+          "sha256": "6676c1222557d836a5c4023d51feec429f62456a95f1cff399b352c1adc762bc"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/get_task_queue.js",
+          "sha256": "1b9a17cccbec3601b13db040b54288aa6c222445370926f20f88bb842b39cb04"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/get_workflow_history.js",
+          "sha256": "d22eb156175e67895dbe091ea7a803be8ea24c0526d3724c5dd935754897b3fe"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/get_workflow.js",
+          "sha256": "602fa5c072fe45c4d409143e87778d44e0372c77fdbfa165ddecb31bfa9ed2fc"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/list_schedules.js",
+          "sha256": "35c237666a47f496d12292484587cb5fd7f6baccd69f3d25881a14959c55732c"
+        },
+        {
+          "path": "packages/com.temporal-cloud.main/workflows/list_workflows.js",
+          "sha256": "c5dd28402f36cca73a7741c8751432f3425c018c1f80c9b5776fc5abf13bd2d9"
         }
       ]
     },

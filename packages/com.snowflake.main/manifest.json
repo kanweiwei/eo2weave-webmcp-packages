@@ -1,0 +1,91 @@
+{
+  "id": "com.snowflake.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Snowflake — run SQL queries, browse database schemas, and manage worksheets",
+  "tools": [
+    {
+      "name": "get_session",
+      "description": "Get the current Snowflake session context including user email, active role, organization, and build version.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_session.js"
+    },
+    {
+      "name": "diagnose",
+      "description": "Diagnose the Snowflake browser adapter connection. Returns whether the internal Snowflake app state is available, the authenticated user, API server URL, and available internal APIs. Use this to debug connectivity issues when other Snowflake tools fail.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/diagnose.js"
+    },
+    {
+      "name": "run_query",
+      "description": "Execute a SQL query in Snowflake via the web application session. Returns parsed results with columns and rows as named objects. For large results (multiple chunks), all chunks are automatically fetched and combined — no need to call get_query separately. Results are capped at maxRows (default 100). All row values are strings (including numbers and timestamps) per Snowflake JSON format.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_query.js"
+    },
+    {
+      "name": "get_query",
+      "description": "Fetch a specific result chunk from a previously executed query by its query ID and chunk index. Use this when run_query indicates hasMoreChunks=true. Chunk index 0 is the first chunk (already returned by run_query), so start from index 1. Returns raw row arrays — use the column metadata from the original run_query response to interpret values.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_query.js"
+    },
+    {
+      "name": "browse_data",
+      "description": "List all databases accessible to the current Snowflake user and role. Returns database names, owners, kinds (STANDARD or APPLICATION), and creation timestamps.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/browse_data.js"
+    },
+    {
+      "name": "search_data",
+      "description": "Search for Snowflake databases by name pattern (case-insensitive LIKE match). Use '%' as wildcard. For example, 'billing' matches databases containing 'billing' in their name.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_data.js"
+    },
+    {
+      "name": "list_schemas",
+      "description": "List schemas in a Snowflake database. Returns schema names, owners, and creation timestamps. Use browse_data to find available database names first.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_schemas.js"
+    },
+    {
+      "name": "list_tables",
+      "description": "List tables in a Snowflake schema. Returns table names, row counts, owners, and types. Requires both database and schema names. Use list_schemas to find available schemas.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tables.js"
+    },
+    {
+      "name": "list_warehouses",
+      "description": "List all warehouses accessible to the current role. Returns warehouse names, sizes, states (STARTED, SUSPENDED), auto-suspend/resume settings, and running/queued query counts.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_warehouses.js"
+    },
+    {
+      "name": "get_object_details",
+      "description": "Get column-level schema details for a Snowflake table or view using DESCRIBE TABLE. Returns column names, data types, nullability, defaults, and key constraints. The objectName must be fully qualified: DATABASE.SCHEMA.TABLE (e.g., \"MY_DB.PUBLIC.MY_TABLE\").",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_object_details.js"
+    },
+    {
+      "name": "list_shared_objects",
+      "description": "List data shares in the Snowflake account. Shows both inbound (shared with you) and outbound (shared by you) data shares.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_shared_objects.js"
+    },
+    {
+      "name": "list_worksheets",
+      "description": "List saved Snowflake worksheets, sorted by most recently modified. Supports pagination via cursor. Worksheets are the SQL editor tabs in the Snowflake web UI.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_worksheets.js"
+    },
+    {
+      "name": "list_folders",
+      "description": "List worksheet folders in the Snowflake workspace. Folders organize worksheets into groups.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_folders.js"
+    },
+    {
+      "name": "list_dashboards",
+      "description": "List Snowflake dashboards, sorted by most recently modified. Supports pagination.",
+      "urlRegex": "^https?://app\\.snowflake\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_dashboards.js"
+    }
+  ]
+}

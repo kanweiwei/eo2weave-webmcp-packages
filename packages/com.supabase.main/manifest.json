@@ -1,0 +1,163 @@
+{
+  "id": "com.supabase.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Supabase",
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all Supabase projects for the authenticated user. Returns project IDs, names, regions, and status.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific Supabase project by its reference ID. Returns name, region, status, and organization.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "get_project_health",
+      "description": "Get the health status of all services in a Supabase project (database, auth, realtime, storage, etc.).",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project_health.js"
+    },
+    {
+      "name": "pause_project",
+      "description": "Pause a Supabase project. The project database and APIs will become unavailable. Use restore_project to bring it back.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/pause_project.js"
+    },
+    {
+      "name": "restore_project",
+      "description": "Restore a paused Supabase project. This will start the project database and APIs again.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/restore_project.js"
+    },
+    {
+      "name": "list_organizations",
+      "description": "List all organizations the authenticated user belongs to.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organizations.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get detailed information about a specific organization by its slug.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_organization_members",
+      "description": "List all members of a Supabase organization, including their roles.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_members.js"
+    },
+    {
+      "name": "run_query",
+      "description": "Run a SQL query against a Supabase project database. Returns the query results as rows. Use this for DDL (CREATE, ALTER, DROP), DML (INSERT, UPDATE, DELETE), and DQL (SELECT) operations.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_query.js"
+    },
+    {
+      "name": "run_read_only_query",
+      "description": "Run a read-only SQL query as the supabase_read_only_user role. Safer for SELECT queries — cannot modify data.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_read_only_query.js"
+    },
+    {
+      "name": "generate_types",
+      "description": "Generate TypeScript type definitions from a Supabase project database schema. Returns the full TypeScript types for all tables, views, and functions.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/generate_types.js"
+    },
+    {
+      "name": "list_migrations",
+      "description": "List all applied database migrations for a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_migrations.js"
+    },
+    {
+      "name": "list_backups",
+      "description": "List all database backups for a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_backups.js"
+    },
+    {
+      "name": "list_functions",
+      "description": "List all Edge Functions deployed to a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_functions.js"
+    },
+    {
+      "name": "get_function",
+      "description": "Get details of a specific Edge Function by its slug.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_function.js"
+    },
+    {
+      "name": "delete_function",
+      "description": "Delete an Edge Function from a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_function.js"
+    },
+    {
+      "name": "list_secrets",
+      "description": "List all secrets (environment variables) for a Supabase project. Secret values are masked in responses.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_secrets.js"
+    },
+    {
+      "name": "create_secrets",
+      "description": "Create or update one or more secrets (environment variables) for a Supabase project. Existing secrets with the same name are overwritten.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_secrets.js"
+    },
+    {
+      "name": "delete_secrets",
+      "description": "Delete one or more secrets (environment variables) from a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_secrets.js"
+    },
+    {
+      "name": "get_api_keys",
+      "description": "Get the API keys for a Supabase project. Returns the anon key, service_role key, and any publishable/secret keys.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_api_keys.js"
+    },
+    {
+      "name": "list_buckets",
+      "description": "List all storage buckets for a Supabase project.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_buckets.js"
+    },
+    {
+      "name": "get_project_logs",
+      "description": "Fetch recent logs from a Supabase project. Supports filtering by log source (e.g., \"postgres\", \"auth\", \"storage\", \"realtime\", \"edge-functions\", \"postgrest\").",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project_logs.js"
+    },
+    {
+      "name": "get_performance_advisors",
+      "description": "Get performance advisor recommendations for a Supabase project. Identifies potential performance issues like missing indexes, unused indexes, and slow queries.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_performance_advisors.js"
+    },
+    {
+      "name": "get_security_advisors",
+      "description": "Get security advisor recommendations for a Supabase project. Identifies potential security issues like exposed credentials, weak RLS policies, and auth misconfigurations.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_security_advisors.js"
+    },
+    {
+      "name": "get_postgrest_config",
+      "description": "Get the PostgREST (auto-generated REST API) configuration for a project. Includes default schema, max rows, and JWT secret role claim key.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_postgrest_config.js"
+    },
+    {
+      "name": "list_sql_snippets",
+      "description": "List saved SQL snippets for the authenticated user.",
+      "urlRegex": "^https?://supabase\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sql_snippets.js"
+    }
+  ]
+}
