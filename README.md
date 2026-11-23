@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-39 packages, 1102 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+43 packages, 1168 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -74,6 +74,7 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.slack-enterprise.main` | 54 | OpenTabs plugin (MIT) |
 | `com.retool.main` | 50 | OpenTabs plugin (MIT) |
 | `com.netlify.main` | 40 | OpenTabs plugin (MIT) |
+| `com.newrelic.main` | 22 | OpenTabs plugin (MIT) |
 | `com.powerpoint.main` | 39 | OpenTabs plugin (MIT) |
 | `com.bluesky.main` | 38 | OpenTabs plugin (MIT) |
 | `com.posthog.main` | 38 | OpenTabs plugin (MIT) |
@@ -83,16 +84,17 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.circleci.main` | 33 | OpenTabs plugin (MIT) |
 | `com.todoist.main` | 33 | OpenTabs plugin (MIT) |
 | `com.tumblr.main` | 32 | OpenTabs plugin (MIT) |
-| `com.grafana.main` | 29 | OpenTabs plugin (MIT) |
 | `com.x.main` | 31 | OpenTabs plugin (MIT) |
 | `com.cloudflare.main` | 30 | OpenTabs plugin (MIT) |
 | `com.stripe.main` | 30 | OpenTabs plugin (MIT) |
+| `com.grafana.main` | 29 | OpenTabs plugin (MIT) |
 | `com.bitbucket.main` | 27 | OpenTabs plugin (MIT) |
 | `com.discord.main` | 26 | OpenTabs plugin (MIT) |
 | `com.asana.main` | 24 | OpenTabs plugin (MIT) |
 | `com.reddit.main` | 23 | OpenTabs plugin (MIT) |
 | `com.gitlab.main` | 22 | OpenTabs plugin (MIT) |
 | `com.slack.main` | 22 | OpenTabs plugin (MIT) |
+| `com.sentry.main` | 21 | OpenTabs plugin (MIT) |
 | `com.confluence.main` | 21 | OpenTabs plugin (MIT) |
 | `com.jira.main` | 20 | OpenTabs plugin (MIT) |
 | `com.stackoverflow.main` | 20 | OpenTabs plugin (MIT) |
@@ -101,13 +103,15 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.google-calendar.main` | 18 | OpenTabs plugin (MIT) |
 | `com.notion.main` | 18 | OpenTabs plugin (MIT) |
 | `com.google-drive.main` | 17 | OpenTabs plugin (MIT) |
+| `com.zendesk.main` | 17 | OpenTabs plugin (MIT) |
+| `com.amplitude.main` | 15 | OpenTabs plugin (MIT) |
 | `com.npm.main` | 14 | OpenTabs plugin (MIT) |
+| `com.docker-hub.main` | 12 | OpenTabs plugin (MIT) |
 | `com.clickup.main` | 11 | OpenTabs plugin (MIT) |
 | `com.hackernews.main` | 10 | OpenTabs plugin (MIT) |
+| `com.google-analytics.main` | 8 | OpenTabs plugin (MIT) |
 | `com.airtable.main` | 8 | OpenTabs plugin (MIT) |
 | `com.calendly.main` | 15 | OpenTabs plugin (MIT) |
-| `com.zendesk.main` | 17 | OpenTabs plugin (MIT) |
-| `com.docker-hub.main` | 12 | OpenTabs plugin (MIT) |
 
 ## Migration notes
 
