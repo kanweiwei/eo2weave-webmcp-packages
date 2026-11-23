@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-47 packages, 1260 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+60 packages, 1480 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -115,11 +115,20 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.azure.main` | 26 | OpenTabs plugin (MIT) |
 | `com.aws-console.main` | 16 | OpenTabs plugin (MIT) |
 | `com.google-cloud.main` | 30 | OpenTabs plugin (MIT) |
-| `com.newrelic.main` | 22 | OpenTabs plugin (MIT) |
-| `com.sentry.main` | 21 | OpenTabs plugin (MIT) |
-| `com.amplitude.main` | 15 | OpenTabs plugin (MIT) |
-| `com.google-analytics.main` | 8 | OpenTabs plugin (MIT) |
 | `com.calendly.main` | 15 | OpenTabs plugin (MIT) |
+| `com.supabase.main` | 26 | OpenTabs plugin (MIT) |
+| `com.cockroachdb.main` | 18 | OpenTabs plugin (MIT) |
+| `com.snowflake.main` | 14 | OpenTabs plugin (MIT) |
+| `com.sqlpad.main` | 12 | OpenTabs plugin (MIT) |
+| `com.clickhouse.main` | 9 | OpenTabs plugin (MIT) |
+| `com.temporal-cloud.main` | 8 | OpenTabs plugin (MIT) |
+| `com.hex.main` | 27 | OpenTabs plugin (MIT) |
+| `com.shortcut.main` | 27 | OpenTabs plugin (MIT) |
+| `com.leetcode.main` | 26 | OpenTabs plugin (MIT) |
+| `com.google-maps.main` | 16 | OpenTabs plugin (MIT) |
+| `com.webflow.main` | 15 | OpenTabs plugin (MIT) |
+| `com.figma.main` | 14 | OpenTabs plugin (MIT) |
+| `com.vercel.main` | 8 | OpenTabs plugin (MIT) |
 
 ## Migration notes
 
