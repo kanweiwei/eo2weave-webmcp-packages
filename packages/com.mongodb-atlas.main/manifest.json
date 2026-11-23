@@ -1,0 +1,127 @@
+{
+  "id": "com.mongodb-atlas.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for MongoDB Atlas",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated MongoDB Atlas user including name and email.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_organization",
+      "description": "Get detailed information about the current MongoDB Atlas organization including name, plan type, MFA status, and payment status.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_organization.js"
+    },
+    {
+      "name": "list_organization_members",
+      "description": "List all members of the current MongoDB Atlas organization with their roles, email, and last authentication time.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_members.js"
+    },
+    {
+      "name": "list_organization_projects",
+      "description": "List all projects (groups) in the current MongoDB Atlas organization with cluster, user, and alert counts.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_projects.js"
+    },
+    {
+      "name": "list_organization_teams",
+      "description": "List all teams in the current MongoDB Atlas organization with member counts.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_organization_teams.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about the current MongoDB Atlas project (group) from the URL context, including state, cluster count, and data size.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "list_clusters",
+      "description": "List all clusters in the current MongoDB Atlas project with their state, provider, region, instance size, and connection strings.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_clusters.js"
+    },
+    {
+      "name": "get_cluster",
+      "description": "Get detailed information about a specific MongoDB Atlas cluster by name, including state, version, provider, connection string, and disk size.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cluster.js"
+    },
+    {
+      "name": "list_database_users",
+      "description": "List all database users in the current MongoDB Atlas project with their roles, scopes, and authentication type.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_database_users.js"
+    },
+    {
+      "name": "create_database_user",
+      "description": "Create a new database user in the current MongoDB Atlas project with specified roles and optional cluster scopes.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_database_user.js"
+    },
+    {
+      "name": "delete_database_user",
+      "description": "Delete a database user from the current MongoDB Atlas project by username and authentication database.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_database_user.js"
+    },
+    {
+      "name": "list_ip_access_list",
+      "description": "List all IP access list entries (IP whitelist) for the current MongoDB Atlas project.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_ip_access_list.js"
+    },
+    {
+      "name": "add_ip_access_entry",
+      "description": "Add an IP address or CIDR block to the access list for the current MongoDB Atlas project, allowing network access from that address.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_ip_access_entry.js"
+    },
+    {
+      "name": "delete_ip_access_entry",
+      "description": "Remove an IP address or CIDR block from the access list for the current MongoDB Atlas project.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_ip_access_entry.js"
+    },
+    {
+      "name": "list_alerts",
+      "description": "List all active alerts for the current MongoDB Atlas project including event type, status, and affected cluster.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alerts.js"
+    },
+    {
+      "name": "list_alert_configs",
+      "description": "List all alert configurations for the current MongoDB Atlas project including event type, enabled status, and alert type.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alert_configs.js"
+    },
+    {
+      "name": "list_network_peering",
+      "description": "List all network peering connections for the current MongoDB Atlas project including provider, status, VPC ID, and CIDR block.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_network_peering.js"
+    },
+    {
+      "name": "get_deployment_status",
+      "description": "Get the current deployment status for the MongoDB Atlas project including goal state, version conflicts, draft status, and in-progress jobs.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_deployment_status.js"
+    },
+    {
+      "name": "get_billing_plan",
+      "description": "Get the billing plan for the current MongoDB Atlas organization including plan type, display name, and whether it is a paid plan.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_billing_plan.js"
+    },
+    {
+      "name": "get_user_security",
+      "description": "Get the authentication security settings for the current MongoDB Atlas project including LDAP authentication, LDAP authorization, and custom X.509 certificate authority status.",
+      "urlRegex": "^https?://cloud\\.mongodb\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user_security.js"
+    }
+  ]
+}

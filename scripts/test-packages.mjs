@@ -350,6 +350,11 @@ function makeDocument({ cookie = '', login = null, csrf = 'csrf-token', loggedIn
     querySelectorAll() {
       return []
     },
+    // AWS Console's runtime installs an iframe-watching MutationObserver at
+    // module scope and falls back to a DOMContentLoaded listener; give the stub
+    // the event surface so module evaluation survives in the sandbox.
+    body: null,
+    addEventListener() {},
   }
 }
 
@@ -402,8 +407,14 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
     URLSearchParams,
     Intl,
     crypto: globalThis.crypto,
+    // SigV4 request signing (AWS Console port) encodes strings as bytes; the
+    // sandbox must expose the same encoder the browser gives page code.
+    TextEncoder: globalThis.TextEncoder,
+    TextDecoder: globalThis.TextDecoder,
     localStorage: makeStorage(page.localStorage),
-    sessionStorage: makeStorage(),
+    // Azure Portal keeps its MSAL tokens in sessionStorage; tests seed it by
+    // passing a ready storage object on the page stub.
+    sessionStorage: page.sessionStorage ?? makeStorage(),
     FormData: globalThis.FormData,
     Blob: globalThis.Blob,
     atob: (value) => Buffer.from(String(value), 'base64').toString('binary'),

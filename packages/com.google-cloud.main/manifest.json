@@ -1,0 +1,187 @@
+{
+  "id": "com.google-cloud.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Google Cloud Console",
+  "tools": [
+    {
+      "name": "get_current_project",
+      "description": "Get the currently active GCP project from the console URL. Returns the project ID the user is currently viewing.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_project.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List all GCP projects accessible to the current user. Returns project IDs, names, and lifecycle states.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a GCP project by its project ID. Defaults to the currently active project if no ID is provided.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "list_instances",
+      "description": "List Compute Engine VM instances in a zone. If no zone is specified, lists instances across all zones using aggregated list.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_instances.js"
+    },
+    {
+      "name": "get_instance",
+      "description": "Get detailed information about a specific Compute Engine VM instance.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_instance.js"
+    },
+    {
+      "name": "start_instance",
+      "description": "Start a stopped Compute Engine VM instance. The instance must be in TERMINATED or STOPPED state.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/start_instance.js"
+    },
+    {
+      "name": "stop_instance",
+      "description": "Stop a running Compute Engine VM instance. The instance must be in RUNNING state.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/stop_instance.js"
+    },
+    {
+      "name": "list_disks",
+      "description": "List Compute Engine persistent disks. If no zone is specified, lists across all zones.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_disks.js"
+    },
+    {
+      "name": "list_networks",
+      "description": "List VPC networks in the project.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_networks.js"
+    },
+    {
+      "name": "list_firewalls",
+      "description": "List firewall rules in the project.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_firewalls.js"
+    },
+    {
+      "name": "list_buckets",
+      "description": "List Cloud Storage buckets in the project.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_buckets.js"
+    },
+    {
+      "name": "get_bucket",
+      "description": "Get detailed information about a specific Cloud Storage bucket.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_bucket.js"
+    },
+    {
+      "name": "list_objects",
+      "description": "List objects in a Cloud Storage bucket. Supports prefix filtering for directory-like browsing.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_objects.js"
+    },
+    {
+      "name": "list_service_accounts",
+      "description": "List IAM service accounts in the project.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_service_accounts.js"
+    },
+    {
+      "name": "list_iam_roles",
+      "description": "List custom IAM roles defined in the project. Use \"roles\" as a prefix to list predefined roles.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_iam_roles.js"
+    },
+    {
+      "name": "get_iam_policy",
+      "description": "Get the IAM access control policy for the project. Returns all role bindings (who has which role).",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_iam_policy.js"
+    },
+    {
+      "name": "list_enabled_services",
+      "description": "List GCP API services enabled in the project. Each service represents an API that has been activated.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_enabled_services.js"
+    },
+    {
+      "name": "enable_service",
+      "description": "Enable a GCP API service in the project. The service name is the API identifier (e.g., \"compute.googleapis.com\").",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/enable_service.js"
+    },
+    {
+      "name": "disable_service",
+      "description": "Disable a GCP API service in the project. WARNING: This may break resources that depend on this service.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/disable_service.js"
+    },
+    {
+      "name": "list_functions",
+      "description": "List Cloud Functions in the project across all locations.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_functions.js"
+    },
+    {
+      "name": "get_function",
+      "description": "Get detailed information about a specific Cloud Function.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_function.js"
+    },
+    {
+      "name": "list_cloud_run_services",
+      "description": "List Cloud Run services in the project across all locations.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_cloud_run_services.js"
+    },
+    {
+      "name": "get_cloud_run_service",
+      "description": "Get detailed information about a specific Cloud Run service.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cloud_run_service.js"
+    },
+    {
+      "name": "list_log_entries",
+      "description": "List log entries from Cloud Logging. Supports advanced log filters (e.g., 'severity>=ERROR', 'resource.type=\"gce_instance\"').",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_log_entries.js"
+    },
+    {
+      "name": "list_billing_accounts",
+      "description": "List billing accounts accessible to the current user.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_billing_accounts.js"
+    },
+    {
+      "name": "get_billing_info",
+      "description": "Get billing information for a project, including whether billing is enabled and which billing account is linked.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_billing_info.js"
+    },
+    {
+      "name": "list_clusters",
+      "description": "List Google Kubernetes Engine (GKE) clusters in the project across all locations.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_clusters.js"
+    },
+    {
+      "name": "get_cluster",
+      "description": "Get detailed information about a specific GKE cluster.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cluster.js"
+    },
+    {
+      "name": "list_sql_instances",
+      "description": "List Cloud SQL database instances in the project.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_sql_instances.js"
+    },
+    {
+      "name": "get_sql_instance",
+      "description": "Get detailed information about a specific Cloud SQL database instance.",
+      "urlRegex": "^https?://console\\.cloud\\.google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_sql_instance.js"
+    }
+  ]
+}
