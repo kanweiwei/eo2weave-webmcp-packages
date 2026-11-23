@@ -1,0 +1,103 @@
+{
+  "id": "com.google-maps.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Google Maps",
+  "tools": [
+    {
+      "name": "get_current_view",
+      "description": "Get the current Google Maps view including center coordinates, zoom level, active search query, and the current URL. Use this to understand what the user is currently looking at.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_view.js"
+    },
+    {
+      "name": "zoom_map",
+      "description": "Change the zoom level of the current Google Maps view. Zoom in to see more detail or zoom out for a wider view. Zoom levels range from 1 (world) to 21 (building level). Common levels: 5 (country), 10 (city), 15 (streets), 18 (buildings), 20 (close-up).",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/zoom_map.js"
+    },
+    {
+      "name": "toggle_layer",
+      "description": "Toggle a map layer on Google Maps by navigating to the appropriate URL with the layer parameter. Supports traffic, transit, bicycling, and terrain layers.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/toggle_layer.js"
+    },
+    {
+      "name": "search_places",
+      "description": "Search for places on Google Maps by text query near a location. Returns place names and IDs. Use get_current_view first to get coordinates for the search area, or provide explicit coordinates.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_places.js"
+    },
+    {
+      "name": "search_nearby",
+      "description": "Open a Google Maps search for a category of places near specific coordinates. Navigates the browser to show results on the map. Common categories: restaurants, hotels, gas stations, coffee, pharmacies, ATMs, grocery stores, parking, hospitals, banks.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_nearby.js"
+    },
+    {
+      "name": "get_place_details",
+      "description": "Get details about a place on Google Maps by name or address. Fetches the place page and extracts available information including name, coordinates, and place ID. For complete details (hours, phone, reviews), use navigate_to_place to open the place in the browser.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_place_details.js"
+    },
+    {
+      "name": "navigate_to_directions",
+      "description": "Open Google Maps directions between an origin and destination. Shows the route on the map with step-by-step navigation instructions, distance, and estimated travel time. Supports driving, transit, walking, and bicycling modes.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/navigate_to_directions.js"
+    },
+    {
+      "name": "get_directions_info",
+      "description": "Get the current directions information from the Google Maps directions view. Returns origin, destination, travel mode, and the directions URL. Only works when the user is viewing directions (the URL contains /dir/).",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_directions_info.js"
+    },
+    {
+      "name": "set_travel_mode",
+      "description": "Change the travel mode for the current directions view. Only works when viewing directions (URL contains /dir/). Switches between driving, transit, walking, and bicycling modes.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_travel_mode.js"
+    },
+    {
+      "name": "navigate_to_location",
+      "description": "Navigate the Google Maps view to specific coordinates with a given zoom level. The map pans and zooms to the specified location.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/navigate_to_location.js"
+    },
+    {
+      "name": "navigate_to_search",
+      "description": "Open Google Maps search results for a query at a specific location. The map shows search results pinned on the map with a list panel. Optionally provide coordinates to search near a specific location.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/navigate_to_search.js"
+    },
+    {
+      "name": "navigate_to_place",
+      "description": "Navigate Google Maps to a specific place by name or address. Opens the place detail view showing information like hours, reviews, and photos.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/navigate_to_place.js"
+    },
+    {
+      "name": "share_location",
+      "description": "Get a shareable Google Maps URL for the current map view or a specific location. The URL can be shared with others to show the same location on Google Maps.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/share_location.js"
+    },
+    {
+      "name": "get_map_url",
+      "description": "Build a Google Maps URL without navigating. Useful for generating links to include in messages, emails, or documents. Supports location, search, place, and directions URLs.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_map_url.js"
+    },
+    {
+      "name": "get_place_url",
+      "description": "Generate a Google Maps URL for a specific place that can be shared. Does not navigate — just returns the URL. Useful for embedding in messages, documents, or other contexts.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_place_url.js"
+    },
+    {
+      "name": "get_directions_url",
+      "description": "Generate a Google Maps directions URL between two points that can be shared. Does not navigate — just returns the URL. Useful for sharing directions in messages, emails, or documents.",
+      "urlRegex": "^https?://(?:www\\.)?google\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_directions_url.js"
+    }
+  ]
+}

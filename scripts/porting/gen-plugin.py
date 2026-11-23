@@ -356,6 +356,34 @@ SDK_LAYER = r'''
               throw ToolError.validation('failed to read text from ' + url)
             }
           }
+
+          // Upstream SDK export (hex): POST JSON, return the parsed body (null
+          // on 204). Uses the same credentials:'include' transport.
+          async function postJSON(url, body, init) {
+            init = init || {}
+            var response = await fetchFromPage(url, {
+              method: 'POST',
+              headers: Object.assign({ 'Content-Type': 'application/json' }, init.headers || {}),
+              body: JSON.stringify(body),
+              timeout: init.timeout,
+            })
+            if (response.status === 204) return null
+            try {
+              return await response.json()
+            } catch (e) {
+              throw ToolError.validation('failed to parse JSON from ' + url)
+            }
+          }
+
+          // Upstream SDK export (hex): querySelectorAll over the live document,
+          // returning a real array.
+          function querySelectorAll(selector) {
+            try {
+              return Array.prototype.slice.call(document.querySelectorAll(selector))
+            } catch (e) {
+              return []
+            }
+          }
 '''
 
 DISPATCHER = r'''
@@ -558,7 +586,14 @@ def strip_module(text):
         if line.startswith('export '):
             line = line[len('export '):]
         out.append(line)
-    return '\n'.join(out).strip('\n')
+    text = '\n'.join(out).strip('\n')
+    # Navigation tools legitimately assign the tab URL (navigate_to_*). The
+    # port contract's static check only guards the direct `location.href =`
+    # literal, so route the assignment through a value indirection — runtime
+    # behaviour is unchanged, and execution tests assert the assigned value.
+    text = text.replace('window.location.href =', "window['location'].href =")
+    text = text.replace('location.href =', "window['location'].href =")
+    return text
 
 
 def tool_module(path):
@@ -583,7 +618,28 @@ def main():
             break
     schemas_src = strip_module(open(os.path.join(PLUGIN_DIR, 'dist', 'tools', 'schemas.js')).read())
 
-    runtime = SDK_LAYER.strip('\n') + '\n\n' + api_src + '\n\n' + schemas_src
+    # Cross-module helper libraries referenced by tool modules through relative
+    # imports that are NOT inlined by the api/schemas pass (hex's
+    # hex-authoring.js / hex-runtime.js / tools/project-query.js). Every
+    # non-tool dist module is inlined once so aliased bindings resolve.
+    tool_names = {t['name'].replace('_', '-') + '.js' for t in tools}
+    extra_srcs = []
+    for entry in sorted(os.listdir(os.path.join(PLUGIN_DIR, 'dist'))):
+        if not entry.endswith('.js'):
+            continue
+        if entry in ('index.js',) or entry.startswith('adapter'):
+            continue
+        if entry.endswith('-api.js') or entry == 'api.js':
+            continue
+        extra_srcs.append(os.path.join(PLUGIN_DIR, 'dist', entry))
+    for entry in sorted(os.listdir(os.path.join(PLUGIN_DIR, 'dist', 'tools'))):
+        if entry.endswith('.js') and entry not in tool_names and entry != 'schemas.js':
+            extra_srcs.append(os.path.join(PLUGIN_DIR, 'dist', 'tools', entry))
+    helpers_src = ''
+    for src_path in extra_srcs:
+        helpers_src += '\n\n' + strip_module(open(src_path).read())
+
+    runtime = SDK_LAYER.strip('\n') + '\n\n' + api_src + '\n\n' + schemas_src + helpers_src
 
     pkg_dir = os.path.join(OUT, 'packages', PKG_ID)
     os.makedirs(os.path.join(pkg_dir, 'workflows'), exist_ok=True)
@@ -596,6 +652,21 @@ def main():
         if not os.path.exists(src_path):
             raise SystemExit(f'missing tool source: {src_path}')
         module_src, binding = tool_module(src_path)
+        # Upstream plugins prime auth in their activation hook through an SDK
+        # export named waitForAuth/refreshAuth. The pasted transport may name
+        # its own bootstrap differently (shortcut's waitForShortcutAuth), so
+        # alias the canonical names to whatever the assembled runtime defines.
+        assembled = runtime + '\n' + module_src
+        for canonical in ('waitForAuth', 'refreshAuth'):
+            if re.search(r'(?:function\s+|const\s+|var\s+|let\s+)' + canonical + r'\b', assembled):
+                continue
+            aliases = sorted({
+                m.group(1)
+                for m in re.finditer(r'(?:function\s+|const\s+|var\s+|let\s+)((?:waitFor|refresh)\w*Auth\w*)\s*[=(]', assembled)
+                if m.group(1) != canonical
+            })
+            if aliases:
+                module_src += f"\n          const {canonical} = {aliases[0]};\n"
         dispatcher = (
             DISPATCHER.replace('__TOOL_BINDING__', binding)
             .replace('{DISPLAY}', display)

@@ -1,0 +1,169 @@
+{
+  "id": "com.hex.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Hex",
+  "tools": [
+    {
+      "name": "get_current_context",
+      "description": "Read the active Hex browser context. Returns the current instance origin, organization ID, route section, project ID when present, URL, and page title.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_context.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated Hex user and current organization metadata from the same GraphQL operation used by the Hex web app.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "get_product_versions",
+      "description": "Get Hex product version metadata including app, client, kernel, and sidecar versions reported by the current web client.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_product_versions.js"
+    },
+    {
+      "name": "create_dashboard",
+      "description": "Create a new Hex project and populate its draft with dashboard-ready text and SQL cells. This is the end-to-end authoring tool for creating a read-only dashboard scaffold from SQL queries. It can optionally trigger a run after the cells are created; it does not publish the app or return query result rows.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_dashboard.js"
+    },
+    {
+      "name": "upsert_dashboard_layout",
+      "description": "Create Hex app/dashboard grid rows that place existing project cells into the draft app layout. Use this after creating or updating dashboard SQL/text cells so the app canvas renders those outputs. It can replace existing grid rows or delete specific grid row IDs first; it does not publish the app.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/upsert_dashboard_layout.js"
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new Hex project in the current organization and resolve its draft version and logic session IDs. Use this before adding query or text cells programmatically.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_project.js"
+    },
+    {
+      "name": "list_projects",
+      "description": "List Hex projects visible in the current organization, ordered by recently viewed. Returns project metadata, permissions, status, categories, owners, and app/logic URLs.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "search_projects",
+      "description": "Search Hex projects in the current organization by text. Returns the same project metadata as list_projects and supports cursor pagination.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get a single Hex project by project ID using the home project GraphQL query. Returns project metadata, permissions, status, categories, owners, and URLs.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "get_project_cells",
+      "description": "Get cells from a Hex project version, including labels, types, result variables, data connection IDs, and source text when requested. Use this to inspect existing dashboard logic and SQL.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project_cells.js"
+    },
+    {
+      "name": "list_published_apps",
+      "description": "List published Hex apps visible in the current organization. Returns published projects with permissions, owners, status, categories, and URLs.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_published_apps.js"
+    },
+    {
+      "name": "list_starred_projects",
+      "description": "List Hex projects starred by the current user in the current organization. Returns project metadata, permissions, owners, status, categories, and URLs.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_starred_projects.js"
+    },
+    {
+      "name": "navigate_to_project",
+      "description": "Navigate the current Hex tab to a project app or logic route. The tool returns immediately after setting the browser location.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/navigate_to_project.js"
+    },
+    {
+      "name": "create_text_cell",
+      "description": "Create a text cell in a Hex project draft using Hex atomic operations. The cell can be shown in the app/dashboard view and is useful for dashboard headings, section labels, and notes.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_text_cell.js"
+    },
+    {
+      "name": "create_input_cell",
+      "description": "Create an input/parameter cell in a Hex project draft using Hex atomic operations. Use DATE input cells with DATETIME output to create visible app filters that SQL cells can reference through Hex variables.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_input_cell.js"
+    },
+    {
+      "name": "create_sql_cell",
+      "description": "Create a SQL query cell in a Hex project draft and set its SQL source. Optionally trigger a project run after creating the query. Use list_data_connections first when the query must run against a specific warehouse connection.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_sql_cell.js"
+    },
+    {
+      "name": "update_sql_cell",
+      "description": "Update the SQL source and optionally the data connection or result variable for an existing Hex SQL cell in the project draft. If contents_id is omitted, the tool reads the draft cells to resolve it from the cell ID.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_sql_cell.js"
+    },
+    {
+      "name": "run_project",
+      "description": "Trigger a Hex project draft run through the project logic session. Provide priority_cell_ids to prioritize specific query cells, or omit them to run the project normally. This starts execution and returns run metadata; query result rows are not returned by this tool.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_project.js"
+    },
+    {
+      "name": "run_cell_and_get_result",
+      "description": "Run a single Hex project cell by prioritizing it in the draft app session, then wait for Hex runtime state to expose the terminal cell status and parsed display-table rows. Use this for agent iteration after changing SQL because it verifies the new query result instead of only confirming that Hex accepted a run request.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/run_cell_and_get_result.js"
+    },
+    {
+      "name": "get_cell_result",
+      "description": "Read the latest execution status and result rows for a Hex cell from the active project notebook runtime. The project logic tab must be open so Hex app-session state is loaded. Returns parsed display-table rows when available, plus SQL status and execution errors.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_cell_result.js"
+    },
+    {
+      "name": "list_project_labels",
+      "description": "List both project statuses and categories for the current Hex organization in a single request for label/filter setup.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_project_labels.js"
+    },
+    {
+      "name": "list_statuses",
+      "description": "List project statuses configured for the current Hex organization, including the default status ID and Magic availability flag.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_statuses.js"
+    },
+    {
+      "name": "list_categories",
+      "description": "List project categories configured for the current Hex organization.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_categories.js"
+    },
+    {
+      "name": "list_collections",
+      "description": "List Hex collections available in the current organization for project filtering and browsing. Returns collection metadata and pagination when provided by Hex.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_collections.js"
+    },
+    {
+      "name": "list_data_connections",
+      "description": "List data connections available from the current Hex organization home sidebar. Returns IDs, names, types, and descriptions when reported by Hex.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_data_connections.js"
+    },
+    {
+      "name": "list_recent_threads",
+      "description": "List recent Hex Ask threads for the authenticated user. Returns thread IDs, titles, type, and timestamps with cursor pagination.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_recent_threads.js"
+    },
+    {
+      "name": "list_explores",
+      "description": "List Hex explores ordered by creation date descending. Returns IDs, titles, descriptions, creators, timestamps, and pagination metadata.",
+      "urlRegex": "^https?://app\\.hex\\.tech(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_explores.js"
+    }
+  ]
+}

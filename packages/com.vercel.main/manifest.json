@@ -1,0 +1,55 @@
+{
+  "id": "com.vercel.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Vercel",
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all projects in the current Vercel team/account. Returns project names, frameworks, Git repos, and deployment status. Supports pagination.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_projects.js"
+    },
+    {
+      "name": "get_project",
+      "description": "Get detailed information about a specific Vercel project by name or ID.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_project.js"
+    },
+    {
+      "name": "list_deployments",
+      "description": "List deployments for the current team/account, optionally filtered by project. Returns deployment URLs, states, Git metadata, and timestamps.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_deployments.js"
+    },
+    {
+      "name": "get_deployment",
+      "description": "Get detailed information about a specific deployment by its ID or URL.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_deployment.js"
+    },
+    {
+      "name": "list_domains",
+      "description": "List all domains configured for a Vercel project. Shows DNS configuration status and redirects.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_domains.js"
+    },
+    {
+      "name": "list_env_vars",
+      "description": "List environment variables for a Vercel project. Shows variable names, targets (production/preview/development), and types. Values of encrypted/secret variables may be masked.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_env_vars.js"
+    },
+    {
+      "name": "get_user",
+      "description": "Get the profile of the currently authenticated Vercel user.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_user.js"
+    },
+    {
+      "name": "list_teams",
+      "description": "List all teams the current user belongs to. Returns team names, slugs, billing plans, and roles.",
+      "urlRegex": "^https?://vercel\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_teams.js"
+    }
+  ]
+}

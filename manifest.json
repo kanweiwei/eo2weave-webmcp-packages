@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T04:38:01.942Z",
+  "generatedAt": "2026-11-23T05:34:47.997Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -1890,6 +1890,78 @@
       ]
     },
     {
+      "id": "com.figma.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Figma",
+      "toolCount": 14,
+      "files": [
+        {
+          "path": "packages/com.figma.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.figma.main/manifest.json",
+          "sha256": "4da65ad754ec3f3b30ad6d035a1dd3294c4b3b3f965055904f84668d79f81bcd"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/create_file.js",
+          "sha256": "e20178af092c96cca6993a85d2ec435ce0bdb5e92183261320b337d8ef744303"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/get_current_user.js",
+          "sha256": "8d197b14afa6586989409145b53599482be16b65c953c30af9cb44d461fc79d0"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/get_file_components.js",
+          "sha256": "cb06423353747685cf78915e06512ce7c167fac0f91bb6e43bc6d83c8f123c72"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/get_file.js",
+          "sha256": "c75f9083b7ac0c98864fd84776511781935843e5d16e735387761115da8bda83"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/get_team_info.js",
+          "sha256": "b8a8d0fe4cc5dfb276233eafcc54abd5398bdc718db92f0b1c5fd758629764c2"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_comments.js",
+          "sha256": "951ce484154fbcfa60dc6f632fed8d9f0964664243116ed2df2e580ff5d0138c"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_file_versions.js",
+          "sha256": "dce456221d3a32b3408ae0cead15a1b6b135915c6f3de4ed07c075a26c2fdac5"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_files.js",
+          "sha256": "638ce9c4d37773b2ac3a75523c7d0adc819caeffe5f77b348630b7a5e2c4d42e"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_recent_files.js",
+          "sha256": "76c5faa937e90ee23f6e4100f02e14fa3234caaef52585c373f633628658e2fc"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_team_projects.js",
+          "sha256": "e15acac4f39e3f589fcd2e1f7681014f8eac2ef98bae2c3a7702ed9a060a2c98"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/list_teams.js",
+          "sha256": "24d8455fb66aec48db90166fff5a053f76b8a0935c01d3ed77481b8e769b6e57"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/post_comment.js",
+          "sha256": "e2564bdf00e1b85215de383140245695a09c16a531e35ef40106dff0f1ec75a7"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/trash_file.js",
+          "sha256": "9862fff364b9c0eea1582eba86b99604697e97974a260b790b0a9dda58f4fa58"
+        },
+        {
+          "path": "packages/com.figma.main/workflows/update_file.js",
+          "sha256": "fe7c0068efdef527332b699601b5ff8cecb3e0f9eac9308c0b68cf171fad0a7e"
+        }
+      ]
+    },
+    {
       "id": "com.github.main",
       "version": "0.1.0",
       "description": "Read and write repositories, issues, pull requests, comments, labels, releases, workflow runs and notifications on github.com in your current tab. Uses your own logged-in GitHub web session.",
@@ -2598,6 +2670,86 @@
       ]
     },
     {
+      "id": "com.google-maps.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Google Maps",
+      "toolCount": 16,
+      "files": [
+        {
+          "path": "packages/com.google-maps.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-maps.main/manifest.json",
+          "sha256": "53eaa772fb17786fee1af46106cc6368a2c45a4082e358966c40b50e1afd84b4"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_current_view.js",
+          "sha256": "4a041e10b221ea2662a99ec7d53a9958aeefd1aa8cde515591ee8f7d1a70c628"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_directions_info.js",
+          "sha256": "41d16f75307435f5a7bbdc0f6a4fae02cad0917453c078a25c419cda9ba7c801"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_directions_url.js",
+          "sha256": "2af134791f4792a1ba81c2b6eab473e4e94f44882ac848e01c421013b2940260"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_map_url.js",
+          "sha256": "9f234c782a8fda0d6a99a8aa88bd11ecaa4a625ef795eb141840aeec924e8fcf"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_place_details.js",
+          "sha256": "485481cc3c583604427e9bd37604f9f3d38525d54b7c50c5c01ef610a1734225"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/get_place_url.js",
+          "sha256": "6662053b5a982f4ff518889921d05587f537b57a9a11420575eda20a4b11af5d"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/navigate_to_directions.js",
+          "sha256": "9411441ee608db1596e17249101440d6d73f1d46271d13d61151040feda45922"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/navigate_to_location.js",
+          "sha256": "935089ca6370e9ab3a039745eaf3515a18eccb603e79640f38a1ae6acf49d0dc"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/navigate_to_place.js",
+          "sha256": "15d8453ed3ce7a67f27d3c02acef9d4b508898121bdbba92dd90bfc8ae68626d"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/navigate_to_search.js",
+          "sha256": "c9e978c5570d77b25b14d6056137e4d5edc576beb9c1a708af8967cc7610bed2"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/search_nearby.js",
+          "sha256": "332d07e09bc6ea80dcb86c00581bcd619474b0d7939cd30a726ccf66292f460b"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/search_places.js",
+          "sha256": "ae5917f70f50deb6805bee346f763a3d0d5bfe173c58c2985b0fa44cc2f21fc3"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/set_travel_mode.js",
+          "sha256": "7c0fd2ad0f45acdbf30133acf57d6116c15dfb7868bce4d98ffe2b419a52c7b1"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/share_location.js",
+          "sha256": "e97f0dd17e0a23ed3d689d8d799e288eabb445c3f2d38728cd3e19f4f769bd25"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/toggle_layer.js",
+          "sha256": "12c78bb3b70840239e3eb6fb5527924a6177b5ec8d1ad644bfa8e60e69e40aa4"
+        },
+        {
+          "path": "packages/com.google-maps.main/workflows/zoom_map.js",
+          "sha256": "de7edb0d6682cb78cd3d9a15d0042e23533b02cf7323cfd7df009643f18035c7"
+        }
+      ]
+    },
+    {
       "id": "com.grafana.main",
       "version": "0.1.0",
       "description": "Read and manage Grafana dashboards, folders, data sources, alert rules, contact points, annotations, teams, service accounts and snapshots on your own Grafana instance in the current tab. Uses your logged-in Grafana session; Grafana is self-hosted, so the package works on any instance host.",
@@ -2786,6 +2938,130 @@
       ]
     },
     {
+      "id": "com.hex.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Hex",
+      "toolCount": 27,
+      "files": [
+        {
+          "path": "packages/com.hex.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.hex.main/manifest.json",
+          "sha256": "e5131738984406682aace9b4d885efc5d1b5dff2462320c94537ca45cc22df84"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/create_dashboard.js",
+          "sha256": "92a1f44d82443879ce43e9ca2d627bd033d974901814eeaace5739ad23fd4768"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/create_input_cell.js",
+          "sha256": "c6e6204bc15eae0a62445ba21a1bf36f95ae5fd398013729297adb257cd4761d"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/create_project.js",
+          "sha256": "d0eb14c2a8c05611ce93e0b6276a7075543bfcff58a4968972e360c309ddd80a"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/create_sql_cell.js",
+          "sha256": "1ab0d1a6c5ebec42261ce05b2a2dbe36c988954926df3261ef863e1f99934610"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/create_text_cell.js",
+          "sha256": "e51540f15f2df124e952ccd85167a3a3039265243f88d554e36384114c036911"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_cell_result.js",
+          "sha256": "9f62e39d5a6850cf5cd0fca72e7f2d86418268a2eb07403887df988a5377e6c7"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_current_context.js",
+          "sha256": "bf016370649557b0c97442fda38c737a63bb9fcdf003e6cb6304ed7553899240"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_current_user.js",
+          "sha256": "096b33583abbba3ba5e05704562ea3eaed4fd54fa48f57a937843bcca15c6180"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_product_versions.js",
+          "sha256": "31d774ab1fbd1ec6a142167d612541a9cc3d1676231d490d73a58f2c12c585a4"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_project_cells.js",
+          "sha256": "49504b59ee24da75001afad4679ad633def7cdecb5b2e7b30bb21309fcdd8805"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/get_project.js",
+          "sha256": "e4a2f18ed3eb7353da62bcfeeacbc41e907bc683f6ee479ca16224d94dbc39df"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_categories.js",
+          "sha256": "6fa90522203cd8ede3c3351bdca1b755052b7998e84731bc7db0e70d4e6bfa1a"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_collections.js",
+          "sha256": "15df7cab8ed555969f5b8fd53558266a7e9dd0d2c85a8c7ab0263aa58b89bd8f"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_data_connections.js",
+          "sha256": "2eb3b433a48e8477bcc52a5657d8bc22cb4876a572e19d54ded6ac8446a41d01"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_explores.js",
+          "sha256": "06400f928470750c1141c5448374ce9352a4cbf29beabaf8d6e2970b1daf0d09"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_project_labels.js",
+          "sha256": "f63e94894138cd9825c87ebe48ac984d34ec7fd1b7f8309bde8b17209d89f995"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_projects.js",
+          "sha256": "90281f7c4d729077b69790cd300e0bbb8d6452ac10c0a8314cc431d69c17cf46"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_published_apps.js",
+          "sha256": "0d9097f7a1e048b228021323593e7662d34d44c8045379e53bde61d1b553e17e"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_recent_threads.js",
+          "sha256": "0485bcbd6ee48f6474d3fe07a08d760d2c3dea24e508cc9855ef534b28e55d05"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_starred_projects.js",
+          "sha256": "739491d795dcf8523ae75615943e4682c672f5b2f6a04e8ac834b7a58e9ee208"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/list_statuses.js",
+          "sha256": "e93fcc033185161b5998e23349c2e1364ed959374f7c0300cd2d448acbe9f376"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/navigate_to_project.js",
+          "sha256": "0b0dcbc73c10dc3fc098f91bc8d000ea510393e84930589ea324ed414a19ccd5"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/run_cell_and_get_result.js",
+          "sha256": "29910c737e9fa59c5e21c8eb12f9194ad82b5b49fc76709d800845e16ab4a57f"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/run_project.js",
+          "sha256": "9a4ec72d744828fcb9142e71a48deebf2648139a4e2529d714075c0a2b615e5c"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/search_projects.js",
+          "sha256": "552282f5a008f3ab1b12fe463f30f6a7b1ec0455c41be2d8ed7408283b8d1bd5"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/update_sql_cell.js",
+          "sha256": "ae04e114b8fff4e8535efebc3c5fd285b82d04dc5a40be9eedfc27cf078671ae"
+        },
+        {
+          "path": "packages/com.hex.main/workflows/upsert_dashboard_layout.js",
+          "sha256": "bf2500b64440575a57a2b573c7188cacf64e3840fd08908d0220ff7ce01683da"
+        }
+      ]
+    },
+    {
       "id": "com.jira.main",
       "version": "0.1.0",
       "description": "Search, read, create, update, transition, assign, link and comment on Jira issues, and read projects, agile boards, sprints, issue types, priorities and users on your *.atlassian.net site in your current tab. Uses your own logged-in Jira session.",
@@ -2878,6 +3154,126 @@
         {
           "path": "packages/com.jira.main/workflows/update_issue.js",
           "sha256": "373f4fb53fa98190bf491cbe97f7819423cccb9cf03e66bf55cc1374f72b9cb4"
+        }
+      ]
+    },
+    {
+      "id": "com.leetcode.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for LeetCode",
+      "toolCount": 26,
+      "files": [
+        {
+          "path": "packages/com.leetcode.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.leetcode.main/manifest.json",
+          "sha256": "a241ef99b7873a6d33aeb2c7f52d55825c535ce3de7d09c88e8821afbd842d65"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_code_snippets.js",
+          "sha256": "77febb47c732962b02933a3fcc05e1189e8f6a66091496c16ace3510a6c59127"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_contest_history.js",
+          "sha256": "8abea764851ada79c774d2bbed02c2892b44344fab02a3af1c14716313b9b874"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_contest_ranking.js",
+          "sha256": "43c15091955b0504f181889367c3b281146f7cd22ae8182678bd2122bb729800"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_current_user.js",
+          "sha256": "f57d962527bd05d83a8b30969859a27a0f1245adf2e53bc898a8ed79133f9b22"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_daily_challenge.js",
+          "sha256": "0c346a2912e586c081c75ae49293d99e79266ff044a8c86d8f652a52753dcdc9"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_problem_hints.js",
+          "sha256": "0aae41e97c9bc23908946dc814eb09af303cbf646587a1904b0fcf1250d13c39"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_problem_solution.js",
+          "sha256": "f8aef2cf51902bbd148896be8f29cb38d9e472e521e94aa88d7b8b55a07af108"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_problem_stats.js",
+          "sha256": "499af6599fbf4729fcffaf9c488c930feecc0d35db525180ee3bee60487080d8"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_problem.js",
+          "sha256": "a34492081e8c14bdcb01496f6113ffca652c9dbb9210f8c4038621d772a0c1f8"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_similar_problems.js",
+          "sha256": "11bc27f549bf20fa6809ee9d8156c98cef739fb3ec7d733f63f5274ab1d04c98"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_submission.js",
+          "sha256": "6907fc2c8fcd50c5511d9a26c97a1e077ddf30fcb6773058ccf32f938d21a97a"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_badges.js",
+          "sha256": "cec269c673cc90f09532426532220a0a24ec2d90df082c0b3871e2bd673de6c1"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_calendar.js",
+          "sha256": "0ba937811389f9afa23f8728104fa4119eabf7cf13a3be160a350dd7d5d7a5da"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_language_stats.js",
+          "sha256": "d826643488bc8836fe97e89cc5c39babe250902a1a9f436ebb3e7e704d0fca76"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_profile.js",
+          "sha256": "9232cf372c7d3fb328fa7d40319c70e8eda045e77c734bfd7defa77e7bae8796"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_progress.js",
+          "sha256": "4f33389103344d4099415b87ae5fbc3d9a3f78e7a2747bbced72e134f1eed342"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_skill_stats.js",
+          "sha256": "2d87d9260de1f212c7ff8215d7f4240faee5ad2c390fb165555146c2657e047b"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/get_user_submit_stats.js",
+          "sha256": "19a5161a2fb0a00bc16eaf786dc9110cb89b80948abe3c12d837773d1c3a82cf"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_discussions.js",
+          "sha256": "d7d58d94f03e3675e8383bc5eb9983949ae750f8c0e431638b395c5d721c14f0"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_favorites.js",
+          "sha256": "04802fc58051108576004d040c9febe83fb180cb59ad553cd6eee2c060f3a80e"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_problems.js",
+          "sha256": "c28f529e83b87c9c8a088b1e4ead1f79587029571ea8a567146a456aa05a39f0"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_recent_submissions.js",
+          "sha256": "ae57dfff060d820b328f0c90a88409f5b5e6c77767c042afc224a3d1e58340b5"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_submissions.js",
+          "sha256": "fd09ba44d16e7674581359de8ed9f44da13f47eb7e2d5242944508233b3cc275"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/list_topic_tags.js",
+          "sha256": "c69b206a29aee48d8a720656ab5f3ac12d8e86130b3c5d492894f7baa4d601ef"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/run_code.js",
+          "sha256": "67b0ba8c7b4e49afcb765e96656a7955d8b0a9dd0f5f27a7a9306ec9a12d16be"
+        },
+        {
+          "path": "packages/com.leetcode.main/workflows/submit_code.js",
+          "sha256": "111b9bedb27ad9294452b379a75d731908bc6eb8b54af80866f58b4f87a488d7"
         }
       ]
     },
@@ -4434,6 +4830,130 @@
       ]
     },
     {
+      "id": "com.shortcut.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Shortcut",
+      "toolCount": 27,
+      "files": [
+        {
+          "path": "packages/com.shortcut.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.shortcut.main/manifest.json",
+          "sha256": "bd5a34559606992fc46df1a375e605a4547b60ef4f547d2cbb1d71d99448ef08"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_epic.js",
+          "sha256": "33337644ecf4efd1e3cad388b22ea9592c21b08c4d993308a5ed4284cd0a64a1"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_iteration.js",
+          "sha256": "6d2eab0a6f1f2afd4d2032d93fc19f673585abbc074e8b30d98bb22df60757e4"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_label.js",
+          "sha256": "3f967f3c5a3ea0d19ebdecaa6262cbc7f5c7f9ddc55108f93b9f72a4575742ef"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_story_comment.js",
+          "sha256": "65119f58e04228b60e47cf666970f9dc91df2e65ef572d40a336379e4b4c10ec"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_story_link.js",
+          "sha256": "bb254e586d8c063666ce956c3d975f282708e6a1f1dc1119dc9d68304f4ca4a8"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/create_story.js",
+          "sha256": "680711280086cbb068a8be88b0f07005417c1e15d0335ca7a932cb45b65e795d"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/delete_epic.js",
+          "sha256": "7c696bada4723486717a107fd9d28a3d3ac9d415b0666904a92212d7972f3e3b"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/delete_story.js",
+          "sha256": "f4c06b8d7fddd3d066d833f9a5a4a8fd0c92d993498e1f680c3aeef36b8f7173"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/get_current_user.js",
+          "sha256": "b4e78076688f2f627419e9516f523ff6cf40feab197099d029ace7805260e89d"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/get_epic.js",
+          "sha256": "5dff25c0c3a05fdefab719a1fd848c18ca075fee52232fc7709b71d63167e807"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/get_iteration.js",
+          "sha256": "47ceea8d6abbc49f595111eeae7acb222cfa3eedab969dba2ba1c9c88abcd2ce"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/get_story.js",
+          "sha256": "72a8e8b50597ba9ff8bd4ebd6ed70d52dda4066efada95ce7ac8cfaa063a2ef5"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_epic_stories.js",
+          "sha256": "51c2c8c2eebb36544ada3f71813c7efed58b2243b06e5e8b1404d4bc385b16b0"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_epics.js",
+          "sha256": "f7ff66494e77f41f206efeb50675413269d5210c7ddbacc6d3b0bdc806684960"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_iteration_stories.js",
+          "sha256": "64f5217c6f4dd53316da69ac30c231e8bfa25222e9925975f5692cfe56bf1215"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_iterations.js",
+          "sha256": "25e26dcd16777d0413759674bb9fd06868c83f0080050fd8136a23a33d55acb8"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_labels.js",
+          "sha256": "8c7abee6b58b703c65993fe43b46c3b84549b68129f3fc38fd0cb5eb9461d041"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_members.js",
+          "sha256": "a6e3c2af711920ad91fea5878a0f2ee1635f0c7e13585bc66b8d953a519d5c1a"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_objectives.js",
+          "sha256": "ca62a151d61673dd4fb17d345986ad5699edc08b7942860fb9a58d482ca0d3cf"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_story_comments.js",
+          "sha256": "54117b87696b8d3980cbe75bc37abed84374f7b871e37be46562fe685eeccbf4"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_teams.js",
+          "sha256": "c5898b1a6dfb6771dd3b8b8da618123aec87d6124000c448db689bab6ef5ed2e"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/list_workflows.js",
+          "sha256": "6770c8527e4ac519f16bbe0ecdebb1754f13a44928e89bd66063fea81bebeb6b"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/search_epics.js",
+          "sha256": "dbee917a7a685d25e1cd5a1fcbb7b651b2f60270ce04ef856e11451d050cbe1c"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/search_stories.js",
+          "sha256": "3afbac9ed3c737b633bfd913f247e3fd21eab2c852f6516012f8d9e173377a25"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/update_epic.js",
+          "sha256": "7515a8eec96116a19b98dca998b99058c14295b85eadaec7d8a8552d82cb2e70"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/update_iteration.js",
+          "sha256": "09986459645a555e5393afc4ce37c6ece09a689220dbeb97d2c94a9cf0860e87"
+        },
+        {
+          "path": "packages/com.shortcut.main/workflows/update_story.js",
+          "sha256": "c47cef9a23023f2cb8c2608db3f5cf9d322a9714b882cc367f071e5752f483c8"
+        }
+      ]
+    },
+    {
       "id": "com.slack-enterprise.main",
       "version": "0.1.0",
       "description": "Slack Enterprise Grid tools (54) for app.slack.com: messages, threads, search, channels and membership admin, users, files, pins, stars, reactions, bookmarks, user groups, reminders and Do Not Disturb — reads and writes. Uses your own logged-in enterprise Slack session in the current tab.",
@@ -5918,6 +6438,130 @@
         {
           "path": "packages/com.twilio.main/workflows/update_phone_number.js",
           "sha256": "f98d4227f0650ca171696f0d862460984e7f40cb7b6f4e43a6d3ad18283f1f56"
+        }
+      ]
+    },
+    {
+      "id": "com.vercel.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Vercel",
+      "toolCount": 8,
+      "files": [
+        {
+          "path": "packages/com.vercel.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.vercel.main/manifest.json",
+          "sha256": "618ab7832a4dfb3867dfe60c8f89b49b4a2c34894910ea9b7bc24ba971680660"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/get_deployment.js",
+          "sha256": "5e956cb3a97b0a0dd24104ce19d79db7b1e07f2ce884ba647ff77f650be7a357"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/get_project.js",
+          "sha256": "0a5eaa872c79f42c7d846e52e03d65d7d9db359d2014193e5bf006903ff4f1d9"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/get_user.js",
+          "sha256": "6f60a19df04a973073d0e030d95dae4b8bc64e63ef4d9bff1cd2df10f6ca3dc2"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/list_deployments.js",
+          "sha256": "36e812f6b6998e130511076b7ec2222cd25a2c35fedd23e476c07f7f01b9bffb"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/list_domains.js",
+          "sha256": "226087031aee74525b321cdcd67577945f323158e0ea4e77d07b97539147480c"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/list_env_vars.js",
+          "sha256": "574c10cc53fa8cbcb3a067c3e4c70bfc9e0058cf8dffc7b2df750c52db3012c4"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/list_projects.js",
+          "sha256": "f6bc84adbcbfda89bc7809348e359741e6b43d6eff9bdefc0669e0948468e3bc"
+        },
+        {
+          "path": "packages/com.vercel.main/workflows/list_teams.js",
+          "sha256": "b7cd48dd8d2636f5929628f5872d048156710c1c6ddc5acc7f22a58aaaafe423"
+        }
+      ]
+    },
+    {
+      "id": "com.webflow.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Webflow",
+      "toolCount": 15,
+      "files": [
+        {
+          "path": "packages/com.webflow.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.webflow.main/manifest.json",
+          "sha256": "0a6df60df1d4576d3b585b5d6ecf55f0f0386b5d06a9ea752081b62e85766a2b"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_current_user.js",
+          "sha256": "d0706b09bfe4c51c04a54c9497bc876dd885d19cb23a7116680330516691b1bf"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_site_domains.js",
+          "sha256": "341e4d53d409c38e7741fdb8dd7568d2b350e54ff9e719baf7b6a92b2cb686e9"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_site_hosting.js",
+          "sha256": "997aad36d3e38270a945da3dbe81ee143c008b56dd562f11abff9b5d01744f4c"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_site_pages.js",
+          "sha256": "7bd158bf2de57dab6d797e6142b9e65920494b20b63675a9ec521de355f712ac"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_site_permissions.js",
+          "sha256": "be7c45ed0b97988891d3ea639b39b9ae95687d31e039f5aaf6169803f6153ef4"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_site.js",
+          "sha256": "fbc083311063ff47fb11b196eb3ee258415ddb525a05c55526aaf5e7619eff3b"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_workspace_billing.js",
+          "sha256": "f9628d1699f1751e82b5e2f3457ca0e027c1c96a030f79453fd9d3e284be9e43"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_workspace_entitlements.js",
+          "sha256": "df0c51c2e310d3fe790df8c0fe00917b0ed98a8f3b4f38e33835dbdc8f9c3d7c"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_workspace_permissions.js",
+          "sha256": "12542e383a064c2f377633938d8bca7dd2f3bb531e128ed2a0592ff463030e27"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/get_workspace.js",
+          "sha256": "00f352ac084793cea352a6bdb9bafd5eb12376f696fcca7f3bbfc78290065eae"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/list_folders.js",
+          "sha256": "87e901f7d8db8d31a890bd1fa8083e0df24ed19b101ced426f433b9e988dca2f"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/list_site_forms.js",
+          "sha256": "cd758a04b25aab2c08f7c5adbdecb00faa4445fe90b41221aa8a7f833d27a69f"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/list_sites.js",
+          "sha256": "1d7dace65bba8612f52eefbd91d5fdcf9c6f2307490da3f2236cccbc1b26774e"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/list_workspace_members.js",
+          "sha256": "781ef5e2a81f3407d7ef48f5147e2b54a0ff53992eef76dd0da98af577f4d22c"
+        },
+        {
+          "path": "packages/com.webflow.main/workflows/list_workspaces.js",
+          "sha256": "9a1df9acff2721e1c4b335146b40aef1091368f9d97c8c4014b6c0f3a992dc5c"
         }
       ]
     },
