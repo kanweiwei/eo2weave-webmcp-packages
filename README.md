@@ -62,7 +62,7 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-60 packages, 1480 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+65 packages, 1584 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
@@ -129,6 +129,11 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.webflow.main` | 15 | OpenTabs plugin (MIT) |
 | `com.figma.main` | 14 | OpenTabs plugin (MIT) |
 | `com.vercel.main` | 8 | OpenTabs plugin (MIT) |
+| `com.excel-online.main` | 29 | OpenTabs plugin (MIT) |
+| `com.outlook.main` | 24 | OpenTabs plugin (MIT) |
+| `com.microsoft-word.main` | 28 | OpenTabs plugin (MIT) |
+| `com.onenote.main` | 12 | OpenTabs plugin (MIT) |
+| `com.teams.main` | 11 | OpenTabs plugin (MIT) |
 
 ## Migration notes
 

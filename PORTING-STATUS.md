@@ -1,8 +1,8 @@
 # OpenTabs → WebMCP porting status
 
 Upstream: 118 `@opentabs-dev/opentabs-plugin-*` packages on npm.
-**Done: 60 packages / 1480 tools (main, harness 39436/39436 green).**
-Remaining: 58.
+**Done: 65 packages / 1584 tools (main, harness 41566/41566 green).**
+Remaining: 53.
 
 ## Completed
 
@@ -22,9 +22,11 @@ clickhouse (9), cockroachdb (18), temporal-cloud (8), sqlpad (12) — 87 tools.
 Batch C (PR #31, docs #33): figma (14), vercel (8), webflow (15),
 leetcode (26), shortcut (27), hex (27), google-maps (16) — 133 tools.
 
+Batch D (PR #34): outlook (24), onenote (12), teams (11),
+excel-online (29), microsoft-word (28) — 104 tools.
+
 ## Next up
 
-Batch D (office): outlook, onenote, teams, excel-online, microsoft-word.
 E (finance): coinbase, robinhood, fidelity, carta, ynab.
 F (social/content): youtube, youtube-music, spotify, twitch, medium, pinterest,
 telegram, whatsapp, facebook, instagram, tiktok, steam, netflix.
