@@ -1,0 +1,103 @@
+{
+  "id": "com.aws-console.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for AWS Console",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the currently authenticated AWS user profile including account ID, username, ARN, and current region. Reads from console session data and cookies — does not make an AWS API call.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_regions",
+      "description": "List all available AWS regions with their geographic locations and opt-in status. Also returns the current console region. Reads from page metadata — does not make an AWS API call.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_regions.js"
+    },
+    {
+      "name": "list_instances",
+      "description": "List EC2 instances in the current region. Returns instance ID, type, state, IPs, VPC, and tags. Supports filtering by instance IDs. Defaults to max 50 results.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_instances.js"
+    },
+    {
+      "name": "describe_instance",
+      "description": "Get detailed information about a specific EC2 instance by ID. Returns instance type, state, IPs, VPC, tags, key pair, and availability zone.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/describe_instance.js"
+    },
+    {
+      "name": "start_instance",
+      "description": "Start a stopped EC2 instance. The instance must be in the \"stopped\" state. Returns the previous and current state of the instance.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/start_instance.js"
+    },
+    {
+      "name": "stop_instance",
+      "description": "Stop a running EC2 instance. The instance must be in the \"running\" state. Returns the previous and current state of the instance.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/stop_instance.js"
+    },
+    {
+      "name": "list_security_groups",
+      "description": "List EC2 security groups in the current region. Returns group ID, name, description, and VPC ID.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_security_groups.js"
+    },
+    {
+      "name": "list_vpcs",
+      "description": "List VPCs in the current region. Returns VPC ID, CIDR block, state, and whether it is the default VPC.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_vpcs.js"
+    },
+    {
+      "name": "list_subnets",
+      "description": "List VPC subnets in the current region. Optionally filter by VPC ID. Returns subnet ID, CIDR block, availability zone, and available IP count.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_subnets.js"
+    },
+    {
+      "name": "list_functions",
+      "description": "List Lambda functions in the current region. Returns function name, ARN, runtime, memory, timeout, and state. Supports pagination via marker.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_functions.js"
+    },
+    {
+      "name": "get_function",
+      "description": "Get detailed configuration of a specific Lambda function by name or ARN. Returns runtime, handler, memory, timeout, state, and description.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_function.js"
+    },
+    {
+      "name": "invoke_function",
+      "description": "Invoke a Lambda function synchronously with a JSON payload. Returns the function response payload. For async (fire-and-forget), set invocation_type to \"Event\".",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/invoke_function.js"
+    },
+    {
+      "name": "list_iam_users",
+      "description": "List IAM users in the account. IAM is a global service. Returns user name, ID, ARN, and creation date.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_iam_users.js"
+    },
+    {
+      "name": "list_iam_roles",
+      "description": "List IAM roles in the account. IAM is a global service. Returns role name, ID, ARN, and creation date.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_iam_roles.js"
+    },
+    {
+      "name": "list_alarms",
+      "description": "List CloudWatch metric alarms in the current region. Returns alarm name, state, metric name, and namespace. Supports filtering by state (OK, ALARM, INSUFFICIENT_DATA).",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_alarms.js"
+    },
+    {
+      "name": "list_log_groups",
+      "description": "List CloudWatch Logs log groups in the current region. Optionally filter by name prefix. Returns log group name, ARN, retention, and stored bytes.",
+      "urlRegex": "^https?://(?:[a-z0-9-]+\\.)*console\\.aws\\.amazon\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_log_groups.js"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T01:37:11.779Z",
+  "generatedAt": "2026-11-23T01:59:06.125Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -234,6 +234,206 @@
         {
           "path": "packages/com.asana.main/workflows/update_task.js",
           "sha256": "0a0d04dbd6e316f17d8b9319b9d4cfa745c9efcac15553c9d1d3de8686669138"
+        }
+      ]
+    },
+    {
+      "id": "com.aws-console.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for AWS Console",
+      "toolCount": 16,
+      "files": [
+        {
+          "path": "packages/com.aws-console.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.aws-console.main/manifest.json",
+          "sha256": "9df76009d746c0ce238718e6798b5853cd947e35804aea38f3083342d49c96ac"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/describe_instance.js",
+          "sha256": "66b8b065c92ff62eb7ae50d548502abd87f202ef9c2abd14d1ec063518cbe25a"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/get_current_user.js",
+          "sha256": "ee81fcecddc5e2c8b05006e546a79294b1174a642a8b10ae09eba4d7af5dfcba"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/get_function.js",
+          "sha256": "3c82124ffb97fbd84de4901f251e916201aa23c42779897c07f019cf9b76ced4"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/invoke_function.js",
+          "sha256": "a1a5c8b308645c56fce49fbd0456168799d89adc802beacb7bfbb0e8e74b2421"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_alarms.js",
+          "sha256": "2f0e4c0af725ab59a41dfaabadd93811a800919eea63a50eb5db40194013f188"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_functions.js",
+          "sha256": "3bcdfc5c6941f6a60daac2937f9f303b2715ce1ff2c6edeb865cdcf187239744"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_iam_roles.js",
+          "sha256": "cb2f7107b923a5b23b01d637e27e520d00ca0593b7ad50531890711208b1961f"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_iam_users.js",
+          "sha256": "6f23df852a40a49b9c9b03730953ad0134d769b058de2b2bc66b08dfe0ae73e3"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_instances.js",
+          "sha256": "2fe5d8667cabbdb040ff449c77df8a11d9af01de0887fda9e3350b6c6bb78e38"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_log_groups.js",
+          "sha256": "8c0568dabda3b2e02cd9b3d6fc6bf4bbf420815da5a3516c7e84b1fe7b8e8374"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_regions.js",
+          "sha256": "ec0797f695de0eace602735b5e954e10f366ea4bc4eeddff4dae68c4f7fda111"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_security_groups.js",
+          "sha256": "36a71246f51344147289f76871793a48801c6f9432c60febafd0da5742a25a78"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_subnets.js",
+          "sha256": "af66e8509301d84c37233b629331b67f02008345eda4dd25f15a8c35ec1ee2a6"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/list_vpcs.js",
+          "sha256": "88451ef77c873f079dfd33b33afb5e249f396fbea6752f2891cf915f851fab64"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/start_instance.js",
+          "sha256": "20a9452bd87725defad3e104d3725295948902aaef8ae27e8a5eb38b1ef39dbf"
+        },
+        {
+          "path": "packages/com.aws-console.main/workflows/stop_instance.js",
+          "sha256": "72f1187761055a8c750d5b6ca39ceee47cd1eb1e6dbb69e52acf2096ba011196"
+        }
+      ]
+    },
+    {
+      "id": "com.azure.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft Azure Portal",
+      "toolCount": 26,
+      "files": [
+        {
+          "path": "packages/com.azure.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.azure.main/manifest.json",
+          "sha256": "3c5f9a566caee16853c538598539e9bcf50880f11621e52cd87bd554f877a07b"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/create_deployment.js",
+          "sha256": "00a9b3521ef74f47ef1df0ced17d0a1dbcebf937b689338baa01e71dfc318f8d"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/create_lock.js",
+          "sha256": "19ffc924c70c03f0f2c2f3a1e95b8cd4142cb6c080711c4878db6984287e4c7a"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/create_resource_group.js",
+          "sha256": "5cebbfab1a2430d769fa15db55855a3f12492b2955160463f81bd495a44ae2ac"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/delete_deployment.js",
+          "sha256": "e53a36402466cb1b77df4702aedd1e2d518ed39065d548c08d3382f014abebb9"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/delete_lock.js",
+          "sha256": "7ef40542f158478a9d14dcb780b1edc2ae1c685e17936d8e806e5f512a5f97d8"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/delete_resource_group.js",
+          "sha256": "62b66a14e1fa36b73e4e0384b919fb3a675efd76ce84cb663bbc47cbaa23250c"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/delete_resource.js",
+          "sha256": "1b5e2a1d1be9d04dfccdbed57bf9e6eae318897c16bdc95dd2bea0e740d65390"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_current_user.js",
+          "sha256": "7bec602b933fadd0283a4d13ab82744c3b7a8c6211658f6f35d309b9d325a3f5"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_deployment.js",
+          "sha256": "44f99570098d92801b06704849f0f1600a1f894a6c4fb3221e0aad368f1641d1"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_policy_assignment.js",
+          "sha256": "857e1d9eca26ea9f807d44f2c3de62a01d4f46486ef2c92c40bd0e91251fe4cf"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_resource_group.js",
+          "sha256": "c70d5114f490dfb436be609924de57ea1edbc0f903ca5fab3832dfd9d056b8af"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_resource.js",
+          "sha256": "9516646f2ef18cc14725088dc7e9edc736825884ff8d9964ec9de77b518b4ef2"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/get_subscription.js",
+          "sha256": "d6e438bcbacbb125ee928b79d44cf500177f5f183d13333adb5a41d3864103c2"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_activity_logs.js",
+          "sha256": "836593896177dd8432a2520602082ec6f83548f2dd95ce84b1a94fe3e4fc89c3"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_deployments.js",
+          "sha256": "22428514dfc1e06335652bb824184696e25f4b038a5a2d6d311704760c5bef5b"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_locations.js",
+          "sha256": "270245d472a017f94865fa7490cb798b07c6f1b9dfebdfdfdda939670b1415ca"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_locks.js",
+          "sha256": "efe4f8b6abeafb7bf1d74c3d617e19bb1ca7918f4c91a59538511a0976717dbd"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_policy_assignments.js",
+          "sha256": "4832fa054acad1dfaf7f724dec4333348bb97f62998488c4ab613f00cd590c31"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_resource_groups.js",
+          "sha256": "73f851e8a0195fd00f097fd18bb7d62f6d6bab8deded047d6cce38512022439e"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_resource_providers.js",
+          "sha256": "161830e4a49dc2955e402971fb43a279965b22e0dfc29d5ddd82761e8826a506"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_resources.js",
+          "sha256": "3af2f9c3a0fc101cbe28cd398737aa0e0dcc06000013ef7b1c10bc1b92a70731"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_role_assignments.js",
+          "sha256": "e11fc98de7672dbe08572ddb1f14faf6ea1eabcb405b9aebcbc29564ca6c7761"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_subscription_locations.js",
+          "sha256": "30d0efc0e29439fc9f1e409959d66d3fadf7823340f38e4b66b8b419fa194ebf"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_subscriptions.js",
+          "sha256": "0e70226cb4809b2132d7243ca04c9edb9dceb33d24d5a8f5d2923e75ea92af2f"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_tags.js",
+          "sha256": "2314343983541e7521699c66f338c6176e96d2764245d25a8dac89d87b766736"
+        },
+        {
+          "path": "packages/com.azure.main/workflows/list_tenants.js",
+          "sha256": "803409b288235f7551e4afc83c73b19926b60c85c5270b2d0f5bc4e4afceb79b"
         }
       ]
     },
@@ -1946,6 +2146,142 @@
       ]
     },
     {
+      "id": "com.google-cloud.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Google Cloud Console",
+      "toolCount": 30,
+      "files": [
+        {
+          "path": "packages/com.google-cloud.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.google-cloud.main/manifest.json",
+          "sha256": "6808040c4bfdd7f9b21192111bd0caa9e786fab17d3296136df6dd77ab84bd35"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/disable_service.js",
+          "sha256": "9b7707407247baf45f565368fd18a93920cfb2d19640ec3101742d1daf30dc08"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/enable_service.js",
+          "sha256": "7b9a9e7d345759b65d76545a6f0b85c1ba7a646362f945197afca89587646ab7"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_billing_info.js",
+          "sha256": "9fe7aad4ba27a5889e43770675f42a4ab434523c2aa94f953b3f826ab81456f1"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_bucket.js",
+          "sha256": "1bdd262f2b0eb3107dd68ed866e5f0d8975f3de83918b4fbc96489306f5810b3"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_cloud_run_service.js",
+          "sha256": "bc4c3140b8064f1e46e717548782c7ba8aa8580d956b42a785a3f79a63329703"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_cluster.js",
+          "sha256": "9995c60ac865fa03906ce74a2808672407ed1f9508dd5e75fa3138a643714ed3"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_current_project.js",
+          "sha256": "83ba8e5cc9df1a1705f1394465a7bfce25987f669100172615f4f469354f9100"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_function.js",
+          "sha256": "1adbf2b6bb207e9bdf44b15928f7b1d297cdd581bb1f1dd82db2c5199dc2d83a"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_iam_policy.js",
+          "sha256": "29adfc25df0ac213a63ef5b22ce65253696f6efd02dcf15678f463601d1f7b3e"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_instance.js",
+          "sha256": "a01a1f91d0e12bfe927f401a772cbb80580ee13cdc04736a822a8a995f2433dc"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_project.js",
+          "sha256": "a7766e7634b250194a634f64517fadeb169e8ae5bef0505ac96b02a752f3893d"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/get_sql_instance.js",
+          "sha256": "64555f62c225bb100ecab24cd3f31673a4b05d959e565fd4fc30a2215fb88ec2"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_billing_accounts.js",
+          "sha256": "c3ba1632069a41462eb0b029b1dae63e14105d967b14c57642a0bf1bfa8467d5"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_buckets.js",
+          "sha256": "890c93ae05146b28da46e54c83592f3432a96d40f4f9150c5c04c76d529c9ebd"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_cloud_run_services.js",
+          "sha256": "ab7ce9a49c39ebe09c2b698dc96079598bd7ac10b98f9d5bbcb5d0a5bbe28757"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_clusters.js",
+          "sha256": "0b40bc7cbf7660e8d01d4836531bf0a6e5d71122a9a6b857ddd5e9739db309e9"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_disks.js",
+          "sha256": "7f1fa199d8623e1506779c351fc2c919ec87bfbca9d710f135550d6083a459ee"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_enabled_services.js",
+          "sha256": "e243bb1c5a7ddd4cbb9e98f8edfba4be84e78248c3232430eaa941aaba2129dc"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_firewalls.js",
+          "sha256": "9119ff36316ab28b590e9aee06d25dec93bd773d721edab5125693e38601a0d5"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_functions.js",
+          "sha256": "b8a22b2b41eb233c06bf52867f4bcd172e030452a0e9cb52b3c91b92826ea057"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_iam_roles.js",
+          "sha256": "947681cca030319d694e0ed84ade362e8b4d02e99ed5a3f2a0e001b05e568e5e"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_instances.js",
+          "sha256": "94975a6153a5d4c5377507aa70c573a050e58ed3ec98d8c679ce9e9a5206b19e"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_log_entries.js",
+          "sha256": "21c24073191fd2376a3cfae593c8562875e62d3b7562d314f0690c23900535d8"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_networks.js",
+          "sha256": "bd248f51e9dc3cfd485af066edfcef64b7a70aac83ab5b96155fa275b883b42c"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_objects.js",
+          "sha256": "67cebbde233ac68354636ed44176b7f21fe83b2b128598caecea8b52897e9794"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_projects.js",
+          "sha256": "4c146c125ed0cd03c06f923631240b75ef22700f9cb473854f3d30d3ffd6308d"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_service_accounts.js",
+          "sha256": "f5b0735d6a5a0d878de63967884bc67f5dcc752dec807a3a519544656318d77c"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/list_sql_instances.js",
+          "sha256": "5daf4e7ac2f829b5e1b823477c5a708a59a56fd6923a18b0531f5e9283808db1"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/start_instance.js",
+          "sha256": "4e58de5ff30faa7e41a568c4ec5eae6fa69c87516c1146f02216ff4fb8bbcd45"
+        },
+        {
+          "path": "packages/com.google-cloud.main/workflows/stop_instance.js",
+          "sha256": "8932a328048537818ad48d63792c28ac37f17c644db06fda46eb955454ed4218"
+        }
+      ]
+    },
+    {
       "id": "com.google-docs.main",
       "version": "0.1.0",
       "description": "Read, search, create, rename, trash and delete Google Docs, read their plain text, and manage comments (list, create, reply, resolve, reopen, delete) on docs.google.com in your current tab. Uses your own logged-in Google Docs session through the page's gapi client.",
@@ -2654,6 +2990,102 @@
         {
           "path": "packages/com.linear.main/workflows/update_project.js",
           "sha256": "d50d7d33c74582725b3be9ce598d5119065212a742491df8293fbfc8c7f3879d"
+        }
+      ]
+    },
+    {
+      "id": "com.mongodb-atlas.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for MongoDB Atlas",
+      "toolCount": 20,
+      "files": [
+        {
+          "path": "packages/com.mongodb-atlas.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/manifest.json",
+          "sha256": "a71487c56597d7c0d149ee080cc6b83d5316c0f19fe9656fb148682d1c23a35a"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/add_ip_access_entry.js",
+          "sha256": "177ab27ddf3cba58a502ebb43b6be834e7eab8b833abb122136ca9147d956239"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/create_database_user.js",
+          "sha256": "73b7808be79c34d07bd658ed8bdb36d619f50b9793ef4640d84e617be4a03b1c"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/delete_database_user.js",
+          "sha256": "86755ecd97dcfb2bf3bbd9edf33054f423d13931ba5ee44628c8bfa101fda395"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/delete_ip_access_entry.js",
+          "sha256": "87622cb10946c36f6c3803a320687e8903de7fbca66c78b70f9604a06c1f39c9"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_billing_plan.js",
+          "sha256": "6708cb2b40dba53c50f9ed1f2ab9697df4d9f40a8a564456a8c06110c8c75970"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_cluster.js",
+          "sha256": "1ed40d241c2cf210c4a1817a34143574d3d48c7f2f72930f8452a4a09fa6ae0b"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_current_user.js",
+          "sha256": "73ef03a1d38889ae23bf6e4a03449f9a415a728382c4edfcdd22af90757f5ddf"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_deployment_status.js",
+          "sha256": "ec28389a99645851114828d17d5f69c9264b62a16bd12a7fd86a67633663c70f"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_organization.js",
+          "sha256": "e31d327302a55414558e06b83c8ffcc4344883aa98fd7824db163612f0eff618"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_project.js",
+          "sha256": "409a2cfb520732b9025d8c29a2ab1869db0c44b7c3ddeec9f38788ec8fe01975"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/get_user_security.js",
+          "sha256": "1b7415ed8ccabe3a4bbdd7add2f857319797c5306b5aad1a7fda07b78bb5c7e8"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_alert_configs.js",
+          "sha256": "ba9f8a33c20b7437e4973d8a0892ade5d8141159e6a074f8733e365297592b3c"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_alerts.js",
+          "sha256": "3dcdbc6af4e3037946f06159ae561c62cb723eb69aeb16dd19dfae13f44f6640"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_clusters.js",
+          "sha256": "78b1037f6995cbc188905bb8ee0ccfdd301aedb26c7a97eccd738976290ac70c"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_database_users.js",
+          "sha256": "69409d4ffd49f2d14ca3d5ac0baae9f301cbe117b105f70b96877c73da3ad02a"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_ip_access_list.js",
+          "sha256": "30e3ef0e38be2abcb2c7eac9ca05ed240b6b0cabd5f36b2833375fffe3cbbe47"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_network_peering.js",
+          "sha256": "50712652b1785c02e57636901a0a3da411114a020f1eaf4e6fffbf245e752352"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_organization_members.js",
+          "sha256": "35176b5f78d3fc06861d37134b6708e689268ec8780e46f3809dfce9b9cf96e3"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_organization_projects.js",
+          "sha256": "fa704a4aa51069b497812b0f9c87cbb0bf88ea4458b6ab0c43092e7715960a08"
+        },
+        {
+          "path": "packages/com.mongodb-atlas.main/workflows/list_organization_teams.js",
+          "sha256": "6a9d929fd0ae4dcb2a1f1ac1d838f6cccf687f59a1aaecea8f70fa37506b6980"
         }
       ]
     },
