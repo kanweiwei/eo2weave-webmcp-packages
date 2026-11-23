@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T05:34:47.997Z",
+  "generatedAt": "2026-11-23T06:23:46.942Z",
   "packages": [
     {
       "id": "com.airtable.main",
@@ -1890,6 +1890,138 @@
       ]
     },
     {
+      "id": "com.excel-online.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft Excel Online",
+      "toolCount": 29,
+      "files": [
+        {
+          "path": "packages/com.excel-online.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.excel-online.main/manifest.json",
+          "sha256": "082403a951c71d175057d7f8b87322eeb6533167d0e278a68f6a96d792924072"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/add_named_item.js",
+          "sha256": "ab6686c69260abbfaa7d7965b44516989cbbe6d7ce13bf450f7a98eccec2d33f"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/add_table_column.js",
+          "sha256": "b8cee8d696297b1ca3f6fd259f13dcef8a0b435ec7e2548143f721d2cdadcc46"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/add_table_row.js",
+          "sha256": "f411ab3e4ab34cd9ce926c8b5b64ecd61c52c26532fef0f5868e145f247c1740"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/add_worksheet.js",
+          "sha256": "72fcc948d91222c72a3848287c9277308972ab0a3121e133c481f800a898eebd"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/calculate_workbook.js",
+          "sha256": "82a6ff334c1f49c2ca03861a860c4aa667878947b39e90c30faccc2db8342216"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/clear_range.js",
+          "sha256": "94c10a416a8f90828e4a7b97777c549fc82a87312290ebf73ac58aafa4ef0355"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/create_chart.js",
+          "sha256": "5713d737d810141122fee76a8222ef114ddbcd1cb4fa18a917e89ae292e0ec6b"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/create_table.js",
+          "sha256": "78870bb2411ad4c3a271ea1b8d413eb4ecc59dbc7ea6b54ae9938c7a631fa502"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/delete_chart.js",
+          "sha256": "42c605fd396273f8d82f2dfc17b41311784a2c895a39418a498a3a192420a63e"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/delete_range.js",
+          "sha256": "e3727f9f48040ec856f91c4a15687ec79b6caa296da3d6f8baff9f23d007d027"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/delete_table_row.js",
+          "sha256": "0eba4aa94cc89bd8d8294a697ea371c9e070890225c33cdf405fb089e06b9ca6"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/delete_table.js",
+          "sha256": "98dd99032b08186302e4a90b26fb5f99f0b4c882255e886b19602115acd06a8c"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/delete_worksheet.js",
+          "sha256": "3d4fd42d016b8fd77f00002038c8384d0e6ea8018c6409a3dc8644eba39b6b4a"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/evaluate_formula.js",
+          "sha256": "041f74006384326b0a03e624a14043bfbd634553ffc74558d630b872158a3a4c"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_current_user.js",
+          "sha256": "3c3bb3d25a4b89bc0554e8c4fbbb84b448505ae43de11f286fc9b7574f68b461"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_range.js",
+          "sha256": "7d825896ba4c0f048c60104800cbb16bec4279ba4b614f38977f3e72bbcf900a"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_table_columns.js",
+          "sha256": "332f17795f444e2c43b613f655dea2395355d7809bc0d8054e157cf0eeb3c237"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_table_rows.js",
+          "sha256": "c179039ac6a5021fe587f6c82200725dfca13e0475b8613245766aae5299723f"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_used_range.js",
+          "sha256": "24427756331e4b9b119a3f23e8ae593239207d7b64e3d702b11a73a02291fa55"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/get_workbook_info.js",
+          "sha256": "d8f894d03c02d546e51e90f9f6a3b62e71b929bba852654f942f3f7c15c6b34c"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/insert_range.js",
+          "sha256": "c17a6ebdf1ed9ba9966df16d354c112602054fd445725828770b04b5498dcd54"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/list_charts.js",
+          "sha256": "abd915de7510baf82e2596e127e89c032eebe8505c324ccd411595970e21e045"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/list_named_items.js",
+          "sha256": "0c87ffc84eed7d59c2f356351999ba63c5846456be63699b0c47ff00e8aabbd3"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/list_tables.js",
+          "sha256": "716d83f9fe61235fcc429e0de08a7bcab3736162ad69f8d119f38464688e346b"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/list_worksheets.js",
+          "sha256": "35a79ab9937978243f0ef6727b7b5089ad4f8cdbb1661c1a6e03ff5c2f335625"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/reauthenticate.js",
+          "sha256": "967f8848ff98238fa26a17089c2b754ce9cedc86323b0b018237ee8906dee209"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/sort_range.js",
+          "sha256": "c01b526cba4c38a3f453c20265db6b4f01c862ead175a9f7cc6063a493c352dc"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/update_range.js",
+          "sha256": "44122535bc1ff434ecbe09a7513e3d38b53050d2b6ef92253131b996e7a399e9"
+        },
+        {
+          "path": "packages/com.excel-online.main/workflows/update_worksheet.js",
+          "sha256": "a09cbaad89c16d2c53eeb03fe9d51c290ef6e34225b67e4e6ffdad0b55b45ffb"
+        }
+      ]
+    },
+    {
       "id": "com.figma.main",
       "version": "0.1.0",
       "description": "OpenTabs plugin for Figma",
@@ -3530,6 +3662,134 @@
       ]
     },
     {
+      "id": "com.microsoft-word.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft Word Online",
+      "toolCount": 28,
+      "files": [
+        {
+          "path": "packages/com.microsoft-word.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/manifest.json",
+          "sha256": "899fd477cafc8f4dab8f1ff13c8bc32a4ed29bacc5705cb6d9aa4ebc30f530a0"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/append_to_document.js",
+          "sha256": "961db90a421ae97bd6bd106874b9e727798ae8a8e39d22a5a679a3740cfffc4a"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/copy_item.js",
+          "sha256": "2b523e7fff956e1f120ee14d133689541e672bcfb328e14b08c183b29d0dae03"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/create_document.js",
+          "sha256": "2c4840024633a971d3e4ec0df5e12e2e884959940e8b1e283ad30b11c571c37b"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/create_folder.js",
+          "sha256": "c663114eeba75a59c38f9e69bd8e3ef4283b164aca3dcf47f9ce09c3450e5a18"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/create_sharing_link.js",
+          "sha256": "ff032fd893e031fadd8f45f9f4d8d0c6ffafcf63b222a11b6ae6ed6b7568446b"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/delete_item.js",
+          "sha256": "392b94766635037e1d81eba859da774d67779c402c409fe4a477402501619f78"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/delete_permission.js",
+          "sha256": "f514ff128c4ccc9cc0313a79b00db420041899ac4ba5ab540000a6bb3b255349"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_active_document.js",
+          "sha256": "4e7191731684a472f75c465fd52414c2d17649d1405196f55ebcfb29720e5858"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_current_user.js",
+          "sha256": "62153af17b27635ec3f8d523e1f4df6c0273da960170d802fa29c7113535c6e5"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_document_text.js",
+          "sha256": "d57e3b5c78f08e569f43572de1311915d8a6da5231677778a9aad0a81001a0be"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_drive.js",
+          "sha256": "2b0c74616243df82bec96354cfcf492d76d15c54f180a1bf61cd7b9d2a8f9b9b"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_file_content.js",
+          "sha256": "dbf49d2f28190313f96930a3e37933d9502fa2c8eec148f1f97f5f3657fbb096"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_item.js",
+          "sha256": "cab46513bc02d49c21e625ab52e5ae3d2cad118c00373b6e2df779382d5d6fd5"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/get_preview_url.js",
+          "sha256": "92d4967fad3d07ce8fb690592bef775c2cb2b550aea1cd4f415ff3e8a56c752b"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/list_children.js",
+          "sha256": "81e3c6f7df7369d2e89cfb3d76db49f0081d4afac18490a9164864adf3b13a27"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/list_permissions.js",
+          "sha256": "3f364edcc3ee08aa20aa8269743eba206850e3d308aa294ea6d1a2cc33743bc0"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/list_recent_documents.js",
+          "sha256": "5dd0a89a738f43fa2114f5b46db7e67119d9acd60e464beb30d7b5d634163d90"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/list_shared_with_me.js",
+          "sha256": "035877f93df0cf405c43cb024ab049380984e108a2f9736b7b712a1b1fdad550"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/list_versions.js",
+          "sha256": "0b96721faf5f95d0b2a36970b204eb980e84ad2c29a6352bfb1d5da7ad989912"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/move_item.js",
+          "sha256": "434b55bbca0245d365a7d304d84ec55e29f30e9ef61f0ac540a03d0f345f1818"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/reauthenticate.js",
+          "sha256": "267530a2656c9f1285419b4487a1e1014cdab2fffe6de627d250489f5969c767"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/rename_item.js",
+          "sha256": "aa2d79a94316160c7dc8d07fdd2ace91c75d86cbb391b31a207d58cd0cb6a12a"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/replace_text_in_document.js",
+          "sha256": "fbdd2be8a6e44cd8e76a2a04ffe11be841f02fb81ea1c4c68a89b7444dcb287b"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/restore_version.js",
+          "sha256": "5149f3435d9213e8931edd7e72b0db8fb8652c9ba6c33ad00e8e8141aabdd888"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/search_files.js",
+          "sha256": "8434f8e586bbba9684ad100ca5f4f37bafe6a9cc11513e26f03de1da7dcffc60"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/update_document.js",
+          "sha256": "3262a95993c587e49c3eec7481a2a1b46db99de43c10c866ec0bb4d1a92b838d"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/update_file_content.js",
+          "sha256": "f57cd25337aff32b8a113aed09a78f27a1c19447f2b513c9c8d3e3a4aa93e58f"
+        },
+        {
+          "path": "packages/com.microsoft-word.main/workflows/upload_file.js",
+          "sha256": "f8b71317d61c8aadff65355d1bdc9c8cb4b4445cbe54980ed417b82d33adcab5"
+        }
+      ]
+    },
+    {
       "id": "com.mongodb-atlas.main",
       "version": "0.1.0",
       "description": "OpenTabs plugin for MongoDB Atlas",
@@ -4062,6 +4322,182 @@
         {
           "path": "packages/com.npm.main/workflows/search_packages.js",
           "sha256": "5bd127befc0e9b4d59d2415028d4ab45be81a85ad81b6f96a407ce102a638f11"
+        }
+      ]
+    },
+    {
+      "id": "com.onenote.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft OneNote",
+      "toolCount": 12,
+      "files": [
+        {
+          "path": "packages/com.onenote.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.onenote.main/manifest.json",
+          "sha256": "191cdddd06fd664278cf5b29d14cceb8050e4e91549670c90406275c25b5e32e"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/create_notebook.js",
+          "sha256": "9396a52c00561a32712eb6acd83e44d120fe95b26abbd41e8ce7e9cdc09a57a9"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/create_page.js",
+          "sha256": "e8cfb31c7eccd50bc70b53734df091f01bfa6be96568dfdf842db0b5eb633cd6"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/create_section_group.js",
+          "sha256": "60dd1f7f028e312c7d998e2086542bcf129f86d26e61fc5b1e8226b2a6e8a2b8"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/create_section.js",
+          "sha256": "881168187da5d4f36353f081364e28332912ef3601e506cc8a8a889592134b46"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/get_current_user.js",
+          "sha256": "f65f802b57d9fa2df984381c55701f4ea3a419f5c0edeafc60052c33f850467f"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/get_notebook.js",
+          "sha256": "f2a70d6d5a56f9057afe7529b79d666a001e2f16d72d01f6e248ec0ed87f6ef4"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/get_recent_notebooks.js",
+          "sha256": "d50892099b4cc11f7c6c2a85716aa1b7ddce78db99c23564c50d1a21222cded2"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/get_section_group.js",
+          "sha256": "d46ba16bc526a32f3ce9810f1f0c930dc74341a25174382d1800981111df72ce"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/get_section.js",
+          "sha256": "ba7ee7509c3f403566ad2d6b97113730bc4cdaf38585fa37dcb2ffcb09020265"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/list_notebooks.js",
+          "sha256": "905b30d362807d0100d18fcafda730d974697de80a04cb1ae21bd98cbf6cd176"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/list_section_groups.js",
+          "sha256": "ddf38b7bcefcdaa192fb6d16246a11aaf5c8c2aa5e5b92b7fea1d33139115e1d"
+        },
+        {
+          "path": "packages/com.onenote.main/workflows/list_sections.js",
+          "sha256": "b0c754b1a3874044faac954f19e2cb1d82110d0fea7dd5bdbba1a4ba07190234"
+        }
+      ]
+    },
+    {
+      "id": "com.outlook.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft Outlook — email and calendar",
+      "toolCount": 24,
+      "files": [
+        {
+          "path": "packages/com.outlook.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.outlook.main/manifest.json",
+          "sha256": "1b01c67d0c4d66e4ece1e2759eb31a49638853523b87db22ad209b3ca4f87dd2"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/create_draft.js",
+          "sha256": "d67c3fe5e7360493e50b49cf327951eee354d290637e2f13df1e18d313f32ae4"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/create_event.js",
+          "sha256": "c0486ab951100d4f66709db0bd32d884301b5e537d025fb3dde18e76115431e6"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/delete_event.js",
+          "sha256": "bdc6d1b0616f65cc42ad6b9ec7469b7246c32566b33ae93a17ffd0e2076aeb7e"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/delete_message.js",
+          "sha256": "9b50d38cde8d09ac06d563288248393012a8b0d6229354855b60cb3c75a2dc20"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/download_attachment.js",
+          "sha256": "797d683973ca244feadde41de8be2a1b0e6b05b796fb7565f9305dd320b6833f"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/forward_message.js",
+          "sha256": "0fd3b90cb5c6ce1d8cede07affe195a6b6808d94ced328316017733e693a2392"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_attachment_content.js",
+          "sha256": "02a8fc472496671f480130ac670b4b9f30c64387e77f1cae4f4bfa0ada5f1dc4"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_calendar_view.js",
+          "sha256": "f45259b0d5d658399cf1cdb9368af649fae9927c6e69c8bf2eb8fbfcfa658e72"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_current_user.js",
+          "sha256": "b5a4812f7f5ce4ea3ad2f163ed4ed5fa5084862db087b6c8f3284621f9aeee4d"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_event.js",
+          "sha256": "178bdd740a7cf91a44710b23beb33656bf9b2a4f6a052e978df419cb616404b5"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_message.js",
+          "sha256": "226bcd62b30f91889df88892f70c859838032e2948bd4be74e8d0944d114f2fa"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/get_schedule.js",
+          "sha256": "c55ecde9dd4c9f498dca41f74f78b798f3dae2338e661b48127331ede501aa3a"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/list_attachments.js",
+          "sha256": "590abb2f5c7b3f4bca10987363c939aec4cccc65b641845b0bb16731d766ff35"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/list_calendars.js",
+          "sha256": "1720a5c0e1a667848f9f43bd6893bf650ad94e6f97db854c9667a22315045ad5"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/list_events.js",
+          "sha256": "285ab6dadcbe57441a43fda5ec0b3143f8ab87dca8ba9875ed9c43d3bea24903"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/list_folders.js",
+          "sha256": "3f78f1dff64cf73e5286ee501c6248df9227a3a7191d2377ff17ff8641973b31"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/list_messages.js",
+          "sha256": "294a3748de61af75491bf7c53cd9fe03adb675096977ed6944a2fbd6bfcaea53"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/move_message.js",
+          "sha256": "4fd1eef6e652aa5cd309f77ed27a9acb06c85b1d18077af38b7f30360c09e193"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/reply_to_message.js",
+          "sha256": "a5de345862a1fdc62eeea96d4591058985bf658686d7757dc024805055066657"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/respond_to_event.js",
+          "sha256": "7f0b24c44d4bd9a62ce98a85590d8a772d0595b81ce943ac8c18dc4867f0a8a0"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/search_messages.js",
+          "sha256": "6cb6cb39aece00d9ce7aa1ee2eb82820bee09ac367b4b37e3d8b6f061cd8a99b"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/send_message.js",
+          "sha256": "1b5a735846096bd6f023384858687ad1a3051639b3d095ac3dd1146c295e4ded"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/update_event.js",
+          "sha256": "8f55a91457b34d36dadc74ae77d7c51be2315fe881763bcfc5bcf5f1ed6413ec"
+        },
+        {
+          "path": "packages/com.outlook.main/workflows/update_message.js",
+          "sha256": "536d358e269321fa5baf57c78afa030c98ecc8ed501a3987394cab03174a15e9"
         }
       ]
     },
@@ -5774,6 +6210,66 @@
         {
           "path": "packages/com.supabase.main/workflows/run_read_only_query.js",
           "sha256": "a78c1eea6d3618024cc7671382808a29dace035cac1b3a721642153184ab1f80"
+        }
+      ]
+    },
+    {
+      "id": "com.teams.main",
+      "version": "0.1.0",
+      "description": "OpenTabs plugin for Microsoft Teams",
+      "toolCount": 11,
+      "files": [
+        {
+          "path": "packages/com.teams.main/config.json",
+          "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "path": "packages/com.teams.main/manifest.json",
+          "sha256": "d62973ef75af96544ffc52535d20ee5f60ece4dcf0d5f2c5609976cd8c8e6985"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/create_chat.js",
+          "sha256": "c72c4acd1dbedec87565206cb9b6244353107e483255cec94921d385006f38bc"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/delete_message.js",
+          "sha256": "f5ae4e590c5e42f4216e23141832026b411bbefead8b21b9ae578da21449b335"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/edit_message.js",
+          "sha256": "39aa348fbca30cd25463d71442e9c31c594a4a9d3df7dbd0533ea950363033f1"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/get_conversation_details.js",
+          "sha256": "c402a2c2b68745cb96009246f0906abb4829d7b7506a577c0b5ee85e19b46b6e"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/get_current_user.js",
+          "sha256": "db830cd5a20d43f07ff3ef770a4f517e2a343bf57e734ad6708841521873a18b"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/invite_to_channel.js",
+          "sha256": "1d1b9769d10a2c6e2c0935fdb23085235086775fcfc1e7db8a8db0ae8b052b93"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/list_conversations.js",
+          "sha256": "35c00b3cef5e07157d109070dcd60a86324d0a7e8490fe26c8894a4454a1ba46"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/read_messages.js",
+          "sha256": "792fa5bc393276898d8b09a174dd31f1908d4805fc23c6b4a4a5e0613decf82e"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/remove_member.js",
+          "sha256": "37c899f8c0cf2ff9a944e1fc83c66f0a718eb4584699a9758feb19c61b74e5b6"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/send_message.js",
+          "sha256": "fa681ba2409f9e457e93ce1d01a6f324a0f774cd4129f4d20740cd3d4e06b391"
+        },
+        {
+          "path": "packages/com.teams.main/workflows/set_channel_topic.js",
+          "sha256": "1460dac3fc0aefe03d94ef9f013ac106fc93fca91a56e09c49ee6eccb9b07e44"
         }
       ]
     },

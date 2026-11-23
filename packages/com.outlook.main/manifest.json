@@ -1,0 +1,151 @@
+{
+  "id": "com.outlook.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Microsoft Outlook — email and calendar",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Microsoft 365 user including name and email.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "list_messages",
+      "description": "List email messages from a mail folder. Defaults to Inbox. Use folder_id to target other folders (get IDs from list_folders). Results are ordered by most recent first.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_messages.js"
+    },
+    {
+      "name": "get_message",
+      "description": "Get the full content of an email message by ID, including body, all recipients, and metadata. Use list_messages or search_messages to find message IDs.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_message.js"
+    },
+    {
+      "name": "search_messages",
+      "description": "Search emails using a keyword query (KQL). Searches subject, body, and sender. Examples: \"budget report\", \"from:jane@example.com\", \"subject:quarterly review\", \"hasAttachments:true\".",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/search_messages.js"
+    },
+    {
+      "name": "send_message",
+      "description": "Send a new email message. The user's default compose font and signature are applied automatically — do not write a signature into the body yourself. Supports plain text or HTML body, CC/BCC, and importance level.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "reply_to_message",
+      "description": "Reply to an email message. By default the reply is sent immediately. Set draft to true to instead save a threaded draft to the Drafts folder for the user to review and send manually. Either way the original conversation is quoted, reply headers are set, and the user's default compose font and reply signature are applied automatically — do not write a signature into the body yourself. Set reply_all to true to reply to all recipients.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reply_to_message.js"
+    },
+    {
+      "name": "forward_message",
+      "description": "Forward an email message to one or more recipients with an optional comment. By default the forward is sent immediately. Set draft to true to instead save a draft to the Drafts folder for the user to review and send manually. Either way the original message is quoted, recipients are pre-filled, and the user's default compose font and signature are applied automatically to the comment — do not write a signature into the comment yourself.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/forward_message.js"
+    },
+    {
+      "name": "create_draft",
+      "description": "Create a draft for a brand-new, standalone email in the Drafts folder. The user's default compose font and signature are applied automatically — do not write a signature into the body yourself. The user can review and send it manually from Outlook. This does NOT thread onto an existing conversation — to draft a reply that quotes the original thread, use reply_to_message with draft set to true; to draft a forward, use forward_message with draft set to true.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_draft.js"
+    },
+    {
+      "name": "update_message",
+      "description": "Update message properties like read status, importance, categories, or flag status.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_message.js"
+    },
+    {
+      "name": "move_message",
+      "description": "Move an email message to a different folder. Use well-known names (Inbox, Archive, DeletedItems, Drafts, JunkEmail, SentItems) or folder IDs from list_folders.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/move_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete an email message. This moves it to Deleted Items (not permanent deletion).",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "list_attachments",
+      "description": "List attachments on an email message. Returns file names, types, and sizes.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_attachments.js"
+    },
+    {
+      "name": "get_attachment_content",
+      "description": "Download and read the content of an email attachment. For text-based files (plain text, CSV, HTML, JSON, XML), returns decoded text. For binary files (PDF, images, Office documents), returns base64-encoded content.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_attachment_content.js"
+    },
+    {
+      "name": "download_attachment",
+      "description": "Download an email attachment to the local filesystem (browser Downloads folder). Works with any file type — Excel, PDF, images, Word documents, etc. Returns the filename so you can locate it in the Downloads folder.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/download_attachment.js"
+    },
+    {
+      "name": "list_folders",
+      "description": "List mail folders in the mailbox. Returns folder names, IDs, and unread/total counts. Use folder IDs with list_messages to read specific folders.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_folders.js"
+    },
+    {
+      "name": "list_calendars",
+      "description": "List the user's calendars, including the default calendar and any shared calendars added to their account. Use a calendar's ID with list_events or get_calendar_view to read a specific calendar.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_calendars.js"
+    },
+    {
+      "name": "list_events",
+      "description": "List calendar events from a calendar (defaults to the primary calendar). Returns events as stored — recurring series appear as a single series master, not expanded into occurrences. To see what actually falls within a date range (with recurrences expanded), use get_calendar_view instead.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_events.js"
+    },
+    {
+      "name": "get_calendar_view",
+      "description": "Get the events occurring within a date/time range, with recurring series expanded into individual occurrences. This is the tool to answer \"what is on my calendar\" for a given day, week, or range. The range bounds are read from the offset in the start/end timestamps (UTC when no offset is given); time_zone only controls the zone of the returned event times.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_calendar_view.js"
+    },
+    {
+      "name": "get_event",
+      "description": "Get the full details of a single calendar event, including body, attendees and their responses, location, reminders, and recurrence status.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_event.js"
+    },
+    {
+      "name": "create_event",
+      "description": "Create a calendar event or meeting. Add attendees to send invitations. Set is_online_meeting to attach a Teams meeting link. Times are interpreted as UTC unless a time_zone is supplied.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_event.js"
+    },
+    {
+      "name": "update_event",
+      "description": "Update properties of an existing calendar event. Only the fields you provide are changed. Updating the attendees of a meeting you organize sends updated invitations. To change start/end times, provide both start and end.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_event.js"
+    },
+    {
+      "name": "delete_event",
+      "description": "Delete or cancel a calendar event. For a meeting you organize, provide a cancellation_message to send a cancellation notice to all attendees. Without a cancellation_message the event is simply removed from your calendar.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_event.js"
+    },
+    {
+      "name": "respond_to_event",
+      "description": "Respond to a meeting invitation by accepting, declining, or tentatively accepting. Optionally include a comment and choose whether to send a response back to the organizer.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/respond_to_event.js"
+    },
+    {
+      "name": "get_schedule",
+      "description": "Look up free/busy availability for one or more people in the organization over a time window. Returns each person's busy/tentative/out-of-office blocks (with subjects and locations where the requester is permitted to see them) and their working hours. Use this to view other people's calendars and find open meeting times.",
+      "urlRegex": "^https?://outlook\\.(?:office|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_schedule.js"
+    }
+  ]
+}

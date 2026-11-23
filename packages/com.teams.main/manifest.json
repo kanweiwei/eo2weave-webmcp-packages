@@ -1,0 +1,73 @@
+{
+  "id": "com.teams.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Microsoft Teams",
+  "tools": [
+    {
+      "name": "list_conversations",
+      "description": "List recent chat conversations. Returns chats sorted by last activity. Use the conversation ID from results with read_messages to read messages.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_conversations.js"
+    },
+    {
+      "name": "get_conversation_details",
+      "description": "Get detailed information about a chat conversation including its members, topic, creator, and creation time.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_conversation_details.js"
+    },
+    {
+      "name": "create_chat",
+      "description": "Create a new chat conversation with one or more users. Pass user MRIs (e.g., \"8:live:username\") as members. The current user is added automatically.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_chat.js"
+    },
+    {
+      "name": "set_channel_topic",
+      "description": "Set or update the topic (title) of a Teams chat conversation.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/set_channel_topic.js"
+    },
+    {
+      "name": "send_message",
+      "description": "Send a message to a Teams chat conversation. Use the conversation ID from list_conversations or create_chat.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/send_message.js"
+    },
+    {
+      "name": "read_messages",
+      "description": "Read messages from a chat conversation. Returns messages sorted by time (newest first). Use the conversation ID from list_conversations.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/read_messages.js"
+    },
+    {
+      "name": "edit_message",
+      "description": "Edit a message in a Teams chat conversation. Only messages sent by the current user can be edited.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/edit_message.js"
+    },
+    {
+      "name": "delete_message",
+      "description": "Delete a message from a Teams chat conversation. Only messages sent by the current user can be deleted.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_message.js"
+    },
+    {
+      "name": "invite_to_channel",
+      "description": "Add a user to a Teams group chat by their MRI identifier (e.g., \"8:live:username\").",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/invite_to_channel.js"
+    },
+    {
+      "name": "remove_member",
+      "description": "Remove a user from a Teams group chat. Requires admin privileges in the chat.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/remove_member.js"
+    },
+    {
+      "name": "get_current_user",
+      "description": "Get the authenticated user's profile information including their MRI identifier and email address.",
+      "urlRegex": "^https?://teams\\.(?:microsoft|live)\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    }
+  ]
+}

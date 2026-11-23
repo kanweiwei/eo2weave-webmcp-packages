@@ -1,0 +1,181 @@
+{
+  "id": "com.excel-online.main",
+  "version": "0.1.0",
+  "description": "OpenTabs plugin for Microsoft Excel Online",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Get the profile of the currently authenticated Microsoft 365 user including display name, email, and user ID.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_current_user.js"
+    },
+    {
+      "name": "reauthenticate",
+      "description": "Clear cached MSAL state and reload the SharePoint/OneDrive tab to force a fresh Microsoft Graph token. Use this when another Excel tool returns an authentication error pointing at this tool. After invoking, wait ~5 seconds for the tab to finish reloading, then retry the original operation.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/reauthenticate.js"
+    },
+    {
+      "name": "get_workbook_info",
+      "description": "Get information about the currently open Excel workbook including drive ID, item ID, and file name. Returns context needed by other tools. The workbook must be open in the browser.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_workbook_info.js"
+    },
+    {
+      "name": "calculate_workbook",
+      "description": "Recalculate all formulas in the workbook. Use calculation_type \"Recalculate\" for normal recalculation, \"Full\" to force recalculation of all formulas, or \"FullRebuild\" to rebuild the dependency chain and recalculate.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/calculate_workbook.js"
+    },
+    {
+      "name": "evaluate_formula",
+      "description": "Evaluate a formula expression without writing it to a cell. The formula is evaluated in the context of a specific worksheet. Returns the computed result. Useful for calculations, lookups, and data analysis without modifying the workbook.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/evaluate_formula.js"
+    },
+    {
+      "name": "list_named_items",
+      "description": "List all named items (named ranges, constants) in the workbook. Named items are user-defined names that refer to ranges, values, or formulas.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_named_items.js"
+    },
+    {
+      "name": "add_named_item",
+      "description": "Add a named range or named value to the workbook. For a range, provide a reference like \"Sheet1!A1:C10\". For a value or formula, provide the value directly.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_named_item.js"
+    },
+    {
+      "name": "list_worksheets",
+      "description": "List all worksheets in the currently open Excel workbook. Returns worksheet names, IDs, positions, and visibility status.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_worksheets.js"
+    },
+    {
+      "name": "add_worksheet",
+      "description": "Add a new worksheet to the currently open Excel workbook. Optionally specify a name for the new worksheet.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_worksheet.js"
+    },
+    {
+      "name": "update_worksheet",
+      "description": "Update worksheet properties such as name, position, or visibility. Only specified fields are changed; omitted fields remain unchanged.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_worksheet.js"
+    },
+    {
+      "name": "delete_worksheet",
+      "description": "Delete a worksheet from the currently open Excel workbook by name. The workbook must have at least two worksheets — you cannot delete the last one.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_worksheet.js"
+    },
+    {
+      "name": "get_range",
+      "description": "Get cell values, formulas, and formatting for a specific range in a worksheet. The range address uses A1 notation (e.g., \"A1:C10\"). Returns values, formulas, text, and number formats.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_range.js"
+    },
+    {
+      "name": "get_used_range",
+      "description": "Get the smallest range that encompasses all cells with data or formatting in a worksheet. Useful for discovering the extent of data in a sheet without knowing the exact range.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_used_range.js"
+    },
+    {
+      "name": "update_range",
+      "description": "Write values, formulas, or number formats to a specific range in a worksheet. The values must be a 2D array matching the range dimensions. Use null within the array to skip a cell. Pass formulas starting with \"=\" (e.g., \"=SUM(A1:A10)\"). Use \"\" (empty string) to clear a cell.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/update_range.js"
+    },
+    {
+      "name": "clear_range",
+      "description": "Clear the contents, formatting, or both from a range of cells. Use apply_to to control what is cleared: \"All\" clears everything, \"Contents\" clears values and formulas only, \"Formats\" clears formatting only.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/clear_range.js"
+    },
+    {
+      "name": "insert_range",
+      "description": "Insert new blank cells at a range address, shifting existing cells down or to the right. Use shift=\"Down\" to push cells down or shift=\"Right\" to push cells right.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/insert_range.js"
+    },
+    {
+      "name": "delete_range",
+      "description": "Delete cells at a range address, shifting remaining cells up or to the left. Use shift=\"Up\" to pull cells up or shift=\"Left\" to pull cells left.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_range.js"
+    },
+    {
+      "name": "sort_range",
+      "description": "Sort data in a range by one or more columns. Each sort field specifies a zero-based column index and sort direction. Multiple fields create multi-level sorts (primary, secondary, etc.).",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/sort_range.js"
+    },
+    {
+      "name": "list_tables",
+      "description": "List all tables in the currently open Excel workbook. Returns table names, IDs, and display settings. Optionally filter by worksheet name to list only tables in a specific sheet.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_tables.js"
+    },
+    {
+      "name": "create_table",
+      "description": "Create a new table from a data range. The range should contain the data (and optionally a header row). Set has_headers=true if the first row contains column headers.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_table.js"
+    },
+    {
+      "name": "delete_table",
+      "description": "Delete a table by name or ID. This removes the table object but keeps the data in the cells. Use convert_table_to_range instead if you want to explicitly convert first.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_table.js"
+    },
+    {
+      "name": "get_table_rows",
+      "description": "Get all data rows from a table. Returns row values as 2D arrays. Each row is an array of cell values. Does not include the header row.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_table_rows.js"
+    },
+    {
+      "name": "get_table_columns",
+      "description": "Get the column definitions of a table. Returns column names, IDs, and indices. Useful for understanding the table structure before reading or writing data.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/get_table_columns.js"
+    },
+    {
+      "name": "add_table_row",
+      "description": "Add one or more rows to a table. Values is a 2D array where each inner array is a row. The number of values in each row must match the number of table columns. Optionally specify an insertion index (0-based); rows are appended at the end if omitted.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_table_row.js"
+    },
+    {
+      "name": "delete_table_row",
+      "description": "Delete a specific row from a table by its zero-based index. The row is permanently removed and subsequent rows shift up.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_table_row.js"
+    },
+    {
+      "name": "add_table_column",
+      "description": "Add a new column to a table. Provide values as a 2D array where the first value is the header name and subsequent values are the data for each existing row. Optionally specify an insertion index.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/add_table_column.js"
+    },
+    {
+      "name": "list_charts",
+      "description": "List all charts in a worksheet. Returns chart names, IDs, dimensions, and positions.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/list_charts.js"
+    },
+    {
+      "name": "create_chart",
+      "description": "Create a new chart in a worksheet from a data range. Supports chart types like ColumnClustered, Line, Pie, Bar, Area, and more. The source_data range should include headers.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/create_chart.js"
+    },
+    {
+      "name": "delete_chart",
+      "description": "Delete a chart from a worksheet by its name.",
+      "urlRegex": "^https?://(?:www\\.)?office\\.com(?:/[^?#]*)?(?:\\?[^#]*)?(?:#.*)?$",
+      "path": "workflows/delete_chart.js"
+    }
+  ]
+}

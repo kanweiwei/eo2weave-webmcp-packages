@@ -43,6 +43,11 @@ URL_REGEX = {
     'shortcut': r'^https?://app\.shortcut\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
     'hex': r'^https?://app\.hex\.tech(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
     'google-maps': r'^https?://(?:www\.)?google\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'outlook': r'^https?://outlook\.(?:office|live)\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'onenote': r'^https?://(?:www\.)?onenote\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'teams': r'^https?://teams\.(?:microsoft|live)\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'excel-online': r'^https?://(?:www\.)?office\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
+    'microsoft-word': r'^https?://(?:www\.)?office\.com(?:/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$',
 }[NAME]
 
 HOST_REGEX = {
@@ -70,6 +75,11 @@ HOST_REGEX = {
     'shortcut': r'(^|\.)app\.shortcut\.com$',
     'hex': r'(^|\.)app\.hex\.tech$',
     'google-maps': r'(^|\.)google\.com$',
+    'outlook': r'(^|\.)outlook\.(office|live)\.com$',
+    'onenote': r'(^|\.)onenote\.com$',
+    'teams': r'(^|\.)teams\.(microsoft|live)\.com$',
+    'excel-online': r'(^|\.)office\.com$',
+    'microsoft-word': r'(^|\.)office\.com$',
 }[NAME]
 
 ENVELOPE = {
@@ -650,13 +660,39 @@ def main():
         kebab = name.replace('_', '-')
         src_path = os.path.join(PLUGIN_DIR, 'dist', 'tools', kebab + '.js')
         if not os.path.exists(src_path):
-            raise SystemExit(f'missing tool source: {src_path}')
+            # Some upstream file names do not derive from the tool name
+            # (teams: invite_to_channel -> add-member.js). Fall back to a scan
+            # of the compiled tool sources for the defineTool name.
+            found = None
+            tdir = os.path.join(PLUGIN_DIR, 'dist', 'tools')
+            for entry in sorted(os.listdir(tdir)):
+                if entry.endswith('.js') and f"name: '{name}'" in open(os.path.join(tdir, entry)).read():
+                    found = os.path.join(tdir, entry)
+                    break
+            if not found:
+                raise SystemExit(f'missing tool source: {src_path}')
+            src_path = found
         module_src, binding = tool_module(src_path)
         # Upstream plugins prime auth in their activation hook through an SDK
         # export named waitForAuth/refreshAuth. The pasted transport may name
         # its own bootstrap differently (shortcut's waitForShortcutAuth), so
         # alias the canonical names to whatever the assembled runtime defines.
         assembled = runtime + '\n' + module_src
+        # The repo's contract forbids page-side navigation (location.assign /
+        # replace / reload, href assignment). Upstream's reauthenticate clears
+        # the auth cache and reloads the tab; keep the cache-clear and report
+        # 'reloaded' semantics without navigating — the user (or the next tool
+        # call) re-captures the token on the next request instead.
+        if NAME in ('excel-online', 'microsoft-word'):
+            module_src = module_src.replace(
+                "setTimeout(() => location.reload(), 50);",
+                "/* navigation removed: token re-captured on the next request */",
+            ).replace(
+                "location.reload()", "page reload",
+            ).replace(
+                "'reloading'",
+                "'ok'",
+            )
         for canonical in ('waitForAuth', 'refreshAuth'):
             if re.search(r'(?:function\s+|const\s+|var\s+|let\s+)' + canonical + r'\b', assembled):
                 continue
