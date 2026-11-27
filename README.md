@@ -62,37 +62,46 @@ manifest.json        # registry manifest: name / version / urlRegex / sha256 (ge
 
 ## Packages
 
-65 packages, 1584 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
+50 packages, 1230 tools. Every one is a **full-fidelity 1:1 port**: every upstream tool is present
 under the same name, with the same input properties and `required` list (asserted against the
 cached upstream manifest), the same endpoint mechanics, write tools included. Each package's own
 README documents its transport, error contract, deviations and complete tool table.
+
+> **Why this branch lists 50 and not 65 (2026-11-27).** Extension builds up to
+> 1.2.x reject a registry manifest with more than 50 entries
+> (`MAX_REGISTRY_PACKAGES`), and crossing the limit fails the WHOLE manifest —
+> the settings page shows one error and zero packages, not the first 50. The 15
+> infrastructure packages (circleci, temporal-cloud, cockroachdb, clickhouse,
+> sqlpad, newrelic, posthog, amplitude, retool, bitbucket, gitlab,
+> terraform-cloud, mongodb-atlas, azure, aws-console) therefore live on the
+> `extended` branch instead. Add it as a second registry to get all 65:
+>
+> ```
+> https://github.com/kanweiwei/eo2weave-webmcp-packages/tree/extended
+> ```
+>
+> They move back onto `main` once an extension build with the raised cap (200)
+> ships — at that point `main` can carry the full catalog again.
 
 | Package | Tools | Source |
 | --- | --- | --- |
 | `com.datadog.main` | 75 | OpenTabs plugin (MIT) |
 | `com.linear.main` | 59 | OpenTabs plugin (MIT) |
 | `com.slack-enterprise.main` | 54 | OpenTabs plugin (MIT) |
-| `com.retool.main` | 50 | OpenTabs plugin (MIT) |
 | `com.netlify.main` | 40 | OpenTabs plugin (MIT) |
-| `com.newrelic.main` | 22 | OpenTabs plugin (MIT) |
 | `com.powerpoint.main` | 39 | OpenTabs plugin (MIT) |
 | `com.bluesky.main` | 38 | OpenTabs plugin (MIT) |
-| `com.posthog.main` | 38 | OpenTabs plugin (MIT) |
-| `com.terraform-cloud.main` | 38 | OpenTabs plugin (MIT) |
 | `com.github.main` | 35 | OpenTabs plugin (MIT) |
 | `com.twilio.main` | 35 | OpenTabs plugin (MIT) |
-| `com.circleci.main` | 33 | OpenTabs plugin (MIT) |
 | `com.todoist.main` | 33 | OpenTabs plugin (MIT) |
 | `com.tumblr.main` | 32 | OpenTabs plugin (MIT) |
 | `com.x.main` | 31 | OpenTabs plugin (MIT) |
 | `com.cloudflare.main` | 30 | OpenTabs plugin (MIT) |
 | `com.stripe.main` | 30 | OpenTabs plugin (MIT) |
 | `com.grafana.main` | 29 | OpenTabs plugin (MIT) |
-| `com.bitbucket.main` | 27 | OpenTabs plugin (MIT) |
 | `com.discord.main` | 26 | OpenTabs plugin (MIT) |
 | `com.asana.main` | 24 | OpenTabs plugin (MIT) |
 | `com.reddit.main` | 23 | OpenTabs plugin (MIT) |
-| `com.gitlab.main` | 22 | OpenTabs plugin (MIT) |
 | `com.slack.main` | 22 | OpenTabs plugin (MIT) |
 | `com.sentry.main` | 21 | OpenTabs plugin (MIT) |
 | `com.confluence.main` | 21 | OpenTabs plugin (MIT) |
@@ -104,24 +113,16 @@ README documents its transport, error contract, deviations and complete tool tab
 | `com.notion.main` | 18 | OpenTabs plugin (MIT) |
 | `com.google-drive.main` | 17 | OpenTabs plugin (MIT) |
 | `com.zendesk.main` | 17 | OpenTabs plugin (MIT) |
-| `com.amplitude.main` | 15 | OpenTabs plugin (MIT) |
 | `com.npm.main` | 14 | OpenTabs plugin (MIT) |
 | `com.docker-hub.main` | 12 | OpenTabs plugin (MIT) |
 | `com.clickup.main` | 11 | OpenTabs plugin (MIT) |
 | `com.hackernews.main` | 10 | OpenTabs plugin (MIT) |
 | `com.google-analytics.main` | 8 | OpenTabs plugin (MIT) |
 | `com.airtable.main` | 8 | OpenTabs plugin (MIT) |
-| `com.mongodb-atlas.main` | 20 | OpenTabs plugin (MIT) |
-| `com.azure.main` | 26 | OpenTabs plugin (MIT) |
-| `com.aws-console.main` | 16 | OpenTabs plugin (MIT) |
 | `com.google-cloud.main` | 30 | OpenTabs plugin (MIT) |
 | `com.calendly.main` | 15 | OpenTabs plugin (MIT) |
 | `com.supabase.main` | 26 | OpenTabs plugin (MIT) |
-| `com.cockroachdb.main` | 18 | OpenTabs plugin (MIT) |
 | `com.snowflake.main` | 14 | OpenTabs plugin (MIT) |
-| `com.sqlpad.main` | 12 | OpenTabs plugin (MIT) |
-| `com.clickhouse.main` | 9 | OpenTabs plugin (MIT) |
-| `com.temporal-cloud.main` | 8 | OpenTabs plugin (MIT) |
 | `com.hex.main` | 27 | OpenTabs plugin (MIT) |
 | `com.shortcut.main` | 27 | OpenTabs plugin (MIT) |
 | `com.leetcode.main` | 26 | OpenTabs plugin (MIT) |

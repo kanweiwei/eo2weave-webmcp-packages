@@ -1,8 +1,14 @@
 # OpenTabs → WebMCP porting status
 
 Upstream: 118 `@opentabs-dev/opentabs-plugin-*` packages on npm.
-**Done: 65 packages / 1584 tools (main, harness 41566/41566 green).**
+**Done: 65 packages / 1584 tools — 50 on `main` (1230 tools), 15 on `extended`
+(354 tools); harness 41566/41566 green.**
 Remaining: 53.
+
+Why the split: extension builds up to 1.2.x cap a registry manifest at 50 entries
+(`MAX_REGISTRY_PACKAGES`) and fail the whole manifest above it, so `main` ships the
+50-package catalog and the 15 infrastructure ports live on `extended` until a build
+with the raised cap ships. See README "Why this branch lists 50 and not 65".
 
 ## Completed
 
