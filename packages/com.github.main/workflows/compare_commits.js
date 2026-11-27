@@ -202,20 +202,24 @@ export default {
             try {
               data = JSON.parse(response.text)
             } catch (e) {
-              return { ok: false, error_code: 'HTTP', status: response.status, message: 'GitHub returned invalid JSON for ' + path }
+              // GitHub now serves some routes as HTML even with Accept: application/json.
+              // Read the same-origin page's embedded payload rather than treating it as an empty list.
+              var embedded = extractEmbeddedData(response.text, path)
+              if (embedded !== null) return { ok: true, data: embedded }
+              return { ok: false, error_code: 'API', status: response.status, message: 'GitHub returned neither JSON nor recognizable embedded page data for ' + path }
             }
             return { ok: true, data: data.payload !== undefined ? data.payload : data }
           }
           function extractEmbeddedData(html, path) {
-            var match = html.match(/<script[^>]*data-target="react-app\.embeddedData"[^>]*>([\s\S]*?)<\/script>/)
-            if (!match || !match[1])
-              return null
-            try {
-              var embedded = JSON.parse(match[1])
-              return embedded.payload !== undefined ? embedded.payload : embedded
-            } catch (e) {
-              return null
+            var doc = new DOMParser().parseFromString(html, 'text/html')
+            var scripts = doc.querySelectorAll('script[data-target="react-app.embeddedData"], script[data-target="react-partial.embeddedData"]')
+            for (var i = 0; i < scripts.length; i++) {
+              try {
+                var embedded = JSON.parse(scripts[i].textContent)
+                if (embedded.payload !== undefined) return embedded.payload
+              } catch (e) {}
             }
+            return null
           }
           async function turboData(path, query) {
             if (!requireLogin())
@@ -661,29 +665,40 @@ export default {
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
               var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/compare/' + encodeURIComponent(args.basehead)
-              var response = await pageEmbeddedData(path)
-              if (response.ok) {
-                var summaries = (response.data.pullRequestsChangesRoute && response.data.pullRequestsChangesRoute.diffSummaries) || []
-                return ok({ files: summaries.map(mapFileDiff), total_files: summaries.length })
-              }
-              // Compare page might not have embedded data. Parse the HTML instead.
-              var htmlResponse = await fetchText(path, {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
-              if (!htmlResponse.ok) return httpError(htmlResponse)
-              var doc = new DOMParser().parseFromString(htmlResponse.text, 'text/html')
-              var fileEls = doc.querySelectorAll('.file-info a, [data-path]')
+              // The compare page loads diff hunks asynchronously and ships no file
+              // list in its HTML or embedded data, so read GitHub's unified diff
+              // for this range instead and derive the changed files from it.
+              var diffResponse = await fetchText(path + '.diff', { Accept: 'text/plain' })
+              if (!diffResponse.ok) return httpError(diffResponse)
+              var diffText = typeof diffResponse.text === 'string' ? diffResponse.text : ''
               var files = []
-              for (var i = 0; i < fileEls.length; i++) {
-                var el = fileEls[i]
-                files.push({
-                  filename: el.getAttribute('data-path') || (el.textContent || '').trim(),
-                  status: 'modified',
-                  additions: 0,
-                  deletions: 0,
-                  changes: 0,
-                })
+              var current = null
+              var rows = diffText.split('\n')
+              for (var i = 0; i < rows.length; i++) {
+                var line = rows[i]
+                if (line.indexOf('diff --git ') === 0) {
+                  var match = line.match(/^diff --git a\/(.+) b\/(.+)$/)
+                  if (!match) return error('API', 'GitHub returned an unrecognized diff header.')
+                  current = { filename: match[2], status: 'modified', additions: 0, deletions: 0, changes: 0 }
+                  files.push(current)
+                  continue
+                }
+                if (!current) continue
+                if (line.indexOf('new file mode') === 0) { current.status = 'added'; continue }
+                if (line.indexOf('deleted file mode') === 0) { current.status = 'removed'; continue }
+                if (line.indexOf('rename from ') === 0) { current.status = 'renamed'; continue }
+                if (line.indexOf('+++ ') === 0) {
+                  if (line === '+++ /dev/null') current.status = 'removed'
+                  else if (line.indexOf('+++ b/') === 0) current.filename = line.slice(6)
+                  continue
+                }
+                if (line.indexOf('--- ') === 0) continue
+                if (line.charAt(0) === '+') current.additions++
+                else if (line.charAt(0) === '-') current.deletions++
+              }
+              for (var f = 0; f < files.length; f++) {
+                files[f].changes = files[f].additions + files[f].deletions
+                if (!files[f].filename) return error('API', 'GitHub returned a diff entry without a file path.')
               }
               return ok({ files: files, total_files: files.length })
             },

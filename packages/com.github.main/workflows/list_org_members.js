@@ -648,25 +648,42 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
-              var response = await fetchText('/orgs/' + encodeURIComponent(args.org) + '/people', {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
-              if (!response.ok) return httpError(response)
-              var doc = new DOMParser().parseFromString(response.text, 'text/html')
-              var memberEls = doc.querySelectorAll('.member-list-item, [data-bulk-actions-id]')
+              var path = '/orgs/' + encodeURIComponent(args.org) + '/people'
               var members = []
-              for (var i = 0; i < memberEls.length; i++) {
-                var el = memberEls[i]
-                var linkEl = el.querySelector('a[data-hovercard-type="user"]')
-                var imgEl = el.querySelector('img.avatar')
-                var login = linkEl ? (linkEl.textContent || '').trim() : ''
-                if (!login) continue
-                members.push({
-                  login: login,
-                  avatar_url: imgEl ? imgEl.getAttribute('src') || '' : '',
-                  html_url: 'https://github.com/' + login,
-                })
+              var seen = {}
+              var page = 1
+              while (true) {
+                var response = await fetchText(path + '?page=' + page, { Accept: 'text/html' })
+                if (!response.ok) return httpError(response)
+                var doc = new DOMParser().parseFromString(response.text, 'text/html')
+                var memberEls = doc.querySelectorAll('.member-list-item')
+                for (var i = 0; i < memberEls.length; i++) {
+                  var el = memberEls[i]
+                  var linkEl = el.querySelector('a[data-hovercard-type="user"]')
+                  var href = linkEl ? (linkEl.getAttribute('href') || '') : ''
+                  var login = href.replace(/^\//, '').split('/')[0]
+                  if (!login)
+                    return error('API', 'A GitHub organization member row had no login link.')
+                  if (seen[login]) continue
+                  seen[login] = true
+                  var imgEl = el.querySelector('img.avatar')
+                  members.push({
+                    login: login,
+                    avatar_url: imgEl ? (imgEl.getAttribute('src') || '') : '',
+                    html_url: 'https://github.com/' + login,
+                  })
+                }
+                if (page >= 100) break
+                var next = doc.querySelector('a[rel="next"], .pagination a.next_page:not(.disabled)')
+                if (!next) break
+                page++
+              }
+              if (!members.length) {
+                var emptyResponse = await fetchText(path, { Accept: 'text/html' })
+                var emptyDoc = emptyResponse.ok ? new DOMParser().parseFromString(emptyResponse.text, 'text/html') : null
+                var pageText = emptyDoc && emptyDoc.body ? emptyDoc.body.textContent : ''
+                if (!/no public members|no members|doesn.t have any public members/i.test(pageText))
+                  return error('API', 'GitHub organization members could not be identified; refusing an unverified empty list.')
               }
               return ok({ members: members })
             },

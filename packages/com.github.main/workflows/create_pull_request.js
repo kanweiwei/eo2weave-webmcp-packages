@@ -183,6 +183,7 @@ export default {
               ok: response.ok,
               status: response.status,
               text: text,
+              url: response.url,
               contentType: response.headers ? response.headers.get('content-type') || '' : '',
             }
           }
@@ -200,7 +201,7 @@ export default {
                 error_code: response.error_code,
                 message: response.message,
               }
-            return { ok: response.ok, status: response.status, text: response.text }
+            return { ok: response.ok, status: response.status, text: response.text, url: response.url }
           }
           async function fetchUrl(url, init) {
             return await boundedFetch(url, init)
@@ -398,6 +399,45 @@ export default {
               }
             }
             return { ok: true, data: {} }
+          }
+          async function comparePageToken(pagePath) {
+            if (!requireLogin())
+              return { ok: false, error_code: 'AUTH', message: 'Not authenticated — please log in to GitHub.' }
+            // The compare page carries the session CSRF token in a real hidden input.
+            var response = await fetchUrl(pagePath, {
+              method: 'GET',
+              headers: { Accept: 'text/html' },
+              credentials: 'include',
+            })
+            if (!response.ok) return httpError(response)
+            var match = String(response.text || '').match(/name="authenticity_token"\s+value="([^"]+)"/)
+            if (!match)
+              return { ok: false, error_code: 'AUTH', message: 'The compare page exposed no CSRF token.' }
+            return { ok: true, data: match[1] }
+          }
+          // The create POST answers with a redirect whose final URL fetch does not
+          // always surface, so confirm the new pull request from the issues index.
+          // The search index can lag the commit by a second, so retry briefly.
+          async function findPullNumberByHead(repoPath, head, title) {
+            var last = { number: 0 }
+            for (var attempt = 0; attempt < 4; attempt++) {
+              if (attempt > 0) await new Promise(function (resolve) { setTimeout(resolve, 800) })
+              var listing = await turboData(repoPath + '/issues', { q: 'is:pr head:' + head })
+              if (!listing.ok) return listing
+              var route = listing.data && listing.data.issuesIndexContentRoute
+              if (!route || !Array.isArray(route.results)) continue
+              var best = 0
+              for (var i = 0; i < route.results.length; i++) {
+                var item = route.results[i]
+                var pr = item && item.pullRequest
+                if (!pr || !Number.isInteger(pr.number)) continue
+                if (title !== undefined && pr.title === title) return { ok: true, data: { number: pr.number } }
+                if (pr.number > best) best = pr.number
+              }
+              last = { number: best }
+              if (best) return { ok: true, data: last }
+            }
+            return { ok: true, data: last }
           }
           function httpError(response) {
             var text = (response.text || '').slice(0, 512)
@@ -678,38 +718,80 @@ export default {
             async create_pull_request(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = {
-                'pull_request[title]': args.title,
-                'pull_request[head]': args.head,
-                'pull_request[base]': args.base,
-              }
-              if (args.body) fields['pull_request[body]'] = args.body
-              if (args.draft) fields['pull_request[draft]'] = '1'
-              var response = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/compare/' + encodeURIComponent(args.base) + '...' + encodeURIComponent(args.head), 'form#new_pull_request, form[action*="pull"]', fields)
-              if (!response.ok) return response
-              return ok({
-                pull_request: {
-                  number: 0,
-                  title: args.title,
-                  state: 'open',
-                  body: args.body || '',
-                  html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/pulls',
-                  user_login: '',
-                  head_ref: args.head,
-                  base_ref: args.base,
-                  labels: [],
-                  draft: !!args.draft,
-                  merged: false,
-                  mergeable: false,
-                  comments: 0,
-                  commits: 0,
-                  additions: 0,
-                  deletions: 0,
-                  changed_files: 0,
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
-                },
+              var repoPath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo)
+              var base = args.base
+              var head = args.head
+              var comparePath = repoPath + '/compare/' + encodeURIComponent(base) + '...' + encodeURIComponent(head)
+              var token = await comparePageToken(comparePath)
+              if (!token.ok) return token
+              var formData = new FormData()
+              formData.set('authenticity_token', token.data)
+              formData.set('dummy-field-just-to-avoid-empty-submit', 'foo')
+              formData.set('draft', args.draft ? 'on' : 'off')
+              formData.set('pull_request[title]', args.title)
+              formData.set('pull_request[body]', args.body || '')
+              formData.set('quick_pull', '')
+              // X-Requested-With must NOT be sent here: with it GitHub answers 422.
+              var createPath =
+                repoPath +
+                '/pull/create?base=' + encodeURIComponent(args.owner + ':' + base) +
+                '&head=' + encodeURIComponent(args.owner + ':' + head) +
+                '&head_repo=' + encodeURIComponent(args.repo)
+              var response = await fetchUrl(createPath, {
+                method: 'POST',
+                headers: { Accept: 'text/html' },
+                credentials: 'include',
+                body: formData,
               })
+              if (!response.ok) return httpError(response)
+              // Success is only proven by landing on the new pull request page.
+              var landed = typeof response.url === 'string' ? response.url : ''
+              var match = landed.match(/\/pull\/(\d+)(?:$|[?#])/)
+              var pullNumber = match ? Number(match[1]) : 0
+              if (!pullNumber) {
+                var found = await findPullNumberByHead(repoPath, head, args.title)
+                if (!found.ok) return found
+                pullNumber = found.data.number
+              }
+              if (!pullNumber)
+                return error('UNCONFIRMED_WRITE', 'The pull request submission could not be linked to a pull request. Check GitHub before retrying.')
+              var pageData = await pageEmbeddedData(repoPath + '/pull/' + pullNumber)
+              if (!pageData.ok) return pageData
+              var layout = pageData.data && pageData.data.pullRequestsLayoutRoute && pageData.data.pullRequestsLayoutRoute.pullRequest
+              if (!layout || Number(layout.number) !== pullNumber)
+                return error('UNCONFIRMED_WRITE', 'Pull request #' + pullNumber + ' could not be re-read after creation. Check GitHub before retrying.')
+              // Diff stats need one extra page load; skip it when the command
+              // deadline is close so the create itself still reports success.
+              var diffSummaries
+              if (remainingBudgetMs() > 9000) {
+                var filesData = await pageEmbeddedData(repoPath + '/pull/' + pullNumber + '/files')
+                if (filesData.ok && filesData.data && filesData.data.pullRequestsChangesRoute)
+                  diffSummaries = filesData.data.pullRequestsChangesRoute.diffSummaries
+              }
+              var pullRequest = mapPullRequest(
+                {
+                  number: layout.number,
+                  title: layout.title,
+                  body: args.body || '',
+                  author: layout.author,
+                  baseBranch: layout.baseBranch,
+                  headBranch: layout.headBranch,
+                  commitsCount: layout.commitsCount,
+                  pullRequestState: layout.state,
+                  closed: layout.state === 'CLOSED' || layout.state === 'MERGED',
+                  isDraft: String(layout.state || '') === 'DRAFT',
+                  diffSummaries: diffSummaries,
+                  __typename: 'PullRequest',
+                },
+                { owner: args.owner, repo: args.repo },
+              )
+              // Unknown diff stats must stay null rather than look like zero.
+              if (!diffSummaries) {
+                pullRequest.additions = null
+                pullRequest.deletions = null
+                pullRequest.changed_files = null
+              }
+              return ok({ pull_request: pullRequest })
             },
           }
 

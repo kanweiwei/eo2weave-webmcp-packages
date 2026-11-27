@@ -661,7 +661,9 @@ export default {
               var pagePath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/pull/' + args.pull_number
               var pageData = await pageEmbeddedData(pagePath)
               if (!pageData.ok) return pageData
-              var prLayout = (pageData.data.pullRequestsLayoutRoute && pageData.data.pullRequestsLayoutRoute.pullRequest) || {}
+              var prLayout = pageData.data.pullRequestsLayoutRoute && pageData.data.pullRequestsLayoutRoute.pullRequest
+              if (!prLayout || !prLayout.title || Number(prLayout.number) !== Number(args.pull_number))
+                return error('API', 'GitHub did not provide the requested pull request in embedded page data.')
               var diffSummaries = null
               var filesData = await pageEmbeddedData(pagePath + '/files')
               if (filesData.ok) diffSummaries = filesData.data.pullRequestsChangesRoute

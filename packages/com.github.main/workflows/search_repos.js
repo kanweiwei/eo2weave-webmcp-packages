@@ -201,20 +201,24 @@ export default {
             try {
               data = JSON.parse(response.text)
             } catch (e) {
-              return { ok: false, error_code: 'HTTP', status: response.status, message: 'GitHub returned invalid JSON for ' + path }
+              // GitHub now serves some routes as HTML even with Accept: application/json.
+              // Read the same-origin page's embedded payload rather than treating it as an empty list.
+              var embedded = extractEmbeddedData(response.text, path)
+              if (embedded !== null) return { ok: true, data: embedded }
+              return { ok: false, error_code: 'API', status: response.status, message: 'GitHub returned neither JSON nor recognizable embedded page data for ' + path }
             }
             return { ok: true, data: data.payload !== undefined ? data.payload : data }
           }
           function extractEmbeddedData(html, path) {
-            var match = html.match(/<script[^>]*data-target="react-app\.embeddedData"[^>]*>([\s\S]*?)<\/script>/)
-            if (!match || !match[1])
-              return null
-            try {
-              var embedded = JSON.parse(match[1])
-              return embedded.payload !== undefined ? embedded.payload : embedded
-            } catch (e) {
-              return null
+            var doc = new DOMParser().parseFromString(html, 'text/html')
+            var scripts = doc.querySelectorAll('script[data-target="react-app.embeddedData"], script[data-target="react-partial.embeddedData"]')
+            for (var i = 0; i < scripts.length; i++) {
+              try {
+                var embedded = JSON.parse(scripts[i].textContent)
+                if (embedded.payload !== undefined) return embedded.payload
+              } catch (e) {}
             }
+            return null
           }
           async function turboData(path, query) {
             if (!requireLogin())
@@ -657,17 +661,33 @@ export default {
             async search_repos(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
+              var perPage = args.per_page !== undefined ? args.per_page : 30
+              if (!Number.isInteger(perPage) || perPage < 1 || perPage > 100)
+                return error('INVALID_INPUT', 'per_page must be 1–100.')
               var response = await pageJson('/search', {
                 type: 'repositories',
                 q: args.query,
                 p: args.page !== undefined ? args.page : 1,
               })
               if (!response.ok) return response
-              var results = Array.isArray(response.data.results) ? response.data.results : []
-              return ok({
-                total_count: response.data.result_count !== undefined ? response.data.result_count : 0,
-                repositories: results.map(mapRepository),
-              })
+              var data = response.data
+              // The search page embeds its payload under blackbirdSearchRoute.
+              var route = data && (data.blackbirdSearchRoute || (data.search && data.search.blackbirdSearchRoute))
+              var results = (route && route.results) || (data && data.results) || (data && data.search && data.search.results)
+              if (!Array.isArray(results))
+                return error('API', 'GitHub repository search response has no recognizable results array.')
+              var count = route && typeof route.result_count === 'number' ? route.result_count
+                : (data && typeof data.result_count === 'number' ? data.result_count : (data && data.search && data.search.result_count))
+              if (typeof count !== 'number')
+                return error('API', 'GitHub repository search response has no recognizable result count.')
+              var repositories = []
+              for (var i = 0; i < results.length && repositories.length < perPage; i++) {
+                var mapped = mapRepository(results[i])
+                if (!mapped.name || !mapped.full_name || mapped.full_name.indexOf('/') === -1)
+                  return error('API', 'GitHub repository search returned an entry without an owner/name.')
+                repositories.push(mapped)
+              }
+              return ok({ total_count: count, repositories: repositories })
             },
           }
 

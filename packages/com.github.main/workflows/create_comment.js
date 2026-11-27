@@ -188,6 +188,21 @@ export default {
               }
             return { ok: response.ok, status: response.status, text: response.text }
           }
+          function verifiedHeaders() {
+            var nonce = 'v2:' + (typeof crypto !== 'undefined' && crypto.randomUUID
+              ? crypto.randomUUID()
+              : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+              }))
+            return {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce': nonce,
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+          }
           async function fetchUrl(url, init) {
             return await boundedFetch(url, init)
           }
@@ -664,12 +679,35 @@ export default {
             async create_comment(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = { 'comment[body]': args.body }
-              var prResponse = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/pull/' + args.issue_number, 'form.js-new-comment-form', fields)
-              if (prResponse.ok) return ok({ success: true })
-              var issueResponse = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number, 'form.js-new-comment-form', fields)
-              if (!issueResponse.ok) return issueResponse
-              return ok({ success: true })
+              // The issue/PR conversation composer posts to comments.json with a
+              // verified-fetch marker; pull requests share the issue endpoint.
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + encodeURIComponent(args.issue_number) + '/comments.json?queryId=createComment'
+              var response = await fetchUrl(path, {
+                method: 'POST',
+                credentials: 'include',
+                headers: verifiedHeaders(),
+                body: JSON.stringify({ input: { body: args.body } }),
+              })
+              if (!response.ok) return httpError(response)
+              var parsed
+              try {
+                parsed = JSON.parse(response.text)
+              } catch (e) {
+                return error('UNCONFIRMED_WRITE', 'GitHub did not confirm the comment with a JSON response.')
+              }
+              if (parsed.errors && parsed.errors.length)
+                return error('API', 'GitHub rejected the comment: ' + ((parsed.errors[0] && parsed.errors[0].message) || 'unknown error'))
+              var node = parsed.data && parsed.data.addComment && parsed.data.addComment.timelineEdge && parsed.data.addComment.timelineEdge.node
+              if (!node || node.__typename !== 'IssueComment' || node.databaseId === undefined)
+                return error('UNCONFIRMED_WRITE', 'GitHub accepted the comment request but returned no comment identity.')
+              return ok({
+                success: true,
+                comment: {
+                  id: Number(node.databaseId),
+                  body: node.body !== undefined ? node.body : args.body,
+                  html_url: node.url || ('https://github.com/' + args.owner + '/' + args.repo + '/issues/' + args.issue_number + '#issuecomment-' + node.databaseId),
+                },
+              })
             },
           }
 

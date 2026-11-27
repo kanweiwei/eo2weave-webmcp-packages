@@ -404,6 +404,7 @@ async function runTool(packageId, toolName, { input = {}, page } = {}) {
     document: makeDocument(page),
     fetch: page.fetch,
     console,
+    URL,
     URLSearchParams,
     Intl,
     // Node 20's SubtleCrypto rejects ArrayBuffer instances from another vm
@@ -496,6 +497,17 @@ function htmlResponse(body, status = 200) {
   }
 }
 
+function textResponse(status, body) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: () => 'text/plain' },
+    async text() {
+      return body
+    },
+  }
+}
+
 function jsResponse(body, status = 200) {
   return {
     ok: status >= 200 && status < 300,
@@ -538,6 +550,11 @@ for (const id of packageIds) {
       compiled = false
     }
     ok(compiled, `${id}: urlRegex compiles (${tool.name})`)
+    if (id === 'com.github.main' && compiled) {
+      const pattern = new RegExp(tool.urlRegex)
+      ok(pattern.test('https://github.com/octocat/Hello-World/issues/1'), `${id}: matches GitHub (${tool.name})`)
+      ok(!pattern.test('https://github.com.evil.example/octocat/Hello-World'), `${id}: rejects lookalike hosts (${tool.name})`)
+    }
     ok(existsSync(path.join(dir, tool.path)), `${id}: workflow file exists (${tool.path})`)
   }
 
@@ -718,10 +735,85 @@ section('execution: ported tools run against a stubbed page')
 }
 
 {
+  // GitHub's current Issues Turbo-Frame embeds the results directly rather
+  // than exposing the old IssueIndexPageQuery persisted query.
+  const requests = []
+  const result = await runTool('com.github.main', 'list_issues', {
+    input: { owner: 'octocat', repo: 'hello-world', per_page: 1 },
+    page: {
+      hostname: 'github.com',
+      login: 'octocat',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        return htmlResponse('<script data-target="react-app.embeddedData">' + JSON.stringify({
+          payload: { issuesIndexContentRoute: { results: [{ issue: {
+            number: 17, title: 'Actual issue', state: 'REPO_ISSUE_STATE_OPEN',
+            permalink: 'https://github.com/octocat/hello-world/issues/17',
+            commentCount: 2, createdAt: '2026-01-01T00:00:00Z', labels: [],
+          } }] } },
+        }) + '</script>')
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github list_issues: status')
+  equal(result.data.issues[0].number, 17, 'github list_issues: actual issue number')
+  equal(result.data.issues[0].title, 'Actual issue', 'github list_issues: actual title')
+  equal(result.data.issues[0].comments, 2, 'github list_issues: comments')
+  ok(requests[0].url.includes('page=1'), 'github list_issues: GitHub page parameter')
+  ok(!requests.some((r) => r.url === '/_graphql'), 'github list_issues: no stale persisted query')
+  const invalid = await runTool('com.github.main', 'list_issues', {
+    input: { owner: 'octocat', repo: 'hello-world' },
+    page: { hostname: 'github.com', login: 'octocat', fetch: async () => htmlResponse('<html>Unexpected page</html>') },
+  })
+  equal(invalid.status, 'error', 'github list_issues: missing payload must not be an empty success')
+  const pageRequests = []
+  const paged = await runTool('com.github.main', 'list_issues', {
+    input: { owner: 'octocat', repo: 'hello-world', page: 2, per_page: 1 },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url) => {
+        pageRequests.push(url)
+        const pageNumber = Number(new URL(url, 'https://github.com').searchParams.get('page'))
+        const issues = Array.from({ length: pageNumber === 1 ? 25 : 2 }, (_, i) => ({
+          issue: { number: (pageNumber - 1) * 25 + i + 1, title: `Issue ${(pageNumber - 1) * 25 + i + 1}` },
+        }))
+        return htmlResponse('<script data-target="react-app.embeddedData">' + JSON.stringify({
+          payload: { issuesIndexContentRoute: { results: issues } },
+        }) + '</script>')
+      },
+    },
+  })
+  equal(paged.status, 'ok', 'github list_issues: page two status')
+  equal(paged.data.issues[0].number, 2, 'github list_issues: caller page is independent of GitHub page size')
+  equal(pageRequests.length, 1, 'github list_issues: only fetches required page')
+}
+
+{
+  const result = await runTool('com.github.main', 'list_pull_requests', {
+    input: { owner: 'octocat', repo: 'hello-world', per_page: 1 },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async () => htmlResponse('<script data-target="react-app.embeddedData">' + JSON.stringify({
+        payload: { issuesIndexContentRoute: { results: [{
+          itemType: 'REPO_ISSUES_DASHBOARD_ITEM_TYPE_PULL_REQUEST',
+          pullRequest: { number: 9, title: 'Fix build', state: 'MERGED', displayState: 'MERGED',
+            mergedAt: '2026-11-01T00:00:00Z', permalink: 'https://github.com/octocat/hello-world/pull/9',
+            author: { login: 'octocat' }, commentCount: 2 },
+        }] } },
+      }) + '</script>'),
+    },
+  })
+  equal(result.status, 'ok', 'github list_pull_requests: status')
+  equal(result.data.pull_requests[0].number, 9, 'github list_pull_requests: actual PR number')
+  equal(result.data.pull_requests[0].title, 'Fix build', 'github list_pull_requests: actual PR title')
+  equal(result.data.pull_requests[0].state, 'merged', 'github list_pull_requests: merged state')
+  equal(result.data.pull_requests[0].merged, true, 'github list_pull_requests: merged flag')
+}
+
+{
   // GitHub: create_issue posts through the internal /_graphql persisted-query
-  // endpoint with the CSRF token taken from the page. The persisted mutation
-  // id is discovered at runtime from GitHub's JS bundles, exactly like the
-  // upstream plugin does.
+  // endpoint with GitHub's verified-fetch marker. The queryId segment is not
+  // validated by the endpoint, so it is a stable literal, not a bundle scan.
   const requests = []
   const result = await runTool('com.github.main', 'create_issue', {
     input: { owner: 'octocat', repo: 'hello-world', title: 'Bug' },
@@ -735,13 +827,7 @@ section('execution: ported tools run against a stubbed page')
             '<script data-target="react-app.embeddedData">{"payload":{"preloadedQueries":{"q":{"result":{"data":{"repository":{"id":"R_1"}}}}}}}</script>',
           )
         }
-        if (String(url).startsWith('https://github.githubassets.com/')) {
-          return jsResponse('...id:"0123456789abcdef0123456789abcdef",name:"createIssueMutation",operationKind:"mutation"...')
-        }
-        if (String(url) === 'https://github.com/') {
-          return htmlResponse('<script src="https://github.githubassets.com/assets/app.js"></script>')
-        }
-        if (String(url) === '/_graphql') {
+        if (String(url).startsWith('/_ghui/issues')) {
           return jsonResponse({ data: { createIssue: { issue: { number: 7, title: 'Bug', url: 'https://github.com/octocat/hello-world/issues/7' } } } })
         }
         return jsonResponse({})
@@ -750,12 +836,558 @@ section('execution: ported tools run against a stubbed page')
   })
   equal(result.status, 'ok', 'github create_issue: status')
   equal(result.data.issue.number, 7, 'github create_issue: issue number')
-  const graphql = requests.find((r) => r.url === '/_graphql')
-  ok(Boolean(graphql), 'github create_issue: posts to /_graphql')
-  equal(graphql.init.headers['X-CSRF-Token'], 'csrf-token', 'github create_issue: sends the CSRF token')
-  const body = JSON.parse(graphql.init.body)
-  equal(body.query, '0123456789abcdef0123456789abcdef', 'github create_issue: uses the discovered persisted query id')
-  equal(body.variables.input.repositoryId, 'R_1', 'github create_issue: passes the repository id')
+  const write = requests.find((r) => String(r.url).startsWith('/_ghui/issues'))
+  ok(Boolean(write), 'github create_issue: posts to the verified-fetch endpoint')
+  equal(write.init.headers['GitHub-Verified-Fetch'], 'true', 'github create_issue: sends the verified-fetch marker')
+  ok(/^v2:/.test(write.init.headers['X-Fetch-Nonce']), 'github create_issue: sends a fetch nonce')
+  const body = JSON.parse(write.init.body)
+  equal(body.input.repositoryId, 'R_1', 'github create_issue: passes the repository id')
+  equal(body.input.title, 'Bug', 'github create_issue: passes the title')
+}
+
+{
+  // GitHub: create_pull_request posts multipart to /pull/create with the session
+  // CSRF token and no X-Requested-With (that header makes GitHub answer 422).
+  // Success is only accepted when the new PR number can be confirmed.
+  const requests = []
+  const result = await runTool('com.github.main', 'create_pull_request', {
+    input: { owner: 'octocat', repo: 'hello-world', title: 'New PR', head: 'feature', base: 'main', body: 'hello' },
+    page: {
+      hostname: 'github.com',
+      login: 'octocat',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        const target = String(url)
+        if (target === '/octocat/hello-world/compare/main...feature')
+          return htmlResponse('<form><input type="hidden" name="authenticity_token" value="csrf-pr"></form>')
+        if (target.startsWith('/octocat/hello-world/pull/create')) {
+          const res = jsonResponse({ data: {} })
+          return { ...res, url: 'https://github.com/octocat/hello-world/pull/42' }
+        }
+        if (target === '/octocat/hello-world/pull/42')
+          return htmlResponse(
+            '<script data-target="react-app.embeddedData">' +
+              JSON.stringify({ payload: { pullRequestsLayoutRoute: { pullRequest: { number: 42, title: 'New PR', author: { login: 'octocat' }, baseBranch: 'main', headBranch: 'feature', commitsCount: 2, state: 'OPEN' } } } }) +
+              '</script>',
+          )
+        if (target === '/octocat/hello-world/pull/42/files')
+          return htmlResponse(
+            '<script data-target="react-app.embeddedData">' +
+              JSON.stringify({ payload: { pullRequestsChangesRoute: { diffSummaries: [{ path: 'a.txt', linesAdded: 3, linesDeleted: 1 }] } } }) +
+              '</script>',
+          )
+        return jsonResponse({ payload: {} })
+      },
+    },
+  })
+  if (result.status !== 'ok') console.error('create_pull_request failed:', result.error_code, result.message, requests.map((r) => String(r.url)))
+  equal(result.status, 'ok', 'github create_pull_request: status')
+  equal(result.data.pull_request.number, 42, 'github create_pull_request: real PR number')
+  equal(result.data.pull_request.head_ref, 'feature', 'github create_pull_request: head ref')
+  equal(result.data.pull_request.additions, 3, 'github create_pull_request: diff additions')
+  equal(result.data.pull_request.changed_files, 1, 'github create_pull_request: changed files')
+  const createWrite = requests.find((r) => String(r.url).startsWith('/octocat/hello-world/pull/create'))
+  ok(Boolean(createWrite), 'github create_pull_request: posts to /pull/create')
+  ok(/base=octocat%3Amain/.test(String(createWrite.url)), 'github create_pull_request: qualifies the base ref')
+  ok(/head_repo=hello-world/.test(String(createWrite.url)), 'github create_pull_request: names the head repo')
+  equal(createWrite.init.body.get('authenticity_token'), 'csrf-pr', 'github create_pull_request: sends the CSRF token')
+  equal(createWrite.init.body.get('pull_request[title]'), 'New PR', 'github create_pull_request: sends the title')
+  ok(!('X-Requested-With' in createWrite.init.headers), 'github create_pull_request: omits the XHR header')
+}
+
+{
+  // GitHub: update_pull_request rides the classic edit/comment forms (a PR is not
+  // an Issue node, so the JSON issue endpoints answer NOT_FOUND) and only reports
+  // the fields the page reads back.
+  const writes = []
+  const prPayload = (title, state) =>
+    htmlResponse(
+      '<script data-target="react-app.embeddedData">' +
+        JSON.stringify({ payload: { pullRequestsLayoutRoute: { pullRequest: { number: 7, title, state } } } }) +
+        '</script>' +
+        '<div class="comment-body">updated body text</div>' +
+        '<form action="/octocat/hello-world/pull/7/comment?sticky=true">' +
+        '<input type="hidden" name="authenticity_token" value="tok-pr">' +
+        '<input type="hidden" name="issue" value="7">' +
+        '<input type="text" name="required_field_abc" value="">' +
+        '<textarea name="comment[body]"></textarea>' +
+        '</form>',
+    )
+  const result = await runTool('com.github.main', 'update_pull_request', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 7, title: 'New title', body: 'updated body text', state: 'closed' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        const target = String(url)
+        writes.push({ url: target, init })
+        if (target === '/octocat/hello-world/pull/7/edit')
+          return htmlResponse(
+            '<form action="/octocat/hello-world/issues/7">' +
+              '<input type="hidden" name="_method" value="put">' +
+              '<input type="hidden" name="authenticity_token" value="tok-edit">' +
+              '</form>',
+          )
+        if (target === '/octocat/hello-world/issues/7' && init && init.method === 'POST')
+          return htmlResponse('<html>saved</html>')
+        if (target === '/octocat/hello-world/pull/7/comment?sticky=true' && init && init.method === 'POST')
+          return htmlResponse('<html>closed</html>')
+        return prPayload('New title', 'CLOSED')
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github update_pull_request: status')
+  equal(result.data.updated.join(','), 'title,state,body', 'github update_pull_request: reports every read-back field')
+  equal(result.data.pull_request.state, 'closed', 'github update_pull_request: state comes from the page')
+  const editWrite = writes.find((w) => w.url === '/octocat/hello-world/issues/7')
+  ok(Boolean(editWrite), 'github update_pull_request: posts the classic issue form')
+  const editFields = new URLSearchParams(String(editWrite.init.body))
+  equal(editFields.get('_method'), 'put', 'github update_pull_request: put-shaped form')
+  equal(editFields.get('issue[title]'), 'New title', 'github update_pull_request: sends the title')
+  equal(editFields.get('issue[body]'), 'updated body text', 'github update_pull_request: sends the body')
+  const stateWrite = writes.find((w) => w.url.indexOf('/pull/7/comment') !== -1)
+  const stateFields = new URLSearchParams(String(stateWrite.init.body))
+  equal(stateFields.get('comment_and_close'), '1', 'github update_pull_request: closes through the comment form')
+  equal(stateFields.get('authenticity_token'), 'tok-pr', 'github update_pull_request: reuses the form token')
+  ok(!stateFields.has('comment_and_open'), 'github update_pull_request: does not send both lifecycle flags')
+
+  const stale = await runTool('com.github.main', 'update_pull_request', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 7, title: 'Ignored title' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        const target = String(url)
+        if (target === '/octocat/hello-world/pull/7/edit')
+          return htmlResponse('<form action="/octocat/hello-world/issues/7"><input type="hidden" name="authenticity_token" value="t"></form>')
+        if (init && init.method === 'POST') return htmlResponse('<html>ok</html>')
+        return prPayload('Unchanged title', 'OPEN')
+      },
+    },
+  })
+  equal(stale.status, 'error', 'github update_pull_request: unchanged title is not a success')
+  equal(stale.error_code, 'UNCONFIRMED_WRITE', 'github update_pull_request: unchanged title reports unconfirmed')
+}
+
+{
+  // GitHub: merge_pull_request posts to /pull/{n}/page_data/merge and refuses to
+  // claim success unless the pull request reads back as MERGED.
+  const posts = []
+  const layout = (state, sha) =>
+    htmlResponse(
+      '<script data-target="react-app.embeddedData">' +
+        JSON.stringify({ payload: { pullRequestsLayoutRoute: { pullRequest: { number: 8, title: 'Merge me', state, headBranch: 'feature', mergeCommitSha: sha || null } } } }) +
+        '</script>',
+    )
+  let reads = 0
+  const result = await runTool('com.github.main', 'merge_pull_request', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 8, merge_method: 'merge' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        const target = String(url)
+        if (target === '/octocat/hello-world/pull/8/page_data/merge') {
+          posts.push({ target, init })
+          return jsonResponse({ data: { mergePullRequest: { pullRequest: { state: 'MERGED' } } } })
+        }
+        reads += 1
+        return reads === 1 ? layout('OPEN') : layout('MERGED', 'abc123')
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github merge_pull_request: status')
+  equal(result.data.merged, true, 'github merge_pull_request: merged flag')
+  equal(result.data.merge_commit_sha, 'abc123', 'github merge_pull_request: merge commit sha')
+  equal(result.data.merge_method, 'merge', 'github merge_pull_request: method echoed')
+  const body = JSON.parse(posts[0].init.body)
+  equal(body.mergeMethod, 'MERGE', 'github merge_pull_request: upper-case merge method')
+  equal(body.bypassBranchProtections, false, 'github merge_pull_request: never bypasses protections')
+  equal(body.commitMessage, 'Merge me', 'github merge_pull_request: defaults the message to the title')
+  ok(/^Merge pull request #8 from octocat\/feature$/.test(body.commitTitle), 'github merge_pull_request: default commit title')
+  const unconfirmed = await runTool('com.github.main', 'merge_pull_request', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 8 },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url) => {
+        if (String(url).indexOf('/page_data/merge') !== -1) return jsonResponse({ data: {} })
+        return layout('OPEN')
+      },
+    },
+  })
+  equal(unconfirmed.error_code, 'UNCONFIRMED_WRITE', 'github merge_pull_request: unmerged read-back is not success')
+}
+
+{
+  // GitHub: request_pull_request_review resolves logins to ids and posts the
+  // reviewer form; a 200 that does not list the reviewer is not success.
+  const posts = []
+  const reviewerPage = (logins) =>
+    htmlResponse(
+      '<form action="/octocat/hello-world/pull/9/review-requests">' +
+        '<input type="hidden" name="authenticity_token" value="tok-review">' +
+        '<input type="hidden" name="partial_last_updated" value="1700000000">' +
+        '<input type="text" name="dummy-field-just-to-avoid-empty-submit" value="">' +
+        '</form>' +
+        (logins ? '<span>' + logins + '</span>' : '<p>Nothing to show</p>'),
+    )
+  const result = await runTool('com.github.main', 'request_pull_request_review', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 9, reviewers: ['hubot'] },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        const target = String(url)
+        if (target === '/octocat/hello-world/pull/9/edit') return reviewerPage('')
+        if (target === '/hubot')
+          return htmlResponse('<meta name="octolytics-dimension-user_id" content="4242" />')
+        if (target === '/octocat/hello-world/pull/9/review-requests') {
+          posts.push({ target, init })
+          return htmlResponse('<div>Reviewers hubot</div>')
+        }
+        return htmlResponse('<html></html>')
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github request_pull_request_review: status')
+  equal(result.data.reviewers.join(','), 'hubot', 'github request_pull_request_review: echoes reviewers')
+  const reviewFields = new URLSearchParams(String(posts[0].init.body))
+  equal(reviewFields.get('reviewer_user_ids[]'), '4242', 'github request_pull_request_review: resolves login to id')
+  equal(reviewFields.get('authenticity_token'), 'tok-review', 'github request_pull_request_review: reuses the form token')
+  const ignored = await runTool('com.github.main', 'request_pull_request_review', {
+    input: { owner: 'octocat', repo: 'hello-world', pull_number: 9, reviewers: ['octocat'] },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url) => {
+        const target = String(url)
+        if (target === '/octocat/hello-world/pull/9/edit') return reviewerPage('')
+        if (target === '/octocat') return htmlResponse('<meta name="octolytics-dimension-user_id" content="1" />')
+        return htmlResponse('<p>Nothing to show</p>')
+      },
+    },
+  })
+  equal(ignored.error_code, 'UNCONFIRMED_WRITE', 'github request_pull_request_review: silently ignored request is not success')
+}
+
+{
+  // GitHub: update_issue writes each field through its own action endpoint
+  // (title via PUT, body via PATCH with an `input` wrapper, state via a
+  // planning-status id) and then re-reads the page payload to prove the change.
+  const requests = []
+  let reads = 0
+  const result = await runTool('com.github.main', 'update_issue', {
+    input: { owner: 'octocat', repo: 'hello-world', issue_number: 3, title: 'Edited', body: 'new body', state: 'closed' },
+    page: {
+      hostname: 'github.com',
+      login: 'octocat',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        const target = String(url)
+        if (target === '/octocat/hello-world/issues/3' && (!init || !init.method || init.method === 'GET')) {
+          reads++
+          const state = reads > 1 ? 'CLOSED' : 'OPEN'
+          return jsonResponse({
+            payload: {
+              owner: { planningStatuses: { nodes: [
+                { id: 'IS_open', name: 'Backlog', category: { state: 'OPEN' } },
+                { id: 'IS_closed', name: 'Done', category: { state: 'CLOSED' } },
+              ] } },
+              issueViewerRoute: { data: { repository: { issue: { number: 3, title: 'Edited', body: 'new body', state } } } },
+            },
+          })
+        }
+        if (target === '/octocat/hello-world/issues/3' && init.method === 'PATCH')
+          return jsonResponse({ data: { updateIssue: { issue: { body: 'new body' } } } })
+        return jsonResponse({ data: {} })
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github update_issue: status')
+  equal(result.data.issue.title, 'Edited', 'github update_issue: title persisted')
+  equal(result.data.issue.body, 'new body', 'github update_issue: body persisted')
+  equal(result.data.issue.state, 'closed', 'github update_issue: state persisted')
+  const writes = requests.filter((r) => r.init && r.init.method && r.init.method !== 'GET')
+  const bodyWrite = writes.find((r) => r.init.method === 'PATCH' && JSON.parse(r.init.body).input)
+  ok(Boolean(bodyWrite), 'github update_issue: body goes through the input-wrapped PATCH')
+  const stateWrite = writes.find((r) => String(r.url).endsWith('/state.json'))
+  ok(Boolean(stateWrite), 'github update_issue: state goes through state.json')
+  equal(JSON.parse(stateWrite.init.body).statusId, 'IS_closed', 'github update_issue: resolves the CLOSED planning status')
+  equal(stateWrite.init.headers['GitHub-Verified-Fetch'], 'true', 'github update_issue: sends the verified-fetch marker')
+}
+
+{
+  // GitHub: the file editor commits through multipart POSTs to /create or
+  // /tree-save with the branch head in `commit`, and the result must be read
+  // back from /raw instead of trusting the commit response.
+  const requests = []
+  const page = (existing) => ({
+    hostname: 'github.com',
+    login: 'octocat',
+    fetch: async (url, init) => {
+      requests.push({ url, init })
+      const target = String(url)
+      if (target === '/octocat/hello-world/commits/main')
+        return jsonResponse({ payload: { commitsRefRoute: { commitGroups: [{ commits: [{ oid: 'head1' }] }] } } })
+      if (target.startsWith('/octocat/hello-world/raw/main/')) {
+        if (init && init.method === 'GET') {
+          const created = requests.filter((r) => String(r.url).includes('/create/')).length > 0
+          const exists = existing || created
+          return exists ? textResponse(200, 'file body\n') : textResponse(404, '404: Not Found')
+        }
+      }
+      return jsonResponse({ data: { redirect: 'https://github.com/octocat/hello-world/tree/main' } })
+    },
+  })
+  const created = await runTool('com.github.main', 'create_or_update_file', {
+    input: { owner: 'octocat', repo: 'hello-world', path: 'docs/a.txt', content: 'file body\n', message: 'add a' },
+    page: page(false),
+  })
+  equal(created.status, 'ok', 'github create_or_update_file: create status')
+  equal(created.data.created, true, 'github create_or_update_file: reports creation')
+  const createWrite = requests.find((r) => String(r.url) === '/octocat/hello-world/create/main')
+  ok(Boolean(createWrite), 'github create_or_update_file: posts to /create')
+  equal(createWrite.init.headers['GitHub-Verified-Fetch'], 'true', 'github create_or_update_file: sends the verified-fetch marker')
+  ok(createWrite.init.body instanceof FormData, 'github create_or_update_file: sends a multipart body')
+  equal(createWrite.init.body.get('commit'), 'head1', 'github create_or_update_file: sends the branch head')
+  equal(createWrite.init.body.get('value'), 'file body\n', 'github create_or_update_file: sends the content')
+  equal(createWrite.init.body.get('filename'), 'docs/a.txt', 'github create_or_update_file: sends the full path')
+  ok(!createWrite.init.body.has('author_email'), 'github create_or_update_file: omits author_email (422 when blank)')
+  const updated = await runTool('com.github.main', 'create_or_update_file', {
+    input: { owner: 'octocat', repo: 'hello-world', path: 'docs/a.txt', content: 'file body\n', message: 'update a' },
+    page: page(true),
+  })
+  equal(updated.data.created, false, 'github create_or_update_file: reports update')
+  ok(
+    requests.some((r) => String(r.url) === '/octocat/hello-world/tree-save/main/docs/a.txt'),
+    'github create_or_update_file: posts updates to /tree-save',
+  )
+}
+
+{
+  // GitHub: delete_file commits `_method=delete` to the blob route and only a
+  // 404 from /raw proves the file is gone.
+  const requests = []
+  let deleted = false
+  const result = await runTool('com.github.main', 'delete_file', {
+    input: { owner: 'octocat', repo: 'hello-world', path: 'docs/a.txt', message: 'drop a' },
+    page: {
+      hostname: 'github.com',
+      login: 'octocat',
+      fetch: async (url, init) => {
+        requests.push({ url, init })
+        const target = String(url)
+        if (target === '/octocat/hello-world/commits/main')
+          return jsonResponse({ payload: { commitsRefRoute: { commitGroups: [{ commits: [{ oid: 'head2' }] }] } } })
+        if (target === '/octocat/hello-world/blob/main/docs/a.txt') {
+          deleted = true
+          return jsonResponse({ data: { redirect: 'https://github.com/octocat/hello-world/tree/main' } })
+        }
+        if (target.startsWith('/octocat/hello-world/raw/main/'))
+          return deleted ? textResponse(404, '404: Not Found') : textResponse(200, 'file body\n')
+        return jsonResponse({})
+      },
+    },
+  })
+  equal(result.status, 'ok', 'github delete_file: status')
+  equal(result.data.deleted, true, 'github delete_file: reports deletion')
+  const write = requests.find((r) => String(r.url) === '/octocat/hello-world/blob/main/docs/a.txt')
+  ok(Boolean(write), 'github delete_file: posts to the blob route')
+  equal(write.init.body.get('_method'), 'delete', 'github delete_file: sends the method override')
+  equal(write.init.body.get('commit'), 'head2', 'github delete_file: sends the branch head')
+  const missing = await runTool('com.github.main', 'delete_file', {
+    input: { owner: 'octocat', repo: 'hello-world', path: 'docs/missing.txt', message: 'drop' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url) => {
+        const target = String(url)
+        if (target === '/octocat/hello-world/commits/main')
+          return jsonResponse({ payload: { commitsRefRoute: { commitGroups: [{ commits: [{ oid: 'head2' }] }] } } })
+        return textResponse(404, '404: Not Found')
+      },
+    },
+  })
+  equal(missing.error_code, 'NOT_FOUND', 'github delete_file: missing file is not ok')
+}
+
+{
+  // GitHub: add_reaction posts to /reactable_item/reactions and must confirm the
+  // reaction from the returned reactionGroups instead of assuming success.
+  const requests = []
+  const reactionPage = (reacted) => ({
+    hostname: 'github.com',
+    login: 'octocat',
+    fetch: async (url, init) => {
+      requests.push({ url, init })
+      return jsonResponse({
+        data: {
+          addReaction: {
+            subject: {
+              id: 'I_1',
+              reactionGroups: [
+                { content: 'LAUGH', viewerHasReacted: reacted, reactors: { totalCount: reacted ? 2 : 1 } },
+              ],
+            },
+          },
+        },
+      })
+    },
+  })
+  const good = await runTool('com.github.main', 'add_reaction', {
+    input: { subject_id: 'I_1', content: 'laugh' },
+    page: reactionPage(true),
+  })
+  equal(good.status, 'ok', 'github add_reaction: status')
+  equal(good.data.reaction, 'LAUGH', 'github add_reaction: maps the emoji name')
+  equal(good.data.count, 2, 'github add_reaction: reports the reactor count')
+  equal(good.data.viewer_has_reacted, true, 'github add_reaction: reports the viewer reaction')
+  const write = requests.find((r) => String(r.url) === '/reactable_item/reactions')
+  ok(Boolean(write), 'github add_reaction: posts to the reactable endpoint')
+  equal(write.init.headers['GitHub-Verified-Fetch'], 'true', 'github add_reaction: sends the verified-fetch marker')
+  equal(JSON.parse(write.init.body).subjectId, 'I_1', 'github add_reaction: passes the subject id')
+  const unconfirmed = await runTool('com.github.main', 'add_reaction', {
+    input: { subject_id: 'I_1', content: 'laugh' },
+    page: reactionPage(false),
+  })
+  equal(unconfirmed.error_code, 'UNCONFIRMED_WRITE', 'github add_reaction: unapplied reaction is not ok')
+}
+
+{
+  // GitHub: create_repo posts the JSON payload the new-repository page builds and
+  // only reports the repo once its page renders with the requested visibility.
+  const posts = []
+  const repoPage = (name, visibility) =>
+    htmlResponse(
+      '<title>octocat/' + name + ': hello</title>' +
+        '<span>' + visibility + '</span>',
+    )
+  const created = await runTool('com.github.main', 'create_repo', {
+    input: { name: 'new-repo', description: 'hello', private: true, auto_init: true },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        if (init?.method === 'POST') {
+          posts.push({ url: String(url), init })
+          return jsonResponse({ data: { redirect: '/octocat/new-repo' } })
+        }
+        return repoPage('new-repo', 'Private')
+      },
+    },
+  })
+  equal(created.status, 'ok', 'github create_repo: status')
+  equal(created.data.repository.full_name, 'octocat/new-repo', 'github create_repo: full name from the redirect')
+  equal(created.data.repository.private, true, 'github create_repo: visibility read from the page')
+  equal(created.data.repository.matches_request, true, 'github create_repo: requested visibility honoured')
+  equal(posts[0].url, '/repositories', 'github create_repo: posts to /repositories')
+  equal(posts[0].init.headers['GitHub-Verified-Fetch'], 'true', 'github create_repo: verified-fetch marker')
+  const sent = JSON.parse(posts[0].init.body)
+  equal(sent.owner, 'octocat', 'github create_repo: owner defaults to the signed-in user')
+  equal(sent.repository.visibility, 'private', 'github create_repo: visibility is a word, not a boolean')
+  equal(sent.repository.auto_init, '1', 'github create_repo: auto_init uses the server encoding')
+  equal(sent.repository.name, 'new-repo', 'github create_repo: sends the name')
+  const rejected = await runTool('com.github.main', 'create_repo', {
+    input: { name: 'taken' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async () => jsonResponse({ data: { error: 'Repository creation failed.' }, code: 422 }, 422),
+    },
+  })
+  equal(rejected.error_code, 'CREATE_FAILED', 'github create_repo: 422 is a failure, not success')
+  ok(/Repository creation failed/.test(rejected.message), 'github create_repo: surfaces the GitHub reason')
+  const unconfirmed = await runTool('com.github.main', 'create_repo', {
+    input: { name: 'ghost' },
+    page: {
+      hostname: 'github.com', login: 'octocat',
+      fetch: async (url, init) => {
+        if (init?.method === 'POST') return jsonResponse({ data: { redirect: '/octocat/ghost' } })
+        return htmlResponse('<html>Página no encontrada</html>')
+      },
+    },
+  })
+  equal(unconfirmed.error_code, 'UNCONFIRMED_WRITE', 'github create_repo: unrendered repo is not success')
+}
+
+{
+  // Release creation copies the real form (so the CSRF token and honeypots come
+  // along), honours only the *checked* branch radio, writes the lifecycle flags
+  // in the encoding the server reads, and verifies the release page it landed on.
+  const requested = []
+  const releaseInput = { owner: 'octocat', repo: 'hello-world', tag_name: 'v1.0.0' }
+  const newReleasePage =
+    '<form action="/octocat/hello-world/releases" method="post">' +
+    '<input type="hidden" name="authenticity_token" value="csrf-release">' +
+    '<input type="hidden" name="utf8" value="✓">' +
+    '<input type="hidden" name="release[draft]" value="true">' +
+    '<input type="hidden" name="release[tag_name]" value="">' +
+    '<input type="radio" name="release[target_commitish]" value="main" checked>' +
+    '<input type="radio" name="release[target_commitish]" value="deadbeef1">' +
+    '<input type="radio" name="release[target_commitish]" value="deadbeef2">' +
+    '<input type="radio" name="release[release_label_option]" value="none" checked>' +
+    '<input type="radio" name="release[release_label_option]" value="prerelease">' +
+    '</form>'
+  const page = (opts = {}) => ({
+    hostname: 'github.com', login: 'octocat',
+    fetch: async (url, init) => {
+      requested.push({ url, init })
+      if (init?.method === 'POST') {
+        const res = htmlResponse('<html>Request accepted</html>')
+        return { ...res, url: opts.landed || 'https://github.com/octocat/hello-world/releases/tag/v1.0.0' }
+      }
+      if (String(url).indexOf('/releases/tag/') !== -1) {
+        if (opts.pageHtml !== undefined) return htmlResponse(opts.pageHtml)
+        return htmlResponse('<h1>Release v1.0.0</h1>')
+      }
+      if (opts.formAction) return htmlResponse(`<form action="${opts.formAction}"><input type="hidden" name="authenticity_token" value="t"></form>`)
+      return htmlResponse(newReleasePage)
+    },
+  })
+  const malicious = await runTool('com.github.main', 'create_release', {
+    input: releaseInput, page: page({ formAction: 'https://attacker.example/releases' }),
+  })
+  equal(malicious.status, 'error', 'github create_release: rejects cross-origin action')
+  ok(!requested.some((r) => r.init?.method === 'POST'), 'github create_release: no cross-origin POST')
+  requested.length = 0
+  const published = await runTool('com.github.main', 'create_release', {
+    input: { ...releaseInput, name: 'Release v1.0.0', body: 'notes' }, page: page(),
+  })
+  equal(published.status, 'ok', 'github create_release: status')
+  equal(published.data.release.tag_name, 'v1.0.0', 'github create_release: tag name from the landed page')
+  equal(published.data.release.draft, false, 'github create_release: published release is not a draft')
+  equal(published.data.release.tag_created, true, 'github create_release: published release has its tag')
+  const posted = requested.find((r) => r.init?.method === 'POST')
+  const postedFields = new URLSearchParams(String(posted.init.body))
+  equal(posted.url, '/octocat/hello-world/releases', 'github create_release: posts to the form action')
+  equal(postedFields.get('utf8'), '✓', 'github create_release: preserves hidden fields')
+  equal(postedFields.get('release[draft]'), '0', 'github create_release: draft uses the server encoding')
+  equal(postedFields.get('release[tag_name]'), 'v1.0.0', 'github create_release: sends the tag name')
+  equal(postedFields.get('release[name]'), 'Release v1.0.0', 'github create_release: sends the name')
+  equal(postedFields.get('release[target_commitish]'), 'main', 'github create_release: only the checked branch radio')
+  equal(postedFields.get('release[prerelease]'), 'false', 'github create_release: prerelease flag')
+  equal(postedFields.get('release[release_label_option]'), 'none', 'github create_release: label option')
+  requested.length = 0
+  const draft = await runTool('com.github.main', 'create_release', {
+    input: { ...releaseInput, draft: true, prerelease: true, target_commitish: 'release-1' },
+    page: page({ landed: 'https://github.com/octocat/hello-world/releases/tag/untagged-abc123', pageHtml: '<h1>v1.0.0</h1>' }),
+  })
+  equal(draft.status, 'ok', 'github create_release: draft status')
+  equal(draft.data.release.draft, true, 'github create_release: draft flag')
+  equal(draft.data.release.tag_created, false, 'github create_release: drafts materialise their tag on publish')
+  equal(draft.data.release.tag_name, 'v1.0.0', 'github create_release: draft keeps the requested tag name')
+  const draftFields = new URLSearchParams(String(requested.find((r) => r.init?.method === 'POST').init.body))
+  equal(draftFields.get('release[draft]'), '1', 'github create_release: draft sends 1')
+  equal(draftFields.get('release[prerelease]'), 'true', 'github create_release: prerelease true encoding')
+  equal(draftFields.get('release[release_label_option]'), 'prerelease', 'github create_release: prerelease label option')
+  equal(draftFields.get('release[target_commitish]'), 'release-1', 'github create_release: caller branch wins')
+  requested.length = 0
+  const unconfirmed = await runTool('com.github.main', 'create_release', {
+    input: releaseInput, page: page({ pageHtml: '<html>Some other release</html>' }),
+  })
+  equal(unconfirmed.status, 'error', 'github create_release: unconfirmed HTML response')
+  equal(unconfirmed.error_code, 'UNCONFIRMED_WRITE', 'github create_release: uncertain write code')
+  equal(requested.filter((r) => r.init?.method === 'POST').length, 1, 'github create_release: one POST only')
+}
+
+// Run the GitHub regression subset without waiting for the entire multi-package
+// suite (which also exercises unrelated integrations).
+if (process.env.GITHUB_SMOKE_ONLY === '1') {
+  console.log(`\n${checks - failures}/${checks} checks passed through GitHub regressions`)
+  if (failures) process.exit(1)
+  process.exit(0)
 }
 
 {

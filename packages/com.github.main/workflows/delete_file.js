@@ -389,6 +389,46 @@ export default {
             }
             return { ok: true, data: {} }
           }
+          // Deleting commits through a multipart POST to the blob route with
+          // `_method=delete` — the same request the file page's own dialog sends.
+          function verifiedHeaders() {
+            var nonce =
+              typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function'
+                ? 'v2:' + crypto.randomUUID()
+                : 'v2:' + String(Date.now()) + '-' + Math.random().toString(16).slice(2)
+            return {
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce': nonce,
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+          }
+          function encodePath(path) {
+            var parts = String(path).split('/')
+            for (var i = 0; i < parts.length; i++) parts[i] = encodeURIComponent(parts[i])
+            return parts.join('/')
+          }
+          async function branchHead(repoPath, branch) {
+            var result = await pageJson(repoPath + '/commits/' + encodeURIComponent(branch))
+            if (!result.ok) return result
+            var route = result.data && result.data.commitsRefRoute
+            var groups = route && route.commitGroups ? route.commitGroups : []
+            for (var i = 0; i < groups.length; i++) {
+              var commits = groups[i] && groups[i].commits ? groups[i].commits : []
+              if (commits.length && commits[0] && commits[0].oid) return { ok: true, data: commits[0].oid }
+            }
+            return { ok: false, error_code: 'API', message: 'No head commit was found for ' + branch + '.' }
+          }
+          async function fileExists(repoPath, branch, path) {
+            var response = await fetchUrl(repoPath + '/raw/' + encodeURIComponent(branch) + '/' + encodePath(path), {
+              method: 'GET',
+              headers: { Accept: 'text/plain' },
+              credentials: 'same-origin',
+            })
+            if (response.error_code)
+              return { ok: false, status: response.status, error_code: response.error_code, message: response.message }
+            return { ok: true, status: response.status }
+          }
           function httpError(response) {
             var text = (response.text || '').slice(0, 512)
             if (response.status === 401 || response.status === 403)
@@ -668,14 +708,40 @@ export default {
             async delete_file(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var branch = args.branch !== undefined ? args.branch : 'main'
-              var response = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/delete/' + encodeURIComponent(branch) + '/' + args.path, 'form[action*="delete"]', {
-                message: args.message,
-                commit_choice: 'direct',
-                target_branch: branch,
+              var branch = args.branch !== undefined && args.branch ? args.branch : 'main'
+              var repoPath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo)
+              var present = await fileExists(repoPath, branch, args.path)
+              if (!present.ok) return present
+              if (present.status !== 200)
+                return error('NOT_FOUND', 'No file at ' + args.path + ' on ' + branch + ' (raw status ' + present.status + ').')
+              var head = await branchHead(repoPath, branch)
+              if (!head.ok) return head
+              var baseName = String(args.path).split('/').pop()
+              var formData = new FormData()
+              formData.set('_method', 'delete')
+              formData.set('commit', head.data)
+              formData.set('commit-choice', 'direct')
+              formData.set('description', '')
+              formData.set('guidance_task', '')
+              formData.set('message', args.message)
+              formData.set('placeholder_message', 'Delete ' + baseName)
+              formData.set('pr', '')
+              formData.set('quick_pull', '')
+              formData.set('same_repo', '1')
+              formData.set('target_branch', branch)
+              var response = await fetchUrl(repoPath + '/blob/' + encodeURIComponent(branch) + '/' + encodePath(args.path), {
+                method: 'POST',
+                headers: verifiedHeaders(),
+                credentials: 'include',
+                body: formData,
               })
-              if (!response.ok) return response
-              return ok({ success: true })
+              if (!response.ok) return httpError(response)
+              // Only a 404 from /raw proves the file is gone.
+              var after = await fileExists(repoPath, branch, args.path)
+              if (!after.ok) return after
+              if (after.status !== 404)
+                return error('UNCONFIRMED_WRITE', 'The delete was submitted but the file is still readable. Check the branch before retrying.')
+              return ok({ deleted: true, path: args.path, branch: branch })
             },
           }
 

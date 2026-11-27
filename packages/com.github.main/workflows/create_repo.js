@@ -660,35 +660,109 @@ export default {
               page_url: location.href,
             }
           }
+          // The new-repository page is a React form whose fields have no `name`
+          // attributes; the real request is a JSON POST to /repositories that
+          // answers {data:{redirect:"/{owner}/{name}"}}. Creation is only
+          // reported after that page renders the repo and its visibility badge.
+          function writeHeaders(extra) {
+            var headers = {
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce':
+                'v2:' +
+                (typeof crypto !== 'undefined' && crypto.randomUUID
+                  ? crypto.randomUUID()
+                  : String(Date.now())),
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+            var keys = extra ? Object.keys(extra) : []
+            for (var i = 0; i < keys.length; i++) headers[keys[i]] = extra[keys[i]]
+            return headers
+          }
           var toolImplementations = {
 
 
             async create_repo(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = { 'repository[name]': args.name }
-              if (args.description) fields['repository[description]'] = args.description
-              if (args.private) fields['repository[visibility]'] = 'private'
-              if (args.auto_init) fields['repository[auto_init]'] = '1'
-              if (args.gitignore_template) fields['repository[gitignore_template]'] = args.gitignore_template
-              if (args.license_template) fields['repository[license_template]'] = args.license_template
-              var response = await submitPageForm('/new', 'form[action="/repositories"]', fields)
-              if (!response.ok) return response
+              var login = requireLogin()
+              if (!login)
+                return error('AUTH', 'Not authenticated — please log in to GitHub.')
+              var payload = {
+                owner: login,
+                template_repository_id: '',
+                include_all_branches: '0',
+                repository: {
+                  name: args.name,
+                  // The endpoint takes the visibility as a word, not a boolean.
+                  visibility: args.private ? 'private' : 'public',
+                  description: args.description || '',
+                  auto_init: args.auto_init ? '1' : '0',
+                  license_template: args.license_template || '',
+                  gitignore_template: args.gitignore_template || '',
+                },
+              }
+              var response = await boundedFetch('/repositories', {
+                method: 'POST',
+                headers: writeHeaders({ 'Content-Type': 'application/json' }),
+                credentials: 'include',
+                body: JSON.stringify(payload),
+              })
+              if (!response.ok) {
+                var reason =
+                  (String(response.text || '').match(/"message"\s*:\s*"([^"]+)"/) || [])[1] ||
+                  String(response.text || '')
+                    .replace(/<[^>]+>/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .slice(0, 200)
+                return error(
+                  'CREATE_FAILED',
+                  'GitHub rejected the repository (HTTP ' +
+                    response.status +
+                    ')' +
+                    (reason ? ': ' + reason : '.'),
+                )
+              }
+              var redirect = ''
+              try {
+                var parsed = JSON.parse(String(response.text || '{}'))
+                redirect = (parsed.data && parsed.data.redirect) || ''
+              } catch (e) {}
+              if (!redirect) {
+                redirect = '/' + encodeURIComponent(login) + '/' + encodeURIComponent(args.name)
+              }
+              if (redirect.charAt(0) !== '/')
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'GitHub answered with an unexpected redirect (' + redirect + '). Check your repositories.',
+                )
+              // Read the new repository page: 200 + the full name in the markup is
+              // the proof that the repository exists; the visibility badge is the
+              // proof that the requested visibility was honoured.
+              var page = await fetchText(redirect, { Accept: 'text/html' })
+              if (!page.ok || page.text.indexOf(redirect.slice(1)) === -1)
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'GitHub accepted the request but ' +
+                    redirect +
+                    ' does not render. Check your repositories before retrying.',
+                )
+              var badge = page.text.match(/(?:^|>)\s*(Private|Public)\s*</)
+              var isPrivate = badge ? badge[1] === 'Private' : null
+              var titleMatch = page.text.match(/<title>([^<]*)<\/title>/)
+              var name = redirect.split('/').pop()
               return ok({
                 repository: {
-                  id: 0,
-                  name: args.name,
-                  full_name: args.name,
-                  description: args.description || '',
-                  private: !!args.private,
-                  html_url: 'https://github.com/' + args.name,
-                  default_branch: 'main',
-                  language: '',
-                  stargazers_count: 0,
-                  forks_count: 0,
-                  open_issues_count: 0,
-                  archived: false,
-                  updated_at: new Date().toISOString(),
+                  name: name,
+                  full_name: redirect.slice(1),
+                  html_url: 'https://github.com' + redirect,
+                  private: isPrivate,
+                  visibility:
+                    isPrivate === null ? null : isPrivate ? 'private' : 'public',
+                  page_title: titleMatch ? titleMatch[1].trim() : null,
+                  // Reported so a caller can tell "requested" from "actually is".
+                  matches_request: isPrivate === null ? null : isPrivate === Boolean(args.private),
                 },
               })
             },

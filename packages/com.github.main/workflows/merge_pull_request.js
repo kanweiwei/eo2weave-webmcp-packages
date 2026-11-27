@@ -669,19 +669,114 @@ export default {
               page_url: location.href,
             }
           }
+          var userIdCache = {}
+          // Verified-fetch write headers: the merge endpoint is a JSON action and
+          // does not want a CSRF token.
+          function writeHeaders(extra) {
+            var headers = {
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce':
+                'v2:' +
+                (typeof crypto !== 'undefined' && crypto.randomUUID
+                  ? crypto.randomUUID()
+                  : String(Date.now())),
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+            var keys = extra ? Object.keys(extra) : []
+            for (var i = 0; i < keys.length; i++) headers[keys[i]] = extra[keys[i]]
+            return headers
+          }
+          async function readPullLayout(pagePath) {
+            var page = await pageEmbeddedData(pagePath)
+            if (!page.ok) return page
+            var route = page.data && page.data.pullRequestsLayoutRoute
+            var pr = route && route.pullRequest
+            if (!pr)
+              return {
+                ok: false,
+                error_code: 'API',
+                message: 'Pull request data missing from ' + pagePath,
+              }
+            return { ok: true, pullRequest: pr }
+          }
           var toolImplementations = {
 
 
             async merge_pull_request(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = { _method: 'put' }
-              if (args.commit_title) fields.commit_title = args.commit_title
-              if (args.commit_message) fields.commit_message = args.commit_message
-              if (args.merge_method) fields.merge_method = args.merge_method
-              var response = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/pull/' + args.pull_number, 'form[action$="/pull/' + args.pull_number + '/merge"]', fields)
-              if (!response.ok) return response
-              return ok({ success: true })
+              var base =
+                '/' +
+                encodeURIComponent(args.owner) +
+                '/' +
+                encodeURIComponent(args.repo)
+              var pagePath = base + '/pull/' + args.pull_number
+              var before = await readPullLayout(pagePath)
+              if (!before.ok) return error(before.error_code || 'API', before.message)
+              if (String(before.pullRequest.state) === 'MERGED')
+                return error(
+                  'ALREADY_MERGED',
+                  'Pull request #' + args.pull_number + ' is already merged.',
+                )
+              var method = String(args.merge_method || 'squash').toUpperCase()
+              if (method !== 'MERGE' && method !== 'SQUASH' && method !== 'REBASE')
+                method = 'SQUASH'
+              var pr = before.pullRequest
+              var payload = {
+                bypassBranchProtections: false,
+                commitTitle:
+                  args.commit_title ||
+                  'Merge pull request #' +
+                    args.pull_number +
+                    ' from ' +
+                    args.owner +
+                    '/' +
+                    (pr.headBranch || 'head'),
+                mergeMethod: method,
+              }
+              var message = args.commit_message !== undefined ? args.commit_message : pr.title
+              if (message) payload.commitMessage = message
+              // The real page posts to /pull/{n}/page_data/merge with a JSON body.
+              var response = await boundedFetch(pagePath + '/page_data/merge', {
+                method: 'POST',
+                headers: writeHeaders({ 'Content-Type': 'application/json' }),
+                credentials: 'include',
+                body: JSON.stringify(payload),
+              })
+              if (!response.ok) {
+                var reason =
+                  (String(response.text || '').match(/"message"\s*:\s*"([^"]+)"/) || [])[1] ||
+                  String(response.text || '')
+                    .replace(/<[^>]+>/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .slice(0, 200)
+                return error(
+                  'MERGE_FAILED',
+                  'GitHub rejected the merge (HTTP ' +
+                    response.status +
+                    ')' +
+                    (reason ? ': ' + reason : '.'),
+                )
+              }
+              // Merging cannot be undone, so success is only reported when the
+              // pull request reads back as MERGED with a merge commit.
+              var after = await readPullLayout(pagePath)
+              if (after.ok && String(after.pullRequest.state) === 'MERGED')
+                return ok({
+                  merged: true,
+                  number: args.pull_number,
+                  state: 'merged',
+                  merge_method: method.toLowerCase(),
+                  merge_commit_sha: after.pullRequest.mergeCommitSha || null,
+                })
+              return error(
+                'UNCONFIRMED_WRITE',
+                'GitHub accepted the merge request but pull request #' +
+                  args.pull_number +
+                  ' does not read back as merged. Check it before retrying — merging cannot be undone.',
+              )
             },
           }
 

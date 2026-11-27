@@ -665,6 +665,8 @@ export default {
                   updated_at: timeEl ? timeEl.getAttribute('datetime') || '' : '',
                 })
               }
+              if (!notifications.length && !/All caught up|No notifications|You.re all caught up/i.test(doc.body ? doc.body.textContent : ''))
+                return error('API', 'GitHub notifications could not be identified; refusing an unverified empty list.')
               return ok({ notifications: notifications })
             },
           }

@@ -668,29 +668,190 @@ export default {
               page_url: location.href,
             }
           }
+          var userIdCache = {}
+          // Verified-fetch write headers (github.com accepts these without a CSRF
+          // token except on the legacy form endpoints below).
+          function writeHeaders(extra) {
+            var headers = {
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce':
+                'v2:' +
+                (typeof crypto !== 'undefined' && crypto.randomUUID
+                  ? crypto.randomUUID()
+                  : String(Date.now())),
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+            var keys = extra ? Object.keys(extra) : []
+            for (var i = 0; i < keys.length; i++) headers[keys[i]] = extra[keys[i]]
+            return headers
+          }
+          function decodeEntities(text) {
+            return String(text)
+              .replace(/&amp;/g, '&')
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+          }
+          // The pull request pages still ship real <form> elements whose hidden
+          // inputs carry the CSRF token, the per-page honeypot field name and the
+          // timestamp secret. GitHub rejects a hand-built body without them, so
+          // every legacy write copies the form's own hidden inputs first.
+          function formParamsFor(html, actionIncludes) {
+            var forms = String(html || '').match(/<form[\s\S]*?<\/form>/g) || []
+            for (var i = 0; i < forms.length; i++) {
+              var form = forms[i]
+              var actionMatch = form.match(/action="([^"]+)"/)
+              if (!actionMatch || actionMatch[1].indexOf(actionIncludes) === -1) continue
+              var params = new URLSearchParams()
+              var inputs = form.match(/<(?:input|textarea|select)[^>]*>/g) || []
+              for (var j = 0; j < inputs.length; j++) {
+                var name = (inputs[j].match(/name="([^"]+)"/) || [])[1]
+                if (!name) continue
+                var value = (inputs[j].match(/value="([^"]*)"/) || [])[1]
+                params.set(name, value === undefined ? '' : decodeEntities(value))
+              }
+              return { action: decodeEntities(actionMatch[1]), params: params }
+            }
+            return null
+          }
+          async function postForm(action, params) {
+            return await boundedFetch(action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'text/html',
+              },
+              credentials: 'include',
+              body: params.toString(),
+            })
+          }
+          // The layout payload carries title/state/mergeCommitSha but no body:
+          // the description is verified against the rendered conversation HTML.
+          async function readPullLayout(pagePath) {
+            var page = await pageEmbeddedData(pagePath)
+            if (!page.ok) return page
+            var route = page.data && page.data.pullRequestsLayoutRoute
+            var pr = route && route.pullRequest
+            if (!pr)
+              return {
+                ok: false,
+                error_code: 'API',
+                message: 'Pull request data missing from ' + pagePath,
+              }
+            return { ok: true, pullRequest: pr }
+          }
+          function containsText(html, text) {
+            var needle = String(text || '').replace(/\s+/g, ' ').trim()
+            if (!needle) return true
+            var haystack = decodeEntities(String(html || ''))
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/\s+/g, ' ')
+            return haystack.indexOf(needle) !== -1
+          }
           var toolImplementations = {
 
 
             async update_pull_request(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var pagePath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/pull/' + args.pull_number
-              if (args.state === 'closed') {
-                var closeResponse = await submitPageForm(pagePath, 'form.js-new-comment-form', { comment_and_close: '1', 'comment[body]': '' })
-                if (!closeResponse.ok) return closeResponse
-              }
-              else if (args.state === 'open') {
-                var reopenResponse = await submitPageForm(pagePath, 'form.js-new-comment-form', { comment_and_reopen: '1', 'comment[body]': '' })
-                if (!reopenResponse.ok) return reopenResponse
-              }
+              var base =
+                '/' +
+                encodeURIComponent(args.owner) +
+                '/' +
+                encodeURIComponent(args.repo)
+              var pagePath = base + '/pull/' + args.pull_number
+              var applied = []
               if (args.title !== undefined || args.body !== undefined) {
-                var fields = { _method: 'put' }
-                if (args.title !== undefined) fields['issue[title]'] = args.title
-                if (args.body !== undefined) fields['issue[body]'] = args.body
-                var response = await submitPageForm(pagePath, 'form.js-comment-update[action$="/issues/' + args.pull_number + '"]', fields)
-                if (!response.ok) return response
+                // Title and body go through the classic edit form, which posts a
+                // PUT-shaped form to /issues/{n} (PRs are not Issue nodes, so the
+                // JSON PATCH used by update_issue answers NOT_FOUND here).
+                var editPage = await fetchText(pagePath + '/edit', { Accept: 'text/html' })
+                if (!editPage.ok) return httpError(editPage)
+                var editForm = formParamsFor(editPage.text, '/issues/' + args.pull_number)
+                if (!editForm)
+                  return error(
+                    'UNSUPPORTED_PAGE',
+                    'The pull request edit form was not found on ' + pagePath + '/edit.',
+                  )
+                editForm.params.set('_method', 'put')
+                if (args.title !== undefined) editForm.params.set('issue[title]', args.title)
+                if (args.body !== undefined) editForm.params.set('issue[body]', args.body)
+                var editResponse = await postForm(editForm.action, editForm.params)
+                if (!editResponse.ok)
+                  return error(
+                    'UPDATE_FAILED',
+                    'GitHub rejected the title/body update (HTTP ' + editResponse.status + ').',
+                  )
+                if (args.title !== undefined) applied.push('title')
+                if (args.body !== undefined) applied.push('body')
               }
-              return ok({ success: true })
+              if (args.state === 'closed' || args.state === 'open') {
+                var page = await fetchText(pagePath, { Accept: 'text/html' })
+                if (!page.ok) return httpError(page)
+                var commentForm = formParamsFor(
+                  page.text,
+                  '/pull/' + args.pull_number + '/comment',
+                )
+                if (!commentForm)
+                  return error(
+                    'UNSUPPORTED_PAGE',
+                    'The pull request comment form was not found on ' + pagePath + '.',
+                  )
+                commentForm.params.delete('comment_and_close')
+                commentForm.params.delete('comment_and_open')
+                commentForm.params.set(
+                  args.state === 'closed' ? 'comment_and_close' : 'comment_and_open',
+                  '1',
+                )
+                if (!commentForm.params.has('comment[body]'))
+                  commentForm.params.set('comment[body]', '')
+                var stateResponse = await postForm(commentForm.action, commentForm.params)
+                if (!stateResponse.ok)
+                  return error(
+                    'UPDATE_FAILED',
+                    'GitHub rejected the state change (HTTP ' + stateResponse.status + ').',
+                  )
+                applied.push('state')
+              }
+              if (!applied.length)
+                return error('INVALID_INPUT', 'Provide at least one of title, body or state.')
+              // Only report the fields the page reads back as changed.
+              var after = await readPullLayout(pagePath)
+              if (!after.ok) return error(after.error_code || 'API', after.message)
+              var confirmed = []
+              if (applied.indexOf('title') !== -1 && after.pullRequest.title === args.title)
+                confirmed.push('title')
+              if (
+                applied.indexOf('state') !== -1 &&
+                String(after.pullRequest.state).toLowerCase() === args.state
+              )
+                confirmed.push('state')
+              if (applied.indexOf('body') !== -1) {
+                var rendered = await fetchText(pagePath, { Accept: 'text/html' })
+                if (rendered.ok && containsText(rendered.text, args.body)) confirmed.push('body')
+              }
+              var missing = applied.filter(function (field) {
+                return confirmed.indexOf(field) === -1
+              })
+              if (missing.length)
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'GitHub accepted the update but ' +
+                    missing.join(', ') +
+                    ' did not read back. Check #' +
+                    args.pull_number +
+                    ' before retrying.',
+                )
+              return ok({
+                updated: confirmed,
+                pull_request: {
+                  number: args.pull_number,
+                  title: after.pullRequest.title,
+                  state: String(after.pullRequest.state).toLowerCase(),
+                },
+              })
             },
           }
 

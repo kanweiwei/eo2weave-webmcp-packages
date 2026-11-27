@@ -666,22 +666,136 @@ export default {
               page_url: location.href,
             }
           }
+          var userIdCache = {}
+          function decodeEntities(text) {
+            return String(text)
+              .replace(/&amp;/g, '&')
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+          }
+          // The reviewer picker is a real <form> whose hidden inputs carry the
+          // CSRF token, the partial timestamp and a honeypot field; GitHub rejects
+          // a hand-built body without them.
+          function formParamsFor(html, actionIncludes) {
+            var forms = String(html || '').match(/<form[\s\S]*?<\/form>/g) || []
+            for (var i = 0; i < forms.length; i++) {
+              var form = forms[i]
+              var actionMatch = form.match(/action="([^"]+)"/)
+              if (!actionMatch || actionMatch[1].indexOf(actionIncludes) === -1) continue
+              var params = new URLSearchParams()
+              var inputs = form.match(/<(?:input|textarea|select)[^>]*>/g) || []
+              for (var j = 0; j < inputs.length; j++) {
+                var name = (inputs[j].match(/name="([^"]+)"/) || [])[1]
+                if (!name) continue
+                var value = (inputs[j].match(/value="([^"]*)"/) || [])[1]
+                params.set(name, value === undefined ? '' : decodeEntities(value))
+              }
+              return { action: decodeEntities(actionMatch[1]), params: params }
+            }
+            return null
+          }
+          async function postForm(action, params) {
+            return await boundedFetch(action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'text/html',
+              },
+              credentials: 'include',
+              body: params.toString(),
+            })
+          }
+          // The endpoint wants numeric user ids; the public profile page exposes
+          // the id in its octolytics meta tags.
+          async function lookupUserId(login) {
+            var key = String(login).toLowerCase()
+            if (userIdCache[key]) return userIdCache[key]
+            var profile = await fetchText('/' + encodeURIComponent(login), {
+              Accept: 'text/html',
+            })
+            if (!profile.ok) return null
+            var match =
+              profile.text.match(/octolytics-dimension-user_id"\s+content="(\d+)"/) ||
+              profile.text.match(/octolytics-dimension-user_id'[^>]*content="(\d+)"/) ||
+              profile.text.match(/octolytics-dimension-user_id"[^>]*content="(\d+)"/)
+            if (!match) return null
+            userIdCache[key] = match[1]
+            return match[1]
+          }
           var toolImplementations = {
 
 
             async request_pull_request_review(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = { 'dummy-field-just-to-avoid-empty-submit': 'foo' }
-              if (args.reviewers) {
-                for (var i = 0; i < args.reviewers.length; i++) fields['reviewer_user_logins[]'] = args.reviewers[i]
+              var base =
+                '/' +
+                encodeURIComponent(args.owner) +
+                '/' +
+                encodeURIComponent(args.repo)
+              var pagePath = base + '/pull/' + args.pull_number
+              var logins = Array.isArray(args.reviewers)
+                ? args.reviewers.filter(function (login) {
+                    return typeof login === 'string' && login.trim()
+                  })
+                : []
+              if (!logins.length)
+                return error('INVALID_INPUT', 'Provide at least one reviewer login.')
+              if (args.team_reviewers && args.team_reviewers.length)
+                return error(
+                  'UNSUPPORTED_INPUT',
+                  'Team reviewers are not supported: the page endpoint only accepts user ids.',
+                )
+              var editPage = await fetchText(pagePath + '/edit', { Accept: 'text/html' })
+              if (!editPage.ok) return httpError(editPage)
+              var form = formParamsFor(
+                editPage.text,
+                '/pull/' + args.pull_number + '/review-requests',
+              )
+              if (!form)
+                return error(
+                  'UNSUPPORTED_PAGE',
+                  'The reviewer form was not found on ' + pagePath + '/edit.',
+                )
+              var ids = []
+              for (var i = 0; i < logins.length; i++) {
+                var id = await lookupUserId(logins[i])
+                if (!id)
+                  return error(
+                    'NOT_FOUND',
+                    'Could not resolve the GitHub user "' + logins[i] + '".',
+                  )
+                ids.push(id)
               }
-              if (args.team_reviewers) {
-                for (var j = 0; j < args.team_reviewers.length; j++) fields['reviewer_team_slugs[]'] = args.team_reviewers[j]
-              }
-              var response = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/pull/' + args.pull_number, 'form[action*="review-requests"]', fields)
-              if (!response.ok) return response
-              return ok({ success: true })
+              for (var j = 0; j < ids.length; j++)
+                form.params.append('reviewer_user_ids[]', ids[j])
+              var response = await postForm(form.action, form.params)
+              if (!response.ok)
+                return error(
+                  'REVIEW_REQUEST_FAILED',
+                  'GitHub rejected the review request (HTTP ' + response.status + ').',
+                )
+              // GitHub answers 200 even when it silently ignores a request it
+              // cannot make (for example asking the author to review their own
+              // pull request), so the reviewer list in the response is the proof.
+              var body = decodeEntities(String(response.text || ''))
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+              var missing = logins.filter(function (login) {
+                return body.toLowerCase().indexOf(String(login).toLowerCase()) === -1
+              })
+              if (missing.length)
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'GitHub accepted the request but ' +
+                    missing.join(', ') +
+                    ' do not appear as requested reviewers on #' +
+                    args.pull_number +
+                    '. Check it before retrying.',
+                )
+              return ok({ number: args.pull_number, reviewers: logins, requested: true })
             },
           }
 

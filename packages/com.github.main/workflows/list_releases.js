@@ -654,37 +654,79 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
-              var response = await fetchText('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/releases', {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/releases'
+              // The releases index ships its rendered list as HTML inside the
+              // JSON route payload (releasesIndexRoute.Results.value).
+              var response = await fetchText(path, { Accept: 'application/json' })
               if (!response.ok) return httpError(response)
-              var doc = new DOMParser().parseFromString(response.text, 'text/html')
-              var releaseCards = doc.querySelectorAll('[data-testid="release-card"], .release, section')
+              var doc = null
+              var payload
+              try {
+                payload = JSON.parse(response.text)
+              } catch (e) {
+                payload = null
+              }
+              if (payload) {
+                if (payload.payload !== undefined) payload = payload.payload
+                var results = payload['releasesIndexRoute.Results'] || payload.releasesIndexRoute
+                var resultsHtml = results && typeof results.value === 'string' ? results.value : null
+                if (typeof resultsHtml !== 'string')
+                  return error('API', 'GitHub release payload has no releasesIndexRoute.Results HTML.')
+                doc = new DOMParser().parseFromString(resultsHtml, 'text/html')
+              } else {
+                doc = new DOMParser().parseFromString(response.text, 'text/html')
+              }
+              var releaseSections = doc.querySelectorAll('[data-release-anchor]')
+              var prefix = '/' + args.owner + '/' + args.repo + '/releases/tag/'
               var releases = []
-              for (var i = 0; i < releaseCards.length; i++) {
-                var card = releaseCards[i]
-                var tagEl = card.querySelector('[data-testid="release-card-tag"], .release-tag, a[href*="tag"]')
-                var titleEl = card.querySelector('[data-testid="release-card-title"], .release-title, h2 a')
+              for (var i = 0; i < releaseSections.length; i++) {
+                var card = releaseSections[i]
+                var tagLink = null
+                var links = card.querySelectorAll('a[href*="/releases/tag/"]')
+                for (var l = 0; l < links.length; l++) {
+                  var href = links[l].getAttribute('href') || ''
+                  if (href.indexOf(prefix) === 0) { tagLink = links[l]; break }
+                }
+                if (!tagLink)
+                  return error('API', 'A GitHub release section had no tag link.')
+                var tagName = (tagLink.textContent || '').trim()
+                var tagSlug = (tagLink.getAttribute('href') || '').slice(prefix.length)
+                // GitHub publishes a generated slug for releases without a tag, e.g.
+                // releases/tag/untagged-b58b9913; those have no tag_name at all.
+                var releaseTag = tagSlug.indexOf('untagged-') === 0 ? '' : decodeURIComponent(tagSlug)
+                var titleEl = card.querySelector('h2')
                 var bodyEl = card.querySelector('.markdown-body')
-                var timeEl = card.querySelector('relative-time, time')
-                var authorEl = card.querySelector('a[data-hovercard-type="user"]')
-                var isDraft = (card.textContent || '').indexOf('Draft') !== -1
-                var isPrerelease = (card.textContent || '').indexOf('Pre-release') !== -1
-                var tagName = tagEl ? (tagEl.textContent || '').trim() : ''
-                if (!tagName) continue
+                var timeEl = card.querySelector('relative-time[datetime], time[datetime]')
+                // Draft / pre-release badges are plain text spans, not .Label chips.
+                var badges = card.querySelectorAll('span, div')
+                var badgeDraft = false
+                var badgePrerelease = false
+                for (var b = 0; b < badges.length; b++) {
+                  var badgeText = (badges[b].textContent || '').trim()
+                  if (badgeText === 'Draft') badgeDraft = true
+                  else if (badgeText === 'Pre-release') badgePrerelease = true
+                }
+                var labels = card.querySelectorAll('.Label')
+                var labelText = ''
+                for (var k = 0; k < labels.length; k++) labelText += ' ' + (labels[k].textContent || '')
+                var datetime = timeEl ? (timeEl.getAttribute('datetime') || '') : ''
                 releases.push({
                   id: 0,
-                  tag_name: tagName,
-                  name: titleEl ? (titleEl.textContent || '').trim() || tagName : tagName,
+                  tag_name: releaseTag,
+                  name: titleEl ? ((titleEl.textContent || '').trim() || tagName) : tagName,
                   body: bodyEl ? (bodyEl.textContent || '').trim() : '',
-                  draft: isDraft,
-                  prerelease: isPrerelease,
-                  created_at: timeEl ? timeEl.getAttribute('datetime') || '' : '',
-                  published_at: timeEl ? timeEl.getAttribute('datetime') || '' : '',
-                  html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/releases/tag/' + tagName,
-                  author_login: authorEl ? (authorEl.textContent || '').trim() : '',
+                  draft: badgeDraft,
+                  prerelease: badgePrerelease,
+                  created_at: datetime,
+                  published_at: datetime,
+                  html_url: 'https://github.com' + tagLink.getAttribute('href'),
+                  author_login: '',
                 })
+              }
+              if (!releases.length) {
+                var pageText = doc.body ? doc.body.textContent : ''
+                if (!/There aren.t any releases here|No releases published|There are no releases/i.test(pageText))
+                  return error('API', 'GitHub release sections could not be identified; refusing to report an unverified empty list.')
               }
               return ok({ releases: releases })
             },

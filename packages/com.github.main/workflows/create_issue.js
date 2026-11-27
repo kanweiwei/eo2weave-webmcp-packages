@@ -309,6 +309,21 @@ export default {
             if (result.queryName && result.queryId) queryIdCache[result.queryName] = result.queryId
             return queryIdCache[queryName] || null
           }
+          function verifiedHeaders() {
+            var nonce = 'v2:' + (typeof crypto !== 'undefined' && crypto.randomUUID
+              ? crypto.randomUUID()
+              : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+              }))
+            return {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce': nonce,
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+          }
           async function graphql(queryId, variables) {
             if (!requireLogin())
               return { ok: false, error_code: 'AUTH', message: 'Not authenticated — please log in to GitHub.' }
@@ -665,34 +680,65 @@ export default {
               var repoResult = await turboData('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues', { q: 'is:issue is:open' })
               if (!repoResult.ok) return repoResult
               var repoId = repoResult.data.repository && repoResult.data.repository.id
+              if (!repoId) {
+                // The issues index no longer embeds the repository node; the labels
+                // route still exposes it as labelsRoute.data.repository.id.
+                var labelsRoute = await pageJson('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/labels')
+                if (labelsRoute.ok && labelsRoute.data) {
+                  var node = labelsRoute.data.labelsRoute && labelsRoute.data.labelsRoute.data && labelsRoute.data.labelsRoute.data.repository
+                  repoId = node && node.id
+                }
+              }
               if (!repoId)
                 return error('API', 'Could not determine repository ID')
-              var mutationId = await getMutationId('createIssueMutation')
-              if (!mutationId)
-                return error('API', 'Mutation createIssueMutation not found in GitHub JS bundles')
-              var result = await graphql(mutationId, {
-                input: {
-                  repositoryId: repoId,
-                  title: args.title,
-                  body: args.body !== undefined ? args.body : '',
-                },
+              var clientMutationId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : String(Date.now()) + '-' + Math.random().toString(16).slice(2)
+              // GitHub's issue composer posts to /_ghui/issues with a verified-fetch
+              // marker; the queryId segment is not validated by the endpoint.
+              var response2 = await fetchUrl('/_ghui/issues?queryId=createIssue', {
+                method: 'POST',
+                credentials: 'include',
+                headers: verifiedHeaders(),
+                body: JSON.stringify({
+                  input: {
+                    repositoryId: repoId,
+                    title: args.title,
+                    body: args.body !== undefined ? args.body : '',
+                    statusId: null,
+                    issueFields: null,
+                    isDuplicated: false,
+                    parentIssueId: null,
+                    clientMutationId: clientMutationId,
+                  },
+                  fetchParent: false,
+                }),
               })
-              if (!result.ok) return result
-              var issue = result.data.createIssue && result.data.createIssue.issue
-              var number = issue && issue.number !== undefined ? issue.number : 0
+              if (!response2.ok) return httpError(response2)
+              var parsed
+              try {
+                parsed = JSON.parse(response2.text)
+              } catch (e) {
+                return error('UNCONFIRMED_WRITE', 'GitHub did not confirm the issue creation with a JSON response.')
+              }
+              if (parsed.errors && parsed.errors.length)
+                return error('API', 'GitHub rejected the issue: ' + ((parsed.errors[0] && parsed.errors[0].message) || 'unknown error'))
+              var created = parsed.data && parsed.data.createIssue && parsed.data.createIssue.issue
+              if (!created || created.number === undefined || !created.url)
+                return error('UNCONFIRMED_WRITE', 'GitHub accepted the issue request but returned no issue number or URL.')
               return ok({
                 issue: {
-                  number: number,
-                  title: issue && issue.title ? issue.title : args.title,
+                  number: created.number,
+                  title: created.title || args.title,
                   state: 'open',
                   body: args.body !== undefined ? args.body : '',
-                  html_url: issue && issue.url ? issue.url : 'https://github.com/' + args.owner + '/' + args.repo + '/issues/' + number,
+                  html_url: created.url,
                   user_login: '',
                   labels: [],
                   assignees: [],
                   comments: 0,
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
+                  created_at: '',
+                  updated_at: '',
                   closed_at: '',
                   is_pull_request: false,
                 },

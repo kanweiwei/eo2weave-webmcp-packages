@@ -663,10 +663,21 @@ export default {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               var ref = args.ref !== undefined ? args.ref : 'HEAD'
-              var data = await pageEmbeddedData('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/blob/' + encodeURIComponent(ref) + '/' + args.path)
-              if (!data.ok) return data
-              var rawLines = data.data['codeViewBlobLayoutRoute.StyledBlob'] && data.data['codeViewBlobLayoutRoute.StyledBlob'].rawLines
-              return ok({ content: Array.isArray(rawLines) ? rawLines.join('\n') : '', path: args.path })
+              // /raw/<ref>/<path> streams the file text and follows GitHub's signed
+              // redirect on raw.githubusercontent.com. Credentials must stay
+              // same-origin: the redirect target answers with ACAO *, which a
+              // credentialed CORS request would be rejected for.
+              var rawPath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/raw/' + encodeURIComponent(ref) + '/' + args.path
+              var response = await fetchUrl(rawPath, {
+                method: 'GET',
+                headers: { Accept: 'text/plain' },
+                credentials: 'same-origin',
+              })
+              if (!response.ok) return httpError(response)
+              var text = typeof response.text === 'string' ? response.text : ''
+              if (/^\s*<!DOCTYPE html/i.test(text) || /^\s*<html/i.test(text))
+                return error('API', 'GitHub returned an HTML page instead of file text for ' + args.path + ' (the path may be missing, a directory or a submodule).')
+              return ok({ content: text, path: args.path })
             },
           }
 

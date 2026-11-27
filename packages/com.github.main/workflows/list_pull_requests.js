@@ -698,24 +698,49 @@ export default {
               var stateFilter = state === 'all' ? '' : 'is:' + state
               var sortFilter = 'sort:' + sort + '-' + dir
               var query = ('is:pr ' + stateFilter + ' repo:' + args.owner + '/' + args.repo + ' ' + sortFilter).trim()
-              var queryId = await discoverQueryId('IssueIndexPageQuery', '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues', { type: 'pr', q: 'is:pr is:open' })
-              if (!queryId)
-                return error('API', 'Could not discover query ID for IssueIndexPageQuery')
-              var data = await graphql(queryId, {
-                owner: args.owner,
-                name: args.repo,
-                query: query,
-                skip: (page - 1) * perPage,
-                includeReactions: false,
-              })
-              if (!data.ok) return data
-              var edges = (data.data.repository && data.data.repository.search && data.data.repository.search.edges) || []
+              if (!Number.isInteger(perPage) || perPage < 1 || perPage > 100 || !Number.isInteger(page) || page < 1)
+                return error('INVALID_INPUT', 'per_page must be 1–100 and page must be a positive integer.')
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues'
+              var start = (page - 1) * perPage
               var pullRequests = []
-              for (var j = 0; j < edges.length; j++) {
-                var node = relayNodeToRaw(edges[j].node)
-                if (node.__typename === 'PullRequest') pullRequests.push(mapPullRequest(node, { owner: args.owner, repo: args.repo }))
+              for (var sitePage = Math.floor(start / 25) + 1; sitePage <= Math.ceil((start + perPage) / 25); sitePage++) {
+                // The pull request dashboard does not embed its rows; the issues
+                // index does, and serves pull requests for an is:pr query.
+                var listing = await turboData(path, { q: query, page: sitePage })
+                if (!listing.ok) return error(listing.error_code || 'API', listing.message || 'Could not read pull requests.')
+                var route = listing.data && listing.data.issuesIndexContentRoute
+                if (!route) return error('API', 'GitHub did not provide a verifiable issuesIndexContentRoute.')
+                if (route.results === undefined || route.results === null) {
+                  if (!route.pageInfo)
+                    return error('API', 'GitHub did not provide verifiable issuesIndexContentRoute results.')
+                  break
+                }
+                if (!Array.isArray(route.results))
+                  return error('API', 'GitHub returned a non-array issuesIndexContentRoute.results.')
+                for (var i = 0; i < route.results.length; i++) {
+                  var item = route.results[i]
+                  var raw = item && item.pullRequest
+                  if (!item || !String(item.itemType || '').includes('PULL_REQUEST'))
+                    return error('API', 'The pull request query returned a non-PR entry.')
+                  if (!raw || !Number.isInteger(raw.number) || !raw.title)
+                    return error('API', 'GitHub pull request route contained an unrecognized entry.')
+                  pullRequests.push(mapPullRequest({
+                    number: raw.number,
+                    title: raw.title,
+                    state: /CLOSED|MERGED/.test(String(raw.displayState || raw.state || '')) ? (/MERGED/.test(String(raw.displayState || raw.state || '')) ? 'merged' : 'closed') : 'open',
+                    pullRequestState: raw.displayState || raw.state,
+                    merged: !!raw.mergedAt,
+                    mergedTime: raw.mergedAt || null,
+                    html_url: raw.permalink,
+                    author: raw.author,
+                    comments: raw.commentCount,
+                    createdAt: raw.createdAt,
+                    updatedAt: raw.updatedAt,
+                  }, { owner: args.owner, repo: args.repo }))
+                }
+                if (route.results.length < 25) break
               }
-              return ok({ pull_requests: pullRequests })
+              return ok({ pull_requests: pullRequests.slice(start % 25, start % 25 + perPage) })
             },
           }
 

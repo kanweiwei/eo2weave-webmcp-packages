@@ -654,38 +654,60 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
-              var response = await fetchText('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/actions', {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
-              if (!response.ok) return httpError(response)
-              var doc = new DOMParser().parseFromString(response.text, 'text/html')
-              var rows = doc.querySelectorAll('.ActionListItem, [data-testid="workflow-run-row"]')
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/actions'
               var runs = []
-              for (var i = 0; i < rows.length; i++) {
-                var row = rows[i]
-                var titleEl = row.querySelector('a.Link--primary, .workflow-run-title')
-                var statusEl = row.querySelector('[data-testid="workflow-run-status"], .octicon-check, .octicon-x')
-                var branchEl = row.querySelector('a[href*="tree/"]')
-                var timeEl = row.querySelector('relative-time, time')
-                var href = titleEl ? titleEl.getAttribute('href') || '' : ''
-                var idMatch = href.match(/\/runs\/(\d+)/)
-                var runId = idMatch ? Number.parseInt(idMatch[1], 10) : 0
-                var datetime = timeEl ? timeEl.getAttribute('datetime') || '' : ''
-                runs.push({
-                  id: Number.isNaN(runId) ? 0 : runId,
-                  name: titleEl ? (titleEl.textContent || '').trim() : '',
-                  status: statusEl ? statusEl.getAttribute('aria-label') || '' : '',
-                  conclusion: '',
-                  head_branch: branchEl ? (branchEl.textContent || '').trim() : '',
-                  head_sha: '',
-                  html_url: href ? 'https://github.com' + href : '',
-                  created_at: datetime,
-                  updated_at: datetime,
-                })
+              var page = 1
+              var total = null
+              // The Actions page serves its run list as JSON in
+              // allWorkflowRunsRoute.workflowRuns.
+              while (true) {
+                var response = await fetchText(path + (page > 1 ? '?page=' + page : ''), { Accept: 'application/json' })
+                if (!response.ok) return httpError(response)
+                var payload
+                try {
+                  payload = JSON.parse(response.text)
+                } catch (e) {
+                  return error('API', 'GitHub did not return JSON for the Actions page.')
+                }
+                if (payload && payload.payload !== undefined) payload = payload.payload
+                var route = payload && payload.allWorkflowRunsRoute
+                if (!route || !Array.isArray(route.workflowRuns))
+                  return error('API', 'GitHub Actions payload has no recognizable workflowRuns array.')
+                if (typeof route.totalCount === 'number') total = route.totalCount
+                for (var i = 0; i < route.workflowRuns.length; i++) {
+                  var raw = route.workflowRuns[i]
+                  if (!raw || !raw.id)
+                    return error('API', 'GitHub returned a workflow run without an id.')
+                  var mapped = mapWorkflowRun(raw, args.owner, args.repo)
+                  if (!mapped.id || isNaN(mapped.id))
+                    return error('API', 'GitHub returned a workflow run without an id.')
+                  runs.push(mapped)
+                }
+                if (!route.workflowRuns.length) break
+                if (total !== null && runs.length >= total) break
+                if (typeof route.totalPages === 'number' && page >= route.totalPages) break
+                page++
+                if (page > 50)
+                  return error('API', 'Workflow run pagination exceeded the request budget.')
               }
               return ok({ workflow_runs: runs })
             },
+          }
+
+          function mapWorkflowRun(r, owner, repo) {
+            r = r || {}
+            var state = r.state || {}
+            return {
+              id: Number(r.id),
+              name: r.workflowName || r.name || '',
+              status: String(state.status || '').replace(/^WORKFLOW_RUN_STATUS_/, '').toLowerCase(),
+              conclusion: String(state.conclusion || '').replace(/^WORKFLOW_RUN_CONCLUSION_/, '').toLowerCase(),
+              head_branch: r.branch && r.branch.name ? String(r.branch.name).replace(/^refs\/(heads|tags)\//, '') : '',
+              head_sha: '',
+              html_url: 'https://github.com/' + owner + '/' + repo + '/actions/runs/' + r.id,
+              created_at: (r.createdAt && r.createdAt.timestamp) || '',
+              updated_at: (r.createdAt && r.createdAt.timestamp) || '',
+            }
           }
 
           async function stdin_default(args) {
