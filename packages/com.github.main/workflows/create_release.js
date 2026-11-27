@@ -183,6 +183,7 @@ export default {
               ok: response.ok,
               status: response.status,
               text: text,
+              url: response.url,
               contentType: response.headers ? response.headers.get('content-type') || '' : '',
             }
           }
@@ -200,7 +201,7 @@ export default {
                 error_code: response.error_code,
                 message: response.message,
               }
-            return { ok: response.ok, status: response.status, text: response.text }
+            return { ok: response.ok, status: response.status, text: response.text, url: response.url, contentType: response.headers && response.headers.get ? (response.headers.get('content-type') || '') : '' }
           }
           async function fetchUrl(url, init) {
             return await boundedFetch(url, init)
@@ -369,35 +370,59 @@ export default {
             })
             if (!response.ok) return httpError(response)
             var doc = new DOMParser().parseFromString(response.text, 'text/html')
-            var form = doc.querySelector(formSelector)
-            if (!form)
-              return { ok: false, error_code: 'API', status: response.status, message: 'Form not found: ' + formSelector + ' on ' + pagePath }
-            var action = form.getAttribute('action') || pagePath
-            var csrf = doc.querySelector('input[name="authenticity_token"]')
+            var forms = doc.querySelectorAll(formSelector)
+            if (forms.length !== 1)
+              return { ok: false, error_code: 'API', status: response.status, message: 'Expected exactly one release form on ' + pagePath }
+            var form = forms[0]
+            var action = new URL(form.getAttribute('action') || pagePath, location.origin)
+            var repositoryPath = '/' + encodeURIComponent(fields.__owner) + '/' + encodeURIComponent(fields.__repo) + '/releases'
+            if (action.origin !== location.origin || (action.pathname !== repositoryPath && !action.pathname.startsWith(repositoryPath + '/')))
+              return { ok: false, error_code: 'API', message: 'Release form action does not target the requested repository.' }
             var formData = new URLSearchParams()
-            if (csrf && csrf.value) formData.set('authenticity_token', csrf.value)
+            var hidden = form.querySelectorAll('input[type="hidden"][name]')
+            for (var h = 0; h < hidden.length; h++) formData.append(hidden[h].name, hidden[h].value)
+            // The base branch is a radio, not a hidden field: without it GitHub
+            // cannot create the tag and silently publishes an untagged release.
+            var targetRadio = form.querySelector('input[type="radio"][name="release[target_commitish]"]:checked')
+            if (!targetRadio) {
+              // Raw HTML rarely marks a radio checked; GitHub lists the default
+              // branch first and additional commits as 40-char SHAs afterwards.
+              var radios = form.querySelectorAll('input[type="radio"][name="release[target_commitish]"]')
+              for (var r = 0; r < radios.length; r++) {
+                var candidate = radios[r].value || ''
+                if (candidate && !/^[0-9a-f]{40}$/i.test(candidate)) { targetRadio = radios[r]; break }
+              }
+              if (!targetRadio && radios.length) targetRadio = radios[0]
+            }
+            if (targetRadio) formData.set('release[target_commitish]', targetRadio.value)
+            else return { ok: false, error_code: 'API', message: 'Release form exposed no target branch.' }
+            if (!formData.get('authenticity_token'))
+              return { ok: false, error_code: 'AUTH', message: 'Release form has no CSRF token.' }
             var keys = Object.keys(fields)
-            for (var i = 0; i < keys.length; i++) formData.set(keys[i], String(fields[keys[i]]))
-            var postResponse = await fetchUrl(action, {
+            for (var i = 0; i < keys.length; i++) if (!keys[i].startsWith('__')) formData.set(keys[i], String(fields[keys[i]]))
+            var postResponse = await fetchUrl(action.href, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Accept: 'application/json',
+                Accept: 'text/html',
                 'X-Requested-With': 'XMLHttpRequest',
               },
               credentials: 'include',
               body: formData.toString(),
             })
             if (!postResponse.ok) return httpError(postResponse)
+            var releaseUrl = typeof postResponse.url === 'string' ? postResponse.url : ''
+            if (/\/releases\/tag\//.test(releaseUrl))
+              return { ok: true, data: { release: { id: 0, html_url: releaseUrl } } }
             var ct = postResponse.contentType || '' 
             if (ct.indexOf('json') !== -1) {
               try {
                 return { ok: true, data: JSON.parse(postResponse.text) }
               } catch (e) {
-                return { ok: true, data: {} }
+                return { ok: false, error_code: 'UNCONFIRMED_WRITE', message: 'Release POST returned invalid JSON; check GitHub before retrying.' }
               }
             }
-            return { ok: true, data: {} }
+            return { ok: false, error_code: 'UNCONFIRMED_WRITE', message: 'Release POST returned no release object; check GitHub before retrying.' }
           }
           function httpError(response) {
             var text = (response.text || '').slice(0, 512)
@@ -672,32 +697,136 @@ export default {
               page_url: location.href,
             }
           }
+          // The release form is a real classic <form>: its hidden inputs carry the
+          // CSRF token and the help texts, and the branch radios decide where the
+          // tag is created. Radios must be filtered by `checked` — taking the last
+          // one would tag the wrong commit.
+          function releaseFormParams(html) {
+            var forms = String(html || '').match(/<form[\s\S]*?<\/form>/g) || []
+            for (var i = 0; i < forms.length; i++) {
+              var form = forms[i]
+              var actionMatch = form.match(/action="([^"]+)"/)
+              if (!actionMatch || actionMatch[1].indexOf('/releases') === -1) continue
+              var params = new URLSearchParams()
+              var inputs = form.match(/<(?:input|textarea|select)[^>]*>/g) || []
+              for (var j = 0; j < inputs.length; j++) {
+                var raw = inputs[j]
+                var name = (raw.match(/name="([^"]+)"/) || [])[1]
+                if (!name) continue
+                var type = ((raw.match(/type="([^"]+)"/) || [])[1] || 'text').toLowerCase()
+                if ((type === 'radio' || type === 'checkbox') && !/\schecked(=|"|\s|>|$)/.test(raw))
+                  continue
+                var value = (raw.match(/value="([^"]*)"/) || [])[1]
+                params.set(name, value === undefined ? '' : value.replace(/&amp;/g, '&').replace(/&quot;/g, '"'))
+              }
+              return { action: actionMatch[1].replace(/&amp;/g, '&'), params: params }
+            }
+            return null
+          }
+          async function postForm(action, params) {
+            return await boundedFetch(action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'text/html',
+              },
+              credentials: 'include',
+              body: params.toString(),
+            })
+          }
+          function containsText(html, text) {
+            var needle = String(text || '').replace(/\s+/g, ' ').trim()
+            if (!needle) return true
+            var haystack = String(html || '')
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/&amp;/g, '&')
+              .replace(/&#39;/g, "'")
+              .replace(/&quot;/g, '"')
+              .replace(/\s+/g, ' ')
+            return haystack.indexOf(needle) !== -1
+          }
           var toolImplementations = {
 
 
             async create_release(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var fields = { 'release[tag_name]': args.tag_name }
-              if (args.name) fields['release[name]'] = args.name
-              if (args.body) fields['release[body]'] = args.body
-              if (args.draft) fields['release[draft]'] = '1'
-              if (args.prerelease) fields['release[prerelease]'] = '1'
-              if (args.target_commitish) fields['release[target_commitish]'] = args.target_commitish
-              var response = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/releases/new', 'form[action*="releases"]', fields)
-              if (!response.ok) return response
+              var base =
+                '/' +
+                encodeURIComponent(args.owner) +
+                '/' +
+                encodeURIComponent(args.repo)
+              var newPage = await fetchText(base + '/releases/new', { Accept: 'text/html' })
+              if (!newPage.ok) return httpError(newPage)
+              var form = releaseFormParams(newPage.text)
+              if (!form)
+                return error(
+                  'UNSUPPORTED_PAGE',
+                  'The new release form was not found at ' + base + '/releases/new.',
+                )
+              // The action must stay same-origin: this tool never posts a release
+              // body anywhere but github.com.
+              if (form.action.charAt(0) !== '/')
+                return error(
+                  'UNSUPPORTED_PAGE',
+                  'The release form action is not a same-origin path.',
+                )
+              var title = args.name || args.tag_name
+              form.params.set('release[tag_name]', args.tag_name)
+              form.params.set('release[name]', title)
+              form.params.set('release[body]', args.body || '')
+              // The server reads the lifecycle flags as `1` / `true`) — sending
+              // `true` for draft silently publishes the release.
+              form.params.set('release[draft]', args.draft ? '1' : '0')
+              form.params.set('release[prerelease]', args.prerelease ? 'true' : 'false')
+              form.params.set(
+                'release[release_label_option]',
+                args.prerelease ? 'prerelease' : 'none',
+              )
+              if (args.target_commitish)
+                form.params.set('release[target_commitish]', args.target_commitish)
+              else if (!form.params.get('release[target_commitish]'))
+                return error(
+                  'INVALID_INPUT',
+                  'Pass target_commitish: the form exposed no checked branch to tag.',
+                )
+              var response = await postForm(form.action, form.params)
+              if (!response.ok)
+                return error(
+                  'CREATE_FAILED',
+                  'GitHub rejected the release (HTTP ' + response.status + ').',
+                )
+              // A 200 is not proof: read the release page GitHub landed on and
+              // require the title to be there. Drafts have a placeholder
+              // `untagged-*` URL by design — the git tag is created on publish.
+              var landed = String(response.url || '')
+              if (landed.indexOf('/releases/') === -1)
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'GitHub did not redirect to a release page. Check the releases list before retrying.',
+                )
+              var page = await fetchText(landed, { Accept: 'text/html' })
+              if (!page.ok || !containsText(page.text, title))
+                return error(
+                  'UNCONFIRMED_WRITE',
+                  'The new release page did not show "' +
+                    title +
+                    '". Check ' +
+                    base +
+                    '/releases before retrying.',
+                )
+              var slug = (landed.split('/releases/tag/')[1] || '').split(/[?#]/)[0]
+              var tagName = slug.indexOf('untagged-') === 0 ? args.tag_name : decodeURIComponent(slug)
               return ok({
                 release: {
-                  id: 0,
-                  tag_name: args.tag_name,
-                  name: args.name || args.tag_name,
-                  body: args.body || '',
-                  draft: !!args.draft,
-                  prerelease: !!args.prerelease,
-                  created_at: new Date().toISOString(),
-                  published_at: args.draft ? '' : new Date().toISOString(),
-                  html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/releases/tag/' + args.tag_name,
-                  author_login: '',
+                  tag_name: tagName,
+                  name: title,
+                  draft: Boolean(args.draft),
+                  prerelease: Boolean(args.prerelease),
+                  html_url: landed,
+                  // Drafts keep the tag name but GitHub only materialises the git
+                  // tag when the draft is published.
+                  tag_created: !args.draft,
                 },
               })
             },
@@ -747,7 +876,7 @@ export default {
           message:
             'The github.com tab could not run the tool (it may have closed or navigated away): ' +
             String(error),
-          error_code: 'TAB_UNAVAILABLE',
+          error_code: 'UNCONFIRMED_WRITE',
         }
         return 'success'
       }

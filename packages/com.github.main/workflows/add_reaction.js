@@ -674,17 +674,48 @@ export default {
               var reactionContent = REACTION_MAP[args.content]
               if (!reactionContent)
                 return error('VALIDATION', 'Unknown reaction: ' + args.content)
-              var mutationId = await getMutationId('addReactionMutation')
-              if (!mutationId)
-                return error('API', 'Mutation addReactionMutation not found in GitHub JS bundles')
-              var result = await graphql(mutationId, {
-                input: {
-                  subjectId: args.subject_id,
-                  content: reactionContent,
+              if (typeof args.subject_id !== 'string' || !args.subject_id)
+                return error('VALIDATION', 'subject_id is required.')
+              // The current web UI posts reactions to this same-origin action
+              // endpoint with the verified-fetch headers; it needs no persisted
+              // GraphQL mutation id (which the old bundle scan could not find).
+              var nonce =
+                typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function'
+                  ? 'v2:' + crypto.randomUUID()
+                  : 'v2:' + String(Date.now()) + '-' + Math.random().toString(16).slice(2)
+              var response = await fetchUrl('/reactable_item/reactions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'GitHub-Verified-Fetch': 'true',
+                  'X-Fetch-Nonce': nonce,
+                  'X-Requested-With': 'XMLHttpRequest',
                 },
+                credentials: 'include',
+                body: JSON.stringify({ subjectId: args.subject_id, content: reactionContent }),
               })
-              if (!result.ok) return result
-              return ok({ success: true })
+              if (!response.ok) return httpError(response)
+              var parsed
+              try {
+                parsed = JSON.parse(response.text)
+              } catch (e) {
+                return error('UNCONFIRMED_WRITE', 'The reaction request returned invalid JSON. Check the page before retrying.')
+              }
+              var subject = parsed && parsed.data && parsed.data.addReaction && parsed.data.addReaction.subject
+              var groups = subject && subject.reactionGroups
+              if (!Array.isArray(groups))
+                return error('UNCONFIRMED_WRITE', 'The reaction request returned no reaction state. Check the page before retrying.')
+              var group = null
+              for (var i = 0; i < groups.length; i++) if (groups[i] && groups[i].content === reactionContent) group = groups[i]
+              if (!group || group.viewerHasReacted !== true)
+                return error('UNCONFIRMED_WRITE', 'GitHub did not report the requested reaction as applied. Check the page before retrying.')
+              return ok({
+                subject_id: subject.id || args.subject_id,
+                reaction: reactionContent,
+                count: group.reactors && typeof group.reactors.totalCount === 'number' ? group.reactors.totalCount : 0,
+                viewer_has_reacted: true,
+              })
             },
           }
 

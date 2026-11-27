@@ -395,6 +395,65 @@ export default {
             }
             return { ok: true, data: {} }
           }
+          // GitHub's current web UI writes through same-origin action endpoints
+          // guarded by the verified-fetch headers; the persisted GraphQL ids the
+          // old bundle scan looked for no longer exist.
+          async function verifiedJson(method, path, payload) {
+            if (!requireLogin())
+              return { ok: false, error_code: 'AUTH', message: 'Not authenticated — please log in to GitHub.' }
+            var nonce =
+              typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function'
+                ? 'v2:' + crypto.randomUUID()
+                : 'v2:' + String(Date.now()) + '-' + Math.random().toString(16).slice(2)
+            var response = await fetchUrl(path, {
+              method: method,
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'GitHub-Verified-Fetch': 'true',
+                'X-Fetch-Nonce': nonce,
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+              credentials: 'include',
+              body: JSON.stringify(payload),
+            })
+            if (!response.ok) return httpError(response)
+            try {
+              return { ok: true, data: JSON.parse(response.text) }
+            } catch (e) {
+              return {
+                ok: false,
+                error_code: 'UNCONFIRMED_WRITE',
+                message: 'GitHub returned invalid JSON for ' + method + ' ' + path + '; check the issue before retrying.',
+              }
+            }
+          }
+          // Closing/reopening goes through a planning-status id, and those ids are
+          // account-scoped, so read them from the page payload instead of guessing.
+          function findPlanningStatuses(payload) {
+            var statuses = []
+            var stack = [payload]
+            var guard = 0
+            while (stack.length && guard < 20000) {
+              guard++
+              var node = stack.pop()
+              if (!node || typeof node !== 'object') continue
+              if (Array.isArray(node)) {
+                for (var i = 0; i < node.length; i++) stack.push(node[i])
+                continue
+              }
+              var owned = node.planningStatuses
+              if (owned && Array.isArray(owned.nodes)) {
+                for (var j = 0; j < owned.nodes.length; j++) statuses.push(owned.nodes[j])
+              }
+              var keys = Object.keys(node)
+              for (var k = 0; k < keys.length; k++) {
+                var value = node[keys[k]]
+                if (value && typeof value === 'object') stack.push(value)
+              }
+            }
+            return statuses
+          }
           function httpError(response) {
             var text = (response.text || '').slice(0, 512)
             if (response.status === 401 || response.status === 403)
@@ -674,23 +733,75 @@ export default {
             async update_issue(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var pagePath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number
-              if (args.state === 'closed') {
-                var closeResponse = await submitPageForm(pagePath, 'form.js-new-comment-form', { comment_and_close: '1', 'comment[body]': '' })
-                if (!closeResponse.ok) return closeResponse
+              var basePath =
+                '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number
+              var applied = {}
+              // Body: PATCH on the issue resource, wrapped in `input` (an unwrapped
+              // payload is accepted with 200 but silently ignored).
+              if (args.body !== undefined) {
+                var bodyResponse = await verifiedJson('PATCH', basePath, { input: { body: args.body } })
+                if (!bodyResponse.ok) return bodyResponse
+                var bodyIssue =
+                  bodyResponse.data && bodyResponse.data.data && bodyResponse.data.data.updateIssue && bodyResponse.data.data.updateIssue.issue
+                if (!bodyIssue || bodyIssue.body !== args.body)
+                  return error('UNCONFIRMED_WRITE', 'GitHub did not confirm the new issue body. Check the issue before retrying.')
+                applied.body = bodyIssue.body
               }
-              else if (args.state === 'open') {
-                var reopenResponse = await submitPageForm(pagePath, 'form.js-new-comment-form', { comment_and_reopen: '1', 'comment[body]': '' })
-                if (!reopenResponse.ok) return reopenResponse
+              if (args.title !== undefined) {
+                var titleResponse = await verifiedJson('PUT', basePath + '/title', { title: args.title })
+                if (!titleResponse.ok) return titleResponse
+                applied.title = args.title
               }
-              if (args.title !== undefined || args.body !== undefined) {
-                var fields = { _method: 'put' }
-                if (args.title !== undefined) fields['issue[title]'] = args.title
-                if (args.body !== undefined) fields['issue[body]'] = args.body
-                var response = await submitPageForm(pagePath, 'form.js-comment-update[action$="/issues/' + args.issue_number + '"]', fields)
-                if (!response.ok) return response
+              if (args.state) {
+                var before = await pageJson(basePath)
+                if (!before.ok) return before
+                var statuses = findPlanningStatuses(before.data)
+                var statusId = ''
+                for (var s = 0; s < statuses.length; s++) {
+                  var category = statuses[s] && statuses[s].category ? statuses[s].category : {}
+                  if (String(category.state || '').toUpperCase() === args.state.toUpperCase()) {
+                    statusId = statuses[s].id || ''
+                    break
+                  }
+                }
+                if (!statusId)
+                  return error('API', 'GitHub exposed no planning status for state "' + args.state + '" in this repository.')
+                var stateResponse = await verifiedJson('PATCH', basePath + '/state.json', { statusId: statusId })
+                if (!stateResponse.ok) return stateResponse
+                applied.state = args.state
               }
-              return ok({ success: true })
+              if (!Object.keys(applied).length)
+                return error('VALIDATION', 'Nothing to update: pass title, body and/or state.')
+              // Verify against the live page payload — a 200 from the write endpoint is
+              // not proof that the field changed.
+              var after = await pageJson(basePath)
+              if (!after.ok) return after
+              var viewer = after.data && after.data.issueViewerRoute
+              var issue =
+                (viewer && viewer.data && viewer.data.repository && viewer.data.repository.issue) ||
+                (after.data && after.data.repository && after.data.repository.issue) ||
+                (after.data && after.data.issue)
+              if (!issue || Number(issue.number) !== args.issue_number)
+                return error('UNCONFIRMED_WRITE', 'Could not re-read issue #' + args.issue_number + ' after the update. Check GitHub before retrying.')
+              var actualState = String(issue.state || '').toLowerCase()
+              var actualTitle = issue.title || ''
+              var actualBody = issue.body || ''
+              var stale = []
+              if (applied.title !== undefined && actualTitle !== applied.title) stale.push('title')
+              if (applied.body !== undefined && actualBody !== applied.body) stale.push('body')
+              if (applied.state !== undefined && actualState !== applied.state) stale.push('state')
+              if (stale.length)
+                return error('UNCONFIRMED_WRITE', 'GitHub did not persist: ' + stale.join(', ') + '. Check the issue before retrying.')
+              return ok({
+                updated: Object.keys(applied),
+                issue: {
+                  number: issue.number !== undefined ? Number(issue.number) : args.issue_number,
+                  title: actualTitle,
+                  body: actualBody,
+                  state: actualState,
+                  html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/issues/' + args.issue_number,
+                },
+              })
             },
           }
 

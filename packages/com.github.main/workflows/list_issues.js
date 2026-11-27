@@ -713,24 +713,53 @@ export default {
                 else if (args.assignee !== '*') parts.push('assignee:' + args.assignee)
               }
               parts.push('sort:' + sort + '-' + dir)
-              var queryId = await discoverQueryId('IssueIndexPageQuery', '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues', { q: 'is:issue is:open' })
-              if (!queryId)
-                return error('API', 'Could not discover query ID for IssueIndexPageQuery')
-              var data = await graphql(queryId, {
-                owner: args.owner,
-                name: args.repo,
-                query: parts.join(' '),
-                skip: (page - 1) * perPage,
-                includeReactions: false,
-              })
-              if (!data.ok) return data
-              var edges = (data.data.repository && data.data.repository.search && data.data.repository.search.edges) || []
+              if (!Number.isInteger(perPage) || perPage < 1 || perPage > 100 || !Number.isInteger(page) || page < 1)
+                return error('INVALID_INPUT', 'per_page must be 1–100 and page must be a positive integer.')
+              // The current Issues index embeds the rendered search results in
+              // issuesIndexContentRoute; its old persisted query is no longer exposed.
+              // GitHub paginates this route in 25-result chunks using `page`.
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues'
+              var start = (page - 1) * perPage
+              var last = start + perPage
               var issues = []
-              for (var j = 0; j < edges.length; j++) {
-                var node = relayNodeToRaw(edges[j].node)
-                if (node.__typename === 'Issue') issues.push(mapIssue(node, { owner: args.owner, repo: args.repo }))
+              for (var sitePage = Math.floor(start / 25) + 1; sitePage <= Math.ceil(last / 25); sitePage++) {
+                var result = await turboData(path, { q: parts.join(' '), page: sitePage })
+                if (!result.ok) return error(result.error_code || 'API', result.message || 'Could not read issues.')
+                var route = result.data && result.data.issuesIndexContentRoute
+                if (!route) return error('API', 'GitHub did not provide a verifiable issuesIndexContentRoute.')
+                if (route.results === undefined || route.results === null) {
+                  // GitHub omits results entirely when the query matches nothing;
+                  // a route without results and without pageInfo is not an empty list.
+                  if (!route.pageInfo)
+                    return error('API', 'GitHub did not provide verifiable issuesIndexContentRoute results.')
+                  break
+                }
+                if (!Array.isArray(route.results))
+                  return error('API', 'GitHub returned a non-array issuesIndexContentRoute.results.')
+                for (var j = 0; j < route.results.length; j++) {
+                  var item = route.results[j]
+                  if (!item || !item.issue || !Number.isInteger(item.issue.number) || !item.issue.title)
+                    return error('API', 'GitHub returned an issue item with missing identity or title.')
+                  var issue = item.issue
+                  var mapped = mapIssue({
+                    number: issue.number,
+                    title: issue.title,
+                    state: String(issue.state || '').includes('CLOSED') ? 'closed' : 'open',
+                    body: issue.body || '',
+                    html_url: issue.permalink,
+                    author: issue.author,
+                    labels: issue.labels,
+                    assignees: issue.assignees,
+                    comments: issue.commentCount,
+                    createdAt: issue.createdAt,
+                    updatedAt: issue.updatedAt,
+                    closedAt: issue.closedAt,
+                  }, { owner: args.owner, repo: args.repo })
+                  issues.push(mapped)
+                }
+                if (route.results.length < 25) break
               }
-              return ok({ issues: issues })
+              return ok({ issues: issues.slice(start % 25, start % 25 + perPage) })
             },
           }
 

@@ -196,20 +196,24 @@ export default {
             try {
               data = JSON.parse(response.text)
             } catch (e) {
-              return { ok: false, error_code: 'HTTP', status: response.status, message: 'GitHub returned invalid JSON for ' + path }
+              // GitHub now serves some routes as HTML even with Accept: application/json.
+              // Read the same-origin page's embedded payload rather than treating it as an empty list.
+              var embedded = extractEmbeddedData(response.text, path)
+              if (embedded !== null) return { ok: true, data: embedded }
+              return { ok: false, error_code: 'API', status: response.status, message: 'GitHub returned neither JSON nor recognizable embedded page data for ' + path }
             }
             return { ok: true, data: data.payload !== undefined ? data.payload : data }
           }
           function extractEmbeddedData(html, path) {
-            var match = html.match(/<script[^>]*data-target="react-app\.embeddedData"[^>]*>([\s\S]*?)<\/script>/)
-            if (!match || !match[1])
-              return null
-            try {
-              var embedded = JSON.parse(match[1])
-              return embedded.payload !== undefined ? embedded.payload : embedded
-            } catch (e) {
-              return null
+            var doc = new DOMParser().parseFromString(html, 'text/html')
+            var scripts = doc.querySelectorAll('script[data-target="react-app.embeddedData"], script[data-target="react-partial.embeddedData"]')
+            for (var i = 0; i < scripts.length; i++) {
+              try {
+                var embedded = JSON.parse(scripts[i].textContent)
+                if (embedded.payload !== undefined) return embedded.payload
+              } catch (e) {}
             }
+            return null
           }
           async function turboData(path, query) {
             if (!requireLogin())
@@ -529,9 +533,11 @@ export default {
           }
           function mapBranch(b) {
             b = b || {}
+            var protectedFlag = b.protected !== undefined ? b.protected
+              : (b.isProtected === true || b.protectedByBranchProtections === true)
             return {
               name: b.name || '',
-              protected: b.protected !== undefined ? b.protected : (b.isProtected === true),
+              protected: !!protectedFlag,
               sha: (b.commit && b.commit.sha) || b.oid || '',
             }
           }
@@ -654,8 +660,42 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               var response = await pageJson('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/branches')
               if (!response.ok) return response
-              var branches = Array.isArray(response.data.branches) ? response.data.branches : []
-              return ok({ branches: branches.map(mapBranch) })
+              var raw = response.data && response.data.branches
+              // The branches page groups results as {default, active, yours}.
+              var list = []
+              if (Array.isArray(raw)) {
+                list = raw
+              } else if (raw && typeof raw === 'object') {
+                var groups = [raw.default, raw.active, raw.yours]
+                var seen = {}
+                for (var g = 0; g < groups.length; g++) {
+                  var group = groups[g]
+                  if (!group) continue
+                  if (!Array.isArray(group)) group = [group]
+                  for (var k = 0; k < group.length; k++) {
+                    var name = group[k] && group[k].name
+                    if (!name || seen[name]) continue
+                    seen[name] = true
+                    list.push(group[k])
+                  }
+                }
+              } else {
+                return error('API', 'GitHub branches response has no recognizable branches.')
+              }
+              if (!list.length && raw && typeof raw === 'object' && !Array.isArray(raw)) {
+                // An empty repository legitimately yields no groups; only accept that
+                // when the payload actually carried the grouping keys.
+                if (!('active' in raw) && !('yours' in raw) && !('default' in raw))
+                  return error('API', 'GitHub branches response has no recognizable branches.')
+              }
+              var branches = []
+              for (var i = 0; i < list.length; i++) {
+                var mapped = mapBranch(list[i])
+                if (!mapped.name)
+                  return error('API', 'GitHub branches response contained a branch without a name.')
+                branches.push(mapped)
+              }
+              return ok({ branches: branches })
             },
           }
 

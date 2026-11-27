@@ -660,31 +660,48 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
-              var response = await fetchText('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/actions/runs/' + args.run_id, {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
-              if (!response.ok) return httpError(response)
-              var doc = new DOMParser().parseFromString(response.text, 'text/html')
-              var titleEl = doc.querySelector('h1, .workflow-run-title')
-              var statusEl = doc.querySelector('[data-testid="conclusion-icon"], .octicon-check, .octicon-x')
-              var branchEl = doc.querySelector('a[href*="tree/"]')
-              var timeEl = doc.querySelector('relative-time, time')
-              var shaEl = doc.querySelector('a[href*="commit/"]')
-              var datetime = timeEl ? timeEl.getAttribute('datetime') || '' : ''
-              return ok({
-                workflow_run: {
-                  id: args.run_id,
-                  name: titleEl ? (titleEl.textContent || '').trim() : '',
-                  status: statusEl ? statusEl.getAttribute('aria-label') || '' : '',
-                  conclusion: '',
-                  head_branch: branchEl ? (branchEl.textContent || '').trim() : '',
-                  head_sha: shaEl ? (shaEl.textContent || '').trim() : '',
-                  html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/actions/runs/' + args.run_id,
-                  created_at: datetime,
-                  updated_at: datetime,
-                },
-              })
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/actions'
+              var wanted = String(args.run_id)
+              // The run detail page no longer carries machine-readable state, so read
+              // the Actions list payload and select the requested run by id.
+              var page = 1
+              while (true) {
+                var response = await fetchText(path + (page > 1 ? '?page=' + page : ''), { Accept: 'application/json' })
+                if (!response.ok) return httpError(response)
+                var payload
+                try {
+                  payload = JSON.parse(response.text)
+                } catch (e) {
+                  return error('API', 'GitHub did not return JSON for the Actions page.')
+                }
+                if (payload && payload.payload !== undefined) payload = payload.payload
+                var route = payload && payload.allWorkflowRunsRoute
+                if (!route || !Array.isArray(route.workflowRuns))
+                  return error('API', 'GitHub Actions payload has no recognizable workflowRuns array.')
+                for (var i = 0; i < route.workflowRuns.length; i++) {
+                  var raw = route.workflowRuns[i]
+                  if (!raw || String(raw.id) !== wanted) continue
+                  var state = raw.state || {}
+                  return ok({
+                    workflow_run: {
+                      id: Number(raw.id),
+                      name: raw.workflowName || raw.name || '',
+                      status: String(state.status || '').replace(/^WORKFLOW_RUN_STATUS_/, '').toLowerCase(),
+                      conclusion: String(state.conclusion || '').replace(/^WORKFLOW_RUN_CONCLUSION_/, '').toLowerCase(),
+                      head_branch: raw.branch && raw.branch.name ? String(raw.branch.name).replace(/^refs\/(heads|tags)\//, '') : '',
+                      head_sha: '',
+                      html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/actions/runs/' + raw.id,
+                      created_at: (raw.createdAt && raw.createdAt.timestamp) || '',
+                      updated_at: (raw.createdAt && raw.createdAt.timestamp) || '',
+                    },
+                  })
+                }
+                if (!route.workflowRuns.length) break
+                if (typeof route.totalPages === 'number' && page >= route.totalPages) break
+                page++
+                if (page > 50) break
+              }
+              return error('API', 'Workflow run ' + args.run_id + ' was not present in the repository run list.')
             },
           }
 

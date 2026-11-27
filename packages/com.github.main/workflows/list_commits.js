@@ -200,20 +200,24 @@ export default {
             try {
               data = JSON.parse(response.text)
             } catch (e) {
-              return { ok: false, error_code: 'HTTP', status: response.status, message: 'GitHub returned invalid JSON for ' + path }
+              // GitHub now serves some routes as HTML even with Accept: application/json.
+              // Read the same-origin page's embedded payload rather than treating it as an empty list.
+              var embedded = extractEmbeddedData(response.text, path)
+              if (embedded !== null) return { ok: true, data: embedded }
+              return { ok: false, error_code: 'API', status: response.status, message: 'GitHub returned neither JSON nor recognizable embedded page data for ' + path }
             }
             return { ok: true, data: data.payload !== undefined ? data.payload : data }
           }
           function extractEmbeddedData(html, path) {
-            var match = html.match(/<script[^>]*data-target="react-app\.embeddedData"[^>]*>([\s\S]*?)<\/script>/)
-            if (!match || !match[1])
-              return null
-            try {
-              var embedded = JSON.parse(match[1])
-              return embedded.payload !== undefined ? embedded.payload : embedded
-            } catch (e) {
-              return null
+            var doc = new DOMParser().parseFromString(html, 'text/html')
+            var scripts = doc.querySelectorAll('script[data-target="react-app.embeddedData"], script[data-target="react-partial.embeddedData"]')
+            for (var i = 0; i < scripts.length; i++) {
+              try {
+                var embedded = JSON.parse(scripts[i].textContent)
+                if (embedded.payload !== undefined) return embedded.payload
+              } catch (e) {}
             }
+            return null
           }
           async function turboData(path, query) {
             if (!requireLogin())
@@ -598,7 +602,7 @@ export default {
               author_name: (c.commit && c.commit.author && c.commit.author.name) || (c.authors && c.authors[0] && c.authors[0].displayName) || '',
               author_email: (c.commit && c.commit.author && c.commit.author.email) || (c.authors && c.authors[0] && c.authors[0].email) || '',
               date: (c.commit && c.commit.author && c.commit.author.date) || c.authoredDate || c.committedDate || '',
-              url: c.html_url || c.url || '',
+              url: c.html_url || (c.url && c.url.charAt(0) === '/' ? 'https://github.com' + c.url : c.url) || '',
             }
           }
           function mapFileDiff(f) {
@@ -659,11 +663,22 @@ export default {
               var ref = args.sha !== undefined ? args.sha : 'HEAD'
               var response = await pageJson('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/commits/' + encodeURIComponent(ref))
               if (!response.ok) return response
-              var groups = Array.isArray(response.data.commitGroups) ? response.data.commitGroups : []
+              var data = response.data
+              // The commits page embeds its groups under commitsRefRoute.commitGroups.
+              var route = data && (data.commitsRefRoute || data)
+              var groups = route && route.commitGroups
+              if (!Array.isArray(groups))
+                return error('API', 'GitHub commits response has no recognizable commitGroups array.')
               var commits = []
               for (var i = 0; i < groups.length; i++) {
-                var list = Array.isArray(groups[i].commits) ? groups[i].commits : []
-                for (var j = 0; j < list.length; j++) commits.push(mapCommit(list[j]))
+                if (!groups[i] || !Array.isArray(groups[i].commits))
+                  return error('API', 'GitHub commit group has no recognizable commits array.')
+                for (var j = 0; j < groups[i].commits.length; j++) {
+                  var mapped = mapCommit(groups[i].commits[j])
+                  if (!mapped.sha || !mapped.message)
+                    return error('API', 'GitHub commits response contained a commit without a sha or message.')
+                  commits.push(mapped)
+                }
               }
               return ok({ commits: commits })
             },

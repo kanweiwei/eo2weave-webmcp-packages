@@ -660,34 +660,52 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               if (!requireLogin())
                 return error('AUTH', 'Not authenticated — please log in to GitHub.')
-              var response = await fetchText('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number, {
-                Accept: 'text/html',
-                'X-Requested-With': 'XMLHttpRequest',
-              })
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number
+              // The current issue view renders comments from its embedded JSON
+              // (issueViewerRoute), not from timeline-comment markup in the HTML.
+              var response = await fetchText(path, { Accept: 'application/json' })
               if (!response.ok) return httpError(response)
-              var doc = new DOMParser().parseFromString(response.text, 'text/html')
-              var commentElements = doc.querySelectorAll('.js-comment-container, .timeline-comment')
-              var comments = []
-              for (var i = 0; i < commentElements.length; i++) {
-                var el = commentElements[i]
-                var bodyEl = el.querySelector('.comment-body, .js-comment-body')
-                var authorEl = el.querySelector('.author, a.timeline-comment-header-text')
-                var timeEl = el.querySelector('relative-time, time')
-                var linkEl = el.querySelector('a[id^="issuecomment-"]')
-                var linkId = linkEl ? linkEl.getAttribute('id') || '' : ''
-                var id = linkId.replace('issuecomment-', '') || '0'
-                if (bodyEl) {
-                  var parsedId = Number.parseInt(id, 10)
-                  var datetime = timeEl ? timeEl.getAttribute('datetime') || '' : ''
-                  comments.push({
-                    id: Number.isNaN(parsedId) ? 0 : parsedId,
-                    body: (bodyEl.textContent || '').trim(),
-                    user_login: authorEl ? (authorEl.textContent || '').trim() : '',
-                    html_url: linkEl ? 'https://github.com/' + args.owner + '/' + args.repo + '/issues/' + args.issue_number + '#' + linkId : '',
-                    created_at: datetime,
-                    updated_at: datetime,
-                  })
+              var payload
+              try {
+                payload = JSON.parse(response.text)
+              } catch (e) {
+                return error('API', 'GitHub did not return JSON for ' + path + '.')
+              }
+              if (payload && payload.payload !== undefined) payload = payload.payload
+              var viewer = payload && payload.issueViewerRoute
+              var issue = viewer && viewer.data && viewer.data.repository && viewer.data.repository.issue
+              if (!issue || Number(issue.number) !== Number(args.issue_number))
+                return error('API', 'Issue #' + args.issue_number + ' was not found in the GitHub page payload.')
+              var nodes = []
+              var groups = [issue.backTimelineItems, issue.timelineItems]
+              for (var g = 0; g < groups.length; g++) {
+                var edges = groups[g] && groups[g].edges ? groups[g].edges : []
+                for (var e = 0; e < edges.length; e++) {
+                  var node = edges[e] && edges[e].node
+                  if (node) nodes.push(node)
                 }
+              }
+              var comments = []
+              var seen = {}
+              for (var i = 0; i < nodes.length; i++) {
+                var item = nodes[i]
+                if (!item || item.__typename !== 'IssueComment') continue
+                if (typeof item.databaseId !== 'number' || typeof item.body !== 'string')
+                  return error('API', 'GitHub returned an issue comment without an id or body.')
+                if (seen[item.databaseId]) continue
+                seen[item.databaseId] = true
+                comments.push({
+                  id: item.databaseId,
+                  body: item.body,
+                  user_login: (item.author && item.author.login) || '',
+                  html_url: item.url || ('https://github.com/' + args.owner + '/' + args.repo + '/issues/' + args.issue_number + '#issuecomment-' + item.databaseId),
+                  created_at: item.createdAt || '',
+                  updated_at: item.lastEditedAt || item.createdAt || '',
+                })
+              }
+              var reported = typeof issue.totalCommentsCount === 'number' ? issue.totalCommentsCount : null
+              if (!comments.length && reported) {
+                return error('API', 'GitHub reported ' + reported + ' comment(s) on #' + args.issue_number + ' but none were readable in the embedded payload.')
               }
               return ok({ comments: comments })
             },

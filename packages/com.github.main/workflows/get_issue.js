@@ -660,7 +660,14 @@ export default {
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
               var result = await turboData('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues/' + args.issue_number)
               if (!result.ok) return result
-              var issue = (result.data.repository && result.data.repository.issue) || {}
+              // Current issue pages embed their route data under issueViewerRoute;
+              // a missing issue is never an empty issue and must never be ok.
+              var viewer = result.data && result.data.issueViewerRoute
+              var issue = (viewer && viewer.data && viewer.data.repository && viewer.data.repository.issue) ||
+                (result.data && result.data.repository && result.data.repository.issue) ||
+                (result.data && result.data.issue)
+              if (!issue || typeof issue !== 'object' || Number(issue.number) !== args.issue_number || !issue.title)
+                return error('API', 'Issue data for #' + args.issue_number + ' was not found in the GitHub page payload.')
               var labels = []
               var labelEdges = issue.labels && issue.labels.edges ? issue.labels.edges : []
               for (var i = 0; i < labelEdges.length; i++) {
@@ -683,7 +690,7 @@ export default {
                   user_login: (issue.author && issue.author.login) || '',
                   labels: labels,
                   assignees: assignees,
-                  comments: 0,
+                  comments: typeof issue.totalCommentsCount === 'number' ? issue.totalCommentsCount : 0,
                   created_at: issue.createdAt || '',
                   updated_at: issue.updatedAt || '',
                   closed_at: issue.closedAt || '',

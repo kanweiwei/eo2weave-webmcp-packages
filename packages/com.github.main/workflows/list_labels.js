@@ -652,21 +652,46 @@ export default {
             async list_labels(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var queryId = await discoverQueryId('RepositoryLabelIndexPageQuery', '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/labels')
-              if (!queryId)
-                return error('API', 'Could not discover query ID for RepositoryLabelIndexPageQuery')
-              var data = await graphql(queryId, {
-                owner: args.owner,
-                name: args.repo,
-                first: 100,
-                skip: 0,
-              })
-              if (!data.ok) return data
-              var edges = (data.data.repository && data.data.repository.labels && data.data.repository.labels.edges) || []
+              var path = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/labels'
               var labels = []
-              for (var i = 0; i < edges.length; i++) {
-                var node = edges[i].node || {}
-                labels.push({ id: 0, name: node.name || '', color: node.color || '', description: node.description || '' })
+              var page = 1
+              var total = null
+              // The labels index answers with JSON when asked: the repository
+              // label connection lives at labelsRoute.data.repository.labels.
+              while (true) {
+                var response = await fetchText(path + '?page=' + page, { Accept: 'application/json' })
+                if (!response.ok) return httpError(response)
+                var payload
+                try {
+                  payload = JSON.parse(response.text)
+                } catch (e) {
+                  return error('API', 'GitHub did not return JSON for ' + path + ' page ' + page + '.')
+                }
+                if (payload && payload.payload !== undefined) payload = payload.payload
+                var repoRoute = payload && payload.labelsRoute && payload.labelsRoute.data && payload.labelsRoute.data.repository
+                var connection = repoRoute && repoRoute.labels
+                if (!connection || !Array.isArray(connection.edges))
+                  return error('API', 'GitHub label payload has no recognizable labels connection on page ' + page + '.')
+                if (typeof connection.totalCount === 'number') total = connection.totalCount
+                for (var i = 0; i < connection.edges.length; i++) {
+                  var node = connection.edges[i] && connection.edges[i].node
+                  if (!node || !node.name)
+                    return error('API', 'A GitHub label had no name on page ' + page + '.')
+                  labels.push(mapLabel({
+                    id: node.fullDatabaseId !== undefined && node.fullDatabaseId !== null && !isNaN(Number(node.fullDatabaseId))
+                      ? Number(node.fullDatabaseId)
+                      : (typeof node.id === 'number' ? node.id : 0),
+                    name: node.name,
+                    color: node.color,
+                    description: node.description,
+                  }))
+                }
+                if (!connection.edges.length) break
+                if (total !== null && labels.length >= total) break
+                if (connection.edges.length < 100) break
+                page++
+                if (page > 50 || remainingBudgetMs() < 1500)
+                  return error('API', 'Label pagination exceeded the request budget; refusing a partial list.')
               }
               return ok({ labels: labels })
             },

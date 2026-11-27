@@ -395,6 +395,53 @@ export default {
             }
             return { ok: true, data: {} }
           }
+          // The current file editor commits through same-origin multipart POSTs to
+          // /create or /tree-save, guarded by the verified-fetch headers. The
+          // `commit` field must be the branch head the editor would have loaded.
+          function verifiedHeaders() {
+            var nonce =
+              typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function'
+                ? 'v2:' + crypto.randomUUID()
+                : 'v2:' + String(Date.now()) + '-' + Math.random().toString(16).slice(2)
+            return {
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce': nonce,
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+          }
+          function encodePath(path) {
+            var parts = String(path).split('/')
+            for (var i = 0; i < parts.length; i++) parts[i] = encodeURIComponent(parts[i])
+            return parts.join('/')
+          }
+          async function branchHead(repoPath, branch) {
+            var result = await pageJson(repoPath + '/commits/' + encodeURIComponent(branch))
+            if (!result.ok) return result
+            var route = result.data && result.data.commitsRefRoute
+            var groups = route && route.commitGroups ? route.commitGroups : []
+            for (var i = 0; i < groups.length; i++) {
+              var commits = groups[i] && groups[i].commits ? groups[i].commits : []
+              if (commits.length && commits[0] && commits[0].oid) return { ok: true, data: commits[0].oid }
+            }
+            return { ok: false, error_code: 'API', message: 'No head commit was found for ' + branch + '.' }
+          }
+          async function readRaw(repoPath, branch, path) {
+            // Raw content is served from raw.githubusercontent with ACAO:*, so
+            // same-origin credentials are required (include is rejected).
+            var response = await fetchUrl(repoPath + '/raw/' + encodeURIComponent(branch) + '/' + encodePath(path), {
+              method: 'GET',
+              headers: { Accept: 'text/plain' },
+              credentials: 'same-origin',
+            })
+            if (response.error_code)
+              return { ok: false, status: response.status, error_code: response.error_code, message: response.message }
+            return { ok: true, status: response.status, text: response.text }
+          }
+          function sameText(a, b) {
+            var normalize = function (value) { return String(value === undefined || value === null ? '' : value).replace(/\r\n/g, '\n').replace(/\n+$/, '') }
+            return normalize(a) === normalize(b)
+          }
           function httpError(response) {
             var text = (response.text || '').slice(0, 512)
             if (response.status === 401 || response.status === 403)
@@ -674,21 +721,52 @@ export default {
             async create_or_update_file(args) {
               if (location.hostname !== 'github.com')
                 return error('UNSUPPORTED_PAGE', 'Not on a github.com page.')
-              var branch = args.branch !== undefined ? args.branch : 'main'
-              var fields = {
-                value: args.content,
-                message: args.message,
-                placeholder_message: args.message,
-                'commit-choice': 'direct',
-                target_branch: branch,
-                quick_pull: '',
-                filename: args.path.split('/').pop() || '',
-              }
-              var editResponse = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/edit/' + encodeURIComponent(branch) + '/' + args.path, 'form.js-blob-form', fields)
-              if (editResponse.ok) return ok({ success: true })
-              var newResponse = await submitPageForm('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/new/' + encodeURIComponent(branch), 'form.js-blob-form', fields)
-              if (!newResponse.ok) return newResponse
-              return ok({ success: true })
+              var branch = args.branch !== undefined && args.branch ? args.branch : 'main'
+              var repoPath = '/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo)
+              var head = await branchHead(repoPath, branch)
+              if (!head.ok) return head
+              var existing = await readRaw(repoPath, branch, args.path)
+              if (!existing.ok) return existing
+              // 404 from /raw means the path does not exist yet.
+              var creating = existing.status === 404
+              var baseName = String(args.path).split('/').pop()
+              var formData = new FormData()
+              formData.set('commit', head.data)
+              formData.set('commit-choice', 'direct')
+              formData.set('content_changed', 'true')
+              formData.set('description', '')
+              formData.set('filename', args.path)
+              formData.set('new_filename', args.path)
+              formData.set('guidance_task', '')
+              formData.set('message', args.message)
+              formData.set('placeholder_message', (creating ? 'Create ' : 'Update ') + baseName)
+              formData.set('pr', '')
+              formData.set('quick_pull', '')
+              formData.set('same_repo', '1')
+              formData.set('target_branch', branch)
+              formData.set('value', args.content)
+              var target = creating
+                ? repoPath + '/create/' + encodeURIComponent(branch)
+                : repoPath + '/tree-save/' + encodeURIComponent(branch) + '/' + encodePath(args.path)
+              var response = await fetchUrl(target, {
+                method: 'POST',
+                headers: verifiedHeaders(),
+                credentials: 'include',
+                body: formData,
+              })
+              if (!response.ok) return httpError(response)
+              // A 200 from the commit endpoint is not proof of the new content.
+              var after = await readRaw(repoPath, branch, args.path)
+              if (!after.ok) return after
+              if (after.status !== 200 || !sameText(after.text, args.content))
+                return error('UNCONFIRMED_WRITE', 'The commit was submitted but the file content does not match yet. Check the file before retrying.')
+              return ok({
+                created: creating,
+                path: args.path,
+                branch: branch,
+                html_url: 'https://github.com/' + args.owner + '/' + args.repo + '/blob/' + branch + '/' + args.path,
+                content_length: String(args.content).length,
+              })
             },
           }
 

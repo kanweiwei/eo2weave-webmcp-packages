@@ -313,6 +313,23 @@ export default {
             if (result.queryName && result.queryId) queryIdCache[result.queryName] = result.queryId
             return queryIdCache[queryName] || null
           }
+          function verifiedHeaders() {
+            // GitHub's app-scoped write endpoints authenticate the request with a
+            // verified-fetch marker plus a per-request nonce (no CSRF field).
+            var nonce = 'v2:' + (typeof crypto !== 'undefined' && crypto.randomUUID
+              ? crypto.randomUUID()
+              : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+              }))
+            return {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              'GitHub-Verified-Fetch': 'true',
+              'X-Fetch-Nonce': nonce,
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+          }
           async function graphql(queryId, variables) {
             if (!requireLogin())
               return { ok: false, error_code: 'AUTH', message: 'Not authenticated — please log in to GitHub.' }
@@ -669,24 +686,43 @@ export default {
               var repoResult = await turboData('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/issues', { q: 'is:issue is:open' })
               if (!repoResult.ok) return repoResult
               var repoId = repoResult.data.repository && repoResult.data.repository.id
+              if (!repoId) {
+                // The issues index no longer embeds the repository node; the labels
+                // route still exposes it as labelsRoute.data.repository.id.
+                var labelsRoute = await pageJson('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/labels')
+                if (labelsRoute.ok && labelsRoute.data) {
+                  var node = labelsRoute.data.labelsRoute && labelsRoute.data.labelsRoute.data && labelsRoute.data.labelsRoute.data.repository
+                  repoId = node && node.id
+                }
+              }
               if (!repoId)
                 return error('API', 'Could not determine repository ID')
-              var mutationId = await getMutationId('createRepositoryLabelMutation')
-              if (!mutationId)
-                return error('API', 'Mutation createRepositoryLabelMutation not found in GitHub JS bundles')
-              var result = await graphql(mutationId, {
-                repositoryId: repoId,
-                name: args.name,
-                color: args.color !== undefined ? args.color : 'ededed',
-                description: args.description !== undefined ? args.description : '',
+              var color = args.color !== undefined ? args.color : 'ededed'
+              var description = args.description !== undefined ? args.description : ''
+              var response2 = await fetchUrl('/' + encodeURIComponent(args.owner) + '/' + encodeURIComponent(args.repo) + '/labels/new', {
+                method: 'POST',
+                credentials: 'include',
+                headers: verifiedHeaders(),
+                body: JSON.stringify({ repositoryId: repoId, name: args.name, description: description, color: color }),
               })
-              if (!result.ok) return result
+              if (!response2.ok) return httpError(response2)
+              var parsed
+              try {
+                parsed = JSON.parse(response2.text)
+              } catch (e) {
+                return error('UNCONFIRMED_WRITE', 'GitHub did not confirm the label creation with a JSON response.')
+              }
+              if (parsed.errors && parsed.errors.length)
+                return error('API', 'GitHub rejected the label: ' + ((parsed.errors[0] && parsed.errors[0].message) || 'unknown error'))
+              var created = parsed.data && parsed.data.createLabel && parsed.data.createLabel.label
+              if (!created || !created.name)
+                return error('UNCONFIRMED_WRITE', 'GitHub accepted the label request but returned no label identity.')
               return ok({
                 label: {
-                  id: 0,
-                  name: args.name,
-                  color: args.color !== undefined ? args.color : 'ededed',
-                  description: args.description !== undefined ? args.description : '',
+                  id: Number(created.fullDatabaseId || 0),
+                  name: created.name,
+                  color: created.color || color,
+                  description: created.description || description,
                 },
               })
             },
